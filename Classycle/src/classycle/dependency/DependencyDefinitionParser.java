@@ -28,7 +28,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.StringTokenizer;
 
 import classycle.util.AndStringPattern;
@@ -48,20 +47,20 @@ public class DependencyDefinitionParser
   private static final String LAYER_KEY_WORD = "layer";
   private static final String SHOW_KEY_WORD = "show";
   private static final String LAYERING_OF_KEY_WORD = "layeringOf";
-  private static final String STRICT_LAYERING_OF_KEY_WORD = "strictLayeringOf";
+  private static final String STRICT_LAYERING_OF_KEY_WORD 
+                                            = "strictLayeringOf";
   
   private final ResultRenderer _renderer;
-  private final PreferenceFactory _factory;
-  private final HashMap _setDefinitions = new HashMap();
-  private final HashMap _layerDefinitions = new HashMap();
+  private final SetDefinitionRepository _setDefinitions 
+                    = new SetDefinitionRepository();
+  private final LayerDefinitionRepository _layerDefinitions 
+                    = new LayerDefinitionRepository();
   private final ArrayList _statements = new ArrayList();
   
   public DependencyDefinitionParser(String dependencyDefinition,
-                                    ResultRenderer renderer,
-                                    PreferenceFactory factory) 
+                                    ResultRenderer renderer) 
   {
     _renderer = renderer;
-    _factory = factory;
     try
     {
       StringBuffer buffer = new StringBuffer();
@@ -73,13 +72,13 @@ public class DependencyDefinitionParser
       while ((line = reader.readLine()) != null)
       {
         lineNumber++;
+        line = line.trim();
         if (!line.startsWith("#"))
         {
-          line = line.trim();
           buffer.append(line);
           if (line.endsWith("\\"))
           {
-            buffer.deleteCharAt(buffer.length() - 1);
+            buffer.deleteCharAt(buffer.length() - 1).append(' ');
           } else
           {
             String logicalLine = new String(buffer).trim();
@@ -92,7 +91,6 @@ public class DependencyDefinitionParser
                 tokens[i] = tokenizer.nextToken();
               }
               parseLine(tokens, lineNumberOfCurrentLogicalLine);
-
             }
             buffer.setLength(0);
             lineNumberOfCurrentLogicalLine = lineNumber + 1;
@@ -101,9 +99,13 @@ public class DependencyDefinitionParser
       }
     } catch (IOException e)
     {
-      // Ignore IOExceptions
+      throw new IllegalArgumentException(e.toString());
     }
-    
+  }
+  
+  public Statement[] getStatements() 
+  {
+    return (Statement[]) _statements.toArray(new Statement[0]);
   }
   
   private void parseLine(String[] tokens, int lineNumber) {
@@ -124,7 +126,7 @@ public class DependencyDefinitionParser
 
     } else
     {
-      throwException("Expecting either set name, '" 
+      throwException("Expecting either a set name, '" 
                      + SHOW_KEY_WORD + "', '" + LAYER_KEY_WORD + "', or '" 
                      + CHECK_KEY_WORD + "'.", 
                      lineNumber, 0);
@@ -138,7 +140,7 @@ public class DependencyDefinitionParser
     {
       throwException("Set name has to end with ']'.", lineNumber, 0);
     }
-    if (_setDefinitions.containsKey(setName))
+    if (_setDefinitions.contains(setName))
     {
       throwException("Set " + setName + " already defined.", lineNumber, 0);
     }
@@ -177,7 +179,7 @@ public class DependencyDefinitionParser
   private StringPattern createPattern(String term, int lineNumber, 
                                       int tokenIndex)
   {
-    StringPattern pattern = (StringPattern) _setDefinitions.get(term);
+    StringPattern pattern = _setDefinitions.getPattern(term);
     if (pattern == null) 
     {
       if (term.startsWith("[") && term.endsWith("]")) 
@@ -197,7 +199,7 @@ public class DependencyDefinitionParser
       throwException("Mising layer name.", lineNumber, 1);
     }
     String layerName = tokens[1];
-    if (_layerDefinitions.containsKey(layerName)) 
+    if (_layerDefinitions.contains(layerName)) 
     {
       throwException("Layer '" + layerName + "' already defined.", 
                      lineNumber, 1);
@@ -225,7 +227,7 @@ public class DependencyDefinitionParser
     Preference[] preferences = new Preference[tokens.length - 1];
     for (int i = 0; i < preferences.length; i++)
     {
-      preferences[i] = _factory.get(tokens[i + 1]);
+      preferences[i] = _renderer.getPreferenceFactory().get(tokens[i + 1]);
       if (preferences[i] == null) 
       {
         throwException("Unknown display preference: " + tokens[i], 
@@ -242,7 +244,7 @@ public class DependencyDefinitionParser
       throwException("Missing checking statement.", lineNumber, 1);
     }
     if (tokens[1].equals(STRICT_LAYERING_OF_KEY_WORD) 
-        || tokens[1].equals(LAYER_KEY_WORD))
+        || tokens[1].equals(LAYERING_OF_KEY_WORD))
     {
       createLayeringStatement(tokens, lineNumber);
     } else {
@@ -256,14 +258,15 @@ public class DependencyDefinitionParser
     for (int i = 0; i < layers.length; i++) 
     {
       String name = tokens[i + 2];
-      StringPattern[] layer = (StringPattern[]) _layerDefinitions.get(name);
-      if (layer == null)
+      layers[i] = _layerDefinitions.getLayer(name);
+      if (layers[i] == null)
       {
         throwException("Undefined layer '" + name + "'.", lineNumber, i + 2);
       }
     }
-    _statements.add(new LayeringStatement(layers, 
-                  tokens[0].equals(STRICT_LAYERING_OF_KEY_WORD), _renderer));
+    boolean strict = tokens[1].equals(STRICT_LAYERING_OF_KEY_WORD);
+    _statements.add(new LayeringStatement(layers, strict, _setDefinitions, 
+                                          _layerDefinitions, _renderer));
   }
   
   private void createDependencyStatement(String[] tokens, int lineNumber)
@@ -278,7 +281,8 @@ public class DependencyDefinitionParser
     {
       throwException("Missing end sets.", lineNumber, tokens.length);
     }
-    _statements.add(new DependencyStatement(lists[0], lists[1], _renderer));
+    _statements.add(new DependencyStatement(lists[0], lists[1], _setDefinitions,
+                                            _renderer));
   }
   
   private StringPattern[][] getLists(String[] tokens, int lineNumber, 
@@ -297,8 +301,10 @@ public class DependencyDefinitionParser
                          lineNumber, i);
         }
         currentList = endSets;
+      } else
+      {
+        currentList.add(createPattern(tokens[i], lineNumber, i));
       }
-      currentList.add(createPattern(tokens[i], lineNumber, i));
     }
     StringPattern[][] result = new StringPattern[2][];
     result[0] = (StringPattern[]) startSets.toArray(new StringPattern[0]);

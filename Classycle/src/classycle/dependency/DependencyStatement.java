@@ -39,14 +39,17 @@ public class DependencyStatement implements Statement
   private final StringPattern[] _finalSets;
   private final VertexCondition[] _startConditions;
   private final VertexCondition[] _finalConditions;
+  private final SetDefinitionRepository _repository;
   private final ResultRenderer _renderer;
   
   public DependencyStatement(StringPattern[] startSets,
                              StringPattern[] finalSets, 
+                             SetDefinitionRepository repository,
                              ResultRenderer renderer)
   {
     _startSets = startSets;
     _finalSets = finalSets;
+    _repository = repository;
     _renderer = renderer;
     _startConditions = createVertexConditions(startSets);
     _finalConditions = createVertexConditions(finalSets);
@@ -78,5 +81,20 @@ public class DependencyStatement implements Statement
     }
     return result;
   }
+  
+  public String toString()
+  {
+    StringBuffer buffer = new StringBuffer("check ");
+    for (int i = 0; i < _startSets.length; i++)
+    {
+      buffer.append(_repository.toString(_startSets[i])).append(' ');
+    }
+    buffer.append("independentOf ");
+    for (int i = 0; i < _finalSets.length; i++)
+    {
+      buffer.append(_repository.toString(_finalSets[i])).append(' ');
+    }
 
+    return new String(buffer.substring(0, buffer.length() - 1));
+  }
 }

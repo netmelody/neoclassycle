@@ -24,24 +24,30 @@
  */
 package classycle.dependency;
 
+import classycle.graph.AtomicVertex;
+
 /**
  * @author  Franz-Josef Elmer
  */
 public class DependencyProcessor
 {
   private final ResultRenderer _renderer;
+  private final Statement[] _statements;
+  private int _index;
   
   public DependencyProcessor(String dependencyDefinition, 
                              ResultRenderer renderer) 
   {
     _renderer = renderer;
+    _statements = new DependencyDefinitionParser(dependencyDefinition, 
+                                                 renderer).getStatements();
   }
   
   public boolean hasMoreStatements() {
-    return false;
+    return _index < _statements.length;
   }
   
-  public Result executeNextStatement() {
-    return null;
+  public Result executeNextStatement(AtomicVertex[] graph) {
+    return hasMoreStatements() ? _statements[_index++].execute(graph) : null;
   }
 }

@@ -34,12 +34,18 @@ public class LayeringStatement implements Statement
 {
   private final StringPattern[][] _layers;
   private final boolean _strictLayering;
+  private final SetDefinitionRepository _repository;
+  private final LayerDefinitionRepository _layerRepository;
   private final ResultRenderer _renderer;
   
   public LayeringStatement(StringPattern[][] layers, boolean strictLayering,
+                           SetDefinitionRepository repository,
+                           LayerDefinitionRepository layerRepository,
                            ResultRenderer renderer)
   {
     _layers = layers;
+    _repository = repository;
+    _layerRepository = layerRepository;
     _strictLayering = strictLayering;
     _renderer = renderer;
   }
@@ -52,16 +58,16 @@ public class LayeringStatement implements Statement
       checkIntraLayerDependencies(result, _layers[i], graph);
       for (int j = i + 1; j < _layers.length; j++) 
       {
-        DependencyStatement s 
-            = new DependencyStatement(_layers[i], _layers[j], _renderer);
+        DependencyStatement s = new DependencyStatement(_layers[i], _layers[j], 
+                                                        _repository, _renderer);
         result.add(s.execute(graph));
       }
       if (_strictLayering) 
       {
         for (int j = i - 2; j >= 0; j--) 
         {
-          DependencyStatement s 
-              = new DependencyStatement(_layers[i], _layers[j], _renderer);
+          DependencyStatement s = new DependencyStatement(_layers[i], 
+                                          _layers[j], _repository, _renderer);
           result.add(s.execute(graph));
         }
       }
@@ -81,15 +87,19 @@ public class LayeringStatement implements Statement
       System.arraycopy(patterns, 0, endSets, 0, i);
       System.arraycopy(patterns, i + 1, endSets, i, patterns.length - i - 1);
       DependencyStatement s 
-          = new DependencyStatement(startSet, endSets, _renderer);
+          = new DependencyStatement(startSet, endSets, _repository, _renderer);
       result.add(s.execute(graph));
     }
   }
   
-  private void checkInterLayerDependencies(ResultContainer result,
-                                           StringPattern[] startLayer,
-                                           StringPattern[] endLayer,
-                                           AtomicVertex[] graph)
+  public String toString()
   {
+    StringBuffer buffer = new StringBuffer("check ");
+    buffer.append(_strictLayering ? "strictLayeringOf" : "layeringOf");
+    for (int i = 0; i < _layers.length; i++)
+    {
+      buffer.append(' ').append(_layerRepository.getName(_layers[i]));
+    }
+    return new String(buffer);
   }
 }

@@ -24,6 +24,8 @@
  */
 package classycle.dependency;
 
+import java.util.Arrays;
+
 import classycle.graph.AtomicVertex;
 
 /**
@@ -49,4 +51,8 @@ public class ShowStatement implements Statement
     return _renderer.getDescriptionOfCurrentPreferences();
   }
 
+  public String toString()
+  {
+    return Arrays.asList(_preferences).toString();
+  }
 }

@@ -31,6 +31,8 @@ package classycle.dependency;
  */
 public interface ResultRenderer
 {
+  public PreferenceFactory getPreferenceFactory();
+  
   public void considerPreference(Preference preference);
   
   public boolean onlyShortestPaths();
