@@ -204,7 +204,7 @@ public class DependencyDefinitionParser
   {
     if (tokens.length < 2) 
     {
-      throwException("Mising layer name.", lineNumber, 1);
+      throwException("Missing layer name.", lineNumber, 1);
     }
     String layerName = tokens[1];
     if (_layerDefinitions.contains(layerName)) 
