@@ -24,6 +24,11 @@
  */
 package classycle.util;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
 /**
  * Collection of useful static method concerning string manipulation.
  *  
@@ -58,6 +63,26 @@ public class Text
       }
     }
     return new String(buffer);
+  }
+
+  /**
+   * Reads multi-line text from the specified file.
+   * @param file Text file.
+   * @return read text file with standard Java newline characters.
+   * @throws IOException if some reading error occurs.
+   */
+  public static String readTextFile(File file) throws IOException
+  {
+    StringBuffer buffer = new StringBuffer();
+    BufferedReader reader 
+        = new BufferedReader(new FileReader(file));
+    String line;
+    while ((line = reader.readLine()) != null)
+    {
+      buffer.append(line).append('\n');
+    }
+    String result = new String(buffer);
+    return result;
   }
 
 }
