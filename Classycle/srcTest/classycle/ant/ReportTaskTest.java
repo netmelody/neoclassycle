@@ -73,19 +73,19 @@ public class ReportTaskTest extends BuildFileTest
   public void testCSV() throws Exception
   {
     executeTarget("testCSV");
-    checkNumberOfLines(83, "reportTaskTest.csv");
+    checkNumberOfLines(4, "reportTaskTest.csv");
   }
 
   public void testXML() throws Exception
   {
     executeTarget("testXML");
-    checkNumberOfLines(1216, "reportTaskTest.xml");
+    checkNumberOfLines(78, "reportTaskTest.xml");
   }
 
   public void testXMLPackagesOnly() throws Exception
   {
     executeTarget("testXMLPackagesOnly");
-    checkNumberOfLines(85, "reportTaskTest.xml");
+    checkNumberOfLines(19, "reportTaskTest.xml");
     checkLine("<classycle title='&lt;hel&amp;lo&gt;'>", 3, 
               "reportTaskTest.xml");
   }
@@ -99,7 +99,7 @@ public class ReportTaskTest extends BuildFileTest
   public void testExcludingClasses() throws Exception
   {
     executeTarget("testExcludingClasses");
-    checkNumberOfLines(80, "reportTaskTest.csv");
+    checkNumberOfLines(2, "reportTaskTest.csv");
   }
 
   public void testInExcludingClasses() throws Exception

@@ -2,7 +2,8 @@
   <taskdef name="classycleReport" classname="classycle.ant.ReportTask"/>
 
   <target name="testRaw">
-    <classycleReport reportType="raw" includingClasses="classycle.Ana*"
+    <classycleReport reportType="raw" 
+    				 includingClasses="classycle.Ana*"
                      reportFile="reportTaskTest.txt">
       <fileset dir="../classes">
         <include name="**/*.class"/>
@@ -12,19 +13,22 @@
 
   <target name="testCSV">
     <classycleReport reportType="csv"
+    				 includingClasses="classycle.Ana*"
                      reportFile="reportTaskTest.csv">
       <fileset dir="../classes"/>
     </classycleReport>
   </target>
 
   <target name="testXML">
-    <classycleReport reportFile="reportTaskTest.xml">
+    <classycleReport reportFile="reportTaskTest.xml"
+    				 includingClasses="classycle.Ana*">
       <fileset dir="../classes"/>
     </classycleReport>
   </target>
 
   <target name="testXMLPackagesOnly">
     <classycleReport reportFile="reportTaskTest.xml" packagesOnly="true"
+    				 includingClasses="classycle.Ana*"
                      title="&lt;hel&amp;lo&gt;">
       <fileset dir="../classes"/>
     </classycleReport>
@@ -38,7 +42,8 @@
   </target>
 
   <target name="testExcludingClasses">
-    <classycleReport reportType="csv" excludingClasses="classycle.Ana*"
+    <classycleReport reportType="csv" excludingClasses="classycle.*Com*"
+    				 includingClasses="classycle.Ana*"
                      reportFile="reportTaskTest.csv">
       <fileset dir="../classes"/>
     </classycleReport>
