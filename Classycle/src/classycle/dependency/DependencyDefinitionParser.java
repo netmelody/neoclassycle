@@ -51,9 +51,9 @@ public class DependencyDefinitionParser
                                             = "strictLayeringOf";
   
   private final ResultRenderer _renderer;
-  private final SetDefinitionRepository _setDefinitions 
+  final SetDefinitionRepository _setDefinitions 
                     = new SetDefinitionRepository();
-  private final LayerDefinitionRepository _layerDefinitions 
+  final LayerDefinitionRepository _layerDefinitions 
                     = new LayerDefinitionRepository();
   private final ArrayList _statements = new ArrayList();
   
@@ -152,8 +152,14 @@ public class DependencyDefinitionParser
       throwException("Missing terms in set definition.", lineNumber, 2);
     }
     AndStringPattern definition = new AndStringPattern();
-    definition.appendPattern(createOrSequence(lists[0]));
-    definition.appendPattern(new NotStringPattern(createOrSequence(lists[1])));
+    if (lists[0].length > 0)
+    {
+      definition.appendPattern(createOrSequence(lists[0]));
+    }
+    if (lists[1].length > 0)
+    {
+      definition.appendPattern(new NotStringPattern(createOrSequence(lists[1])));
+    }
     _setDefinitions.put(setName, definition);
   }
   
