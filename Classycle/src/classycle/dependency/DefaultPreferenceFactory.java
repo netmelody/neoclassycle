@@ -28,6 +28,26 @@ import java.util.HashMap;
 
 
 /**
+ * Factory of {@link Preference Preferences} known by the 
+ * {@link DefaultResultRenderer}.
+ * 
+ * <table border="1" cellspacing="0" cellpadding="5">
+ *   <tr><th>Preference Key</th><th>Description</th></tr>
+ *   <tr><td><tt>onlyShortestPaths</tt></td>
+ *       <td>Only the shortest paths are reported in the case of
+ *           unwanted dependencies.</td>
+ *   </tr>
+ *   <tr><td><tt>allPaths</tt></td>
+ *       <td>All paths are reported in the case of
+ *           unwanted dependencies.</td>
+ *   </tr>
+ *   <tr><td><tt>onlyFailures</tt></td>
+ *       <td>Only results are reported which are not ok.</td>
+ *   </tr>
+ *   <tr><td><tt>allResults</tt></td>
+ *       <td>All results are reported.</td>
+ *   </tr>
+ * </table>
  * @author  Franz-Josef Elmer
  */
 public class DefaultPreferenceFactory implements PreferenceFactory
