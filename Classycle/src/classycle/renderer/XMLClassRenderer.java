@@ -38,12 +38,11 @@ import classycle.graph.AtomicVertex;
 public class XMLClassRenderer implements AtomicVertexRenderer {
   public static final String CLASS_ELEMENT = "class",
                              CLASS_REF_ELEMENT = "classRef";
-  private static final MessageFormat CLASS_START_FORMAT 
-      = new MessageFormat("    <" + CLASS_ELEMENT
-                          + " name=\"{0}\" type=\"{1}\" innerClass=\"{3}\""
-                          + " size=\"{2}\" usedBy=\"{4}\""
-                          + " usesInternal=\"{5}\" usesExternal=\"{6}\""
-                          + " layer=\"{7}\">\n");
+  private static final AtomicVertexRenderer CLASS_RENDERER
+      = new TemplateBasedClassRenderer("    <" + CLASS_ELEMENT
+              + " name=\"{0}\" type=\"{1}\" innerClass=\"{3}\" size=\"{2}\""
+              + " usedBy=\"{4}\" usesInternal=\"{5}\" usesExternal=\"{6}\""
+              + " layer=\"{7}\">\n");
   private static final String CLASS_END_TEMPLATE 
       = "    </" + CLASS_ELEMENT + ">\n";
   private static final MessageFormat CLASS_REF_FORMAT 
@@ -57,28 +56,10 @@ public class XMLClassRenderer implements AtomicVertexRenderer {
    * @return the rendered vertex.
    */
   public String render(AtomicVertex vertex, int layerIndex) {
-    StringBuffer result = new StringBuffer();
-    String[] values = new String[8];
-    ClassAttributes attributes = (ClassAttributes) vertex.getAttributes();
-    values[0] = attributes.getName();
-    values[1] = attributes.getType();
-    values[2] = Long.toString(attributes.getSize());
-    values[3] = attributes.isInnerClass() ? "true" : "false";
-    values[4] = Integer.toString(vertex.getNumberOfIncomingArcs());
-    int usesInternal = 0;
-    int usesExternal = 0;
-    for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) {
-      if (((AtomicVertex) vertex.getHeadVertex(i)).isGraphVertex()) {
-        usesInternal++;
-      } else {
-        usesExternal++;
-      }
-    }
-    values[5] = Integer.toString(usesInternal);
-    values[6] = Integer.toString(usesExternal);
-    values[7] = Integer.toString(layerIndex);
-    CLASS_START_FORMAT.format(values, result, null);
+    StringBuffer result 
+        = new StringBuffer(CLASS_RENDERER.render(vertex, layerIndex));
 
+    String[] values = new String[2];
     for (int i = 0, n = vertex.getNumberOfIncomingArcs(); i < n; i++) {
       values[0] = ((ClassAttributes) vertex.getTailVertex(i).getAttributes())
                   .getName();
