@@ -51,11 +51,11 @@ public class PlainClassRenderer implements AtomicVertexRenderer {
           usesExternal++;
         }
       }
-      StringBuffer result = new StringBuffer("Used by ");
-      result.append(vertex.getNumberOfIncomingArcs())
+      StringBuffer result 
+          = new StringBuffer(vertex.getAttributes().toString());
+      result.append(": Used by ").append(vertex.getNumberOfIncomingArcs())
             .append(" classes. Uses ").append(usesInternal).append('/')
-            .append(usesExternal).append(" internal/external classes: ")
-            .append(vertex.getAttributes());
+            .append(usesExternal).append(" internal/external classes");
       return new String(result);
     } else {
       throw new IllegalArgumentException(
