@@ -24,29 +24,41 @@
  */
 package classycle.classfile;
 
-public class ClassConstant extends Constant
-{
+/**
+ * Class constant. Refers to an instance of {@link UTF8Constant} which
+ * holds the fully qualifies class name.
+ * 
+ * @author Franz-Josef Elmer
+ */
+public class ClassConstant extends Constant {
   private final int _nameIndex;
 
-  public ClassConstant(Constant[] pool, int nameIndex)
-  {
+  /**
+   * Creates an instance for the specified index refering an
+   * {@link UTF8Constant}.
+   * @param pool Pool of all {@link Constant Constants}.
+   * @param nameIndex Index into <tt>pool</tt>.
+   */
+  public ClassConstant(Constant[] pool, int nameIndex) {
     super(pool);
     _nameIndex = nameIndex;
   }
 
-  public String getName()
-  {
+  
+  /**
+   * Returns the fully-qualified class name. In the case of an object array
+   * only the class name of the object is returned.
+   * @return fully-qualified class name in standard notation with '.'.
+   */
+  public String getName() {
     String result = null;
     Constant c = getConstant(_nameIndex);
-    if (c instanceof UTF8Constant)
-    {
+    if (c instanceof UTF8Constant) {
       result = ((UTF8Constant) c).getString().replace('/', '.');
-      if (result.startsWith("["))
-      {
+      if (result.startsWith("[")) {
         // An array class: Extract class name
         int index = result.indexOf('L');
-        if (index > 0)
-        {
+        if (index > 0) {
           result = result.substring(index + 1, result.length() - 1);
         }
       }
@@ -54,8 +66,8 @@ public class ClassConstant extends Constant
     return result;
   }
 
-  public String toString()
-  {
+  /** Returns the constant type and the class name. */
+  public String toString() {
     return "CONSTANT_Class: " + getName();
   }
 } //class
