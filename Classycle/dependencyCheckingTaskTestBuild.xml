@@ -1,0 +1,94 @@
+<project name="DependencyCheckingTaskTest" default="testEmbeddedDefinitions" 
+         basedir="temporaryTestDirectory">
+  <taskdef name="classycleDependencyCheck" 
+           classname="classycle.ant.DependencyCheckingTask"/>
+
+  <target name="testEmbeddedDefinitions">
+    <classycleDependencyCheck>
+      <fileset dir="../classes/example">
+        <include name="**/*.class"/>
+      </fileset>
+#      show allResults
+      [A] = *A*
+      [non-A] = example.* excluding [A]
+      check [A] independentOf [non-A]
+      check [non-A] independentOf [A]
+    </classycleDependencyCheck>
+  </target>
+
+  <target name="testEmbeddedDefinitionsFailureOn">
+    <classycleDependencyCheck failOnUnwantedDependencies="true">
+      <fileset dir="../classes/example">
+        <include name="**/*.class"/>
+      </fileset>
+      show allResults
+      [A] = *A*
+      [non-A] = example.* excluding [A]
+      check [A] independentOf [non-A]
+      check [non-A] independentOf [A]
+    </classycleDependencyCheck>
+  </target>
+
+  <target name="testExcluding">
+    <classycleDependencyCheck excludingClasses="example.p.*">
+      <fileset dir="../classes/example">
+        <include name="**/*.class"/>
+      </fileset>
+      check *A independentOf java.*.Ob*
+    </classycleDependencyCheck>
+  </target>
+
+  <target name="testResetGraphAfterCheck">
+    <classycleDependencyCheck>
+      <fileset dir="../classes/example">
+        <include name="**/*.class"/>
+      </fileset>
+      [A-not-p] = *A excluding example.p.*
+      check [A-not-p] independentOf *h*
+      check [A-not-p] independentOf *S*
+    </classycleDependencyCheck>
+  </target>
+
+  <target name="testReflection">
+    <classycleDependencyCheck reflectionPattern="">
+      <fileset dir="../classes/example">
+        <include name="**/*.class"/>
+      </fileset>
+      [A-not-p] = *A excluding example.p.*
+      check [A-not-p] independentOf *h*
+    </classycleDependencyCheck>
+  </target>
+
+  <target name="testReflectionWithRestriction">
+    <classycleDependencyCheck reflectionPattern="java.*">
+      <fileset dir="../classes/example">
+        <include name="**/*.class"/>
+      </fileset>
+      [A-not-p] = *A excluding example.p.*
+      check [A-not-p] independentOf *h*
+    </classycleDependencyCheck>
+  </target>
+
+  <target name="testFile">
+    <classycleDependencyCheck definitionFile="test.ddf">
+      <fileset dir="../classes/example">
+        <include name="**/*.class"/>
+      </fileset>
+      bla bla
+    </classycleDependencyCheck>
+  </target>
+
+  <target name="testNoClasses">
+    <classycleDependencyCheck>
+      show allResults
+    </classycleDependencyCheck>
+  </target>
+
+  <target name="testEmpty">
+    <classycleDependencyCheck>
+      <fileset dir="../classes/example">
+        <include name="**/*.class"/>
+      </fileset>
+    </classycleDependencyCheck>
+  </target>
+</project>
