@@ -49,7 +49,7 @@ public class AtomicVertex extends Vertex
 
   /**
    *  Reset this instance. That is, it becomes unvisited vertex of a graph
-   *  with order and low set to -1;
+   *  where <tt>order = low = -1</tt>;
    */
   public void reset()
   {

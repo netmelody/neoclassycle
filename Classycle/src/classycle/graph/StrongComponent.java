@@ -42,6 +42,8 @@ public class StrongComponent extends Vertex
     private int _radius;
     private int _diameter;
     private ArrayList _centerVertices = new ArrayList();
+    
+    public GeometryAttributes() {}
 
     public int getGirth()
     {
