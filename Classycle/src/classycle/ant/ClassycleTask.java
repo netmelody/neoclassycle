@@ -46,6 +46,7 @@ public abstract class ClassycleTask extends Task
 {
   private StringPattern _includingClasses = new TrueStringPattern();
   private StringPattern _excludingClasses = new TrueStringPattern();
+  private StringPattern _reflectionPattern;
   private LinkedList _fileSets = new LinkedList();
 
   public void setIncludingClasses(String patternList)
@@ -57,6 +58,18 @@ public abstract class ClassycleTask extends Task
   {
     _excludingClasses = new NotStringPattern(
                         WildCardPattern.createFromsPatterns(patternList, ", "));
+  }
+  
+  public void setReflectionPattern(String patternList)
+  {
+    if ("".equals(patternList))
+    {
+      _reflectionPattern = new TrueStringPattern();
+    } else 
+    {
+      _reflectionPattern 
+          = WildCardPattern.createFromsPatterns(patternList, ", ");
+    }
   }
 
   public void addConfiguredFileset(FileSet set)
@@ -100,5 +113,9 @@ public abstract class ClassycleTask extends Task
     pattern.appendPattern(_excludingClasses);
     return pattern;
   }
-
+  
+  protected StringPattern getReflectionPattern()
+  {
+    return _reflectionPattern;
+  }
 }

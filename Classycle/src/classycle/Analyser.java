@@ -57,6 +57,7 @@ public class Analyser
   
   private final String[] _classFiles;
   private final StringPattern _pattern;
+  private final StringPattern _reflectionPattern;
   private StrongComponentAnalyser _classAnalyser;
   private StrongComponentAnalyser _packageAnalyser;
   
@@ -66,7 +67,7 @@ public class Analyser
    */
   public Analyser(String[] classFiles) 
   {
-    this(classFiles, new TrueStringPattern());
+    this(classFiles, new TrueStringPattern(), null);
   }
 
   /**
@@ -75,11 +76,18 @@ public class Analyser
    * @param classFiles Absolute or relative file names.
    * @param pattern Pattern fully-qualified class name have to match in order
    *        to be a part of the class graph.
+   * @param reflectionPattern Pattern ordinary string constants of a class 
+   *        file have to fullfill in order to be handled as a class references.
+   *        In addition such strings have to be syntactically valid 
+   *        fully qualified class names. If <tt>null</tt> ordinary string 
+   *        constants will not be checked.
    */
-  public Analyser(String[] classFiles, StringPattern pattern) 
+  public Analyser(String[] classFiles, StringPattern pattern,
+                  StringPattern reflectionPattern) 
   {
     _classFiles = classFiles;
     _pattern = pattern;
+    _reflectionPattern = reflectionPattern;
   }
   
   /**
@@ -90,8 +98,10 @@ public class Analyser
   public long createClassGraph() throws IOException 
   {
     long time = System.currentTimeMillis();
+    AtomicVertex[] classGraph = Parser.readClassFiles(_classFiles, _pattern, 
+                                                      _reflectionPattern);
     _classAnalyser = new StrongComponentAnalyser(
-                            Parser.readClassFiles(_classFiles, _pattern));
+                            classGraph);
     return System.currentTimeMillis() - time;
   }
   
@@ -496,7 +506,8 @@ public class Analyser
     }
     
     Analyser analyser = new Analyser(commandLine.getClassFiles(), 
-                                     commandLine.getPattern());
+                                     commandLine.getPattern(),
+                                     commandLine.getReflectionPattern());
     analyser.readAndAnalyse(commandLine.isPackagesOnly());
 
     // Create report(s)

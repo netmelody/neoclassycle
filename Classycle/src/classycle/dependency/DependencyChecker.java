@@ -42,9 +42,10 @@ public class DependencyChecker
   private final ArrayList _checkingResults = new ArrayList();
   
   public DependencyChecker(String[] classFiles, StringPattern pattern,
+                           StringPattern reflectionPattern,
                            String dependencyDefinition, ResultRenderer renderer)
   {
-    _analyser = new Analyser(classFiles, pattern);
+    _analyser = new Analyser(classFiles, pattern, reflectionPattern);
     _renderer = renderer;
     _processor = new DependencyProcessor(dependencyDefinition, renderer);
   }
@@ -80,6 +81,7 @@ public class DependencyChecker
     DependencyChecker dependencyChecker 
         = new DependencyChecker(commandLine.getClassFiles(), 
                                 commandLine.getPattern(), 
+                                commandLine.getReflectionPattern(),
                                 commandLine.getDependencyDefinition(), 
                                 commandLine.getRenderer());
     PrintWriter printWriter = new PrintWriter(System.out);

@@ -24,6 +24,10 @@
  */
 package classycle;
 
+import classycle.util.StringPattern;
+import classycle.util.TrueStringPattern;
+import classycle.util.WildCardPattern;
+
 
 /**
  * Process command line arguments and options for the main application
@@ -36,7 +40,6 @@ public class AnalyserCommandLine extends CommandLine
   private static final String XML_FILE = "-xmlFile=";
   private static final String CSV_FILE = "-csvFile=";
   private static final String TITLE = "-title=";
-  
   private boolean _packagesOnly;
   private boolean _raw;
   private boolean _cycles;
@@ -44,7 +47,6 @@ public class AnalyserCommandLine extends CommandLine
   private String _title;
   private String _xmlFile;
   private String _csvFile;
-  
   public AnalyserCommandLine(String[] args) 
   {
     super(args);

@@ -38,6 +38,7 @@ import java.util.zip.ZipFile;
 
 import classycle.classfile.ClassConstant;
 import classycle.classfile.Constant;
+import classycle.classfile.StringConstant;
 import classycle.classfile.UTF8Constant;
 import classycle.graph.AtomicVertex;
 import classycle.graph.NameAttributes;
@@ -79,12 +80,12 @@ public class Parser {
   
   /**
    * Reads and parses class files and creates a direct graph. Short-cut of 
-   * <tt>readClassFiles(classFiles, new {@link TrueStringPattern}());</tt>
+   * <tt>readClassFiles(classFiles, new {@link TrueStringPattern}(), null);</tt>
    */
   public static AtomicVertex[] readClassFiles(String[] classFiles)
                                throws IOException 
   {
-    return readClassFiles(classFiles, new TrueStringPattern());
+    return readClassFiles(classFiles, new TrueStringPattern(), null);
   }
 
   /**
@@ -106,19 +107,27 @@ public class Parser {
    *  @param pattern Pattern fully qualified class names have to match in order
    *                 to be added to the graph. Otherwise they count as
    *                 'external'.
+   *  @param reflectionPattern Pattern ordinary string constants of a class 
+   *                 file have to fullfill in order to be handled as
+   *                 class references. In addition they have to be 
+   *                 syntactically valid fully qualified class names. If
+   *                 <tt>null</tt> ordinary string constants will not be 
+   *                 checked.
    *  @return directed graph.
    */
   public static AtomicVertex[] readClassFiles(String[] classFiles, 
-                                              StringPattern pattern)
-                                                          throws IOException {
+                                              StringPattern pattern,
+                                              StringPattern reflectionPattern)
+                               throws IOException {
     ArrayList unresolvedNodes = new ArrayList();
     for (int i = 0; i < classFiles.length; i++) {
       File file = new File(classFiles[i]);
       if (file.isDirectory() || file.getName().endsWith(".class")) {
-        analyseClassFile(file, unresolvedNodes);
+        analyseClassFile(file, unresolvedNodes, reflectionPattern);
       } else if (isZipFile(file)) {
         analyseClassFiles(new ZipFile(file.getAbsoluteFile()), 
-                          unresolvedNodes);
+                          unresolvedNodes, 
+                          reflectionPattern);
       } else {
         throw new IOException(classFiles[i] + " is an invalid file.");
       }
@@ -153,27 +162,31 @@ public class Parser {
     return result;
   }
 
-  private static void analyseClassFile(File file, ArrayList unresolvedNodes)
-                                                          throws IOException {
+  private static void analyseClassFile(File file, ArrayList unresolvedNodes, 
+                                       StringPattern reflectionPattern)
+                      throws IOException {
     if (file.isDirectory()) {
       String[] files = file.list();
       for (int i = 0; i < files.length; i++) {
         File child = new File(file, files[i]);
         if (child.isDirectory() || files[i].endsWith(".class")) {
-          analyseClassFile(child, unresolvedNodes);
+          analyseClassFile(child, unresolvedNodes, reflectionPattern);
         }
       }
     } else {
-      unresolvedNodes.add(extractNode(file));
+      unresolvedNodes.add(extractNode(file, reflectionPattern));
     }
   }
 
-  private static UnresolvedNode extractNode(File file) throws IOException {
+  private static UnresolvedNode extractNode(File file, 
+                                            StringPattern reflectionPattern) 
+                                throws IOException {
     InputStream stream = null;
     UnresolvedNode result = null;
     try {
       stream = new FileInputStream(file);
-      result = Parser.createNode(stream, (int) file.length());
+      result = Parser.createNode(stream, (int) file.length(), 
+                                 reflectionPattern);
     } catch (IOException e) {
       throw e;
     } finally {
@@ -185,14 +198,16 @@ public class Parser {
   }
 
   private static void analyseClassFiles(ZipFile zipFile,
-                                        ArrayList unresolvedNodes)
-                                                      throws IOException {
+                                        ArrayList unresolvedNodes,
+                                        StringPattern reflectionPattern)
+                      throws IOException {
     Enumeration entries = zipFile.entries();
     while (entries.hasMoreElements()) {
       ZipEntry entry = (ZipEntry) entries.nextElement();
       if (!entry.isDirectory() && entry.getName().endsWith(".class")) {
         InputStream stream = zipFile.getInputStream(entry);
-        unresolvedNodes.add(Parser.createNode(stream, (int) entry.getSize()));
+        unresolvedNodes.add(Parser.createNode(stream, (int) entry.getSize(), 
+                                              reflectionPattern));
       }
     }
   }
@@ -203,11 +218,14 @@ public class Parser {
    *         If this method finishes succefully the internal pointer of the
    *         stream will point onto the superclass index.
    *  @param size Number of bytes of the class file.
+   *  @param reflectionPattern Pattern used to check whether a
+   *         {@link StringConstant} refer to a class. Can be <tt>null</tt>.
    *  @return a node with unresolved link of all classes used by the analysed
    *         class.
    */
-  private static UnresolvedNode createNode(InputStream stream, int size)
-                                                        throws IOException {
+  private static UnresolvedNode createNode(InputStream stream, int size,
+                                           StringPattern reflectionPattern)
+                                throws IOException {
     // Reads constant pool, accessFlags, and class name
     DataInputStream dataStream = new DataInputStream(stream);
     Constant[] pool = Constant.extractConstantPool(dataStream);
@@ -229,13 +247,20 @@ public class Parser {
     UnresolvedNode node = new UnresolvedNode();
     node.attributes = attributes;
     for (int i = 0; i < pool.length; i++) {
-      if (pool[i] instanceof ClassConstant) {
-        ClassConstant cc = (ClassConstant) pool[i];
+      Constant constant = pool[i];
+      if (constant instanceof ClassConstant) {
+        ClassConstant cc = (ClassConstant) constant;
         if (!cc.getName().startsWith(("[")) && !cc.getName().equals(name)) {
           node.nodes.add(cc.getName());
         }
-      } else if (pool[i] instanceof UTF8Constant) {
-        parseUTF8Constant((UTF8Constant) pool[i], node.nodes, name);
+      } else if (constant instanceof UTF8Constant) {
+        parseUTF8Constant((UTF8Constant) constant, node.nodes, name);
+      } else if (reflectionPattern != null 
+                 && constant instanceof StringConstant) {
+        String str = ((StringConstant) constant).getString();
+        if (isValid(str) && reflectionPattern.matches(str)) {
+          node.nodes.add(str);
+        }
       }
     }
     return node;
@@ -247,7 +272,7 @@ public class Parser {
    */
   private static void parseUTF8Constant(UTF8Constant constant,
                                         ArrayList nodes, String className) {
-    String str = constant.getString();
+    final String str = constant.getString();
     int len = str.length();
 
     // Gather possible class names and check syntax

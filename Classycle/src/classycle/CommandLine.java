@@ -28,6 +28,7 @@ import classycle.util.AndStringPattern;
 import classycle.util.NotStringPattern;
 import classycle.util.StringPattern;
 import classycle.util.StringPatternSequence;
+import classycle.util.TrueStringPattern;
 import classycle.util.WildCardPattern;
 
 /**
@@ -38,9 +39,11 @@ public abstract class CommandLine
 
   protected static final String INCLUDING_CLASSES = "-includingClasses=";
   protected static final String EXCLUDING_CLASSES = "-excludingClasses=";
+  protected static final String REFLECTION_PATTERN = "-reflectionPattern=";
 
   protected boolean _valid = true;
   protected StringPatternSequence _pattern = new AndStringPattern();
+  protected StringPattern _reflectionPattern;
   protected String[] _classFiles;
   
   public CommandLine(String[] args) 
@@ -69,6 +72,15 @@ public abstract class CommandLine
       String patterns = argument.substring(EXCLUDING_CLASSES.length());
       StringPattern p = WildCardPattern.createFromsPatterns(patterns, ",");
       _pattern.appendPattern(new NotStringPattern(p));
+    } else if (argument.startsWith(REFLECTION_PATTERN)) 
+    {
+      String patterns = argument.substring(REFLECTION_PATTERN.length());
+      if (patterns.length() == 0)
+      {
+        _reflectionPattern = new TrueStringPattern();
+      } else {
+        _reflectionPattern = WildCardPattern.createFromsPatterns(patterns, ",");
+      }
     } else
     {
       _valid = false;
@@ -95,7 +107,16 @@ public abstract class CommandLine
   {
     return _pattern;
   }
-
+  
+  /**
+   * Returns the reflection pattern as extracted from the option 
+   * <tt>-reflectionPattern</tt>.
+   */
+  public StringPattern getReflectionPattern()
+  {
+    return _reflectionPattern;
+  }
+  
   /** 
    * Returns <tt>true</tt> if the command line arguments and options are
    * valid.
@@ -110,7 +131,9 @@ public abstract class CommandLine
   {
     return "[" + INCLUDING_CLASSES + "<pattern1>,<pattern2>,...] "
         + "[" + EXCLUDING_CLASSES + "<pattern1>,<pattern2>,...] "
+        + "[" + REFLECTION_PATTERN + "<pattern1>,<pattern2>,...] "
         + "<class files, zip/jar/war/ear files, or folders>";
   }
+
   
 }

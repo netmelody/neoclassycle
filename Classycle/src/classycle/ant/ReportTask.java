@@ -134,7 +134,8 @@ public class ReportTask extends ClassycleTask
     {
       _title = classFiles[0];
     }
-    Analyser analyser = new Analyser(classFiles, getPattern());
+    Analyser analyser = new Analyser(classFiles, getPattern(), 
+                                     getReflectionPattern());
     try
     {
       analyser.readAndAnalyse(_packagesOnly);

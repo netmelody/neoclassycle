@@ -47,6 +47,7 @@ public class DependencyCheckingTask extends ClassycleTask
     {
       DependencyChecker dependencyChecker 
           = new DependencyChecker(getClassFileNames(), getPattern(), 
+                                  getReflectionPattern(),
                                   getDependencyDefinitions(), getRenderer());
       PrintWriter printWriter = new PrintWriter(System.out);
       ok = dependencyChecker.check(printWriter);
@@ -56,7 +57,8 @@ public class DependencyCheckingTask extends ClassycleTask
       throw new BuildException(e);
     }
     if (ok == false) {
-      throw new BuildException("Invalid dependencies found.");
+      throw new BuildException(
+              "Invalid dependencies found. See output for details.");
     }
   }
 
