@@ -31,10 +31,15 @@ import classycle.util.StringPattern;
 /**
  * @author  Franz-Josef Elmer
  */
-public class SetDefinitionRepository
+class SetDefinitionRepository
 {
   private final HashMap _nameToPatternMap = new HashMap();
   private final HashMap _patternToNameMap = new HashMap();
+  
+  public int getNumberOfDefinitions() 
+  {
+    return _nameToPatternMap.size();
+  }
   
   public void put(String name, StringPattern pattern)
   {

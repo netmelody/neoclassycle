@@ -31,10 +31,15 @@ import classycle.util.StringPattern;
 /**
  * @author  Franz-Josef Elmer
  */
-public class LayerDefinitionRepository
+class LayerDefinitionRepository
 {
   private final HashMap _nameToLayerMap = new HashMap();
   private final HashMap _layerToNameMap = new HashMap();
+  
+  public int getNumberOfDefinitions() 
+  {
+    return _nameToLayerMap.size();
+  }
   
   public void put(String name, StringPattern[] layer)
   {
