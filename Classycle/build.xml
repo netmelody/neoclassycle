@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<project default="all" name="JCCKit" basedir=".">
+  <!-- prefix that allows to reference environment variables ===============-->
+  <property environment="env"/>
+
+  <!-- set output path for compiled src ====================================-->
+  <property name="OUTPUT_PATH_SRC" value="classes"/>
+
+  <!-- set output path for compiled src ====================================-->
+  <property name="OUTPUT_PATH_SRCTEST" value="classes"/>
+
+  <!-- set output path for generation of apidoc ============================-->
+  <property name="OUTPUT_PATH_APIDOC" value="docs/WebSite/apidoc"/>
+  
+  <!-- set distribution file name ==========================================-->
+  <property name="DIST_NAME" value="classycle.zip"/>
+  
+  <!-- set classpath for compilation of src ================================-->
+  <path id="src_classpath">
+    <fileset dir="lib">
+      <include name="**/*.jar"/>
+      <include name="**/*.zip"/>
+    </fileset>
+  </path>
+
+  <!-- set classpath for compilation of srcTest ============================-->
+  <path id="srcTest_classpath">
+    <pathelement location="${OUTPUT_PATH_SRC}"/>
+    <path refid="src_classpath"/>
+    <fileset dir="libTest">
+      <include name="**/*.jar"/>
+      <include name="**/*.zip"/>
+    </fileset>
+  </path>
+
+  <!-- set sourcepath for generation of apidoc =============================-->
+  <path id="apidoc_srcpath">
+    <pathelement location="src"/>
+  </path>
+
+  <!-- ======= TARGETS =====================================================-->
+  <!-- removing all class files -->
+  <target name="clean" description="Delete all classes">
+    <delete dir="${OUTPUT_PATH_SRC}"/>
+    <mkdir dir="${OUTPUT_PATH_SRC}"/>
+    <delete dir="${OUTPUT_PATH_SRCTEST}"/>
+    <mkdir dir="${OUTPUT_PATH_SRCTEST}"/>
+  </target>
+  
+  <!-- compiling sources ==================================================-->
+  <target name="compile_src" description="Compile sources.">
+    <javac  srcdir="src"
+            destdir="${OUTPUT_PATH_SRC}"
+            debug="true"
+            classpathref="src_classpath"/>
+  </target>
+  
+  <!-- compiling test sources ============================================-->
+  <target name="compile_srcTest" depends="compile_src" 
+          description="Compile test sources.">
+    <javac  srcdir="srcTest"
+            destdir="${OUTPUT_PATH_SRCTEST}"
+            debug="true"
+            classpathref="srcTest_classpath"/>
+  </target>
+  
+  <!-- run all JUnit unit tests ==========================================-->
+  <target name="test" depends="clean, compile_srcTest"
+          description="Rebuilt classes and run all tests">
+    <junit fork="yes"
+           dir="."
+           haltonfailure="true"
+           printsummary="true"
+	   >
+      <classpath>
+        <path refid="srcTest_classpath"/>
+      </classpath>
+      <formatter type="brief" usefile="false"/>
+      <test name="jcckit.AllTests"/>
+    </junit>
+  </target>
+
+  <!-- generate jar ======================================================-->
+  <target name="jar" depends="clean, compile_src"
+          description="Create jar">
+    <jar destfile="classycle.jar" basedir="${OUTPUT_PATH_SRC}"/>
+  </target>
+  
+  <!-- generate apidoc =====================================================-->
+  <target name="apidoc" description="generate API doc">
+    <delete dir="${OUTPUT_PATH_APIDOC}"/>
+    <mkdir dir="${OUTPUT_PATH_APIDOC}"/>
+    <javadoc  packagenames="classycle.*"
+              sourcepathref="apidoc_srcpath"
+              defaultexcludes="yes"
+              private="false"
+              destdir="${OUTPUT_PATH_APIDOC}"
+              author="true"
+              version="true"
+              use="true"
+              windowtitle="Classycle"
+              overview="overview.html"
+              failonerror="true"/>
+  </target>
+
+  <!-- generate distribution ===============================================-->
+  <target name="distribution" depends="jar, apidoc" 
+          description="generate a distribution">
+    <delete file="src.zip ${DIST_NAME}"/>
+    <zip destfile="src.zip" basedir="src"/>
+    <zip destfile="${DIST_NAME}">
+      <fileset dir="${basedir}/..">
+        <include name="Classycle/LICENSE.txt"/>
+        <include name="Classycle/README.html"/>
+        <include name="Classycle/classycle.jar"/>
+        <include name="Classycle/resultXMLtoHTML.xsl"/>
+        <include name="Classycle/src.zip"/>
+        <include name="Classycle/docs/WebSite/**/*"/>
+      </fileset>
+    </zip>
+  </target>
+
+</project>

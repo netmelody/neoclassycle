@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+   Copyright (c) 2003, Franz-Josef Elmer, All rights reserved.
+ 
+   Redistribution and use in source and binary forms, with or without 
+   modification, are permitted provided that the following conditions are met:
+   
+   - Redistributions of source code must retain the above copyright notice, 
+     this list of conditions and the following disclaimer.
+   - Redistributions in binary form must reproduce the above copyright notice, 
+     this list of conditions and the following disclaimer in the documentation 
+     and/or other materials provided with the distribution.
+ 
+   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED 
+   TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+   PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+   CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+   EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+   PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+   OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+   WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
+   OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+   EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+-->
+
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                version="1.0">
+  <xsl:strip-space elements="*"/>
+  <xsl:template match="classycle">
+    <html>
+      <head>
+        <title>Classycle Analysis of <xsl:value-of select="/classycle/@title"/>
+        </title>
+        <style type="text/css">
+          body { font-family:Helvetica,Arial,sans-serif; } 
+        </style>
+      </head>
+      <body>
+        <h1><img src="images/logo.png" alt="Classcyle" width="199" height="123"
+                 align="middle" hspace="4"/>
+            Analysis of <xsl:value-of select="/classycle/@title"/></h1>
+        <xsl:apply-templates/>
+      </body>
+    </html>
+  </xsl:template>
+
+  <xsl:template match="cycles">
+    <h2>Cycles</h2>
+    Summary: <xsl:value-of select="count(cycle)"/> cycles detected.
+    <table border="1" cellpadding="5" cellspacing="0" width="770">
+      <tr bgcolor="#aaaaaa">
+        <th>Name</th>
+        <th>Number of classes</th>
+        <th>Girth</th>
+        <th>Radius</th>
+        <th>Diameter</th>
+        <th>Longest Walk</th>
+      </tr>
+      <xsl:apply-templates/>
+    </table>
+  </xsl:template>
+
+  <xsl:template match="cycle">
+    <tr>
+      <td>
+        <xsl:choose>
+          <xsl:when test="contains(@name,'et al.')">
+            <img src="images/mix.png" alt="inner class" width="20"
+                 height="20" align="middle" hspace="4"/>
+          </xsl:when>
+          <xsl:when test="contains(@name,'inner classes')">
+            <img src="images/inner.png" alt="class" width="20" height="20"
+                 align="middle" hspace="4"/>
+          </xsl:when>
+        </xsl:choose>
+        <xsl:value-of select="@name"/>
+      </td>
+      <td align="right">
+        <div style="cursor:pointer;">
+          <xsl:element name="a">
+            <xsl:attribute name="onClick">
+              <xsl:call-template name="classRefPopup">
+                <xsl:with-param name="set" select="classes/classRef"/>
+                <xsl:with-param name="text">Classes of cycle <xsl:value-of select="@name"/>:</xsl:with-param>
+              </xsl:call-template>
+            </xsl:attribute>
+            <xsl:value-of select="@size"/>
+          </xsl:element>
+        </div>
+      </td>
+      <td align="right"><xsl:value-of select="@girth"/></td>
+      <td align="right">
+        <div style="cursor:pointer;">
+          <xsl:element name="a">
+            <xsl:attribute name="onClick">
+              <xsl:call-template name="classRefPopup">
+                <xsl:with-param name="set" select="centerClasses/classRef"/>
+                <xsl:with-param name="text">Center classes of cycle <xsl:value-of select="@name"/>:</xsl:with-param>
+              </xsl:call-template>
+            </xsl:attribute>
+            <xsl:value-of select="@radius"/>
+          </xsl:element>
+        </div>
+      </td>
+      <td align="right"><xsl:value-of select="@diameter"/></td>
+      <td align="right"><xsl:value-of select="@longestWalk"/></td>
+    </tr>
+  </xsl:template>
+
+  <xsl:template name="classRefPopupSorted">
+    <xsl:param name="set"/>
+    <xsl:param name="text"/>
+    <xsl:for-each select="$set">
+      <xsl:sort select="@name"/>
+    </xsl:for-each>
+    <xsl:call-template name="classRefPopup">
+      <xsl:with-param name="set" select="$set"/>
+      <xsl:with-param name="text" select="$text"/>
+    </xsl:call-template>
+
+  </xsl:template>
+
+  <xsl:template name="classRefPopup">
+    <xsl:param name="set"/>
+    <xsl:param name="text"/>
+    <xsl:text>alert("</xsl:text>
+    <xsl:value-of select="$text"/><xsl:text>\n\n</xsl:text>
+    <xsl:for-each select="$set">
+      <xsl:value-of select="@name"/><xsl:text>\n</xsl:text>
+    </xsl:for-each>
+    <xsl:text>")</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="classes">
+    <h2>Classes</h2>
+    Summary: <xsl:value-of select="count(class)"/> classes
+    <table border="1" cellpadding="5" cellspacing="0" width="770">
+      <tr bgcolor="#aaaaaa">
+        <th>Type</th>
+        <th>Number of classes</th>
+        <th>Averaged (maximum) size in bytes</th>
+        <th>Averaged (maximum) used by</th>
+        <th>Averaged (maximum) uses internal</th>
+        <th>Averaged (maximum) uses external</th>
+      </tr>
+      <xsl:call-template name="summary">
+        <xsl:with-param name="type">Interfaces</xsl:with-param>
+        <xsl:with-param name="set" select="class[@type='interface']"/>
+        <xsl:with-param name="totalNumber" select="count(class)"/>
+      </xsl:call-template>
+      <xsl:call-template name="summary">
+        <xsl:with-param name="type">Abstract classes</xsl:with-param>
+        <xsl:with-param name="set" select="class[@type='abstract class']"/>
+        <xsl:with-param name="totalNumber" select="count(class)"/>
+      </xsl:call-template>
+      <xsl:call-template name="summary">
+        <xsl:with-param name="type">Concrete classes</xsl:with-param>
+        <xsl:with-param name="set" select="class[@type='class']"/>
+        <xsl:with-param name="totalNumber" select="count(class)"/>
+      </xsl:call-template>
+    </table>
+    <p/>
+    <table cellpadding="3" cellspacing="0" border="1" width="770">
+      <tr bgcolor="#aaaaaa">
+        <th>Class</th>
+        <th>Size</th>
+        <th>Used by</th>
+        <th>Uses internal</th>
+        <th>Uses external</th>
+      </tr>
+      <xsl:apply-templates/>
+    </table>
+  </xsl:template>
+
+  <xsl:template match="class">
+     <tr>
+       <td>
+         <xsl:choose>
+           <xsl:when test="@type='class' and @innerClass='true'">
+             <img src="images/innerclass.png" alt="inner class" width="20"
+                  height="20" align="middle" hspace="4"/>
+           </xsl:when>
+           <xsl:when test="@type='class' and @innerClass='false'">
+             <img src="images/class.png" alt="class" width="20" height="20"
+                  align="middle" hspace="4"/>
+           </xsl:when>
+           <xsl:when test="@type='abstract class' and @innerClass='true'">
+             <img src="images/innerabstract.png" alt="inner class" width="20"
+                  height="20" align="middle" hspace="4"/>
+           </xsl:when>
+           <xsl:when test="@type='abstract class' and @innerClass='false'">
+             <img src="images/abstract.png" alt="class" width="20" height="20"
+                  align="middle" hspace="4"/>
+           </xsl:when>
+           <xsl:when test="@type='interface' and @innerClass='true'">
+             <img src="images/innerinterface.png" alt="inner class" width="20"
+                  height="20" align="middle" hspace="4"/>
+           </xsl:when>
+           <xsl:when test="@type='interface' and @innerClass='false'">
+             <img src="images/interface.png" alt="class" width="20" height="20"
+                  align="middle" hspace="4"/>
+           </xsl:when>
+         </xsl:choose>
+         <xsl:element name="a">
+           <xsl:attribute name="name">
+             <xsl:value-of select="@name"/>
+           </xsl:attribute>
+           <xsl:value-of select="@name"/>
+         </xsl:element>
+       </td>
+       <td align="right"><xsl:value-of select="@size"/></td>
+       <td align="right">
+         <div style="cursor:pointer;">
+           <xsl:element name="a">
+             <xsl:attribute name="onClick">
+               <xsl:call-template name="classRefPopupSorted">
+                 <xsl:with-param name="set" select="classRef[@type='usedBy']"/>
+                 <xsl:with-param name="text">Classes using <xsl:value-of select="@name"/>:</xsl:with-param>
+               </xsl:call-template>
+             </xsl:attribute>
+             <xsl:value-of select="@usedBy"/>
+           </xsl:element>
+         </div>
+       </td>
+       <td align="right">
+         <div style="cursor:pointer;">
+           <xsl:element name="a">
+             <xsl:attribute name="onClick">
+               <xsl:call-template name="classRefPopupSorted">
+                 <xsl:with-param name="set" select="classRef[@type='usesInternal']"/>
+                 <xsl:with-param name="text"><xsl:value-of select="@name"/> uses:</xsl:with-param>
+               </xsl:call-template>
+             </xsl:attribute>
+             <xsl:value-of select="@usesInternal"/>
+           </xsl:element>
+         </div>
+       </td>
+       <td align="right">
+         <div style="cursor:pointer;">
+           <xsl:element name="a">
+             <xsl:attribute name="onClick">
+               <xsl:call-template name="classRefPopupSorted">
+                 <xsl:with-param name="set" select="classRef[@type='usesExternal']"/>
+                 <xsl:with-param name="text"><xsl:value-of select="@name"/> uses:</xsl:with-param>
+               </xsl:call-template>
+             </xsl:attribute>
+             <xsl:value-of select="@usesExternal"/>
+           </xsl:element>
+         </div>
+       </td>
+     </tr>
+  </xsl:template>
+
+  <xsl:template name="summary">
+    <xsl:param name="type"/>
+    <xsl:param name="set"/>
+    <xsl:param name="totalNumber"/>
+    <tr>
+      <td>
+        <nobr>
+          <xsl:value-of select="round(100 * count($set) div $totalNumber)"/>% <xsl:value-of select="$type"/>
+        </nobr>
+      </td>
+      <td align="right"><xsl:value-of select="count($set)"/></td>
+      <td align="right">
+        <xsl:value-of select="round(sum($set/@size) div count($set))"/>
+        <xsl:variable name="max">
+          <xsl:for-each select="$set">
+            <xsl:sort select="@size" data-type="number"/>
+            <xsl:if test="position()=last()">
+              <xsl:element name="a">
+                <xsl:attribute name="href">#<xsl:value-of select="./@name"/></xsl:attribute>
+                <xsl:value-of select="./@size"/>
+              </xsl:element>
+            </xsl:if>
+          </xsl:for-each>
+        </xsl:variable>
+        (<xsl:copy-of select="$max"/>)
+      </td>
+      <td align="right">
+        <xsl:value-of select="round(10 * sum($set/@usedBy) div count($set)) div 10"/>
+        <xsl:variable name="max">
+          <xsl:for-each select="$set">
+            <xsl:sort select="@usedBy" data-type="number"/>
+            <xsl:if test="position()=last()">
+              <xsl:element name="a">
+                <xsl:attribute name="href">#<xsl:value-of select="./@name"/></xsl:attribute>
+                <xsl:value-of select="./@usedBy"/>
+              </xsl:element>
+            </xsl:if>
+          </xsl:for-each>
+        </xsl:variable>
+        (<xsl:copy-of select="$max"/>)
+      </td>
+      <td align="right">
+        <xsl:value-of select="round(10 * sum($set/@usesInternal) div count($set)) div 10"/>
+        <xsl:variable name="max">
+          <xsl:for-each select="$set">
+            <xsl:sort select="@usesInternal" data-type="number"/>
+            <xsl:if test="position()=last()">
+              <xsl:element name="a">
+                <xsl:attribute name="href">#<xsl:value-of select="./@name"/></xsl:attribute>
+                <xsl:value-of select="./@usesInternal"/>
+              </xsl:element>
+            </xsl:if>
+          </xsl:for-each>
+        </xsl:variable>
+        (<xsl:copy-of select="$max"/>)
+      </td>
+      <td align="right">
+        <xsl:value-of select="round(10 * sum($set/@usesExternal) div count($set)) div 10"/>
+        <xsl:variable name="max">
+          <xsl:for-each select="$set">
+            <xsl:sort select="@usesExternal" data-type="number"/>
+            <xsl:if test="position()=last()">
+              <xsl:element name="a">
+                <xsl:attribute name="href">#<xsl:value-of select="./@name"/></xsl:attribute>
+                <xsl:value-of select="./@usesExternal"/>
+              </xsl:element>
+            </xsl:if>
+          </xsl:for-each>
+        </xsl:variable>
+        (<xsl:copy-of select="$max"/>)
+      </td>
+    </tr>
+  </xsl:template>
+</xsl:stylesheet>
+
+
+
+
