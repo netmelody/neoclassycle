@@ -53,7 +53,7 @@ import classycle.util.WildCardPattern;
  *     <td>Path of the report file relative to the base directory.</td>
  *     <td>Yes</td>
  * <tr><td>reportType</td>
- *     <td>Type of the report. Has be either <tt>raw</tt>, <tt>csv</tt>,
+ *     <td>Type of the report. Has to be either <tt>raw</tt>, <tt>csv</tt>,
  *         or <tt>xml</tt>.</td>
  *     <td>No. Default is <tt>xml</tt></td>
  * </tr> 
