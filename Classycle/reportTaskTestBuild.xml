@@ -2,98 +2,93 @@
   <taskdef name="classycleReport" classname="classycle.ant.ReportTask"/>
 
   <target name="testRaw">
-    <classycleReport reportType="raw" 
-    				 includingClasses="classycle.Ana*"
-                     reportFile="reportTaskTest.txt">
-      <fileset dir="../classes">
+    <classycleReport reportType="raw" reportFile="reportTaskTest.txt">
+      <fileset dir="../classes/example">
         <include name="**/*.class"/>
       </fileset>
     </classycleReport>
   </target>
 
+  <target name="testOnlyA">
+    <classycleReport reportType="raw" reportFile="reportTaskTest.txt">
+      <fileset dir="../classes/example">
+        <include name="**/*A.class"/>
+      </fileset>
+    </classycleReport>
+  </target>
+
+  <target name="testIncludingA">
+    <classycleReport reportType="raw" reportFile="reportTaskTest.txt"
+    				 includingClasses="*A">
+      <fileset dir="../classes/example"/>
+    </classycleReport>
+  </target>
+
+  <target name="testIncludingAExcludingB">
+    <classycleReport reportType="raw" reportFile="reportTaskTest.txt"
+    				 includingClasses="*A" excludingClasses="*.B*">
+      <fileset dir="../classes/example"/>
+    </classycleReport>
+  </target>
+
+  <target name="testIncludingAExcludingBp">
+    <classycleReport reportType="raw" reportFile="reportTaskTest.txt"
+    				 includingClasses="*A" excludingClasses="*.B* *.p.*">
+      <fileset dir="../classes/example"/>
+    </classycleReport>
+  </target>
+
   <target name="testCSV">
-    <classycleReport reportType="csv"
-    				 includingClasses="classycle.Ana*"
-                     reportFile="reportTaskTest.csv">
-      <fileset dir="../classes"/>
+    <classycleReport reportType="csv" reportFile="reportTaskTest.csv">
+      <fileset dir="../classes/example"/>
     </classycleReport>
   </target>
 
   <target name="testXML">
-    <classycleReport reportFile="reportTaskTest.xml"
-    				 includingClasses="classycle.Ana*">
-      <fileset dir="../classes"/>
+    <classycleReport reportFile="reportTaskTest.xml">
+      <fileset dir="../classes/example"/>
+    </classycleReport>
+  </target>
+
+  <target name="testReflectionAll">
+    <classycleReport reportType="raw" reportFile="reportTaskTest.txt"
+    				 reflectionPattern="">
+      <fileset dir="../classes/example"/>
+    </classycleReport>
+  </target>
+
+  <target name="testReflectionRestricted">
+    <classycleReport reportType="raw" reportFile="reportTaskTest.txt"
+    				 reflectionPattern="*.*">
+      <fileset dir="../classes/example"/>
     </classycleReport>
   </target>
 
   <target name="testXMLPackagesOnly">
     <classycleReport reportFile="reportTaskTest.xml" packagesOnly="true"
-    				 includingClasses="classycle.Ana*"
                      title="&lt;hel&amp;lo&gt;">
-      <fileset dir="../classes"/>
-    </classycleReport>
-  </target>
-
-  <target name="testIncludingClasses">
-    <classycleReport reportType="csv" includingClasses="classycle.Ana*"
-                     reportFile="reportTaskTest.csv">
-      <fileset dir="../classes"/>
-    </classycleReport>
-  </target>
-
-  <target name="testExcludingClasses">
-    <classycleReport reportType="csv" excludingClasses="classycle.*Com*"
-    				 includingClasses="classycle.Ana*"
-                     reportFile="reportTaskTest.csv">
-      <fileset dir="../classes"/>
-    </classycleReport>
-  </target>
-
-  <target name="testInExcludingClasses">
-    <classycleReport reportType="csv" 
-                     includingClasses="classycle.Ana*"
-                     excludingClasses="*Line*"
-                     reportFile="reportTaskTest.csv">
-      <fileset dir="../classes"/>
+      <fileset dir="../classes/example"/>
     </classycleReport>
   </target>
 
   <target name="testMissingReportFile">
     <classycleReport>
-      <fileset dir="../classes"/>
+      <fileset dir="../classes/example"/>
     </classycleReport>
   </target>
 
   <target name="testInvalidReportType">
-    <classycleReport reportType="foo" includingClasses="classycle.Ana*"
-                     reportFile="reportTaskTest.foo">
-      <fileset dir="../classes">
+    <classycleReport reportType="foo" reportFile="reportTaskTest.foo">
+      <fileset dir="../classes/example">
         <include name="**/*.class"/>
       </fileset>
     </classycleReport>
   </target>
 
   <target name="testMissingFileSet">
-    <classycleReport includingClasses="classycle.Ana*"
-                     reportFile="reportTaskTest.foo">
+    <classycleReport reportFile="reportTaskTest.foo">
     </classycleReport>
   </target>
 
-  <target name="testReflectionAll">
-    <classycleReport reportFile="reportTaskTest.xml"
-    				 reflectionPattern=""
-    				 includingClasses="classycle.Ana*">
-      <fileset dir="../classes"/>
-    </classycleReport>
-  </target>
-
-
-  <target name="testReflectionRestricted">
-    <classycleReport reportFile="reportTaskTest.xml"
-    				 reflectionPattern="bla.* foo.*"
-    				 includingClasses="classycle.Ana*">
-      <fileset dir="../classes"/>
-    </classycleReport>
-  </target>
 
 </project>

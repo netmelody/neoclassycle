@@ -67,57 +67,63 @@ public class ReportTaskTest extends BuildFileTest
   public void testRaw() throws Exception
   {
     executeTarget("testRaw");
-    checkNumberOfLines(50, "reportTaskTest.txt");
+    checkNumberOfLines(26, "reportTaskTest.txt");
+  }
+
+  public void testOnlyA() throws Exception
+  {
+    executeTarget("testOnlyA");
+    checkNumberOfLines(17, "reportTaskTest.txt");
+  }
+
+  public void testIncludingA() throws Exception
+  {
+    executeTarget("testIncludingA");
+    checkNumberOfLines(17, "reportTaskTest.txt");
+  }
+
+  public void testIncludingAExcludingB() throws Exception
+  {
+    executeTarget("testIncludingAExcludingB");
+    checkNumberOfLines(9, "reportTaskTest.txt");
+  }
+
+  public void testIncludingAExcludingBp() throws Exception
+  {
+    executeTarget("testIncludingAExcludingBp");
+    checkNumberOfLines(6, "reportTaskTest.txt");
   }
 
   public void testCSV() throws Exception
   {
     executeTarget("testCSV");
-    checkNumberOfLines(4, "reportTaskTest.csv");
+    checkNumberOfLines(7, "reportTaskTest.csv");
   }
 
   public void testXML() throws Exception
   {
     executeTarget("testXML");
-    checkNumberOfLines(78, "reportTaskTest.xml");
+    checkNumberOfLines(93, "reportTaskTest.xml");
   }
 
   public void testReflectionAll() throws Exception
   {
     executeTarget("testReflectionAll");
-    checkNumberOfLines(88, "reportTaskTest.xml");
+    checkNumberOfLines(28, "reportTaskTest.txt");
   }
 
   public void testReflectionRestricted() throws Exception
   {
     executeTarget("testReflectionRestricted");
-    checkNumberOfLines(82, "reportTaskTest.xml");
+    checkNumberOfLines(27, "reportTaskTest.txt");
   }
 
   public void testXMLPackagesOnly() throws Exception
   {
     executeTarget("testXMLPackagesOnly");
-    checkNumberOfLines(19, "reportTaskTest.xml");
+    checkNumberOfLines(34, "reportTaskTest.xml");
     checkLine("<classycle title='&lt;hel&amp;lo&gt;'>", 3, 
               "reportTaskTest.xml");
-  }
-
-  public void testIncludingClasses() throws Exception
-  {
-    executeTarget("testIncludingClasses");
-    checkNumberOfLines(4, "reportTaskTest.csv");
-  }
-
-  public void testExcludingClasses() throws Exception
-  {
-    executeTarget("testExcludingClasses");
-    checkNumberOfLines(2, "reportTaskTest.csv");
-  }
-
-  public void testInExcludingClasses() throws Exception
-  {
-    executeTarget("testInExcludingClasses");
-    checkNumberOfLines(2, "reportTaskTest.csv");
   }
 
   public void testInvalidReportType() throws Exception
