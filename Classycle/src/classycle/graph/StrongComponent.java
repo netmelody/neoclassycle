@@ -40,6 +40,7 @@ public class StrongComponent extends Vertex {
     private int _radius;
     private int _diameter;
     private ArrayList _centerVertices = new ArrayList();
+    private int[] _eccentricities;
 
     public GeometryAttributes() {
     }
@@ -76,6 +77,14 @@ public class StrongComponent extends Vertex {
     void addVertex(Vertex vertex) {
       _centerVertices.add(vertex);
     }
+    
+    public int[] getEccentricities() {
+      return _eccentricities;
+    }
+    
+    void setEccentricities(int[] eccentricities) {
+      _eccentricities = eccentricities;
+    }
   }
 
   private final Vector _vertices = new Vector();
@@ -93,6 +102,19 @@ public class StrongComponent extends Vertex {
   /** Returns the number of vertices building this strong component. */
   public int getNumberOfVertices() {
     return _vertices.size();
+  }
+
+  /** Returns the vertex of the specified index. */
+  public AtomicVertex getVertex(int index) {
+    return (AtomicVertex) _vertices.elementAt(index);
+  }
+
+  /**
+   *  Adds the specified vertex to this strong component. Note, that added
+   *  vertices are inserted at index 0 of the list of vertices.
+   */
+  public void addVertex(AtomicVertex vertex) {
+    _vertices.insertElementAt(vertex, 0);
   }
 
   /**
@@ -143,6 +165,7 @@ public class StrongComponent extends Vertex {
         }
       }
     }
+    attributes.setEccentricities(eccentricities);
     attributes.setGirth(girth);
 
     // Calculate radius and diameter
@@ -169,19 +192,6 @@ public class StrongComponent extends Vertex {
       result.put(getVertex(i), new Integer(i));
     }
     return result;
-  }
-
-  /** Returns the vertex of the specified index. */
-  public AtomicVertex getVertex(int index) {
-    return (AtomicVertex) _vertices.elementAt(index);
-  }
-
-  /**
-   *  Adds the specified vertex to this strong component. Note, that added
-   *  vertices are inserted at index 0 of the list of vertices.
-   */
-  public void addVertex(AtomicVertex vertex) {
-    _vertices.insertElementAt(vertex, 0);
   }
 
   /**

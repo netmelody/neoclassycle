@@ -59,4 +59,9 @@ public interface GraphAttributes extends Attributes {
   
   /** Returns the vertices of the center. */
   public Vertex[] getCenterVertices();
+  
+  /** 
+   * Returns the eccentricies of all vertices of a {@link StrongComponent}. 
+   */
+  public int[] getEccentricities();
 } //interface
