@@ -17,6 +17,7 @@ public class AllTests extends TestCase
         + "classycle.graph");
 
     suite.addTestSuite(AtomicVertexTest.class);
+    suite.addTestSuite(PathsFinderTest.class);
     suite.addTestSuite(LongestWalkProcessorTest.class);
     suite.addTestSuite(StrongComponentProcessorTest.class);
     suite.addTestSuite(VertexTest.class);
