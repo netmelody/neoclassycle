@@ -45,6 +45,7 @@ import classycle.graph.AtomicVertex;
  * <tr><td>5</td>
  *     <td>Number of outgoing arcs to other vertices in the graph</td></tr>
  * <tr><td>6</td><td>Number of outgoing arcs to external vertices</td></tr>
+ * <tr><td>7</td><td>Layer index</td></tr>
  * </table>
  *
  * @author Franz-Josef Elmer
@@ -64,7 +65,7 @@ public class TemplateBasedClassRenderer implements AtomicVertexRenderer {
    * @return the rendered vertex.
    */
   public String render(AtomicVertex vertex, int layerIndex) {
-    String[] values = new String[7];
+    String[] values = new String[8];
     ClassAttributes attributes = (ClassAttributes) vertex.getAttributes();
     values[0] = attributes.getName();
     values[1] = attributes.getType();
@@ -82,6 +83,7 @@ public class TemplateBasedClassRenderer implements AtomicVertexRenderer {
     }
     values[5] = Integer.toString(usesInternal);
     values[6] = Integer.toString(usesExternal);
+    values[7] = Integer.toString(layerIndex);
     return _format.format(values);
   }
 } //class
