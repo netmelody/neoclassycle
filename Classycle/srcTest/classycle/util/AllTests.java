@@ -16,7 +16,8 @@ public class AllTests
   {
     TestSuite suite = new TestSuite("Test for classycle.util");
     //$JUnit-BEGIN$
-    suite.addTest(new TestSuite(WildCardPatternTest.class));
+    suite.addTestSuite(WildCardPatternTest.class);
+    suite.addTestSuite(TextTest.class);
     //$JUnit-END$
     return suite;
   }
