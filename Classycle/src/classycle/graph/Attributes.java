@@ -31,6 +31,5 @@ package classycle.graph;
  *
  *  @author Franz-Josef Elmer
  */
-public interface Attributes
-{
+public interface Attributes {
 } //interface

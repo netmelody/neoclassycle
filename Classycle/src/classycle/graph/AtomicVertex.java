@@ -35,15 +35,13 @@ package classycle.graph;
  *
  *  @author Franz-Josef Elmer
  */
-public class AtomicVertex extends Vertex
-{
+public class AtomicVertex extends Vertex {
   private boolean _graphVertex;
   private int _order;
   private int _low;
 
   /** Creates an instance for the specified attributes. */
-  public AtomicVertex(Attributes attributes)
-  {
+  public AtomicVertex(Attributes attributes) {
     super(attributes);
   }
 
@@ -51,8 +49,7 @@ public class AtomicVertex extends Vertex
    *  Reset this instance. That is, it becomes unvisited vertex of a graph
    *  where <tt>order = low = -1</tt>;
    */
-  public void reset()
-  {
+  public void reset() {
     super.reset();
     _graphVertex = true;
     _order = -1;
@@ -60,32 +57,27 @@ public class AtomicVertex extends Vertex
   }
 
   /** Returns <tt>true</tt> if this vertex belongs to a graph. */
-  public boolean isGraphVertex()
-  {
+  public boolean isGraphVertex() {
     return _graphVertex;
   }
 
   /** Returns the order of visiting. */
-  public int getOrder()
-  {
+  public int getOrder() {
     return _order;
   }
 
   /** Sets the order of visiting. */
-  public void setOrder(int order)
-  {
+  public void setOrder(int order) {
     _order = order;
   }
 
   /** Returns the current value of the low function. */
-  public int getLow()
-  {
+  public int getLow() {
     return _low;
   }
 
   /** Sets the current value of the low function. */
-  public void setLow(int low)
-  {
+  public void setLow(int low) {
     _low = low;
   }
 } //class
