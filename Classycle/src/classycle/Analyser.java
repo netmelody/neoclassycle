@@ -363,6 +363,46 @@ public class Analyser
     return _packageAnalyser.getLayerMap();
   }
 
+  public void readAndAnalyse(boolean packagesOnly) throws IOException
+  {
+    System.out.println("============= Classycle V" + VERSION 
+                       + " =============");
+    System.out.println("========== by Franz-Josef Elmer ==========");
+    System.out.print("read class files and create class graph ... ");
+    long duration = createClassGraph();
+    System.out.println("done after " + duration + " ms: " 
+                       + getClassGraph().length + " classes analysed.");
+    
+    if (!packagesOnly)
+    {
+      // Condense class graph
+      System.out.print("condense class graph ... ");
+      duration = condenseClassGraph();
+      System.out.println("done after " + duration + " ms: " 
+                         + getCondensedClassGraph().length 
+                         + " strong components found.");
+    
+      // Calculate class layer 
+      System.out.print("calculate class layer indices ... ");
+      duration = calculateClassLayerMap();
+      System.out.println("done after " + duration + " ms.");
+    }
+    System.out.print("create package graph ... ");
+    duration = createPackageGraph();
+    System.out.println("done after " + duration + " ms: " 
+                       + getPackageGraph().length + " packages.");
+    // Condense package graph
+    System.out.print("condense package graph ... ");
+    duration = condensePackageGraph();
+    System.out.println("done after " + duration + " ms: " 
+                       + getCondensedPackageGraph().length 
+                       + " strong components found.");
+    // Calculate package layer 
+    System.out.print("calculate package layer indices ... ");
+    duration = calculatePackageLayerMap();
+    System.out.println("done after " + duration + " ms.");
+  }
+
   /**
    * Prints an XML report into the specified writer.
    * @param title Title of the report.
@@ -415,6 +455,17 @@ public class Analyser
     writer.close();
   }
 
+  private void render(AtomicVertex[] graph, Map layerMap,
+          AtomicVertexRenderer renderer, PrintWriter writer)  
+  {
+    for (int i = 0; i < graph.length; i++) 
+    {
+      Integer layerIndex = (Integer) layerMap.get(graph[i]);
+      writer.print(renderer.render(graph[i], 
+      layerIndex == null ? -1 : layerIndex.intValue()));
+    }
+  }
+
   private void checkPackageGraph(String method)
   {
     if (_packageAnalyser == null)
@@ -440,7 +491,7 @@ public class Analyser
     
     Analyser analyser = new Analyser(commandLine.getClassFiles(), 
                                      commandLine.getPattern());
-    readAndAnalyse(commandLine, analyser);
+    analyser.readAndAnalyse(commandLine.isPackagesOnly());
 
     // Create report(s)
     if (commandLine.getXmlFile() != null) 
@@ -463,59 +514,4 @@ public class Analyser
                                commandLine.isCycles() ? 2 : 1);
     }
   }
-
-  private static void readAndAnalyse(AnalyserCommandLine commandLine,
-                                     Analyser analyser) throws IOException
-  {
-    System.out.println("============= Classycle V" + VERSION 
-                       + " =============");
-    System.out.println("========== by Franz-Josef Elmer ==========");
-    System.out.print("read class files and create class graph ... ");
-    long duration = analyser.createClassGraph();
-    System.out.println("done after " + duration + " ms: " 
-                       + analyser.getClassGraph().length + " classes analysed.");
-    
-    if (!commandLine.isPackagesOnly())
-    {
-      // Condense class graph
-      System.out.print("condense class graph ... ");
-      duration = analyser.condenseClassGraph();
-      System.out.println("done after " + duration + " ms: " 
-                         + analyser.getCondensedClassGraph().length 
-                         + " strong components found.");
-    
-      // Calculate class layer 
-      System.out.print("calculate class layer indices ... ");
-      duration = analyser.calculateClassLayerMap();
-      System.out.println("done after " + duration + " ms.");
-    }
-    System.out.print("create package graph ... ");
-    duration = analyser.createPackageGraph();
-    System.out.println("done after " + duration + " ms: " 
-                       + analyser.getPackageGraph().length + " packages.");
-    // Condense package graph
-    System.out.print("condense package graph ... ");
-    duration = analyser.condensePackageGraph();
-    System.out.println("done after " + duration + " ms: " 
-                       + analyser.getCondensedPackageGraph().length 
-                       + " strong components found.");
-    // Calculate package layer 
-    System.out.print("calculate package layer indices ... ");
-    duration = analyser.calculatePackageLayerMap();
-    System.out.println("done after " + duration + " ms.");
-  }
-
-  
-  private static void render(AtomicVertex[] graph, Map layerMap,
-                             AtomicVertexRenderer renderer, 
-                             PrintWriter writer)  
- {
-    for (int i = 0; i < graph.length; i++) 
-    {
-      Integer layerIndex = (Integer) layerMap.get(graph[i]);
-      writer.print(renderer.render(graph[i], 
-          layerIndex == null ? -1 : layerIndex.intValue()));
-    }
-  }
-
 } //class
