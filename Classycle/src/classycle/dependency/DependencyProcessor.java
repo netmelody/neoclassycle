@@ -27,6 +27,9 @@ package classycle.dependency;
 import classycle.graph.AtomicVertex;
 
 /**
+ * Processor of {@link Statement Statements} as defined in a 
+ * dependency definition file.
+ * 
  * @author  Franz-Josef Elmer
  */
 public class DependencyProcessor
@@ -35,6 +38,16 @@ public class DependencyProcessor
   private final Statement[] _statements;
   private int _index;
   
+  /**
+   * Creates a new instance for the specified dependency definition. It also
+   * parses the definition and creates all {@link Statement Statements}.
+   * 
+   * @param dependencyDefinition Dependency definition as read from a
+   *        .ddf file.
+   * @param renderer Renderer for processing results.
+   * @throws IllegalArgumentException if <tt>dependencyDefinition</tt> 
+   *        is invalid.
+   */
   public DependencyProcessor(String dependencyDefinition, 
                              ResultRenderer renderer) 
   {
@@ -43,10 +56,19 @@ public class DependencyProcessor
                                                  renderer).getStatements();
   }
   
+  /**
+   * Returns <tt>true</tt> if there are still unprocessed statements.
+   * @return
+   */
   public boolean hasMoreStatements() {
     return _index < _statements.length;
   }
   
+  /**
+   * Executes the next unprocessed statement and returns its result.
+   * @param graph The graph to be checked by the statement.
+   * @return <tt>null</tt> if there is no unprocessed statement.
+   */
   public Result executeNextStatement(AtomicVertex[] graph) {
     return hasMoreStatements() ? _statements[_index++].execute(graph) : null;
   }

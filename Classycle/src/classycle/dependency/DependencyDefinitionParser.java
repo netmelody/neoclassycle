@@ -37,6 +37,8 @@ import classycle.util.StringPattern;
 import classycle.util.WildCardPattern;
 
 /**
+ * Parser for a dependency definition file.
+ * 
  * @author  Franz-Josef Elmer
  */
 public class DependencyDefinitionParser

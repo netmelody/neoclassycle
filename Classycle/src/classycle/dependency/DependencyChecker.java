@@ -32,6 +32,9 @@ import classycle.graph.AtomicVertex;
 import classycle.util.StringPattern;
 
 /**
+ * Checks a class graph for unwanted dependencies. The dependencies are
+ * described by a dependency definition file (<tt>.ddf</tt>).  
+ * 
  * @author  Franz-Josef Elmer
  */
 public class DependencyChecker
@@ -41,6 +44,22 @@ public class DependencyChecker
   private final DependencyProcessor _processor;
   private final ArrayList _checkingResults = new ArrayList();
   
+  /**
+   * Creates a new instance. The first three parameters define the graph to be
+   * checked. They are identical to the parameters of
+   * {@link Analyser#Analyser(String[], StringPattern, StringPattern)}.
+   * <p>
+   * Note, that the constructor does not create the graph. It only parses
+   * <tt>dependencyDefinition</tt> as a preprocessing step. The calculation
+   * of the graph is done in {@link #check(PrintWriter)}.
+   * 
+   * @param classFiles Class files or directories with class files.
+   * @param pattern Pattern of classes included in the graph.
+   * @param reflectionPattern Pattern of classes referred by plain strings.
+   * @param dependencyDefinition Description (as read from a .ddf file) of the
+   *        dependencies to be checked.
+   * @param renderer Output renderer for unwanted dependencies found.
+   */
   public DependencyChecker(String[] classFiles, StringPattern pattern,
                            StringPattern reflectionPattern,
                            String dependencyDefinition, ResultRenderer renderer)
@@ -50,6 +69,11 @@ public class DependencyChecker
     _processor = new DependencyProcessor(dependencyDefinition, renderer);
   }
   
+  /**
+   * Checks the graph and write unwanted dependencies onto the specified
+   * writer.
+   * @return <tt>true</tt> if no unwanted dependency has been found.
+   */
   public boolean check(PrintWriter writer)
   {
     boolean ok = true;
@@ -67,6 +91,10 @@ public class DependencyChecker
     return ok;
   }
   
+  /**
+   * Runs the DependencyChecker application. 
+   * Exit 0 if no unwanted dependency found otherwise 1 is returned.
+   */
   public static void main(String[] args)
   {
     DependencyCheckerCommandLine commandLine 
