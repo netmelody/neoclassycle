@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project default="all" name="Classycle" basedir=".">
+<project default="jar" name="Classycle" basedir=".">
   <!-- prefix that allows to reference environment variables ===============-->
   <property environment="env"/>
 
@@ -11,10 +11,17 @@
 
   <!-- set output path for generation of apidoc ============================-->
   <property name="OUTPUT_PATH_APIDOC" value="docs/apidoc"/>
-  
+
   <!-- set distribution file name ==========================================-->
   <property name="DIST_NAME" value="classycle.zip"/>
-  
+
+  <!-- set classpath for compilation of src ================================-->
+  <path id="src_classpath">
+    <fileset dir="lib">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+
   <!-- set sourcepath for generation of apidoc =============================-->
   <path id="apidoc_srcpath">
     <pathelement location="src"/>
@@ -28,22 +35,23 @@
     <delete dir="${OUTPUT_PATH_SRCTEST}"/>
     <mkdir dir="${OUTPUT_PATH_SRCTEST}"/>
   </target>
-  
+
   <!-- compiling sources ==================================================-->
   <target name="compile_src" description="Compile sources.">
     <javac  srcdir="src"
             destdir="${OUTPUT_PATH_SRC}"
-            debug="true"/>
+            debug="true"
+            classpathref="src_classpath"/>
   </target>
-  
+
   <!-- compiling test sources ============================================-->
-  <target name="compile_srcTest" depends="compile_src" 
+  <target name="compile_srcTest" depends="compile_src"
           description="Compile test sources.">
     <javac  srcdir="srcTest"
             destdir="${OUTPUT_PATH_SRCTEST}"
             debug="true"/>
   </target>
-  
+
   <!-- run all JUnit unit tests ==========================================-->
   <target name="test" depends="clean, compile_srcTest"
           description="Rebuilt classes and run all tests">
@@ -69,7 +77,7 @@
       </manifest>
     </jar>
   </target>
-  
+
   <!-- generate apidoc =====================================================-->
   <target name="apidoc" description="generate API doc">
     <delete dir="${OUTPUT_PATH_APIDOC}"/>
