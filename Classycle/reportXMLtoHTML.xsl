@@ -156,8 +156,27 @@
   <xsl:template name="createSummary">
     <h2>Summary</h2>
     <table border="0" cellpadding="0" cellspacing="0">
-      <tr><td align="right"><xsl:value-of select="$numberOfCycles"/></td>
-          <td width="5"/><td><a href="#cycles">cycles</a></td>
+      <tr>
+        <td align="right">
+          <xsl:choose>
+            <xsl:when test="$numberOfCycles = 0">no</xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="$numberOfCycles"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </td>
+        <td width="5"/>
+        <td>
+          <xsl:choose>
+            <xsl:when test="$numberOfCycles = 0">cycles</xsl:when>
+            <xsl:when test="$numberOfCycles = 1">
+              <a href="#cycles">cycle</a>
+            </xsl:when>
+            <xsl:otherwise>
+              <a href="#cycles">cycles</a>
+            </xsl:otherwise>
+          </xsl:choose>
+        </td>
       </tr>
       <tr><td align="right"><xsl:copy-of select="$numberOfLayers"/></td>
           <td width="5"/><td><a href="#layers">layers</a></td>
@@ -207,21 +226,24 @@
        Subroutine which creates the cycles table.
        ==================================================================== -->
   <xsl:template name="createCyclesSection">
-    <h2><a name="cycles">Cycles</a></h2>
-    <xsl:copy-of select="$infoLine"/>
-    <table border="1" cellpadding="5" cellspacing="0" width="770">
-      <tr>
-        <th>Name</th>
-        <th>Number of classes</th>
-        <th>Girth</th>
-        <th>Radius</th>
-        <th>Diameter</th>
-        <th>Layer</th>
-      </tr>
-      <xsl:for-each select="/classycle/cycles">
-        <xsl:apply-templates/> <!-- template for <cycle> element -->
-      </xsl:for-each>
-    </table>
+    <xsl:if test="$numberOfCycles &gt; 0">
+      <h2><a name="cycles">Cycles</a></h2>
+      <xsl:copy-of select="$infoLine"/>
+      <table border="1" cellpadding="5" cellspacing="0" width="770">
+        <tr>
+          <th>Name</th>
+          <th>Number of classes</th>
+          <th>Best Fragment Size</th>
+          <th>Girth</th>
+          <th>Radius</th>
+          <th>Diameter</th>
+          <th>Layer</th>
+        </tr>
+        <xsl:for-each select="/classycle/cycles">
+          <xsl:apply-templates/> <!-- template for <cycle> element -->
+        </xsl:for-each>
+      </table>
+    </xsl:if>
   </xsl:template>
 
   <!-- ====================================================================
@@ -304,6 +326,13 @@
           <xsl:with-param name="text">Classes of cycle <xsl:value-of select="@name"/>:</xsl:with-param>
         </xsl:call-template>
       </td>
+      <td align="right">
+        <xsl:call-template name="createListPopupWithLink">
+          <xsl:with-param name="set" select="bestFragmenters/classRef"/>
+          <xsl:with-param name="number" select="@bestFragmentSize"/>
+          <xsl:with-param name="text">Best fragmenter(s) of cycle <xsl:value-of select="@name"/>:</xsl:with-param>
+        </xsl:call-template>
+      </td>
       <td align="right"><xsl:value-of select="@girth"/></td>
       <td align="right">
         <xsl:call-template name="createListPopupWithLink">
@@ -367,7 +396,8 @@
       <xsl:attribute name="style">cursor:pointer;</xsl:attribute>
       <xsl:attribute name="onClick">
         <xsl:text>javascript:showTable(&quot;</xsl:text>
-        <xsl:value-of select="$text"/><xsl:text>&quot;,&quot;Name,Maximum fragment size,Eccentricity&quot;,&quot;</xsl:text>
+        <xsl:value-of select="$text"/>
+        <xsl:text>&quot;,&quot;Name,Maximum fragment size,Eccentricity&quot;,&quot;</xsl:text>
         <xsl:for-each select="$set">
           <xsl:value-of select="@name"/><xsl:text>,</xsl:text>
           <xsl:value-of select="@maximumFragmentSize"/><xsl:text>,</xsl:text>
