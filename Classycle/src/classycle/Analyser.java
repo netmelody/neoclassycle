@@ -38,6 +38,13 @@ import classycle.renderer.TemplateBasedClassRenderer;
 import classycle.renderer.XMLClassRenderer;
 import classycle.renderer.XMLStrongComponentRenderer;
 
+
+/**
+ * Main class of the Classycle tool. Runs on the command line and
+ * produces a report.
+ * 
+ * @author Franz-Josef Elmer
+ */
 public class Analyser
 {
   private static final String INNER_CLASS = " and innerclasses";
@@ -48,8 +55,9 @@ public class Analyser
     {
       System.out.println(
           "Usage: java classycle.Analyser [-raw] [-cycles|-strong] "
-          + "[-xmlFile=<file>] [-csvFile=<file>] [-title=<title>]"
+          + "[-xmlFile=<file>] [-csvFile=<file>] [-title=<title>] "
           + "<class files, jar files, zip files, or folders>");
+      System.exit(0);
     }
     boolean raw = false;
     boolean cycles = false;
@@ -180,6 +188,8 @@ public class Analyser
                                PrintWriter writer)
   {
     writer.println("<?xml version='1.0' encoding='UTF-8'?>");
+    writer.println(
+        "<?xml-stylesheet type='text/xsl' href='reportXMLtoHTML.xsl'?>");
     writer.println("<classycle title='" + title + "'>");
     writer.println("  <cycles>");
     StrongComponentRenderer sRenderer
