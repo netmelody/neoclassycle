@@ -49,44 +49,11 @@ public class Analyser {
   private static final String INNER_CLASS = " and innerclasses";
 
   public static void main(String[] args) throws Exception {
-    if (args.length == 0) {
-      System.out.println(
-          "Usage: java classycle.Analyser [-raw] [-cycles|-strong] "
-          + "[-xmlFile=<file>] [-csvFile=<file>] [-title=<title>] "
-          + "<class files, jar files, zip files, or folders>");
+    AnalyserCommandLine commandLine = new AnalyserCommandLine(args);
+    if (!commandLine.isValid()) {
+      System.out.println("Usage: java classycle.Analyser " 
+                         + commandLine.getUsage());
       System.exit(0);
-    }
-    boolean raw = false;
-    boolean cycles = false;
-    boolean strong = false;
-    String title = null;
-    String xmlFile = null;
-    String csvFile = null;
-    int index = 0;
-    for (;index < args.length && args[index].charAt(0) == '-'; index++) {
-      if (args[index].equals("-raw")) {
-        raw = true;
-      }
-      else if (args[index].equals("-cycles")) {
-        cycles = true;
-      }
-      else if (args[index].equals("-strong")) {
-        strong = true;
-      }
-      else if (args[index].startsWith("-title=")) {
-        title = args[index].substring("-title=".length());
-      }
-      else if (args[index].startsWith("-xmlFile=")) {
-        xmlFile = args[index].substring("-xmlFile=".length());
-      }
-      else if (args[index].startsWith("-csvFile=")) {
-        csvFile = args[index].substring("-csvFile=".length());
-      }
-    }
-    String[] classFiles = new String[args.length - index];
-    System.arraycopy(args, index, classFiles, 0, classFiles.length);
-    if (title == null && classFiles.length > 0) {
-      title = classFiles[0];
     }
 
     // Read and analyse class files
@@ -95,7 +62,7 @@ public class Analyser {
     System.out.println("========== by Franz-Josef Elmer ==========");
     System.out.print("read and analyse class files ... ");
     long time = System.currentTimeMillis();
-    AtomicVertex[] graph = Parser.readClassFiles(classFiles);
+    AtomicVertex[] graph = Parser.readClassFiles(commandLine.getClassFiles());
     System.out.println("done after " + (System.currentTimeMillis() - time)
                        + " ms: " + graph.length + " classes analysed.");
 
@@ -115,19 +82,20 @@ public class Analyser {
     System.out.println("done after " + (System.currentTimeMillis() - time)
                        + " ms.");
 
-    if (xmlFile != null) {
-      printXML(graph, components, title,
-               new PrintWriter(new FileWriter(xmlFile)));
+    if (commandLine.getXmlFile() != null) {
+      printXML(graph, components, commandLine.getTitle(),
+               new PrintWriter(new FileWriter(commandLine.getXmlFile())));
     }
-    if (csvFile != null) {
-      printCSV(graph, new PrintWriter(new FileWriter(csvFile)));
+    if (commandLine.getCsvFile() != null) {
+      printCSV(graph, 
+               new PrintWriter(new FileWriter(commandLine.getCsvFile())));
     }
 
-    if (raw) {
+    if (commandLine.isRaw()) {
       printRaw(graph);
     }
-    if (cycles || strong) {
-      printComponents(components, cycles ? 2 : 1);
+    if (commandLine.isCycles() || commandLine.isStrong()) {
+      printComponents(components, commandLine.isCycles() ? 2 : 1);
     }
   }
 
