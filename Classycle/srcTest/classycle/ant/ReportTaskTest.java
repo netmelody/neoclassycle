@@ -3,20 +3,13 @@
  */
 package classycle.ant;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.BuildFileTest;
 
 /**
  * @author  Franz-Josef Elmer
  */
-public class ReportTaskTest extends BuildFileTest
+public class ReportTaskTest extends ClassycleTaskTestCase
 {
-  private static final String TMP_DIR = "temporaryTestDirectory";
-  
   public ReportTaskTest(String arg0)
   {
     super(arg0);
@@ -24,46 +17,10 @@ public class ReportTaskTest extends BuildFileTest
   
   protected void setUp() throws Exception
   {
-    new File(TMP_DIR).mkdir();
+    createTempDir();
     configureProject("reportTaskTestBuild.xml");
   }
   
-  protected void tearDown() throws Exception
-  {
-    File dir = new File(TMP_DIR);
-    String[] files = dir.list();
-    for (int i = 0; i < files.length; i++)
-    {
-      File file = new File(TMP_DIR, files[i]);
-      assertTrue("Couldn't delete " + file, file.delete());
-    }
-    dir.delete();
-  }
-  
-  protected void checkNumberOfLines(int expectedNumberOfLines, String fileName)
-                 throws Exception
-  {
-    File file = new File(TMP_DIR, fileName);
-    BufferedReader reader = new BufferedReader(new FileReader(file));
-    int numberOfLines = 0;
-    while (reader.readLine() != null)
-    {
-      numberOfLines++;
-    }
-    assertEquals("Number of lines in file " + fileName, 
-                 expectedNumberOfLines, numberOfLines);
-  }
-  
-  protected void checkLine(String expectedLine, int lineNumber, String fileName)
-                 throws Exception
-  {
-    File file = new File(TMP_DIR, fileName);
-    BufferedReader reader = new BufferedReader(new FileReader(file));
-    String line = null;
-    while ((line = reader.readLine()) != null && --lineNumber > 0);
-    assertEquals(expectedLine, line);
-  }
-
   public void testRaw() throws Exception
   {
     executeTarget("testRaw");

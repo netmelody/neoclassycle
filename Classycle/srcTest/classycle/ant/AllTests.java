@@ -17,6 +17,7 @@ public class AllTests
     TestSuite suite = new TestSuite("Test for classycle.ant");
     //$JUnit-BEGIN$
     suite.addTestSuite(ReportTaskTest.class);
+    suite.addTestSuite(DependencyCheckingTaskTest.class);
     //$JUnit-END$
     return suite;
   }
