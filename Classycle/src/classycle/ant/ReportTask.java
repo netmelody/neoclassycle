@@ -27,22 +27,11 @@ package classycle.ant;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.DirectoryScanner;
-import org.apache.tools.ant.Task;
-import org.apache.tools.ant.types.FileSet;
 
 import classycle.Analyser;
-import classycle.util.AndStringPattern;
-import classycle.util.NotStringPattern;
-import classycle.util.StringPattern;
-import classycle.util.TrueStringPattern;
-import classycle.util.WildCardPattern;
 
 /**
  * Ant Task for creating a Classycle report, either raw, CSV, or XML.
@@ -87,7 +76,7 @@ import classycle.util.WildCardPattern;
  * @author Boris Gruschko
  * @author Franz-Josef Elmer
  */
-public class ReportTask extends Task
+public class ReportTask extends ClassycleTask
 {
   public static final String TYPE_RAW = "raw",
                              TYPE_CSV = "csv",
@@ -105,11 +94,7 @@ public class ReportTask extends Task
   private String _reportFile;
   private String _reportType = TYPE_XML;
   private String _title;
-  private StringPattern _includingClasses = new TrueStringPattern();
-  private StringPattern _excludingClasses = new TrueStringPattern();
-
-  private LinkedList _fileSets = new LinkedList();
-
+  
   public void setPackagesOnly(boolean packagesOnly)
   {
     _packagesOnly = packagesOnly;
@@ -130,30 +115,10 @@ public class ReportTask extends Task
     _title = title;
   }
   
-  public void setIncludingClasses(String patternList)
-  {
-    _includingClasses = WildCardPattern.createFromsPatterns(patternList, ", ");
-  }
-
-  public void setExcludingClasses(String patternList)
-  {
-    _excludingClasses = new NotStringPattern(
-                        WildCardPattern.createFromsPatterns(patternList, ", "));
-  }
-
-  public void addConfiguredFileset(FileSet set)
-  {
-    _fileSets.add(set);
-  }
-
   public void execute() throws BuildException
   {
     super.execute();
 
-    if (_fileSets.size() == 0)
-    {
-      throw new BuildException("at least one file set is required");
-    }
     if (!TYPES.contains(_reportType))
     {
       throw new BuildException("invalid attribute 'reportType': " 
@@ -163,11 +128,13 @@ public class ReportTask extends Task
     {
       throw new BuildException("missing attribute 'reportFile'.");
     }
-
-    AndStringPattern pattern = new AndStringPattern();
-    pattern.appendPattern(_includingClasses);
-    pattern.appendPattern(_excludingClasses);
-    Analyser analyser = createAnalyser(pattern);
+    
+    String[] classFiles = getClassFileNames();
+    if (classFiles.length > 0 && _title == null)
+    {
+      _title = classFiles[0];
+    }
+    Analyser analyser = new Analyser(classFiles, getPattern());
     try
     {
       analyser.readAndAnalyse(_packagesOnly);
@@ -188,29 +155,5 @@ public class ReportTask extends Task
     {
       throw new BuildException(e);
     }
-  }
-  
-  private Analyser createAnalyser(StringPattern pattern)
-  {
-    ArrayList fileNames = new ArrayList();
-    String fileSeparator = System.getProperty("file.separator");
-    for (Iterator i = _fileSets.iterator(); i.hasNext();)
-    {
-      FileSet set = (FileSet) i.next();
-      DirectoryScanner scanner = set.getDirectoryScanner(getProject());
-      String path = scanner.getBasedir().getAbsolutePath();
-      String[] localFiles = scanner.getIncludedFiles();
-      for (int j = 0; j < localFiles.length; j++)
-      {
-        fileNames.add(path + fileSeparator + localFiles[j]);
-      }
-    }
-    String[] classFiles = new String[fileNames.size()];
-    classFiles = (String[]) fileNames.toArray(classFiles);
-    if (classFiles.length > 0 && _title == null)
-    {
-      _title = classFiles[0];
-    }
-    return new Analyser(classFiles, pattern);
   }
 }
