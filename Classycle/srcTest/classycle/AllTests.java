@@ -17,6 +17,7 @@ public class AllTests extends TestCase {
     TestSuite suite= new TestSuite();
     suite.addTestSuite(ParserTest.class);
     suite.addTest(classycle.graph.AllTests.suite());
+    suite.addTest(classycle.util.AllTests.suite());
     return suite;
   }
 }
