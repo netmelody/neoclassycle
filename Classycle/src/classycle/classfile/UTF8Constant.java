@@ -24,25 +24,31 @@
  */
 package classycle.classfile;
 
-
-
-public class UTF8Constant extends Constant
-{
+/**
+ * Constant of an arbitrary Unicode string.
+ * 
+ * @author Franz-Josef Elmer
+ */
+public class UTF8Constant extends Constant {
   private final String _string;
 
-  public UTF8Constant(Constant[] pool, String string)
-  {
+  /**
+   * Creates an instance for the specified string.
+   * @param pool Constant pool.
+   * @param string wrapped string.
+   */
+  public UTF8Constant(Constant[] pool, String string) {
     super(pool);
     _string = string;
   }
 
-  public String getString()
-  {
+  /** Returns the wrapped string. */
+  public String getString() {
     return _string;
   }
 
-  public String toString()
-  {
+  /** Returns the constant type and the wraüüpped string. */
+  public String toString() {
     return "CONSTANT_Utf8: " + _string;
   }
 } //class

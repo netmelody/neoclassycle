@@ -24,34 +24,41 @@
  */
 package classycle.classfile;
 
-
-
-public class RefConstant extends Constant
-{
+/**
+ * Abstract supper class of all reference constants.
+ * 
+ * @author Franz-Josef Elmer
+ */
+public abstract class RefConstant extends Constant {
   private final int _classIndex;
   private final int _nameAndTypeIndex;
 
-  public RefConstant(Constant[] pool, int classIndex, int nameAndTypeIndex)
-  {
+  /**
+   * Creates an instance for the specified class, name, and type.
+   * @param pool Constant pool. Needed for resolving references.
+   * @param classIndex Index of {@link ClassConstant}.
+   * @param nameAndTypeIndex Index of {@link NameAndTypeConstant}.
+   */
+  public RefConstant(Constant[] pool, int classIndex, int nameAndTypeIndex) {
     super(pool);
     _classIndex = classIndex;
     _nameAndTypeIndex = nameAndTypeIndex;
   }
 
-  public ClassConstant getClassConstant()
-  {
+  /** Returns the class constant. */
+  public ClassConstant getClassConstant() {
     return (ClassConstant) getConstant(_classIndex);
   }
 
-  public NameAndTypeConstant getNameAndType()
-  {
+  /** Returns the name-and-type constant. */
+  public NameAndTypeConstant getNameAndType() {
     return (NameAndTypeConstant) getConstant(_nameAndTypeIndex);
   }
 
-  protected String toString(String constantType)
-  {
+  /** Pretty printing. Will be used by <tt>toString</tt> of the subclasses. */
+  protected String toString(String constantType) {
     return constantType + ": Class = " + getClassConstant().getName()
-           + ", Name = " + getNameAndType().getName() + ", Descriptor = "
-           + getNameAndType().getDescriptor();
+                        + ", Name = " + getNameAndType().getName()
+                        + ", Descriptor = " + getNameAndType().getDescriptor();
   }
 } //class

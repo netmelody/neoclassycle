@@ -24,31 +24,36 @@
  */
 package classycle.classfile;
 
-
-
-public class StringConstant extends Constant
-{
+/**
+ * Constant of a <tt>String</tt> value.
+ * 
+ * @author Franz-Josef Elmer
+ */
+public class StringConstant extends Constant {
   private final int _stringIndex;
 
-  public StringConstant(Constant[] pool, int stringIndex)
-  {
+  /**
+   * Creates an instance for the specfied index.
+   * @param pool Constant pool. Needed for resolving the reference.
+   * @param stringIndex Index of an {@link UTF8Constant}.
+   */
+  public StringConstant(Constant[] pool, int stringIndex) {
     super(pool);
     _stringIndex = stringIndex;
   }
 
-  public String getString()
-  {
+  /** Returns the string value. */
+  public String getString() {
     String result = null;
     Constant c = getConstant(_stringIndex);
-    if (c instanceof UTF8Constant)
-    {
+    if (c instanceof UTF8Constant) {
       result = ((UTF8Constant) c).getString();
     }
     return result;
   }
 
-  public String toString()
-  {
+  /** Returns the constant type and the string value. */
+  public String toString() {
     return "CONSTANT_String: " + getString();
   }
 } //class
