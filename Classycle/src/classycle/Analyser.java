@@ -48,8 +48,7 @@ import classycle.renderer.XMLStrongComponentRenderer;
  * @author Franz-Josef Elmer
  */
 public class Analyser {
-  private static final String VERSION = "0.99";
-  private static final String INNER_CLASS = " and innerclasses";
+  private static final String VERSION = "0.999";
   
   private final String[] _classFiles;
   private AtomicVertex[] _graph;
