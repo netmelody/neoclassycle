@@ -3,9 +3,9 @@ package classycle.graph;
 import junit.framework.TestCase;
 
 public class AtomicVertexTest extends TestCase {
-	public AtomicVertexTest(String name) {
-		super(name);
-	}
+  public AtomicVertexTest(String name) {
+    super(name);
+  }
 
   public void testGraphVertexProperty() {
     AtomicVertex vertex = new AtomicVertex(null);

@@ -3,9 +3,9 @@ package classycle.graph;
 import junit.framework.TestCase;
 
 public class VertexTest extends TestCase {
-	public VertexTest(String name) {
-		super(name);
-	}
+  public VertexTest(String name) {
+    super(name);
+  }
 
   public void testAddOutgoingArc() {
     Vertex tail = new Vertex(null);
