@@ -23,13 +23,14 @@ public class GraphTestCase extends TestCase {
     super(s);
   }
 
-  protected void check(String[] expectedStrongComponents, int[][] nodeLinks) {
+  protected StrongComponent[] check(String[] expectedStrongComponents, 
+                                    int[][] nodeLinks) {
     HashSet expectedFingerPrints = new HashSet();
     for (int i = 0; i < expectedStrongComponents.length; i++) {
       expectedFingerPrints.add(expectedStrongComponents[i]);
     }
     AtomicVertex[] graph = createGraph(nodeLinks);
-    StrongComponentProcessor processor = new StrongComponentProcessor();
+    StrongComponentProcessor processor = new StrongComponentProcessor(true);
     process(processor, graph);
     StrongComponent[] components = processor.getStrongComponents();
     for (int i = 0; i < components.length; i++) {
@@ -39,6 +40,8 @@ public class GraphTestCase extends TestCase {
     }
     assertEquals("number of strong components", 
                  expectedStrongComponents.length, components.length);
+
+    return components;
   }
   
   protected void process(StrongComponentProcessor processor, 
@@ -60,6 +63,7 @@ public class GraphTestCase extends TestCase {
     }
     return new String(result);
   }
+
   protected AtomicVertex[] createGraph(int[][] nodeLinks) {
     AtomicVertex[] result = new AtomicVertex[nodeLinks.length];
     for (int i = 0; i < result.length; i++) {
@@ -74,5 +78,4 @@ public class GraphTestCase extends TestCase {
     }
     return result;
   }
-
 } //class
