@@ -10,6 +10,9 @@ import junit.framework.TestCase;
 import classycle.classfile.ConstantPoolPrinter;
 import classycle.graph.AtomicVertex;
 import classycle.graph.Vertex;
+import classycle.util.StringPattern;
+import classycle.util.TrueStringPattern;
+import classycle.util.WildCardPattern;
 
 import com.sun.tools.javac.Main;
 
@@ -19,6 +22,11 @@ import com.sun.tools.javac.Main;
  * @author Franz-Josef Elmer
  */
 public class ParserTest extends TestCase {
+  private static final String REFLECTION_EXAMPLE 
+      = "class Test { "
+      + "  String[] a = {\"java.util.Vector\", \"hello\", \"www.w3c.org\"};"
+      + "  Class c = Thread.class;"
+      + "}";
   private static final Main JAVAC = new Main();
   private static final String TMP = "temporaryDirectory" + File.separator;
   private static final String CLASS_NAME = "Test";
@@ -40,14 +48,24 @@ public class ParserTest extends TestCase {
     return JAVAC.compile(new String[] {file, "-target", "1.1"});
   }
 
-  private static AtomicVertex createVertex(String code) throws IOException {
+  private static AtomicVertex createVertex(String code) throws IOException 
+  {
+    return createVertex(code, new TrueStringPattern());
+  }
+  
+  private static AtomicVertex createVertex(String code, 
+                                           StringPattern reflectionPattern) 
+                 throws IOException 
+  {
     Writer writer = new FileWriter(JAVA_FILE);
     writer.write(code);
     writer.close();
     assertEquals("Exit code", 0, compile(JAVA_FILE));
     //System.out.println("======\n" + code);
     //ConstantPoolPrinter.main(new String[] {CLASS_FILE});
-    return Parser.readClassFiles(new String[] {CLASS_FILE})[0];
+    return Parser.readClassFiles(new String[] {CLASS_FILE}, 
+                                 new TrueStringPattern(), 
+                                 reflectionPattern)[0];
   }
 
   public ParserTest(String name) {
@@ -65,8 +83,15 @@ public class ParserTest extends TestCase {
   }
 
   private void check(String[] expectedClasses, String javaCode) 
-                                                          throws IOException {
-    AtomicVertex vertex = createVertex(javaCode);
+               throws IOException 
+  {
+     check(expectedClasses, javaCode, null); 
+  }
+
+  private void check(String[] expectedClasses, String javaCode, 
+                     StringPattern reflectionPattern) 
+               throws IOException {
+    AtomicVertex vertex = createVertex(javaCode, reflectionPattern);
     HashSet classSet = new HashSet();
     for (int i = 0; i < expectedClasses.length; i++) {
       classSet.add(expectedClasses[i]);
@@ -89,6 +114,34 @@ public class ParserTest extends TestCase {
           "class Test { String[][] a; java.awt.LayoutManager2 b; int i;"
           + "StringBuffer[] sb;"
           + "double[] d; boolean[][] z; java.awt.color.ICC_ColorSpace cs;}");
+  }
+  
+  public void testNoReflection() throws IOException
+  {
+    check(new String[] {"java.lang.Object", "java.lang.String", 
+                        "java.lang.Class", "java.lang.NoClassDefFoundError",
+                        "java.lang.ClassNotFoundException", 
+                        "java.lang.Throwable"},
+          REFLECTION_EXAMPLE);
+  }
+
+  public void testReflection() throws IOException
+  {
+    check(new String[] {"java.lang.Object", "java.lang.String", 
+            "java.lang.Class", "java.lang.NoClassDefFoundError",
+            "java.lang.ClassNotFoundException", 
+            "java.lang.Throwable", 
+            "java.util.Vector", "java.lang.Thread", 
+            "hello", "www.w3c.org"},
+            REFLECTION_EXAMPLE,
+            new TrueStringPattern());
+    check(new String[] {"java.lang.Object", "java.lang.String", 
+            "java.lang.Class", "java.lang.NoClassDefFoundError",
+            "java.lang.ClassNotFoundException", 
+            "java.lang.Throwable", 
+            "java.util.Vector", "java.lang.Thread"},
+            REFLECTION_EXAMPLE,
+            new WildCardPattern("java.*"));
   }
 
   public void testInvalidFieldDescriptors() throws IOException {
