@@ -122,4 +122,10 @@ public class ParserTest extends TestCase {
             "class Test extends java.awt.Canvas implements Runnable {"
             + "public void run() {}}");
   }
+  public void testCastingElementaryDataTypeArray() throws IOException {
+    check(new String[] {"java.lang.Object"},
+            "class Test { Object a() { return null; } "
+            + "void b() { byte[][] n = (byte[][]) a();}}");
+  }
+  
 }

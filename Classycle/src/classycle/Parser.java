@@ -182,7 +182,7 @@ public class Parser {
     for (int i = 0; i < pool.length; i++) {
       if (pool[i] instanceof ClassConstant) {
         ClassConstant cc = (ClassConstant) pool[i];
-        if (!cc.getName().equals(name)) {
+        if (!cc.getName().startsWith(("[")) && !cc.getName().equals(name)) {
           node.nodes.add(cc.getName());
         }
       } else if (pool[i] instanceof UTF8Constant) {
