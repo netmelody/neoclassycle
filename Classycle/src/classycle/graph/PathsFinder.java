@@ -88,6 +88,7 @@ public class PathsFinder
   {
     return _startSetCondition;
   }
+  
   /**
    * Finds all paths from the specified start vertices to the vertices
    * fullfilling the specified condition.
@@ -147,12 +148,22 @@ public class PathsFinder
   {
     for (int i = 0; i < graph.length; i++)
     { 
-      graph[i].reset();
-      graph[i].setOrder(Integer.MAX_VALUE);
-      if (_startSetCondition.isFulfilled(graph[i]))
+      AtomicVertex vertex = graph[i];
+      prepareVertex(vertex);
+      for (int j = 0, n = vertex.getNumberOfOutgoingArcs(); j < n; j++)
       {
-        graph[i].visit();
+        prepareVertex((AtomicVertex) vertex.getHeadVertex(j));
       }
+    }
+  }
+
+  private void prepareVertex(AtomicVertex vertex)
+  {
+    vertex.reset();
+    vertex.setOrder(Integer.MAX_VALUE);
+    if (_startSetCondition.isFulfilled(vertex))
+    {
+      vertex.visit();
     }
   }
 
