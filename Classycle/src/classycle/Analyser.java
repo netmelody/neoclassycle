@@ -101,7 +101,7 @@ public class Analyser
     }
 
     // Read and analyse class files
-    System.out.println("============= Classycle V0.1 =============");
+    System.out.println("============= Classycle V0.9 =============");
     System.out.println("========== by Franz-Josef Elmer ==========");
     System.out.print("read and analyse class files ... ");
     long time = System.currentTimeMillis();
