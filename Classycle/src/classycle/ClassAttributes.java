@@ -41,7 +41,7 @@ public class ClassAttributes implements Attributes {
   public static final String INTERFACE = "interface",
                       ABSTRACT_CLASS = "abstract class",
                       CLASS = "class",
-                      UNKNOWN = "unkown external class";
+                      UNKNOWN = "unknown external class";
 
   private final String _name;
   private final String _type;
