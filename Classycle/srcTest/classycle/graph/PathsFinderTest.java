@@ -165,9 +165,27 @@ public class PathsFinderTest extends TestCase
                              + "j > i d", true);
   }
   
+  public void testDirectPaths()
+  {
+    check("a b", "a c", "a", "", false, true);
+    check("a b", "a c", "a", "", true, true);
+    check("a d f g", "c e", "a d g c e", 
+          "a > b e, b > c, d > c, f > d, g > b e h, h > i, i > e", false, true);
+    check("a d f g", "c e", "a d g c e", 
+          "a > b e, b > c, d > c, f > d, g > b e h, h > i, i > e", true, true);
+  }
+  
   private void check(String startVertices, String endVertices, 
                      String pathVertices, String graphDescription,
                      boolean shortestOnly)
+  {
+    check(startVertices, endVertices, pathVertices, graphDescription, 
+          shortestOnly, false);
+  }
+  
+  private void check(String startVertices, String endVertices, 
+                     String pathVertices, String graphDescription,
+                     boolean shortestOnly, boolean directPathsOnly)
   {
     REPOSITORY.clear();
     MockVertexCondition startCondition 
@@ -175,7 +193,7 @@ public class PathsFinderTest extends TestCase
     MockVertexCondition endCondition 
         = new MockVertexCondition(createVertices(endVertices));
     PathsFinder pathsFinder 
-        = new PathsFinder(startCondition, endCondition, shortestOnly);
+        = new PathsFinder(startCondition, endCondition, shortestOnly, directPathsOnly);
     MockVertex[] expectedPaths = createVertices(pathVertices);
     StringTokenizer tokenizer = new StringTokenizer(graphDescription, ",");
     while (tokenizer.hasMoreTokens())

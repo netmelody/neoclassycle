@@ -14,6 +14,10 @@ public class GraphTestCase extends TestCase {
     {
       return 0;
     }
+    public String toString()
+    {
+      return getName();
+    }
   }
 
   protected AtomicVertex _externalVertex = new AtomicVertex(null);
