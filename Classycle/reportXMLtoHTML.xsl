@@ -50,7 +50,7 @@
        page.
        ==================================================================== -->
   <xsl:variable name="infoLine">
-    Click on <img src="&linkImg;"/> behind a number and a popup will show more details.
+    Click on <img src="&linkImg;"/> behind a number and a window will pop up showing more details.
   </xsl:variable>
 
   <!-- ====================================================================
@@ -305,8 +305,9 @@
           <th>Diameter</th>
           <th>Layer</th>
         </tr>
-        <xsl:for-each select="/classycle/cycles">
-          <xsl:apply-templates/> <!-- template for <cycle> element -->
+        <xsl:for-each select="/classycle/cycles/cycle">
+	      <xsl:sort select="@size" data-type="number" order="descending"/>
+          <xsl:call-template name="cycle"/>
         </xsl:for-each>
       </table>
     </xsl:if>
@@ -329,8 +330,9 @@
           <th>Diameter</th>
           <th>Layer</th>
         </tr>
-        <xsl:for-each select="/classycle/packageCycles">
-          <xsl:apply-templates/> <!-- template for <cycle> element -->
+        <xsl:for-each select="/classycle/packageCycles/packageCycle">
+	      <xsl:sort select="@size" data-type="number" order="descending"/>
+          <xsl:call-template name="packageCycle"/>
         </xsl:for-each>
       </table>
     </xsl:if>
@@ -487,7 +489,7 @@
        Matches element <cycle>. Creates a row in the cycles table with
        JavaScript popups.
        ==================================================================== -->
-  <xsl:template match="cycle">
+  <xsl:template name="cycle">
     <tr>
       <td>
         <xsl:choose>
@@ -532,7 +534,7 @@
        Matches element <packageCycle>. Creates a row in the cycles table with
        JavaScript popups.
        ==================================================================== -->
-  <xsl:template match="packageCycle">
+  <xsl:template name="packageCycle">
     <tr>
       <td>
         <img src="&mixImg;" alt="package" width="20" height="20" align="middle" hspace="4"/>
