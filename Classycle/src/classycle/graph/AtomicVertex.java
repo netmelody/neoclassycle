@@ -36,6 +36,7 @@ package classycle.graph;
  *  @author Franz-Josef Elmer
  */
 public class AtomicVertex extends Vertex {
+  private boolean _graphVertexDefaultValue = true;
   private boolean _graphVertex;
   private int _order;
   private int _low;
@@ -46,12 +47,14 @@ public class AtomicVertex extends Vertex {
   }
 
   /**
-   *  Reset this instance. That is, it becomes unvisited vertex of a graph
-   *  where <tt>order = low = -1</tt>;
+   * Reset this instance. That is, it becomes a unvisited vertex
+   * where <tt>order = low = -1</tt>. Whether it is a graph vertex or not
+   * depends on the default value defined by the method 
+   * {@link #setDefaultValueOfGraphVertexFlag}.
    */
   public void reset() {
     super.reset();
-    _graphVertex = true;
+    _graphVertex = _graphVertexDefaultValue;
     _order = -1;
     _low = -1;
   }
@@ -59,6 +62,14 @@ public class AtomicVertex extends Vertex {
   /** Returns <tt>true</tt> if this vertex belongs to a graph. */
   public boolean isGraphVertex() {
     return _graphVertex;
+  }
+
+  /**
+   * Sets the default value of graphVertex flag.
+   * @see #reset()
+   */  
+  public void setDefaultValueOfGraphVertexFlag(boolean flag) {
+    _graphVertexDefaultValue = flag;
   }
 
   /** Returns the order of visiting. */
