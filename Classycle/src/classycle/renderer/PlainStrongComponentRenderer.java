@@ -39,11 +39,11 @@ public class PlainStrongComponentRenderer
     int n = component.getNumberOfVertices();
     if (n == 1) {
       result.append(classRenderer.render(component.getVertex(0), 0))
-            .append(". Longest walk: ").append(component.getLongestWalk());
+            .append(". Layer: ").append(component.getLongestWalk());
     } else {
       result.append("Cycle: ").append(createName(component)).append(" with ")
             .append(n).append(" vertices.")
-            .append(" Longest walk: ").append(component.getLongestWalk());
+            .append(" Layer: ").append(component.getLongestWalk());
       for (int i = 0; i < n; i++) {
         result.append("\n    ")
               .append(classRenderer.render(component.getVertex(i), 0));
