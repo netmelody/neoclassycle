@@ -48,7 +48,7 @@ import classycle.renderer.XMLStrongComponentRenderer;
  * @author Franz-Josef Elmer
  */
 public class Analyser {
-  private static final String VERSION = "0.91";
+  private static final String VERSION = "0.99";
   private static final String INNER_CLASS = " and innerclasses";
   
   private final String[] _classFiles;
@@ -237,10 +237,10 @@ public class Analyser {
 
   private static void printCSV(Analyser analyser, PrintWriter writer) 
                                                       throws IOException {
-    writer.print("class name,type,inner class,size,used by,");
-    writer.println("uses internal classes,uses external classes");
+    writer.println("class name,type,inner class,size,used by,"
+        + "uses internal classes,uses external classes,layer index");
     render(analyser, new TemplateBasedClassRenderer(CSV_TEMPLATE), writer);
     writer.close();
   }
-  private static final String CSV_TEMPLATE  = "{0},{1},{3},{2},{4},{5},{6}";
+  private static final String CSV_TEMPLATE  = "{0},{1},{3},{2},{4},{5},{6},{7}\n";
 } //class
