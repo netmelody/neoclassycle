@@ -58,7 +58,8 @@ public class XMLStrongComponentRenderer
       = "      </" + CENTER_CLASSES_ELEMENT + ">\n";
   private static final MessageFormat CLASS_REF_FORMAT_WITH_ECCENTRICITY
       = new MessageFormat("        <" + CLASS_REF_ELEMENT
-                          + " name=\"{0}\" eccentricity=\"{1}\"/>\n");
+                          + " name=\"{0}\" eccentricity=\"{1}\""
+                          + " maximumFragmentSize=\"{2}\"/>\n");
   private static final MessageFormat CLASS_REF_FORMAT
       = new MessageFormat("        <" + CLASS_REF_ELEMENT
                           + " name=\"{0}\"/>\n");
@@ -90,10 +91,14 @@ public class XMLStrongComponentRenderer
       result.append(CLASSES_START_TEMPLATE);
       int[] eccentricities 
           = ((GraphAttributes) component.getAttributes()).getEccentricities();
+      int[] maximumFragmentSizes 
+          = ((GraphAttributes) component.getAttributes())
+                                                    .getMaximumFragmentSizes();
       for (int i = 0, n = component.getNumberOfVertices(); i < n; i++) {
         values[0] = ((ClassAttributes) component.getVertex(i).getAttributes())
                                                                     .getName();
         values[1] = Integer.toString(eccentricities[i]);
+        values[2] = Integer.toString(maximumFragmentSizes[i]);
         CLASS_REF_FORMAT_WITH_ECCENTRICITY.format(values, result, null);
       }
       result.append(CLASSES_END_TEMPLATE);

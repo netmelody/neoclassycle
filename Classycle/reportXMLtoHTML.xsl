@@ -354,7 +354,8 @@
 
        parameters:
 
-       set Set of elements with attribute "eccentricity" and "name".
+       set Set of elements with the attributes "name", 
+           "maximumFragmentSize", and "eccentricity".
        text Explaining header of the popup
 
        ==================================================================== -->
@@ -366,9 +367,10 @@
       <xsl:attribute name="style">cursor:pointer;</xsl:attribute>
       <xsl:attribute name="onClick">
         <xsl:text>javascript:showTable(&quot;</xsl:text>
-        <xsl:value-of select="$text"/><xsl:text>&quot;,&quot;Name,Eccentricity&quot;,&quot;</xsl:text>
+        <xsl:value-of select="$text"/><xsl:text>&quot;,&quot;Name,Maximum fragment size,Eccentricity&quot;,&quot;</xsl:text>
         <xsl:for-each select="$set">
           <xsl:value-of select="@name"/><xsl:text>,</xsl:text>
+          <xsl:value-of select="@maximumFragmentSize"/><xsl:text>,</xsl:text>
           <xsl:value-of select="@eccentricity"/><xsl:text>;</xsl:text>
         </xsl:for-each>
         <xsl:text>&quot;)</xsl:text>
