@@ -95,7 +95,7 @@ public class Analyser {
 
   public long condenseGraph() throws IOException {
     long time = System.currentTimeMillis();
-    StrongComponentProcessor processor = new StrongComponentProcessor();
+    StrongComponentProcessor processor = new StrongComponentProcessor(true);
     processor.deepSearchFirst(getGraph());
     _components = processor.getStrongComponents();
     return System.currentTimeMillis() - time;
