@@ -25,6 +25,7 @@
 package classycle.graph;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Analyser of a directed graph for finding its strong components.
@@ -70,7 +71,7 @@ public class StrongComponentAnalyser
    * @return a map where the keys are instances of {@link AtomicVertex}
    *         and the values are instances of <tt>Integer</tt>.
    */
-  public HashMap getLayerMap() 
+  public Map getLayerMap() 
   {
     if (_layerMap == null)
     {
