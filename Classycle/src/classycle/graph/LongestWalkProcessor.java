@@ -24,6 +24,9 @@
  */
 package classycle.graph;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 /**
  * Calculates for each vertex the longest walk. This processor assumes
  * that the graph has no cycles.
@@ -79,17 +82,12 @@ public class LongestWalkProcessor extends GraphProcessor {
    * walk length.
    */
   protected void finishProcessing(Vertex[] graph) {
-    // Sort in increasing walk lengths
-    StrongComponent[] components = (StrongComponent[]) graph;
-    for (int i = 0; i < graph.length; i++) {
-      for (int j = i + 1; j < graph.length; j++) {
-        if (components[j].getLongestWalk() < components[i].getLongestWalk()) {
-          StrongComponent c = components[i];
-          components[i] = components[j];
-          components[j] = c;
-        }
-      }
-    }
+    Arrays.sort(graph, new Comparator() {
+                          public int compare(Object obj1, Object obj2) {
+                            return ((StrongComponent) obj1).getLongestWalk()
+                                   - ((StrongComponent) obj2).getLongestWalk();
+                          }
+                        });
   }
 
   /**
