@@ -49,4 +49,8 @@ public class AndStringPattern extends StringPatternSequence
     return result;
   }
 
+  protected String getOperatorSymbol()
+  {
+    return " & ";
+  }
 }

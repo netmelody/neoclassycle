@@ -37,4 +37,8 @@ public class TrueStringPattern implements StringPattern
     return true;
   }
 
+  public String toString()
+  {
+    return "true";
+  }
 }

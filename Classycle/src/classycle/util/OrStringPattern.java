@@ -50,4 +50,8 @@ public class OrStringPattern extends StringPatternSequence
     return result;
   }
 
+  protected String getOperatorSymbol()
+  {
+    return ", ";
+  }
 }

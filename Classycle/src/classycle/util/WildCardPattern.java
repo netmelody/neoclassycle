@@ -79,6 +79,7 @@ public class WildCardPattern implements StringPattern
     return result;
   }
   
+  private final String _pattern;
   private final String[] _constantParts;
   private final boolean _startsWithAnything;
   private final boolean _endsWithAnything;
@@ -90,6 +91,7 @@ public class WildCardPattern implements StringPattern
    */
   public WildCardPattern(String pattern)
   {
+    _pattern = pattern;
     _startsWithAnything = pattern.startsWith(WILD_CARD);
     _endsWithAnything = pattern.endsWith(WILD_CARD);
     StringTokenizer tokenizer = new StringTokenizer(pattern, WILD_CARD);
@@ -100,6 +102,14 @@ public class WildCardPattern implements StringPattern
     }
   }
 
+  /**
+   *  Returns the pattern as delivered to the constructor.
+   */
+  public String toString()
+  {
+    return _pattern;
+  }
+  
   /**
    * @return <tt>false</tt> if <tt>string == null</tt>.
    */

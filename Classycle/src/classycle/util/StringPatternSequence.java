@@ -42,5 +42,30 @@ public abstract class StringPatternSequence implements StringPattern
   {
     _patterns.add(pattern);
   }
+  
+  public String toString()
+  {
+    StringBuffer buffer = new StringBuffer();
+    int size = _patterns.size();
+    if (size > 1)
+    {
+      buffer.append('(');
+    }
+    for (int i = 0; i < size; i++)
+    {
+      if (i != 0)
+      {
+        buffer.append(getOperatorSymbol());
+      }
+      buffer.append(_patterns.get(i));
+    }
+    return new String(size > 1 ? buffer.append(')') : buffer);
+  }
+  
+  /**
+   * Returns the operator symbol for pretty printing. Needed by
+   * <code>toString()</code>.
+   */
+  protected abstract String getOperatorSymbol();
 
 }

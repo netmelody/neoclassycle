@@ -52,4 +52,8 @@ public class NotStringPattern implements StringPattern
     return !_pattern.matches(string);
   }
 
+  public String toString()
+  {
+    return '!' + _pattern.toString();
+  }
 }
