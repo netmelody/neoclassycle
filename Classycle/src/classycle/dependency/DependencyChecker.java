@@ -81,7 +81,7 @@ public class DependencyChecker
         = new DependencyChecker(commandLine.getClassFiles(), 
                                 commandLine.getPattern(), 
                                 commandLine.getDependencyDefinition(), 
-                                new DefaultResultRenderer());
+                                commandLine.getRenderer());
     PrintWriter printWriter = new PrintWriter(System.out);
     boolean ok = dependencyChecker.check(printWriter);
     printWriter.flush();

@@ -35,9 +35,11 @@ import classycle.CommandLine;
  */
 public class DependencyCheckerCommandLine extends CommandLine
 {
-  private static final String DEPENDENCIES = "-dependencies=";
+  private static final String DEPENDENCIES = "-dependencies=",
+                              RENDERER = "-renderer=";
   
   private String _dependencyDefinition;
+  private ResultRenderer _renderer = new DefaultResultRenderer();
   
   public DependencyCheckerCommandLine(String[] args)
   {
@@ -49,8 +51,9 @@ public class DependencyCheckerCommandLine extends CommandLine
     if (argument.startsWith(DEPENDENCIES)) 
     {
       handleDependenciesOption(argument.substring(DEPENDENCIES.length()));
-    } else
-    {
+    } else if (argument.startsWith(RENDERER)) {
+      handleRenderer(argument.substring(RENDERER.length()));
+    } else {
       super.handleOption(argument);
     }
   }
@@ -59,12 +62,19 @@ public class DependencyCheckerCommandLine extends CommandLine
   public String getUsage() 
   {
     return "[" + DEPENDENCIES + "<description>|" 
-               + DEPENDENCIES + "@<description file>] " + super.getUsage();
+               + DEPENDENCIES + "@<description file>] "
+         + "[" + RENDERER + "<fully qualified class name of a ResultRenderer] "
+               + super.getUsage();
   }
   
   public String getDependencyDefinition()
   {
     return _dependencyDefinition;
+  }
+  
+  public ResultRenderer getRenderer() 
+  {
+    return _renderer;
   }
   
   private void handleDependenciesOption(String option)
@@ -85,13 +95,25 @@ public class DependencyCheckerCommandLine extends CommandLine
       } catch (IOException e)
       {
         System.err.println("Error in reading dependencies description file: " 
-                           + e.toString());
+                           + e);
         option = "";
       }
     }
     _dependencyDefinition = option;
     if (_dependencyDefinition.length() == 0) 
     {
+      _valid = false;
+    }
+  }
+  
+  private void handleRenderer(String className) {
+    try
+    {
+      _renderer = (ResultRenderer) Class.forName(className).newInstance();
+    } catch (Exception e)
+    {
+      System.err.println("Error in creating ResultRenderer " + className 
+                         + ": " + e);
       _valid = false;
     }
   }
