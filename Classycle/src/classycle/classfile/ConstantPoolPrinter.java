@@ -28,49 +28,45 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-public class ConstantPoolPrinter
-{
-
-  public static void main(String[] args)
-  {
-    if (args.length == 0)
-    {
+/**
+ * Application which prints the {@link Constant} pool of a class file onto the
+ * console.
+ * 
+ * @author Franz-Josef Elmer
+ */
+public class ConstantPoolPrinter {
+  /** 
+   * Reads a class file and prints the constant pool onto <tt>System.out</tt>.
+   * @param args File name of the class file in <tt>args[0]</tt> 
+   */
+  public static void main(String[] args) {
+    if (args.length == 0) {
       System.out.println(
-          "Usage: java classycle.classfile.ConstantPoolPrinter <class files>");
+        "Usage: java classycle.classfile.ConstantPoolPrinter <class files>");
     }
-    for (int i = 0; i < args.length; i++)
-    {
+    for (int i = 0; i < args.length; i++) {
       investigate(args[i]);
     }
   }
 
-  private static void investigate(String fileName)
-  {
+  private static void investigate(String fileName) {
     DataInputStream stream = null;
-    try
-    {
+    try {
       stream = new DataInputStream(new FileInputStream(fileName));
       Constant[] pool = Constant.extractConstantPool(stream);
       printConstantPool(pool);
-    }
-    catch (IOException e)
-    {
+    } catch (IOException e) {
       System.out.println(e);
-    }
-    finally
-    {
-      try
-      {
+    } finally {
+      try {
         stream.close();
+      } catch (IOException e) {
       }
-      catch (IOException e) {}
     }
   }
 
-  private static void printConstantPool(Constant[] pool)
-  {
-    for (int i = 0; i < pool.length; i++)
-    {
+  private static void printConstantPool(Constant[] pool) {
+    for (int i = 0; i < pool.length; i++) {
       System.out.println(i + ": " + pool[i]);
     }
   }

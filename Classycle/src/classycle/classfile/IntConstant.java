@@ -24,25 +24,27 @@
  */
 package classycle.classfile;
 
-
-
-public class IntConstant extends Constant
-{
+/**
+ * Constant representing a <tt>int</tt> value.
+ * 
+ * @author Franz-Josef Elmer
+ */
+public class IntConstant extends Constant {
   private final int _value;
 
-  public IntConstant(Constant[] pool, int value)
-  {
+  /** Creates an instance for the specified int value. */
+  public IntConstant(Constant[] pool, int value) {
     super(pool);
     _value = value;
   }
 
-  public int getValue()
-  {
+  /** Returns the wrapped int value. */
+  public int getValue() {
     return _value;
   }
 
-  public String toString()
-  {
+  /** Returns the constant type and the int value. */
+  public String toString() {
     return "CONSTANT_Integer: " + _value;
   }
 } //class

@@ -24,25 +24,27 @@
  */
 package classycle.classfile;
 
-
-
-public class FloatConstant extends Constant
-{
+/**
+ * Constant representing a <tt>float</tt> value.
+ * 
+ * @author Franz-Josef Elmer
+ */
+public class FloatConstant extends Constant {
   private final float _value;
 
-  public FloatConstant(Constant[] pool, float value)
-  {
+  /** Creates an instance for the specified float value. */
+  public FloatConstant(Constant[] pool, float value) {
     super(pool);
     _value = value;
   }
 
-  public float getValue()
-  {
+  /** Returns the wrapped float value. */
+  public float getValue() {
     return _value;
   }
 
-  public String toString()
-  {
+  /** Returns the constant type and the float value. */
+  public String toString() {
     return "CONSTANT_Float: " + _value;
   }
 } //class

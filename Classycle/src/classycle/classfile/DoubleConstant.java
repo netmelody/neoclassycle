@@ -24,25 +24,27 @@
  */
 package classycle.classfile;
 
-
-
-public class DoubleConstant extends Constant
-{
+/**
+ * Constant representing a <tt>double</tt> value.
+ * 
+ * @author Franz-Josef Elmer
+ */
+public class DoubleConstant extends Constant {
   private final double _value;
 
-  public DoubleConstant(Constant[] pool, double value)
-  {
+  /** Creates an instance for the specified double value. */
+  public DoubleConstant(Constant[] pool, double value) {
     super(pool);
     _value = value;
   }
 
-  public double getValue()
-  {
+  /** Returns the wrapped double value. */
+  public double getValue() {
     return _value;
   }
 
-  public String toString()
-  {
+  /** Returns the constant type and the double value. */
+  public String toString() {
     return "CONSTANT_Double: " + _value;
   }
 } //class

@@ -24,25 +24,27 @@
  */
 package classycle.classfile;
 
-
-
-public class LongConstant extends Constant
-{
+/**
+ * Constant representing a <tt>long</tt> value.
+ * 
+ * @author Franz-Josef Elmer
+ */
+public class LongConstant extends Constant {
   private final long _value;
 
-  public LongConstant(Constant[] pool, long value)
-  {
+  /** Creates an instance for the specified long value. */
+  public LongConstant(Constant[] pool, long value) {
     super(pool);
     _value = value;
   }
 
-  public long getValue()
-  {
+  /** Returns the wrapped long value. */
+  public long getValue() {
     return _value;
   }
 
-  public String toString()
-  {
+  /** Returns the constant type and the long value. */
+  public String toString() {
     return "CONSTANT_Long: " + _value;
   }
 } //class
