@@ -24,8 +24,6 @@
  */
 package classycle.graph;
 
-
-
 /**
  *  A subclass of {@link Vertex} with the following additional properties:
  *  <ul><li>A flag indicating whether this vertex belongs to the graph or not.
@@ -50,8 +48,8 @@ public class AtomicVertex extends Vertex
   }
 
   /**
-   *  Reset this instance. That is, it becomes unvisited, a vertex of a graph,
-   *  and order and low will be set to -1;
+   *  Reset this instance. That is, it becomes unvisited vertex of a graph
+   *  with order and low set to -1;
    */
   public void reset()
   {
