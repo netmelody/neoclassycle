@@ -42,9 +42,10 @@ public class StrongComponent extends Vertex {
     private ArrayList _centerVertices = new ArrayList();
     private int[] _eccentricities;
     private int[] _maximumFragmentSizes;
+    private int _bestFragmentSize;
+    private ArrayList _bestFragmenters = new ArrayList();
 
-    public GeometryAttributes() {
-    }
+    public GeometryAttributes() {}
 
     public int getGirth() {
       return _girth;
@@ -58,25 +59,30 @@ public class StrongComponent extends Vertex {
       return _radius;
     }
 
-    void setRadius(int radius) {
-      _radius = radius;
-    }
-
     public int getDiameter() {
       return _diameter;
     }
 
-    void setDiameter(int diameter) {
-      _diameter = diameter;
+    public int getBestFragmentSize() {
+      return _bestFragmentSize;
     }
 
     public Vertex[] getCenterVertices() {
       return (Vertex[]) _centerVertices.toArray(
-        new Vertex[_centerVertices.size()]);
+                                  new Vertex[_centerVertices.size()]);
     }
 
     void addVertex(Vertex vertex) {
       _centerVertices.add(vertex);
+    }
+    
+    public Vertex[] getBestFragmenters() {
+      return (Vertex[]) _bestFragmenters.toArray(
+                                  new Vertex[_bestFragmenters.size()]);
+    }
+
+    void addFragmenter(Vertex vertex) {
+      _bestFragmenters.add(vertex);
     }
     
     public int[] getEccentricities() {
@@ -85,6 +91,14 @@ public class StrongComponent extends Vertex {
     
     void setEccentricities(int[] eccentricities) {
       _eccentricities = eccentricities;
+
+      // Calculate radius and diameter
+      _radius = Integer.MAX_VALUE;
+      _diameter = 0;
+      for (int i = 0; i < eccentricities.length; i++) {
+        _radius = Math.min(_radius, eccentricities[i]);
+        _diameter = Math.max(_diameter, eccentricities[i]);
+      }
     }
     
     public int[] getMaximumFragmentSizes() {
@@ -93,7 +107,14 @@ public class StrongComponent extends Vertex {
     
     void setMaximumFragmentSizes(int[] maximumFragmentSizes) {
       _maximumFragmentSizes = maximumFragmentSizes;
+      
+      _bestFragmentSize = Integer.MAX_VALUE;
+      for (int i = 0; i < maximumFragmentSizes.length; i++) {
+        _bestFragmentSize = Math.min(_bestFragmentSize, 
+                                     maximumFragmentSizes[i]); 
+      }
     }
+    
   }
 
   private final Vector _vertices = new Vector();
@@ -150,26 +171,20 @@ public class StrongComponent extends Vertex {
     }
     attributes.setEccentricities(eccentricities);
     attributes.setGirth(girth);
+    attributes.setMaximumFragmentSizes(
+                            calculateMaximumFragmentSizes(indexMap));
 
-    // Calculate radius and diameter
-    int radius = Integer.MAX_VALUE;
-    int diameter = 0;
-    for (int i = 0; i < distances.length; i++) {
-      radius = Math.min(radius, eccentricities[i]);
-      diameter = Math.max(diameter, eccentricities[i]);
-    }
-    attributes.setRadius(radius);
-    attributes.setDiameter(diameter);
-
-    // Obtain center vertices
-    for (int i = 0; i < distances.length; i++) {
-      if (eccentricities[i] == radius) {
+    // Obtain center vertices and best fragmenters
+    for (int i = 0, r = attributes.getRadius(), 
+             s = attributes.getBestFragmentSize(); i < distances.length; i++) {
+      if (eccentricities[i] == r) {
         attributes.addVertex(getVertex(i));
+      }
+      if (attributes.getMaximumFragmentSizes()[i] == s) {
+        attributes.addFragmenter(getVertex(i));
       }
     }
     
-    attributes.setMaximumFragmentSizes(
-                            calculateMaximumFragmentSizes(indexMap));
   }
   
   private int[][] calculateDistances(HashMap indexMap) {
