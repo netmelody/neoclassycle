@@ -59,7 +59,7 @@ public class LayeringStatement implements Statement
       for (int j = i + 1; j < _layers.length; j++) 
       {
         DependencyStatement s = new DependencyStatement(_layers[i], _layers[j], 
-                                                        _repository, _renderer);
+                                                 true, _repository, _renderer);
         result.add(s.execute(graph));
       }
       if (_strictLayering) 
@@ -67,7 +67,7 @@ public class LayeringStatement implements Statement
         for (int j = i - 2; j >= 0; j--) 
         {
           DependencyStatement s = new DependencyStatement(_layers[i], 
-                                          _layers[j], _repository, _renderer);
+                                     _layers[j], true, _repository, _renderer);
           result.add(s.execute(graph));
         }
       }
@@ -79,15 +79,15 @@ public class LayeringStatement implements Statement
                                            StringPattern[] patterns,
                                            AtomicVertex[] graph)
   {
-    StringPattern[] startSet = new StringPattern[1];
+    StringPattern[] startSets = new StringPattern[1];
     StringPattern[] endSets = new StringPattern[patterns.length - 1];
     for (int i = 0; i < patterns.length; i++)
     {
-      startSet[0] = patterns[i];
+      startSets[0] = patterns[i];
       System.arraycopy(patterns, 0, endSets, 0, i);
       System.arraycopy(patterns, i + 1, endSets, i, patterns.length - i - 1);
-      DependencyStatement s 
-          = new DependencyStatement(startSet, endSets, _repository, _renderer);
+      DependencyStatement s = new DependencyStatement(startSets, endSets, 
+                                              true, _repository, _renderer);
       result.add(s.execute(graph));
     }
   }

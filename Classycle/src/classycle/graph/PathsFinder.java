@@ -38,6 +38,7 @@ public class PathsFinder
   private final VertexCondition _startSetCondition;
   private final VertexCondition _finalSetCondition;
   private final boolean _shortestPathsOnly;
+  private final boolean _directPathsOnly;
   
   /**
    * Creates an instance for the specified vertex conditions.
@@ -50,9 +51,27 @@ public class PathsFinder
                      VertexCondition finalSetCondition,
                      boolean shortestPathsOnly)
   {
+    this(startSetCondition, finalSetCondition, shortestPathsOnly, false);
+  }
+
+  /**
+   * Creates an instance for the specified vertex conditions.
+   * @param startSetCondition Condition defining the start set.
+   * @param finalSetCondition Condition defining the final set.
+   * @param shortestPathsOnly if <code>true</code> only the shortest
+   *        paths are returned.
+   * @param directPathsOnly if <code>true</code> only paths of length 1
+   *        are returned.
+   */
+  public PathsFinder(VertexCondition startSetCondition,
+                     VertexCondition finalSetCondition,
+                     boolean shortestPathsOnly,
+                     boolean directPathsOnly)
+  {
     _startSetCondition = startSetCondition;
     _finalSetCondition = finalSetCondition;
     _shortestPathsOnly = shortestPathsOnly;
+    _directPathsOnly = directPathsOnly;
   }
 
   public VertexCondition getFinalSetCondition()
@@ -86,12 +105,18 @@ public class PathsFinder
       AtomicVertex vertex = graph[i];
       if (_startSetCondition.isFulfilled(vertex))
       {
-        prepareIfFinal(vertex);
-        int pathLength = calculateShortestPath(vertex, currentPath);
-        if (pathLength < Integer.MAX_VALUE)
+        if (_directPathsOnly)
         {
-          vertex.setOrder(pathLength);
-          followPaths(vertex, pathVertices);
+          findDirectPaths(vertex, pathVertices);
+        } else
+        {
+          prepareIfFinal(vertex);
+          int pathLength = calculateShortestPath(vertex, currentPath);
+          if (pathLength < Integer.MAX_VALUE)
+          {
+            vertex.setOrder(pathLength);
+            followPaths(vertex, pathVertices);
+          }
         }
       }
     }
@@ -99,6 +124,25 @@ public class PathsFinder
                                   new AtomicVertex[pathVertices.size()]);
   }
   
+  private void findDirectPaths(AtomicVertex vertex, HashSet pathVertices)
+  {
+    if (_finalSetCondition.isFulfilled(vertex)) 
+    {
+      pathVertices.add(vertex);
+    } else 
+    {
+      for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++)
+      {
+        Vertex headVertex = vertex.getHeadVertex(i);
+        if (_finalSetCondition.isFulfilled(headVertex))
+        {
+          pathVertices.add(vertex);
+          pathVertices.add(headVertex);
+        }
+      }
+    }
+  }
+
   private void prepareGraph(AtomicVertex[] graph)
   {
     for (int i = 0; i < graph.length; i++)

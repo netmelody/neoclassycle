@@ -41,14 +41,17 @@ import classycle.util.WildCardPattern;
  */
 public class DependencyDefinitionParser
 {
-  private static final String INDEPENDENT_OF_KEY_WORD = "independentOf";
-  private static final String EXCLUDING_KEY_WORD = "excluding";
-  private static final String CHECK_KEY_WORD = "check";
-  private static final String LAYER_KEY_WORD = "layer";
-  private static final String SHOW_KEY_WORD = "show";
-  private static final String LAYERING_OF_KEY_WORD = "layeringOf";
-  private static final String STRICT_LAYERING_OF_KEY_WORD 
-                                            = "strictLayeringOf";
+  public static final String INDEPENDENT_OF_KEY_WORD = "independentOf",                            
+                             EXCLUDING_KEY_WORD = "excluding",
+                             DIRECTLY_INDEPENDENT_OF_KEY_WORD 
+                                         = "directlyIndependentOf",
+                             CHECK_KEY_WORD = "check",
+                             LAYER_KEY_WORD = "layer",
+                             SHOW_KEY_WORD = "show",
+                             LAYERING_OF_KEY_WORD = "layeringOf",
+                             STRICT_LAYERING_OF_KEY_WORD = "strictLayeringOf";
+  private static final String[] INDEPENDENT = new String[] {INDEPENDENT_OF_KEY_WORD, DIRECTLY_INDEPENDENT_OF_KEY_WORD};
+  private static final String[] EXCLUDING = new String[] {EXCLUDING_KEY_WORD};
   
   private final ResultRenderer _renderer;
   final SetDefinitionRepository _setDefinitions 
@@ -145,8 +148,7 @@ public class DependencyDefinitionParser
       throwException("Set " + setName + " already defined.", lineNumber, 0);
     }
     checkForEqualCharacter(tokens, lineNumber, 1);
-    StringPattern[][] lists = getLists(tokens, lineNumber, 
-                                       EXCLUDING_KEY_WORD, 2);
+    StringPattern[][] lists = getLists(tokens, lineNumber, EXCLUDING, 2);
     if (lists[0].length == 0 && lists[1].length == 0) 
     {
       throwException("Missing terms in set definition.", lineNumber, 2);
@@ -236,7 +238,7 @@ public class DependencyDefinitionParser
       preferences[i] = _renderer.getPreferenceFactory().get(tokens[i + 1]);
       if (preferences[i] == null) 
       {
-        throwException("Unknown display preference: " + tokens[i], 
+        throwException("Unknown display preference: " + tokens[i + 1], 
                        lineNumber, i + 1);
       }
     }
@@ -277,8 +279,7 @@ public class DependencyDefinitionParser
   
   private void createDependencyStatement(String[] tokens, int lineNumber)
   {
-    StringPattern[][] lists = getLists(tokens, lineNumber, 
-                                       INDEPENDENT_OF_KEY_WORD, 1);
+    StringPattern[][] lists = getLists(tokens, lineNumber, INDEPENDENT, 1);
     if (lists[0].length == 0) 
     {
       throwException("Missing start sets.", lineNumber, 1);
@@ -287,34 +288,51 @@ public class DependencyDefinitionParser
     {
       throwException("Missing end sets.", lineNumber, tokens.length);
     }
-    _statements.add(new DependencyStatement(lists[0], lists[1], _setDefinitions,
+    boolean directPathsOnly = DIRECTLY_INDEPENDENT_OF_KEY_WORD.equals(
+                                                tokens[lists[0].length + 1]);
+    _statements.add(new DependencyStatement(lists[0], lists[1], directPathsOnly, _setDefinitions,
                                             _renderer));
   }
   
   private StringPattern[][] getLists(String[] tokens, int lineNumber, 
-                                     String keyWord, int startIndex)
+                                     String[] keyWords, int startIndex)
   {
     ArrayList startSets = new ArrayList();
     ArrayList endSets = new ArrayList();
     ArrayList currentList = startSets;
     for (int i = startIndex; i < tokens.length; i++) 
     {
-      if (tokens[i].equals(keyWord)) 
+      String token = tokens[i];
+      if (isAKeyWord(token, keyWords)) 
       {
         if (currentList == endSets) 
         {
-          throwException("Invalid appearance of key word '" + keyWord + "'.", 
+          throwException("Invalid appearance of key word '" + token + "'.", 
                          lineNumber, i);
         }
         currentList = endSets;
       } else
       {
-        currentList.add(createPattern(tokens[i], lineNumber, i));
+        currentList.add(createPattern(token, lineNumber, i));
       }
     }
     StringPattern[][] result = new StringPattern[2][];
     result[0] = (StringPattern[]) startSets.toArray(new StringPattern[0]);
     result[1] = (StringPattern[]) endSets.toArray(new StringPattern[0]);
+    return result;
+  }
+
+  private boolean isAKeyWord(String token, String[] keyWords)
+  {
+    boolean result = false;
+    for (int i = 0; i < keyWords.length; i++)
+    {
+      if (keyWords[i].equals(token))
+      {
+        result = true;
+        break;
+      }
+    }
     return result;
   }
 

@@ -32,21 +32,27 @@ import classycle.util.StringPattern;
  */
 public class DependencyResult implements Result
 {
+  static final String OK = "\tOK";
+  static final String DEPENDENCY_FOUND = "\n  Dependency found:";
   private final StringPattern _startSet;
   private final StringPattern _finalSet;
+  private final String _statement;
   private final AtomicVertex[] _paths;
+  private final boolean _ok;
   
-  /**
-   * @param startSet
-   * @param finalSet
-   * @param paths
-   */
   public DependencyResult(StringPattern startSet, StringPattern finalSet,
-          AtomicVertex[] paths)
+                          String statement, AtomicVertex[] paths)
   {
     _startSet = startSet;
     _finalSet = finalSet;
+    _statement = statement;
     _paths = paths;
+    _ok = paths.length == 0;
+  }
+
+  public boolean isOk()
+  {
+    return _ok;
   }
 
   public StringPattern getFinalSet()
@@ -62,5 +68,22 @@ public class DependencyResult implements Result
   public StringPattern getStartSet()
   {
     return _startSet;
+  }
+
+  public String toString()
+  {
+    StringBuffer buffer = new StringBuffer(_statement);
+    if (_ok)
+    {
+      buffer.append(OK);
+    } else
+    {
+      DependencyPathsRenderer renderer 
+              = new DependencyPathsRenderer(_paths, 
+                                         new PatternVertexCondition(_startSet), 
+                                         new PatternVertexCondition(_finalSet));
+      buffer.append(DEPENDENCY_FOUND).append(renderer.renderGraph("  "));
+    }
+    return new String(buffer.append('\n'));
   }
 }

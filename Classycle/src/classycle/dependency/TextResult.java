@@ -22,42 +22,34 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */
-package classycle;
-
-import classycle.graph.Attributes;
-import classycle.graph.NameAttributes;
-import classycle.graph.Vertex;
-import classycle.graph.VertexCondition;
-import classycle.util.StringPattern;
+package classycle.dependency;
 
 /**
  * @author  Franz-Josef Elmer
  */
-public class PatternVertexCondition implements VertexCondition
+public class TextResult implements Result
 {
-  private final StringPattern _pattern;
+  private final String _text;
+  private final boolean _ok;
   
-  public PatternVertexCondition(StringPattern pattern)
+  public TextResult(String text)
   {
-    _pattern = pattern;
+    this(text, true);
   }
 
-  public boolean isFulfilled(Vertex vertex)
+  public TextResult(String text, boolean ok)
   {
-    boolean result = false;
-    if (vertex != null)
-    {
-      Attributes attributes = vertex.getAttributes();
-      if (attributes instanceof NameAttributes)
-      {
-        result = _pattern.matches(((NameAttributes) attributes).getName());
-      }
-    }
-    return result;
+    _text = text;
+    _ok = ok;
   }
-  
+
+  public boolean isOk()
+  {
+    return _ok;
+  }
+
   public String toString()
   {
-    return _pattern.toString();
+    return _text;
   }
 }

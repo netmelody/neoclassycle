@@ -17,6 +17,7 @@ public class AllTests
     TestSuite suite = new TestSuite("Test for dependency");
     //$JUnit-BEGIN$
     suite.addTestSuite(DependencyDefinitionParserTest.class);
+    suite.addTestSuite(DependencyProcessorTest.class);
     //$JUnit-END$
     return suite;
   }

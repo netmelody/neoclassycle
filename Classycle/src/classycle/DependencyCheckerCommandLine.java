@@ -27,11 +27,6 @@ package classycle;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.StringTokenizer;
-
-import classycle.graph.VertexCondition;
-import classycle.util.StringPattern;
-import classycle.util.WildCardPattern;
 
 /**
  * @author  Franz-Josef Elmer
@@ -40,13 +35,11 @@ public class DependencyCheckerCommandLine extends CommandLine
 {
   private static final String DEPENDENCIES = "-dependencies=";
   
-  private String _dependencies;
-  private DependencyDefinition[] _dependencyDefinitions;
+  private String _dependencyDefinition;
   
   public DependencyCheckerCommandLine(String[] args)
   {
     super(args);
-    createDependencyDefinitions();
   }
 
   protected void handleOption(String argument)
@@ -67,14 +60,9 @@ public class DependencyCheckerCommandLine extends CommandLine
                + DEPENDENCIES + "@<description file>] " + super.getUsage();
   }
   
-  public int getNumberOfDependencyDefinitions()
+  public String getDependencyDefinition()
   {
-    return _dependencyDefinitions.length;
-  }
-  
-  public DependencyDefinition getDependencyDefinition(int index)
-  {
-    return _dependencyDefinitions[index];
+    return _dependencyDefinition;
   }
   
   private void handleDependenciesOption(String option)
@@ -87,23 +75,9 @@ public class DependencyCheckerCommandLine extends CommandLine
         BufferedReader reader 
             = new BufferedReader(new FileReader(option.substring(1)));
         String line;
-        boolean previousLineEndsWithBackSlash = true;
         while ((line = reader.readLine()) != null)
         {
-          if (!line.startsWith("#"))
-          {
-            line = line.trim();
-            if (previousLineEndsWithBackSlash == false)
-            {
-              buffer.append(':');
-            }
-            buffer.append(line);
-            previousLineEndsWithBackSlash = line.endsWith("\\");
-            if (previousLineEndsWithBackSlash)
-            {
-              buffer.deleteCharAt(buffer.length() - 1);
-            }
-          }
+          buffer.append(line).append('\n');
         }
         option = new String(buffer);
       } catch (IOException e)
@@ -113,51 +87,10 @@ public class DependencyCheckerCommandLine extends CommandLine
         option = "";
       }
     }
-    _dependencies = option;
-    if (_dependencies.length() == 0) 
+    _dependencyDefinition = option;
+    if (_dependencyDefinition.length() == 0) 
     {
       _valid = false;
     }
-  }
-  
-  private void createDependencyDefinitions()
-  {
-    StringTokenizer tokenizer = new StringTokenizer(_dependencies, ":;");
-    _dependencyDefinitions = new DependencyDefinition[tokenizer.countTokens()];
-    for (int i = 0; i < _dependencyDefinitions.length; i++)
-    {
-      String description = tokenizer.nextToken().trim();
-      _dependencyDefinitions[i] = createDependencyDefinition(description);
-    }
-  }
-  
-  private DependencyDefinition createDependencyDefinition(String description)
-  {
-    DependencyDefinition result = null;
-    int index = description.indexOf('>');
-    if (index < 2)
-    {
-      System.err.println("Error: Missung '->', '=>', '+>', or '#>': " 
-                         + description);
-      _valid = false;
-    } else 
-    {
-      char c = description.charAt(index - 1);
-      boolean shortestPathsOnly = c == '-' || c == '+';
-      boolean dependencyExpected = c == '-' || c == '=';
-      VertexCondition startCondition 
-          = createCondition(description.substring(0, index - 1));
-      VertexCondition endCondition 
-          = createCondition(description.substring(index + 1));
-      result = new DependencyDefinition(startCondition, endCondition, 
-                                        shortestPathsOnly, dependencyExpected);
-    }
-    return result;
-  }
-
-  private VertexCondition createCondition(String description)
-  {
-    StringPattern p = WildCardPattern.createFromsPatterns(description, " ,");
-    return new PatternVertexCondition(p);
   }
 }

@@ -22,44 +22,55 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */
-package classycle;
+package classycle.dependency;
 
-import classycle.graph.AtomicVertex;
+import java.util.HashMap;
+
 
 /**
  * @author  Franz-Josef Elmer
  */
-public class DependencyCheckingResult
+public class DefaultPreferenceFactory implements PreferenceFactory
 {
-  private final DependencyDefinition _definition;
-  private final AtomicVertex[] _paths;
-  private final boolean _ok;
+  public static final Preference ONLY_SHORTEST_PATHS 
+                  = new DefaultPreference("onlyShortestPaths");
+  public static final Preference ALL_PATHS = new DefaultPreference("allPaths");
+  public static final Preference ALL_RESULTS 
+                  = new DefaultPreference("allResults");
+  public static final Preference ONLY_FAILURES 
+                  = new DefaultPreference("onlyFailures");
   
-  public DependencyCheckingResult(DependencyDefinition definition,
-                                  AtomicVertex[] paths, boolean ok)
+  private static class DefaultPreference implements Preference
   {
-    _definition = definition;
-    _paths = paths;
-    _ok = ok;
-  }
-  
-  public boolean isOk()
-  {
-    return _ok;
+    private static final HashMap REPOSITORY = new HashMap();
+    public static Preference getPreference(String key)
+    {
+      return (Preference) REPOSITORY.get(key);
+    }
+    private final String _key; 
+    protected DefaultPreference(String key)
+    {
+      _key = key;
+      if (REPOSITORY.containsKey(key))
+      {
+        throw new IllegalArgumentException(
+                    "There exists already an instance for '" + key + "'.");
+      }
+      REPOSITORY.put(key, this);
+    }
+    public final String getKey()
+    {
+      return _key;
+    }
+    public String toString()
+    {
+      return getKey();
+    }
   }
 
-  public AtomicVertex[] getPaths()
+  public Preference get(String key)
   {
-    return _paths;
+    return DefaultPreference.getPreference(key);
   }
-  
-  public DependencyDefinition getDefinition()
-  {
-    return _definition;
-  }
-  
-  public String toString()
-  {
-    return _definition.toString() + ": " + _paths.length + " classes";
-  }
+
 }

@@ -24,7 +24,6 @@
  */
 package classycle.dependency;
 
-import classycle.PatternVertexCondition;
 import classycle.graph.AtomicVertex;
 import classycle.graph.PathsFinder;
 import classycle.graph.VertexCondition;
@@ -35,20 +34,29 @@ import classycle.util.StringPattern;
  */
 public class DependencyStatement implements Statement
 {
+  private static final String IDOF 
+      = DependencyDefinitionParser.INDEPENDENT_OF_KEY_WORD;
+  private static final String DIDOF 
+      = DependencyDefinitionParser.DIRECTLY_INDEPENDENT_OF_KEY_WORD;
+  private static final String CHECK 
+      = DependencyDefinitionParser.CHECK_KEY_WORD + ' ';
   private final StringPattern[] _startSets;
   private final StringPattern[] _finalSets;
+  private final boolean _directPathsOnly;
   private final VertexCondition[] _startConditions;
   private final VertexCondition[] _finalConditions;
   private final SetDefinitionRepository _repository;
   private final ResultRenderer _renderer;
   
   public DependencyStatement(StringPattern[] startSets,
-                             StringPattern[] finalSets, 
+                             StringPattern[] finalSets,
+                             boolean directPathsOnly,
                              SetDefinitionRepository repository,
                              ResultRenderer renderer)
   {
     _startSets = startSets;
     _finalSets = finalSets;
+    _directPathsOnly = directPathsOnly;
     _repository = repository;
     _renderer = renderer;
     _startConditions = createVertexConditions(startSets);
@@ -74,22 +82,32 @@ public class DependencyStatement implements Statement
       {
         PathsFinder finder = new PathsFinder(_startConditions[i], 
                                              _finalConditions[j], 
-                                             _renderer.onlyShortestPaths());
-        result.add(new DependencyResult(_startSets[i], _finalSets[j], 
-                                        finder.findPaths(graph)));
+                                             _renderer.onlyShortestPaths(),
+                                             _directPathsOnly);
+        result.add(new DependencyResult(_startSets[i], _finalSets[j],
+                              toString(i, j), finder.findPaths(graph)));
       }
     }
     return result;
   }
   
+  private String toString(int i, int j)
+  {
+    StringBuffer buffer = new StringBuffer(CHECK);
+    buffer.append(_repository.toString(_startSets[i])).append(' ')
+          .append(getKeyWord()).append(' ')
+          .append(_repository.toString(_finalSets[j]));
+    return new String(buffer);
+  }
+  
   public String toString()
   {
-    StringBuffer buffer = new StringBuffer("check ");
+    StringBuffer buffer = new StringBuffer(CHECK);
     for (int i = 0; i < _startSets.length; i++)
     {
       buffer.append(_repository.toString(_startSets[i])).append(' ');
     }
-    buffer.append("independentOf ");
+    buffer.append(getKeyWord()).append(' ');
     for (int i = 0; i < _finalSets.length; i++)
     {
       buffer.append(_repository.toString(_finalSets[i])).append(' ');
@@ -97,4 +115,10 @@ public class DependencyStatement implements Statement
 
     return new String(buffer.substring(0, buffer.length() - 1));
   }
+
+  private String getKeyWord()
+  {
+    return _directPathsOnly ? DIDOF : IDOF;
+  }
+
 }

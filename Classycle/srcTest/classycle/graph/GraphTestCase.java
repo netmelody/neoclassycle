@@ -6,21 +6,14 @@ import java.util.HashSet;
 import junit.framework.TestCase;
 
 public class GraphTestCase extends TestCase {
-  static class MockAttributes implements Attributes {
-    private final String _name;
+  public static class MockAttributes extends NameAttributes {
     public MockAttributes(String name) {
-      _name = name;
+      super(name);
     }
-
-    public String toString() {
-      return _name;
-    }
-    public int compareTo(Object arg0)
+    public int getSize()
     {
-      // TODO Auto-generated method stub
       return 0;
     }
-
   }
 
   protected AtomicVertex _externalVertex = new AtomicVertex(null);

@@ -25,13 +25,14 @@
 package classycle.dependency;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author  Franz-Josef Elmer
  */
 public class ResultContainer implements Result
 {
-  private final ArrayList _list = new ArrayList();
+  private final List _list = new ArrayList();
   
   public void add(Result result) 
   {
@@ -46,5 +47,29 @@ public class ResultContainer implements Result
   public Result getResult(int index)
   {
     return (Result) _list.get(index);
+  }
+  
+  public boolean isOk()
+  {
+    boolean ok = true;
+    for (int i = 0, n = _list.size(); i < n; i++)
+    {
+      if (getResult(i).isOk() == false)
+      {
+        ok = false;
+        break;
+      }
+    }
+    return ok;
+  }
+  
+  public String toString()
+  {
+    StringBuffer buffer = new StringBuffer();
+    for (int i = 0, n = getNumberOfResults(); i < n; i++)
+    {
+      buffer.append(getResult(i));
+    }
+    return new String(buffer);
   }
 }

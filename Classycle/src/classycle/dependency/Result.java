@@ -29,5 +29,5 @@ package classycle.dependency;
  */
 public interface Result
 {
-
+  public boolean isOk();
 }

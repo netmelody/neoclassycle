@@ -24,11 +24,14 @@
  */
 package classycle;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import classycle.dependency.DefaultResultRenderer;
+import classycle.dependency.DependencyProcessor;
+import classycle.dependency.Result;
+import classycle.dependency.ResultRenderer;
 import classycle.graph.AtomicVertex;
-import classycle.graph.PathsFinder;
-import classycle.renderer.DependencyPathsRenderer;
 import classycle.util.StringPattern;
 
 /**
@@ -37,44 +40,33 @@ import classycle.util.StringPattern;
 public class DependencyChecker
 {
   private final Analyser _analyser;
-  private final ArrayList _dependencies = new ArrayList();
+  private final ResultRenderer _renderer;
+  private final DependencyProcessor _processor;
   private final ArrayList _checkingResults = new ArrayList();
   
-  public DependencyChecker(String[] classFiles, StringPattern pattern)
+  public DependencyChecker(String[] classFiles, StringPattern pattern,
+                           String dependencyDefinition, ResultRenderer renderer)
   {
     _analyser = new Analyser(classFiles, pattern);
+    _renderer = renderer;
+    _processor = new DependencyProcessor(dependencyDefinition, renderer);
   }
   
-  public void addDefinition(DependencyDefinition dependency)
+  public boolean check(PrintWriter writer)
   {
-    _dependencies.add(dependency);
-  }
-  
-  public boolean check()
-  {
-    boolean result = true;
-    AtomicVertex[] classGraph = _analyser.getClassGraph();
-    _checkingResults.clear();
-    for (int i = 0, n = _dependencies.size(); i < n; i++)
+    boolean ok = true;
+    AtomicVertex[] graph = _analyser.getClassGraph();
+    while (_processor.hasMoreStatements())
     {
-      DependencyDefinition definition 
-            = (DependencyDefinition) _dependencies.get(i);
-      AtomicVertex[] paths = definition.getPathsFinder().findPaths(classGraph);
-      boolean ok = definition.isDependencyExpected() ^ (paths.length == 0);
-      result &= ok;
-      _checkingResults.add(new DependencyCheckingResult(definition, paths, ok));
+      Result result = _processor.executeNextStatement(graph);
+//      System.out.println(result);
+      if (result.isOk() == false)
+      {
+        ok = false;
+      }
+      writer.print(_renderer.render(result));
     }
-    return result;
-  }
-  
-  public int getNumberOfCheckingResults()
-  {
-    return _checkingResults.size();
-  }
-  
-  public DependencyCheckingResult getCheckingResult(int index)
-  {
-    return (DependencyCheckingResult) _checkingResults.get(index);
+    return ok;
   }
   
   public static void main(String[] args)
@@ -87,44 +79,15 @@ public class DependencyChecker
                          + commandLine.getUsage());
       System.exit(1);
     }
-    
+
     DependencyChecker dependencyChecker 
         = new DependencyChecker(commandLine.getClassFiles(), 
-                                commandLine.getPattern());
-    for (int i = 0; i < commandLine.getNumberOfDependencyDefinitions(); i++)
-    {
-      dependencyChecker.addDefinition(commandLine.getDependencyDefinition(i));
-    }
-    
-    boolean ok = dependencyChecker.check();
-    if (ok == false)
-    {
-      System.err.println(
-              "Classycle Dependency Checker found the following violations:");
-      for (int i = 0; i < dependencyChecker.getNumberOfCheckingResults(); i++)
-      {
-        DependencyCheckingResult result 
-              = dependencyChecker.getCheckingResult(i);
-        if (result.isOk() == false)
-        {
-          System.err.print("\n" + result);
-          PathsFinder pathsFinder = result.getDefinition().getPathsFinder();
-          DependencyPathsRenderer renderer 
-              = new DependencyPathsRenderer(result.getPaths(), 
-                                            pathsFinder.getStartSetCondition(), 
-                                            pathsFinder.getFinalSetCondition());
-          System.err.println(renderer.renderGraph("  "));
-        }
-      }
-    }
-    
+                                commandLine.getPattern(), 
+                                commandLine.getDependencyDefinition(), 
+                                new DefaultResultRenderer());
+    PrintWriter printWriter = new PrintWriter(System.out);
+    boolean ok = dependencyChecker.check(printWriter);
+    printWriter.flush();
     System.exit(ok ? 0 : 1);
-  }
-  /**
-   * @return Returns the checkingResults.
-   */
-  public ArrayList getCheckingResults()
-  {
-    return _checkingResults;
   }
 }

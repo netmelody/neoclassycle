@@ -29,16 +29,21 @@ package classycle.dependency;
  * 
  * @author  Franz-Josef Elmer
  */
-public interface ResultRenderer
+public abstract class ResultRenderer
 {
-  public PreferenceFactory getPreferenceFactory();
+  protected boolean _shortestPaths = true;
   
-  public void considerPreference(Preference preference);
+  public boolean onlyShortestPaths() 
+  {
+    return _shortestPaths;
+  }
+
+  public abstract PreferenceFactory getPreferenceFactory();
   
-  public boolean onlyShortestPaths();
+  public abstract void considerPreference(Preference preference);
   
-  public Result getDescriptionOfCurrentPreferences();
+  public abstract Result getDescriptionOfCurrentPreferences();
   
-  public String render(Result result);
+  public abstract String render(Result result);
   
 }

@@ -22,44 +22,42 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */
-package classycle;
+package classycle.dependency;
 
-import classycle.graph.PathsFinder;
+import classycle.graph.Attributes;
+import classycle.graph.NameAttributes;
+import classycle.graph.Vertex;
 import classycle.graph.VertexCondition;
+import classycle.util.StringPattern;
 
 /**
  * @author  Franz-Josef Elmer
  */
-public class DependencyDefinition
+public class PatternVertexCondition implements VertexCondition
 {
-  private final PathsFinder _pathsFinder;
-  private final boolean _dependencyExpected;
-  private final String _definitionAsAString;
+  private final StringPattern _pattern;
   
-  public DependencyDefinition(VertexCondition startSetCondition, 
-                    VertexCondition finalSetCondition, 
-                    boolean shortestPathsOnly,  boolean dependencyExpected)
+  public PatternVertexCondition(StringPattern pattern)
   {
-    _pathsFinder = new PathsFinder(startSetCondition, finalSetCondition, 
-                                   shortestPathsOnly);
-    _dependencyExpected = dependencyExpected;
-    String symbol = dependencyExpected ? (shortestPathsOnly ? " -> " : " => ")
-                                       : (shortestPathsOnly ? " +> " : " #> ");
-    _definitionAsAString = startSetCondition + symbol + finalSetCondition;
-  }
-  
-  public boolean isDependencyExpected()
-  {
-    return _dependencyExpected;
+    _pattern = pattern;
   }
 
-  public PathsFinder getPathsFinder()
+  public boolean isFulfilled(Vertex vertex)
   {
-    return _pathsFinder;
+    boolean result = false;
+    if (vertex != null)
+    {
+      Attributes attributes = vertex.getAttributes();
+      if (attributes instanceof NameAttributes)
+      {
+        result = _pattern.matches(((NameAttributes) attributes).getName());
+      }
+    }
+    return result;
   }
-
+  
   public String toString()
   {
-    return _definitionAsAString;
+    return _pattern.toString();
   }
 }

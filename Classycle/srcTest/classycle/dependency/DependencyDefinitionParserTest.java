@@ -209,10 +209,9 @@ public class DependencyDefinitionParserTest extends TestCase
     }
   }
   
-  private static class MockResultRenderer implements ResultRenderer
+  private static class MockResultRenderer extends ResultRenderer
   {
     ArrayList list = new ArrayList();
-    boolean shortestPathsOnly;
     private PreferenceFactory _factory = new MockPreferenceFactory();
     public void considerPreference(Preference preference)
     {
@@ -226,10 +225,6 @@ public class DependencyDefinitionParserTest extends TestCase
     {
       return _factory;
     }
-    public boolean onlyShortestPaths()
-    {
-      return shortestPathsOnly;
-    }
     public String render(Result result)
     {
       return null;
@@ -242,6 +237,10 @@ public class DependencyDefinitionParserTest extends TestCase
     public MockResult(String value)
     {
       this.value = value;
+    }
+    public boolean isOk()
+    {
+      return true;
     }
   }
 }
