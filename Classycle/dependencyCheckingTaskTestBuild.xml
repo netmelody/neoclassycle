@@ -44,8 +44,7 @@
         <include name="**/*.class"/>
       </fileset>
       [A-not-p] = *A excluding example.p.*
-      check [A-not-p] independentOf *h*
-      check [A-not-p] independentOf *S*
+      check [A-not-p] independentOf *h* *S*
     </classycleDependencyCheck>
   </target>
 
