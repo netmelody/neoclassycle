@@ -52,6 +52,7 @@
            haltonfailure="true"
            printsummary="true">
       <classpath>
+        <pathelement path="${java.class.path}"/>
         <pathelement location="${OUTPUT_PATH_SRC}"/>
       </classpath>
       <formatter type="brief" usefile="false"/>
@@ -62,7 +63,11 @@
   <!-- generate jar ======================================================-->
   <target name="jar" depends="clean, compile_src"
           description="Create jar">
-    <jar destfile="classycle.jar" basedir="${OUTPUT_PATH_SRC}"/>
+    <jar destfile="classycle.jar" basedir="${OUTPUT_PATH_SRC}">
+      <manifest>
+        <attribute name="Main-Class" value="classycle.Analyser"/>
+      </manifest>
+    </jar>
   </target>
   
   <!-- generate apidoc =====================================================-->
