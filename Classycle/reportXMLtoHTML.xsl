@@ -121,7 +121,7 @@
 
           function showText(text) {
             list = window.open("", "list",
-                "dependent=yes,location=no,menubar=no,toolbar=no,width=500,height=400");
+                "dependent=yes,location=no,menubar=no,toolbar=no,scrollbars=yes,width=500,height=400");
             list.document.close();
             list.document.open();
             list.document.write("<html><head><style type=\"text/css\">");
@@ -248,6 +248,7 @@
           <td align="center">
             <xsl:call-template name="createListPopupWithLink">
               <xsl:with-param name="set" select="$set"/>
+              <xsl:with-param name="number" select="count($set)"/>
               <xsl:with-param name="text">Classes of layer <xsl:value-of select="$layer"/>:</xsl:with-param>
             </xsl:call-template>
           </td>
@@ -298,23 +299,16 @@
         <xsl:value-of select="@name"/>
       </td>
       <td align="right">
-        <div style="cursor:pointer;">
-          <xsl:value-of select="@size"/>
-          <xsl:element name="a">
-            <xsl:attribute name="onClick">
-              <xsl:call-template name="classRefWithEccentricityPopup">
-                <xsl:with-param name="set" select="classes/classRef"/>
-                <xsl:with-param name="text">Classes of cycle <xsl:value-of select="@name"/>:</xsl:with-param>
-              </xsl:call-template>
-            </xsl:attribute>
-            <img src="&linkImg;" hspace="3"/>
-          </xsl:element>
-        </div>
+        <xsl:call-template name="classRefWithEccentricityPopup">
+          <xsl:with-param name="set" select="classes/classRef"/>
+          <xsl:with-param name="text">Classes of cycle <xsl:value-of select="@name"/>:</xsl:with-param>
+        </xsl:call-template>
       </td>
       <td align="right"><xsl:value-of select="@girth"/></td>
       <td align="right">
         <xsl:call-template name="createListPopupWithLink">
           <xsl:with-param name="set" select="centerClasses/classRef"/>
+          <xsl:with-param name="number" select="@radius"/>
           <xsl:with-param name="text">Center classes of cycle <xsl:value-of select="@name"/>:</xsl:with-param>
         </xsl:call-template>
       </td>
@@ -330,27 +324,28 @@
        parameters:
 
        set Set of elements with attribute "name".
+       number Number show left of the link symbol.
        text Explaining header of the popup
 
        ==================================================================== -->
   <xsl:template name="createListPopupWithLink">
     <xsl:param name="set"/>
+    <xsl:param name="number"/>
     <xsl:param name="text"/>
-    <div style="cursor:pointer;">
-      <xsl:value-of select="count($set)"/>
-      <xsl:element name="a">
-        <xsl:attribute name="onClick">
-          <xsl:text>javascript:showTable(&quot;</xsl:text>
-          <xsl:value-of select="$text"/><xsl:text>&quot;,&quot;&quot;,&quot;</xsl:text>
-          <xsl:for-each select="$set">
-            <xsl:sort select="@name"/>
-            <xsl:value-of select="@name"/><xsl:text>;</xsl:text>
-          </xsl:for-each>
-          <xsl:text>&quot;)</xsl:text>
-        </xsl:attribute>
-        <img src="&linkImg;" hspace="3"/>
-      </xsl:element>
-    </div>
+    <xsl:value-of select="$number"/>
+    <xsl:element name="a">
+      <xsl:attribute name="style">cursor:pointer;</xsl:attribute>
+      <xsl:attribute name="onClick">
+        <xsl:text>javascript:showTable(&quot;</xsl:text>
+        <xsl:value-of select="$text"/><xsl:text>&quot;,&quot;&quot;,&quot;</xsl:text>
+        <xsl:for-each select="$set">
+          <xsl:sort select="@name"/>
+          <xsl:value-of select="@name"/><xsl:text>;</xsl:text>
+        </xsl:for-each>
+        <xsl:text>&quot;)</xsl:text>
+      </xsl:attribute>
+      <img src="&linkImg;" hspace="3"/>
+    </xsl:element>
   </xsl:template>
 
   <!-- ====================================================================
@@ -366,13 +361,20 @@
   <xsl:template name="classRefWithEccentricityPopup">
     <xsl:param name="set"/>
     <xsl:param name="text"/>
-    <xsl:text>javascript:showTable(&quot;</xsl:text>
-    <xsl:value-of select="$text"/><xsl:text>&quot;,&quot;Name,Eccentricity&quot;,&quot;</xsl:text>
-    <xsl:for-each select="$set">
-      <xsl:value-of select="@name"/><xsl:text>,</xsl:text>
-      <xsl:value-of select="@eccentricity"/><xsl:text>;</xsl:text>
-    </xsl:for-each>
-    <xsl:text>&quot;)</xsl:text>
+    <xsl:value-of select="@size"/>
+    <xsl:element name="a">
+      <xsl:attribute name="style">cursor:pointer;</xsl:attribute>
+      <xsl:attribute name="onClick">
+        <xsl:text>javascript:showTable(&quot;</xsl:text>
+        <xsl:value-of select="$text"/><xsl:text>&quot;,&quot;Name,Eccentricity&quot;,&quot;</xsl:text>
+        <xsl:for-each select="$set">
+          <xsl:value-of select="@name"/><xsl:text>,</xsl:text>
+          <xsl:value-of select="@eccentricity"/><xsl:text>;</xsl:text>
+        </xsl:for-each>
+        <xsl:text>&quot;)</xsl:text>
+      </xsl:attribute>
+      <img src="&linkImg;" hspace="3"/>
+    </xsl:element>
   </xsl:template>
 
 
@@ -420,18 +422,21 @@
        <td align="right">
          <xsl:call-template name="createListPopupWithLink">
            <xsl:with-param name="set" select="classRef[@type='usedBy']"/>
+           <xsl:with-param name="number" select="count(classRef[@type='usedBy'])"/>
            <xsl:with-param name="text">Classes using <xsl:value-of select="@name"/>:</xsl:with-param>
          </xsl:call-template>
        </td>
        <td align="right">
          <xsl:call-template name="createListPopupWithLink">
            <xsl:with-param name="set" select="classRef[@type='usesInternal']"/>
+           <xsl:with-param name="number" select="count(classRef[@type='usesInternal'])"/>
            <xsl:with-param name="text"><xsl:value-of select="@name"/> uses:</xsl:with-param>
          </xsl:call-template>
        </td>
        <td align="right">
          <xsl:call-template name="createListPopupWithLink">
            <xsl:with-param name="set" select="classRef[@type='usesExternal']"/>
+           <xsl:with-param name="number" select="count(classRef[@type='usesExternal'])"/>
            <xsl:with-param name="text"><xsl:value-of select="@name"/> uses:</xsl:with-param>
          </xsl:call-template>
        </td>
@@ -462,7 +467,7 @@
       <td align="right"><xsl:value-of select="count($set)"/></td>
       <td align="right">
         <xsl:value-of select="round(sum($set/@size) div count($set))"/>
-        <xsl:variable name="max">
+        <xsl:variable name="maxSize">
           <xsl:for-each select="$set">
             <xsl:sort select="@size" data-type="number"/>
             <xsl:if test="position()=last()">
@@ -473,11 +478,11 @@
             </xsl:if>
           </xsl:for-each>
         </xsl:variable>
-        (<xsl:copy-of select="$max"/>)
+        (<xsl:copy-of select="$maxSize"/>)
       </td>
       <td align="right">
         <xsl:value-of select="round(10 * sum($set/@usedBy) div count($set)) div 10"/>
-        <xsl:variable name="max">
+        <xsl:variable name="maxUsedBy">
           <xsl:for-each select="$set">
             <xsl:sort select="@usedBy" data-type="number"/>
             <xsl:if test="position()=last()">
@@ -488,11 +493,11 @@
             </xsl:if>
           </xsl:for-each>
         </xsl:variable>
-        (<xsl:copy-of select="$max"/>)
+        (<xsl:copy-of select="$maxUsedBy"/>)
       </td>
       <td align="right">
         <xsl:value-of select="round(10 * sum($set/@usesInternal) div count($set)) div 10"/>
-        <xsl:variable name="max">
+        <xsl:variable name="maxUsesInternal">
           <xsl:for-each select="$set">
             <xsl:sort select="@usesInternal" data-type="number"/>
             <xsl:if test="position()=last()">
@@ -503,11 +508,11 @@
             </xsl:if>
           </xsl:for-each>
         </xsl:variable>
-        (<xsl:copy-of select="$max"/>)
+        (<xsl:copy-of select="$maxUsesInternal"/>)
       </td>
       <td align="right">
         <xsl:value-of select="round(10 * sum($set/@usesExternal) div count($set)) div 10"/>
-        <xsl:variable name="max">
+        <xsl:variable name="maxUsesExternal">
           <xsl:for-each select="$set">
             <xsl:sort select="@usesExternal" data-type="number"/>
             <xsl:if test="position()=last()">
@@ -518,7 +523,7 @@
             </xsl:if>
           </xsl:for-each>
         </xsl:variable>
-        (<xsl:copy-of select="$max"/>)
+        (<xsl:copy-of select="$maxUsesExternal"/>)
       </td>
     </tr>
   </xsl:template>
