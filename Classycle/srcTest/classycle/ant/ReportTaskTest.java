@@ -4,6 +4,7 @@
 package classycle.ant;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 
 import org.apache.tools.ant.BuildException;
@@ -14,6 +15,8 @@ import org.apache.tools.ant.BuildFileTest;
  */
 public class ReportTaskTest extends BuildFileTest
 {
+  private static final String TMP_DIR = "temporaryTestDirectory";
+  
   public ReportTaskTest(String arg0)
   {
     super(arg0);
@@ -21,25 +24,40 @@ public class ReportTaskTest extends BuildFileTest
   
   protected void setUp() throws Exception
   {
+    new File(TMP_DIR).mkdir();
     configureProject("reportTaskTestBuild.xml");
   }
   
-  protected void checkNumberOfLines(int expectedNumberOfLines, String file)
+  protected void tearDown() throws Exception
+  {
+    File dir = new File(TMP_DIR);
+    String[] files = dir.list();
+    for (int i = 0; i < files.length; i++)
+    {
+      File file = new File(TMP_DIR, files[i]);
+      assertTrue("Couldn't delete " + file, file.delete());
+    }
+    dir.delete();
+  }
+  
+  protected void checkNumberOfLines(int expectedNumberOfLines, String fileName)
                  throws Exception
   {
+    File file = new File(TMP_DIR, fileName);
     BufferedReader reader = new BufferedReader(new FileReader(file));
     int numberOfLines = 0;
     while (reader.readLine() != null)
     {
       numberOfLines++;
     }
-    assertEquals("Number of lines in file " + file, 
+    assertEquals("Number of lines in file " + fileName, 
                  expectedNumberOfLines, numberOfLines);
   }
   
-  protected void checkLine(String expectedLine, int lineNumber, String file)
-  throws Exception
+  protected void checkLine(String expectedLine, int lineNumber, String fileName)
+                 throws Exception
   {
+    File file = new File(TMP_DIR, fileName);
     BufferedReader reader = new BufferedReader(new FileReader(file));
     String line = null;
     while ((line = reader.readLine()) != null && --lineNumber > 0);
@@ -61,7 +79,7 @@ public class ReportTaskTest extends BuildFileTest
   public void testXML() throws Exception
   {
     executeTarget("testXML");
-    checkNumberOfLines(1019, "reportTaskTest.xml");
+    checkNumberOfLines(1022, "reportTaskTest.xml");
   }
 
   public void testXMLPackagesOnly() throws Exception
