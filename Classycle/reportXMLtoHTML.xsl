@@ -75,7 +75,7 @@
         <th>Girth</th>
         <th>Radius</th>
         <th>Diameter</th>
-        <th>Longest Walk</th>
+        <th>Layer</th>
       </tr>
       <xsl:apply-templates/>
     </table>
@@ -188,6 +188,7 @@
         <th>Used by</th>
         <th>Uses internal</th>
         <th>Uses external</th>
+        <th>Layer</th>
       </tr>
       <xsl:apply-templates/>
     </table>
@@ -269,6 +270,7 @@
            </xsl:element>
          </div>
        </td>
+      <td align="right"><xsl:value-of select="@layer"/></td>
      </tr>
   </xsl:template>
 
