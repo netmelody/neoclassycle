@@ -41,6 +41,7 @@ public class StrongComponent extends Vertex {
     private int _diameter;
     private ArrayList _centerVertices = new ArrayList();
     private int[] _eccentricities;
+    private int[] _maximumFragmentSizes;
 
     public GeometryAttributes() {
     }
@@ -85,6 +86,14 @@ public class StrongComponent extends Vertex {
     void setEccentricities(int[] eccentricities) {
       _eccentricities = eccentricities;
     }
+    
+    public int[] getMaximumFragmentSizes() {
+      return _maximumFragmentSizes;
+    }
+    
+    void setMaximumFragmentSizes(int[] maximumFragmentSizes) {
+      _maximumFragmentSizes = maximumFragmentSizes;
+    }
   }
 
   private final Vector _vertices = new Vector();
@@ -123,8 +132,48 @@ public class StrongComponent extends Vertex {
    *  {@link GraphAttributes}.
    */
   public void calculateAttributes() {
-    // Calculate the adjacency matrix
     HashMap indexMap = calculateIndexMap();
+    int[][] distances = calculateDistances(indexMap);
+
+    // Calculate girth and eccentricity
+    GeometryAttributes attributes = (GeometryAttributes) getAttributes();
+    int girth = Integer.MAX_VALUE;
+    int[] eccentricities = new int[distances.length];
+    for (int i = 0; i < distances.length; i++) {
+      girth = Math.min(girth, distances[i][i]);
+      eccentricities[i] = 0;
+      for (int j = 0; j < distances.length; j++) {
+        if (i != j) {
+          eccentricities[i] = Math.max(eccentricities[i], distances[i][j]);
+        }
+      }
+    }
+    attributes.setEccentricities(eccentricities);
+    attributes.setGirth(girth);
+
+    // Calculate radius and diameter
+    int radius = Integer.MAX_VALUE;
+    int diameter = 0;
+    for (int i = 0; i < distances.length; i++) {
+      radius = Math.min(radius, eccentricities[i]);
+      diameter = Math.max(diameter, eccentricities[i]);
+    }
+    attributes.setRadius(radius);
+    attributes.setDiameter(diameter);
+
+    // Obtain center vertices
+    for (int i = 0; i < distances.length; i++) {
+      if (eccentricities[i] == radius) {
+        attributes.addVertex(getVertex(i));
+      }
+    }
+    
+    attributes.setMaximumFragmentSizes(
+                            calculateMaximumFragmentSizes(indexMap));
+  }
+  
+  private int[][] calculateDistances(HashMap indexMap) {
+    // Calculate the adjacency matrix
     int n = getNumberOfVertices();
     int[][] distances = new int[n][n];
     for (int i = 0; i < n; i++) {
@@ -151,39 +200,8 @@ public class StrongComponent extends Vertex {
         }
       }
     }
-
-    // Calculate girth and eccentricity
-    GeometryAttributes attributes = (GeometryAttributes) getAttributes();
-    int girth = Integer.MAX_VALUE;
-    int[] eccentricities = new int[n];
-    for (int i = 0; i < n; i++) {
-      girth = Math.min(girth, distances[i][i]);
-      eccentricities[i] = 0;
-      for (int j = 0; j < n; j++) {
-        if (i != j) {
-          eccentricities[i] = Math.max(eccentricities[i], distances[i][j]);
-        }
-      }
-    }
-    attributes.setEccentricities(eccentricities);
-    attributes.setGirth(girth);
-
-    // Calculate radius and diameter
-    int radius = Integer.MAX_VALUE;
-    int diameter = 0;
-    for (int i = 0; i < n; i++) {
-      radius = Math.min(radius, eccentricities[i]);
-      diameter = Math.max(diameter, eccentricities[i]);
-    }
-    attributes.setRadius(radius);
-    attributes.setDiameter(diameter);
-
-    // Obtain center vertices
-    for (int i = 0; i < n; i++) {
-      if (eccentricities[i] == radius) {
-        attributes.addVertex(getVertex(i));
-      }
-    }
+    
+    return distances;
   }
 
   private HashMap calculateIndexMap() {
@@ -192,6 +210,38 @@ public class StrongComponent extends Vertex {
       result.put(getVertex(i), new Integer(i));
     }
     return result;
+  }
+  
+  private int[] calculateMaximumFragmentSizes(HashMap indexMap) {
+    // clone graph defining this strong component
+    AtomicVertex[] graph = new AtomicVertex[getNumberOfVertices()];
+    for (int i = 0; i < graph.length; i++) {
+      graph[i] = new AtomicVertex(null);
+    }
+    for (int i = 0; i < graph.length; i++) {
+      AtomicVertex vertex = getVertex(i);
+      for (int j = 0, n = vertex.getNumberOfOutgoingArcs(); j < n; j++) {
+        Integer index = (Integer) indexMap.get(vertex.getHeadVertex(j));
+        if (index != null) {
+          graph[i].addOutgoingArcTo(graph[index.intValue()]);
+        }
+      }
+    }
+    
+    StrongComponentProcessor processor = new StrongComponentProcessor(false);
+    int[] maximumFragmentSizes = new int[getNumberOfVertices()];
+    for (int i = 0; i < maximumFragmentSizes.length; i++) {
+      graph[i].setDefaultValueOfGraphVertexFlag(false);
+      processor.deepSearchFirst(graph);
+      StrongComponent[] fragments = processor.getStrongComponents();
+      maximumFragmentSizes[i] = 0;
+      for (int j = 0; j < fragments.length; j++) {
+        maximumFragmentSizes[i] = Math.max(maximumFragmentSizes[i], 
+                                           fragments[j].getNumberOfVertices());
+      }
+      graph[i].setDefaultValueOfGraphVertexFlag(true);
+    }
+    return maximumFragmentSizes;
   }
 
   /**
