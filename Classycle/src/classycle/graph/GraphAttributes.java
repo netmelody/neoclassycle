@@ -24,10 +24,39 @@
  */
 package classycle.graph;
 
-public interface GraphAttributes extends Attributes
-{
+/**
+ * Attributes of a graph. The following properties
+ * can be accessed with this interface:
+ * <dl><dt>Girth:</dt><dd>The length of the shortest cycle.</dd>
+ *     <dt>Diameter:</dt>
+ *     <dd>The largest <em>distance</em> in the graph. 
+ *         The <em>distance</em> between vertex A and B is defined as the
+ *         shortest path from A to B. The distance is infinite if there is
+ *         no path from A to B.
+ *     </dd>
+ *     <dt>Radius:</dt>
+ *     <dd>The smallest <em>eccentricity</em> in the graph. The
+ *         <em>eccentricity</em> of a vertex A is the maximum over
+ *         all distances form A to any other vertex.
+ *     </dd>
+ *     <dt>Center:</dt>
+ *     <dd>The set of vertices of the graph with the
+ *         smallest eccentricities.
+ *     </dd>
+ * </dl>
+ * 
+ * @author Franz-Josef Elmer
+ */
+public interface GraphAttributes extends Attributes {
+  /** Returns the girth. */
   public int getGirth();
+  
+  /** Returns the radius. */
   public int getRadius();
+  
+  /** Returns the diameter. */
   public int getDiameter();
+  
+  /** Returns the vertices of the center. */
   public Vertex[] getCenterVertices();
 } //interface
