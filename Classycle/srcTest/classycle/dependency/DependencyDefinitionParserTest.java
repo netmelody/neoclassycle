@@ -6,6 +6,8 @@ package classycle.dependency;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import classycle.util.StringPattern;
+
 import junit.framework.TestCase;
 
 /**
@@ -97,6 +99,23 @@ public class DependencyDefinitionParserTest extends TestCase
                          });
   }
   
+  public void testLayerDefinitions()
+  {
+    check("[a] = a.*\n"
+          + "[b] = b.*\n"
+          + "[c] = [a] excluding j.*\n"
+          + "layer a = z.*\n"
+          + "layer b = [c]\n"
+          + "layer bla = [a] [c]\n"
+          + "layer c = [a] s.*\n",
+          new String[] {"a", "b", "bla", "c"},
+          new String[][] {{"z.*"},
+                          {"(a.* & !j.*)"},
+                          {"a.*", "(a.* & !j.*)"},
+                          {"a.*", "s.*"}
+                         });    
+  }
+  
   private void check(String definition, String[] expectedStatements) 
   {
     DependencyDefinitionParser parser 
@@ -129,6 +148,32 @@ public class DependencyDefinitionParserTest extends TestCase
       String expectedSet = expectedSets[i][1];
       assertEquals("Set " + setName, expectedSet, 
                    definitions.getPattern(setName) + "");
+    }
+  }
+  
+  private void check(String definition, String[] layerNames, 
+                     String[][] expectedLayers)
+  {
+    DependencyDefinitionParser parser 
+        = new DependencyDefinitionParser(definition, new MockResultRenderer());
+    LayerDefinitionRepository definitions = parser._layerDefinitions;
+    for (int i = 0; i < expectedLayers.length; i++)
+    {
+      StringPattern[] layer = definitions.getLayer(layerNames[i]);
+      int n = Math.min(layer.length, expectedLayers[i].length);
+      for (int j = 0; j < n; j++)
+      {
+        assertEquals("Layer " + layerNames[i] + " " + j, 
+                     expectedLayers[i][j], layer[j] + "");
+      }
+      int d = expectedLayers[i].length - layer.length;
+      if (d > 0)
+      {
+        fail(d + " terms missed");
+      } else if (d < 0) 
+      {
+        fail(-d + " unexpected terms");
+      }
     }
   }
   
