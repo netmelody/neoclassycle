@@ -49,7 +49,7 @@
        page.
        ==================================================================== -->
   <xsl:variable name="infoLine">
-    Click on <img src="&linkImg;"/> behind a number and a popup will show a list of those classes.
+    Click on <img src="&linkImg;"/> behind a number and a popup will show more details.
   </xsl:variable>
 
   <!-- ====================================================================
