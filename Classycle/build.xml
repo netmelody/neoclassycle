@@ -10,7 +10,7 @@
   <property name="OUTPUT_PATH_SRCTEST" value="classes"/>
 
   <!-- set output path for generation of apidoc ============================-->
-  <property name="OUTPUT_PATH_APIDOC" value="docs/apidoc"/>
+  <property name="OUTPUT_PATH_APIDOC" value="docs/WebSite/apidoc"/>
 
   <!-- set distribution file name ==========================================-->
   <property name="DIST_NAME" value="classycle.zip"/>
