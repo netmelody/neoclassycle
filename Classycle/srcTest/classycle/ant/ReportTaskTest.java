@@ -82,6 +82,18 @@ public class ReportTaskTest extends BuildFileTest
     checkNumberOfLines(78, "reportTaskTest.xml");
   }
 
+  public void testReflectionAll() throws Exception
+  {
+    executeTarget("testReflectionAll");
+    checkNumberOfLines(88, "reportTaskTest.xml");
+  }
+
+  public void testReflectionRestricted() throws Exception
+  {
+    executeTarget("testReflectionRestricted");
+    checkNumberOfLines(82, "reportTaskTest.xml");
+  }
+
   public void testXMLPackagesOnly() throws Exception
   {
     executeTarget("testXMLPackagesOnly");

@@ -78,4 +78,22 @@
                      reportFile="reportTaskTest.foo">
     </classycleReport>
   </target>
+
+  <target name="testReflectionAll">
+    <classycleReport reportFile="reportTaskTest.xml"
+    				 reflectionPattern=""
+    				 includingClasses="classycle.Ana*">
+      <fileset dir="../classes"/>
+    </classycleReport>
+  </target>
+
+
+  <target name="testReflectionRestricted">
+    <classycleReport reportFile="reportTaskTest.xml"
+    				 reflectionPattern="bla.* foo.*"
+    				 includingClasses="classycle.Ana*">
+      <fileset dir="../classes"/>
+    </classycleReport>
+  </target>
+
 </project>
