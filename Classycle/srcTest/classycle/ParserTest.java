@@ -9,6 +9,7 @@ import java.util.HashSet;
 import junit.framework.TestCase;
 import classycle.classfile.ConstantPoolPrinter;
 import classycle.graph.AtomicVertex;
+import classycle.graph.Vertex;
 
 import com.sun.tools.javac.Main;
 
@@ -38,6 +39,8 @@ public class ParserTest extends TestCase {
     writer.write(code);
     writer.close();
     assertEquals("Exit code", 0, JAVAC.compile(new String[] {JAVA_FILE}));
+    //System.out.println("======\n" + code);
+    //ConstantPoolPrinter.main(new String[] {CLASS_FILE});
     return Parser.readClassFiles(new String[] {CLASS_FILE})[0];
   }
 
@@ -63,11 +66,13 @@ public class ParserTest extends TestCase {
       classSet.add(expectedClasses[i]);
     }
     for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) {
-      String name = ((ClassAttributes) vertex.getHeadVertex(i).getAttributes())
-                                                                    .getName();
-      assertTrue(name + " not expected", classSet.contains(name)); 
+      Vertex v = vertex.getHeadVertex(i);
+      String name = ((ClassAttributes) v.getAttributes()).getName();
+      assertTrue(name + " not expected", classSet.contains(name));
+      classSet.remove(name); 
     }
-    assertEquals("number of classes", expectedClasses.length, 
+    assertEquals("number of classes (missing: " + classSet + ")", 
+                 expectedClasses.length, 
                  vertex.getNumberOfOutgoingArcs());
   }
 
@@ -109,7 +114,7 @@ public class ParserTest extends TestCase {
     check(new String[] {"java.lang.Object", "java.util.Enumeration",
                         "java.util.Hashtable", "java.lang.System",
                         "java.util.Properties"},
-            "class Test { Object e = System.getProperties().elements();}");
+          "class Test { Object e = System.getProperties().keys();}");
   }
   
   public void testConstantsReference() throws IOException {
