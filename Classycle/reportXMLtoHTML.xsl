@@ -1,35 +1,81 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
    Copyright (c) 2003, Franz-Josef Elmer, All rights reserved.
- 
-   Redistribution and use in source and binary forms, with or without 
+
+   Redistribution and use in source and binary forms, with or without
    modification, are permitted provided that the following conditions are met:
-   
-   - Redistributions of source code must retain the above copyright notice, 
+
+   - Redistributions of source code must retain the above copyright notice,
      this list of conditions and the following disclaimer.
-   - Redistributions in binary form must reproduce the above copyright notice, 
-     this list of conditions and the following disclaimer in the documentation 
+   - Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation
      and/or other materials provided with the distribution.
- 
-   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED 
-   TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
-   PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
-   CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-   EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+
+   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+   TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+   PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+   CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+   EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
-   OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
-   WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
-   OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
-   EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+   WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+   OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+   EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
+
+<!DOCTYPE classycle [
+  <!-- ====================================================================
+       Mapping of images onto files
+       ==================================================================== -->
+  <!ENTITY logoImg            "images/logo.png">
+  <!ENTITY linkImg            "images/link.png">
+  <!ENTITY mixImg             "images/mix.png">
+  <!ENTITY innerImg           "images/inner.png">
+  <!ENTITY classImg           "images/class.png">
+  <!ENTITY abstractImg        "images/abstract.png">
+  <!ENTITY interfaceImg       "images/interface.png">
+  <!ENTITY innerclassImg      "images/innerclass.png">
+  <!ENTITY innerabstractImg   "images/innerabstract.png">
+  <!ENTITY innerinterfaceImg  "images/innerinterface.png">
+]>
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version="1.0">
   <xsl:strip-space elements="*"/>
-  
+
   <!-- ====================================================================
-       Matches root element <classycle>. Creates HTML page with headers, 
+       Definition of an explanation text appearing several times on the
+       page.
+       ==================================================================== -->
+  <xsl:variable name="infoLine">
+    Click on <img src="&linkImg;"/> behind a number and a popup will show a list of those classes.
+  </xsl:variable>
+
+  <!-- ====================================================================
+       Calculates the number of cycles.
+       ==================================================================== -->
+  <xsl:variable name="numberOfCycles" select="count(/classycle/cycles/cycle)"/>
+
+  <!-- ====================================================================
+       Calculates the number of layers.
+       ==================================================================== -->
+  <xsl:variable name="numberOfLayers">
+    <xsl:for-each select="/classycle/classes/class">
+      <xsl:sort select="@layer" data-type="number"/>
+      <xsl:if test="position()=last()">
+        <xsl:value-of select="./@layer + 1"/>
+      </xsl:if>
+    </xsl:for-each>
+  </xsl:variable>
+
+  <!-- ====================================================================
+       Calculates the number of classes.
+       ==================================================================== -->
+  <xsl:variable name="numberOfClasses" select="count(/classycle/classes/class)"/>
+
+  <!-- ====================================================================
+       Matches root element <classycle>. Creates HTML page with headers,
        style sheets, JavaScript, and title.
        ==================================================================== -->
   <xsl:template match="classycle">
@@ -39,20 +85,50 @@
         </title>
         <style type="text/css">
           body { font-family:Helvetica,Arial,sans-serif; }
-          th { background-color:#aaaaaa; } 
+          th { background-color:#aaaaaa; }
         </style>
         <script type="text/javascript"><![CDATA[
         <!--
-          function show(title, classes) {
-            list = window.open("", "list", 
-                "dependent=yes,location=no,menubar=no,toolbar=no,width=400,height=500");
+          var number = /^\d*$/;
+
+          function showTable(title, headers, content) {
+            text = "<h3>" + title + "</h3><p>";
+            if (content.length > 0) {
+              text += "<table border=\"1\" cellpadding=\"5\" cellspacing=\"0\">";
+              if (headers.length > 0) {
+                text += "<tr>";
+                headerArray = headers.split(",");
+                for (i = 0; i < headerArray.length; i++) {
+                  text += "<th>" + headerArray[i] + "</th>";
+                }
+                text += "</tr>";
+              }
+              rows = content.split(";");
+              for (i = 0; i < rows.length; i++) {
+                if (rows[i].length > 0) {
+                  columns = rows[i].split(",");
+                  text += "<tr>";
+                  for (j = 0; j < columns.length; j++) {
+                    text += "<td" + (number.test(columns[j]) ? " align=\"right\">" : ">") + columns[j] + "</td>";
+                  }
+                  text += "</tr>";
+                }
+              }
+              text += "</table>";
+            }
+            showText(text);
+          }
+
+          function showText(text) {
+            list = window.open("", "list",
+                "dependent=yes,location=no,menubar=no,toolbar=no,width=500,height=400");
             list.document.close();
             list.document.open();
             list.document.write("<html><head><style type=\"text/css\">");
-            list.document.write("body { font-family:Helvetica,Arial,sans-serif; } </style></head><body>");
-            list.document.write("<h3>" + title + "</h3><p>");
-            list.document.write(classes.replace(/ /g,"<br/>"));
-            list.document.write("</body></html>");
+            list.document.write("body { font-family:Helvetica,Arial,sans-serif; } ");
+            list.document.writeln("th { background-color:#aaaaaa; } </style></head><body>");
+            list.document.writeln(text);
+            list.document.writeln("</body></html>");
             list.document.close();
             list.focus();
           }
@@ -61,23 +137,78 @@
         </script>
       </head>
       <body>
-        <h1><a href="http://classycle.sourceforge.net">
-              <img src="images/logo.png" alt="Classcyle" width="200" 
+        <h1><a href="http://classycle.sourceforge.net" alt="Classcyle Home Page">
+              <img src="&logoImg;" alt="Classcyle" width="200"
                    height="135" border="0" align="middle" hspace="4"/>
             </a>
             Analysis of <xsl:value-of select="/classycle/@title"/></h1>
-        <xsl:apply-templates/>
+        <xsl:call-template name="createSummary"/>
+        <xsl:call-template name="createCyclesSection"/>
+        <xsl:call-template name="createLayersTable"/>
+        <xsl:call-template name="createClassesSection"/>
       </body>
     </html>
   </xsl:template>
 
   <!-- ====================================================================
-       Matches element <cycles>. Creates cycles section of HTML page.
-       Creates summary and table headers.
+       Subroutine which creates a short summary.
        ==================================================================== -->
-  <xsl:template match="cycles">
-    <h2>Cycles</h2>
-    Summary: <xsl:value-of select="count(cycle)"/> cycles detected.
+  <xsl:template name="createSummary">
+    <h2>Summary</h2>
+    <table border="0" cellpadding="0" cellspacing="0">
+      <tr><td align="right"><xsl:value-of select="$numberOfCycles"/></td>
+          <td width="5"/><td><a href="#cycles">cycles</a></td>
+      </tr>
+      <tr><td align="right"><xsl:copy-of select="$numberOfLayers"/></td>
+          <td width="5"/><td><a href="#layers">layers</a></td>
+      </tr>
+      <tr><td align="right"><xsl:value-of select="$numberOfClasses"/></td>
+          <td width="5"/>
+          <td><a href="#classes">classes</a> (using
+            <xsl:value-of select="/classycle/classes/@numberOfExternalClasses"/>
+            external classes.)
+          </td>
+      </tr>
+    </table>
+    <p/>
+    <xsl:call-template name="createClassesSummary"/>
+  </xsl:template>
+
+  <!-- ====================================================================
+       Subroutine creating the summary table of class types.
+       ==================================================================== -->
+  <xsl:template name="createClassesSummary">
+    <xsl:variable name="classes" select="/classycle/classes/class"/>
+    <table border="1" cellpadding="5" cellspacing="0" width="770">
+      <tr>
+        <th>Type</th>
+        <th>Number of classes</th>
+        <th>Averaged (maximum) size in bytes</th>
+        <th>Averaged (maximum) number of usage by other classes</th>
+        <th>Averaged (maximum) number of used internal classes</th>
+        <th>Averaged (maximum) number of used external clasess</th>
+      </tr>
+      <xsl:call-template name="summary">
+        <xsl:with-param name="type">Interfaces</xsl:with-param>
+        <xsl:with-param name="set" select="$classes[@type='interface']"/>
+      </xsl:call-template>
+      <xsl:call-template name="summary">
+        <xsl:with-param name="type">Abstract classes</xsl:with-param>
+        <xsl:with-param name="set" select="$classes[@type='abstract class']"/>
+      </xsl:call-template>
+      <xsl:call-template name="summary">
+        <xsl:with-param name="type">Concrete classes</xsl:with-param>
+        <xsl:with-param name="set" select="$classes[@type='class']"/>
+      </xsl:call-template>
+    </table>
+  </xsl:template>
+
+  <!-- ====================================================================
+       Subroutine which creates the cycles table.
+       ==================================================================== -->
+  <xsl:template name="createCyclesSection">
+    <h2><a name="cycles">Cycles</a></h2>
+    <xsl:copy-of select="$infoLine"/>
     <table border="1" cellpadding="5" cellspacing="0" width="770">
       <tr>
         <th>Name</th>
@@ -87,7 +218,63 @@
         <th>Diameter</th>
         <th>Layer</th>
       </tr>
-      <xsl:apply-templates/>
+      <xsl:for-each select="/classycle/cycles">
+        <xsl:apply-templates/> <!-- template for <cycle> element -->
+      </xsl:for-each>
+    </table>
+  </xsl:template>
+
+  <!-- ====================================================================
+       Subroutine which creates the table with the layers statistics.
+       ==================================================================== -->
+  <xsl:template name="createLayersTable">
+    <h2><a name="layers">Layers</a></h2>
+    <xsl:variable name="dummyList" select="/classycle/classes/class[position() &lt;= $numberOfLayers]"/>
+    <xsl:copy-of select="$infoLine"/>
+    <table border="1" cellpadding="5" cellspacing="0" width="770">
+      <tr>
+        <td><b>Layer</b></td>
+        <xsl:for-each select="$dummyList">
+          <xsl:variable name="layer" select="position() - 1"/>
+          <xsl:variable name="set" select="/classycle/classes/class[@layer=$layer]"/>
+          <td align="center"><xsl:value-of select="$layer"/></td>
+        </xsl:for-each>
+      </tr>
+      <tr>
+        <td><b>Number of classes</b></td>
+        <xsl:for-each select="$dummyList">
+          <xsl:variable name="layer" select="position() - 1"/>
+          <xsl:variable name="set" select="/classycle/classes/class[@layer=$layer]"/>
+          <td align="center">
+            <xsl:call-template name="createListPopupWithLink">
+              <xsl:with-param name="set" select="$set"/>
+              <xsl:with-param name="text">Classes of layer <xsl:value-of select="$layer"/>:</xsl:with-param>
+            </xsl:call-template>
+          </td>
+        </xsl:for-each>
+      </tr>
+    </table>
+  </xsl:template>
+
+
+  <!-- ====================================================================
+       Subroutine creating the classes section.
+       ==================================================================== -->
+  <xsl:template name="createClassesSection">
+    <h2><a name="classes">Classes</a></h2>
+    <xsl:copy-of select="$infoLine"/>
+    <table cellpadding="3" cellspacing="0" border="1" width="770">
+      <tr>
+        <th>Class</th>
+        <th>Size</th>
+        <th>Used by</th>
+        <th>Uses internal</th>
+        <th>Uses external</th>
+        <th>Layer</th>
+      </tr>
+      <xsl:for-each select="/classycle/classes">
+        <xsl:apply-templates/>  <!-- template for <class> element -->
+      </xsl:for-each>
     </table>
   </xsl:template>
 
@@ -100,11 +287,11 @@
       <td>
         <xsl:choose>
           <xsl:when test="contains(@name,'et al.')">
-            <img src="images/mix.png" alt="inner class" width="20"
+            <img src="&mixImg;" alt="inner class" width="20"
                  height="20" align="middle" hspace="4"/>
           </xsl:when>
           <xsl:when test="contains(@name,'inner classes')">
-            <img src="images/inner.png" alt="class" width="20" height="20"
+            <img src="&innerImg;" alt="class" width="20" height="20"
                  align="middle" hspace="4"/>
           </xsl:when>
         </xsl:choose>
@@ -112,30 +299,25 @@
       </td>
       <td align="right">
         <div style="cursor:pointer;">
+          <xsl:value-of select="@size"/>
           <xsl:element name="a">
             <xsl:attribute name="onClick">
               <xsl:call-template name="classRefWithEccentricityPopup">
                 <xsl:with-param name="set" select="classes/classRef"/>
                 <xsl:with-param name="text">Classes of cycle <xsl:value-of select="@name"/>:</xsl:with-param>
+                <xsl:with-param name="column">eccentricity</xsl:with-param>
               </xsl:call-template>
             </xsl:attribute>
-            <xsl:value-of select="@size"/>
+            <img src="&linkImg;" hspace="3"/>
           </xsl:element>
         </div>
       </td>
       <td align="right"><xsl:value-of select="@girth"/></td>
       <td align="right">
-        <div style="cursor:pointer;">
-          <xsl:element name="a">
-            <xsl:attribute name="onClick">
-              <xsl:call-template name="classRefPopup">
-                <xsl:with-param name="set" select="centerClasses/classRef"/>
-                <xsl:with-param name="text">Center classes of cycle <xsl:value-of select="@name"/>:</xsl:with-param>
-              </xsl:call-template>
-            </xsl:attribute>
-            <xsl:value-of select="@radius"/>
-          </xsl:element>
-        </div>
+        <xsl:call-template name="createListPopupWithLink">
+          <xsl:with-param name="set" select="centerClasses/classRef"/>
+          <xsl:with-param name="text">Center classes of cycle <xsl:value-of select="@name"/>:</xsl:with-param>
+        </xsl:call-template>
       </td>
       <td align="right"><xsl:value-of select="@diameter"/></td>
       <td align="right"><xsl:value-of select="@longestWalk"/></td>
@@ -143,116 +325,58 @@
   </xsl:template>
 
   <!-- ====================================================================
-       Subroutine which creates JavaScript popup with sorted class 
-       references.
-       
-       parameters:
-       
-       set Set of elements with attribute "name". The set will be sorted in
-           accordance with this attribute.
-       text Explaining header of the popup
-       
-       ==================================================================== -->
-  <xsl:template name="classRefPopupSorted">
-    <xsl:param name="set"/>
-    <xsl:param name="text"/>
-    <xsl:for-each select="$set">
-      <xsl:sort select="@name"/>
-    </xsl:for-each>
-    <xsl:call-template name="classRefPopup">
-      <xsl:with-param name="set" select="$set"/>
-      <xsl:with-param name="text" select="$text"/>
-    </xsl:call-template>
-  </xsl:template>
+       Subroutine which creates JavaScript popup listing the specified set
+       and the appropriated link.
 
-  <!-- ====================================================================
-       Subroutine which creates JavaScript popup class references.
-       
        parameters:
-       
-       set Set of elements with attribute "name". 
+
+       set Set of elements with attribute "name".
        text Explaining header of the popup
-       
+
        ==================================================================== -->
-  <xsl:template name="classRefPopup">
+  <xsl:template name="createListPopupWithLink">
     <xsl:param name="set"/>
     <xsl:param name="text"/>
-    <xsl:text>javascript:show(&quot;</xsl:text>
-    <xsl:value-of select="$text"/><xsl:text>&quot;,&quot;</xsl:text>
-    <xsl:for-each select="$set">
-      <xsl:value-of select="@name"/><xsl:text> </xsl:text>
-    </xsl:for-each>
-    <xsl:text>&quot;)</xsl:text>
+    <div style="cursor:pointer;">
+      <xsl:value-of select="count($set)"/>
+      <xsl:element name="a">
+        <xsl:attribute name="onClick">
+          <xsl:text>javascript:showTable(&quot;</xsl:text>
+          <xsl:value-of select="$text"/><xsl:text>&quot;,&quot;&quot;,&quot;</xsl:text>
+          <xsl:for-each select="$set">
+            <xsl:sort select="@name"/>
+            <xsl:value-of select="@name"/><xsl:text>;</xsl:text>
+          </xsl:for-each>
+          <xsl:text>&quot;)</xsl:text>
+        </xsl:attribute>
+        <img src="&linkImg;" hspace="3"/>
+      </xsl:element>
+    </div>
   </xsl:template>
 
   <!-- ====================================================================
        Subroutine which creates JavaScript popup class references with
        eccentricities.
-       
+
        parameters:
-       
-       set Set of elements with attribute "eccentricity" and "name". 
+
+       set Set of elements with attribute "eccentricity" and "name".
        text Explaining header of the popup
-       
+
        ==================================================================== -->
   <xsl:template name="classRefWithEccentricityPopup">
     <xsl:param name="set"/>
     <xsl:param name="text"/>
-    <xsl:text>javascript:show(&quot;</xsl:text>
-    <xsl:value-of select="$text"/><xsl:text>&quot;,&quot;</xsl:text>
+    <xsl:param name="column"/>
+    <xsl:text>javascript:showTable(&quot;</xsl:text>
+    <xsl:value-of select="$text"/><xsl:text>&quot;,&quot;Name,Eccentricity&quot;,&quot;</xsl:text>
     <xsl:for-each select="$set">
-      <xsl:value-of select="@eccentricity"/><xsl:text>&amp;nbsp;</xsl:text>
-      <xsl:value-of select="@name"/><xsl:text> </xsl:text>
+      <xsl:value-of select="@name"/><xsl:text>,</xsl:text>
+      <xsl:value-of select="attribute::$column)"/><xsl:text>;</xsl:text>
     </xsl:for-each>
     <xsl:text>&quot;)</xsl:text>
   </xsl:template>
 
-  <!-- ====================================================================
-       Matches element <classes>. Creates classes section of HTML page.
-       Creates summary and table headers.
-       ==================================================================== -->
-  <xsl:template match="classes">
-    <h2>Classes</h2>
-    Summary: <xsl:value-of select="count(class)"/> classes using
-    <xsl:value-of select="@numberOfExternalClasses"/> external classes.
-    <table border="1" cellpadding="5" cellspacing="0" width="770">
-      <tr>
-        <th>Type</th>
-        <th>Number of classes</th>
-        <th>Averaged (maximum) size in bytes</th>
-        <th>Averaged (maximum) used by</th>
-        <th>Averaged (maximum) uses internal</th>
-        <th>Averaged (maximum) uses external</th>
-      </tr>
-      <xsl:call-template name="summary">
-        <xsl:with-param name="type">Interfaces</xsl:with-param>
-        <xsl:with-param name="set" select="class[@type='interface']"/>
-        <xsl:with-param name="totalNumber" select="count(class)"/>
-      </xsl:call-template>
-      <xsl:call-template name="summary">
-        <xsl:with-param name="type">Abstract classes</xsl:with-param>
-        <xsl:with-param name="set" select="class[@type='abstract class']"/>
-        <xsl:with-param name="totalNumber" select="count(class)"/>
-      </xsl:call-template>
-      <xsl:call-template name="summary">
-        <xsl:with-param name="type">Concrete classes</xsl:with-param>
-        <xsl:with-param name="set" select="class[@type='class']"/>
-        <xsl:with-param name="totalNumber" select="count(class)"/>
-      </xsl:call-template>
-    </table>
-    <p/>
-    <table cellpadding="3" cellspacing="0" border="1" width="770">
-      <tr>
-        <th>Class</th>
-        <th>Size</th>
-        <th>Used by</th>
-        <th>Uses internal</th>
-        <th>Uses external</th>
-        <th>Layer</th>
-      </tr>
-      <xsl:apply-templates/>
-    </table>
-  </xsl:template>
 
   <!-- ====================================================================
        Matches element <class>. Creates a row in the classes table with
@@ -263,27 +387,27 @@
        <td>
          <xsl:choose>
            <xsl:when test="@type='class' and @innerClass='true'">
-             <img src="images/innerclass.png" alt="inner class" width="20"
+             <img src="&innerclassImg;" alt="inner class" width="20"
                   height="20" align="middle" hspace="4"/>
            </xsl:when>
            <xsl:when test="@type='class' and @innerClass='false'">
-             <img src="images/class.png" alt="class" width="20" height="20"
+             <img src="&classImg;" alt="class" width="20" height="20"
                   align="middle" hspace="4"/>
            </xsl:when>
            <xsl:when test="@type='abstract class' and @innerClass='true'">
-             <img src="images/innerabstract.png" alt="inner class" width="20"
+             <img src="&innerabstractImg;" alt="inner class" width="20"
                   height="20" align="middle" hspace="4"/>
            </xsl:when>
            <xsl:when test="@type='abstract class' and @innerClass='false'">
-             <img src="images/abstract.png" alt="class" width="20" height="20"
+             <img src="&abstractImg;" alt="class" width="20" height="20"
                   align="middle" hspace="4"/>
            </xsl:when>
            <xsl:when test="@type='interface' and @innerClass='true'">
-             <img src="images/innerinterface.png" alt="inner class" width="20"
+             <img src="&innerinterfaceImg;" alt="inner class" width="20"
                   height="20" align="middle" hspace="4"/>
            </xsl:when>
            <xsl:when test="@type='interface' and @innerClass='false'">
-             <img src="images/interface.png" alt="class" width="20" height="20"
+             <img src="&interfaceImg;" alt="class" width="20" height="20"
                   align="middle" hspace="4"/>
            </xsl:when>
          </xsl:choose>
@@ -296,43 +420,22 @@
        </td>
        <td align="right"><xsl:value-of select="@size"/></td>
        <td align="right">
-         <div style="cursor:pointer;">
-           <xsl:element name="a">
-             <xsl:attribute name="onClick">
-               <xsl:call-template name="classRefPopupSorted">
-                 <xsl:with-param name="set" select="classRef[@type='usedBy']"/>
-                 <xsl:with-param name="text">Classes using <xsl:value-of select="@name"/>:</xsl:with-param>
-               </xsl:call-template>
-             </xsl:attribute>
-             <xsl:value-of select="@usedBy"/>
-           </xsl:element>
-         </div>
+         <xsl:call-template name="createListPopupWithLink">
+           <xsl:with-param name="set" select="classRef[@type='usedBy']"/>
+           <xsl:with-param name="text">Classes using <xsl:value-of select="@name"/>:</xsl:with-param>
+         </xsl:call-template>
        </td>
        <td align="right">
-         <div style="cursor:pointer;">
-           <xsl:element name="a">
-             <xsl:attribute name="onClick">
-               <xsl:call-template name="classRefPopupSorted">
-                 <xsl:with-param name="set" select="classRef[@type='usesInternal']"/>
-                 <xsl:with-param name="text"><xsl:value-of select="@name"/> uses:</xsl:with-param>
-               </xsl:call-template>
-             </xsl:attribute>
-             <xsl:value-of select="@usesInternal"/>
-           </xsl:element>
-         </div>
+         <xsl:call-template name="createListPopupWithLink">
+           <xsl:with-param name="set" select="classRef[@type='usesInternal']"/>
+           <xsl:with-param name="text"><xsl:value-of select="@name"/> uses:</xsl:with-param>
+         </xsl:call-template>
        </td>
        <td align="right">
-         <div style="cursor:pointer;">
-           <xsl:element name="a">
-             <xsl:attribute name="onClick">
-               <xsl:call-template name="classRefPopupSorted">
-                 <xsl:with-param name="set" select="classRef[@type='usesExternal']"/>
-                 <xsl:with-param name="text"><xsl:value-of select="@name"/> uses:</xsl:with-param>
-               </xsl:call-template>
-             </xsl:attribute>
-             <xsl:value-of select="@usesExternal"/>
-           </xsl:element>
-         </div>
+         <xsl:call-template name="createListPopupWithLink">
+           <xsl:with-param name="set" select="classRef[@type='usesExternal']"/>
+           <xsl:with-param name="text"><xsl:value-of select="@name"/> uses:</xsl:with-param>
+         </xsl:call-template>
        </td>
       <td align="right"><xsl:value-of select="@layer"/></td>
      </tr>
@@ -341,13 +444,12 @@
   <!-- ====================================================================
        Subroutine which calculates the summary for the specified subset of
        classes and adds a row to the class summary table.
-       
+
        parameters:
-       
+
        type Text which will appear in the column "Type"
        set Subset of <class> elements
-       totalNumber Total number of <class> elements
-       
+
        ==================================================================== -->
   <xsl:template name="summary">
     <xsl:param name="type"/>
@@ -356,7 +458,7 @@
     <tr>
       <td>
         <nobr>
-          <xsl:value-of select="round(100 * count($set) div $totalNumber)"/>% <xsl:value-of select="$type"/>
+          <xsl:value-of select="round(100 * count($set) div $numberOfClasses)"/>% <xsl:value-of select="$type"/>
         </nobr>
       </td>
       <td align="right"><xsl:value-of select="count($set)"/></td>
