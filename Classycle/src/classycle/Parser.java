@@ -43,7 +43,7 @@ import classycle.graph.AtomicVertex;
 
 /**
  *  Utility methods for parsing class files and creating directed graphs.
- *  The nodes of the graph a classes. The initial vertex of an edge is the
+ *  The nodes of the graph are classes. The initial vertex of an edge is the
  *  class which uses the class specified by the terminal vertex.
  *
  *  @author Franz-Josef Elmer
@@ -57,6 +57,8 @@ public class Parser
   {
     ClassAttributes attributes;
     ArrayList nodes = new ArrayList();
+    
+    public UnresolvedNode() {}
 
     public int compareTo(Object o)
     {
@@ -65,6 +67,7 @@ public class Parser
     }
   }
 
+  /** Private constructor to prohibit instanciation. */
   private Parser() {}
 
   /**
@@ -229,7 +232,8 @@ public class Parser
   }
   
   /** 
-   * Parses an UFT8Constant and picks class names if it has the correct syntax.
+   * Parses an UFT8Constant and picks class names if it has the correct syntax
+   * of a field or method descirptor.
    */  
   private static void parseUTF8Constant(UTF8Constant constant, 
                                         ArrayList nodes, String className) {
@@ -266,9 +270,20 @@ public class Parser
       }
     }
   }
-  
+
+  /**
+   * Parses the specified string for a type descriptor and stores the extracted
+   * class name in the specified array.
+   * @param str String to be parsed.
+   * @param i <tt>i[0]</tt> points into <tt>str</tt> on the first character
+   *        of the type descriptor. After parsing it will point to the first 
+   *        character after the type descriptor.
+   * @param classNames Array of class names. If the parsed type descriptor is
+   *        an object type with a syntactically valid class name this class 
+   *        name will be added.
+   * @return <tt>false</tt> if a syntax error has been detected.
+   */   
   private static boolean parseType(String str, int[] i, ArrayList classNames) {
-    //System.out.print(">"+str.substring(i[0])+"< ");
     boolean validType = false;
     boolean arrayType = false;
     int n = str.length();
@@ -291,7 +306,6 @@ public class Parser
     } else {
       validType = !arrayType;
     }
-    //System.out.println(">" + str.substring(i[0]) + "< " + validType);
     return validType;
   } 
   
