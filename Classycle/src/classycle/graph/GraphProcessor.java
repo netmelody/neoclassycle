@@ -32,46 +32,43 @@ package classycle.graph;
  *  <pre>
  *    vertex.visit();
  *    processBefore(vertex);
- *    for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i &lt; n; i++)
- *    {
+ *    for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i &lt; n; i++) {
  *      processArc(vertex, vertex.getHeadVertex(i));
  *    }
  *    processAfter(vertex);
  *  </pre>
- *  The methods {@link #initializeProcessing}, {@link #processBefore},
- *  {@link #processArc}, and {@link #processAfter} have to be implemented
+ *  The methods {@link #initializeProcessing initializeProcessing()}, 
+ *  {@link #processBefore processBefore()},
+ *  {@link #processArc processArc()}, and 
+ *  {@link #processAfter processAfter()} have to be implemented
  *  by concrete classes.
  *  <p>
  *  The class will be used by creating an instance and invoking
- *  {@link #deepSearchFirst} one or several times. Either the graph will be
+ *  {@link #deepSearchFirst deepSearchFirst()} one or several times. 
+ *  Either the graph will be
  *  modified or some result objects are created which can be obtained
  *  by special methods defined in concrete subclasses. Note, that
  *  a <tt>GraphProcessor</tt> is not thread-safe.
  *
  *  @author Franz-Josef Elmer
  */
-public abstract class GraphProcessor
-{
+public abstract class GraphProcessor {
   /**
    *  Performs a deep search first of the specified graph.
    *  First, processing will be initialized and all vertices of the graph
    *  will be reset. Then for all unvisited vertices the
-   *  private method <tt>process(Vertex)</tt>  will be invoked. At last,
+   *  method <tt>process(Vertex)</tt> will be invoked. At last,
    *  processing will be finished.
    *  @param graph A directed graph.
    */
-  public void deepSearchFirst(Vertex[] graph)
-  {
+  public void deepSearchFirst(Vertex[] graph) {
     initializeProcessing(graph);
-    for (int i = 0; i < graph.length; i++)
-    {
+    for (int i = 0; i < graph.length; i++) {
       graph[i].reset();
     }
 
-    for (int i = 0; i < graph.length; i++)
-    {
-      if (!graph[i].isVisited())
-      {
+    for (int i = 0; i < graph.length; i++) {
+      if (!graph[i].isVisited()) {
         process(graph[i]);
       }
     }
@@ -79,12 +76,10 @@ public abstract class GraphProcessor
   }
 
   /** Processes the specified vertex. */
-  protected void process(Vertex vertex)
-  {
+  protected void process(Vertex vertex) {
     vertex.visit();
     processBefore(vertex);
-    for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++)
-    {
+    for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) {
       processArc(vertex, vertex.getHeadVertex(i));
     }
     processAfter(vertex);
@@ -92,12 +87,12 @@ public abstract class GraphProcessor
 
   /**
    *  Initializes processing. Will be called in method
-   *  {@link deepSearchFirst}.
+   *  {@link #deepSearchFirst}.
    */
   protected abstract void initializeProcessing(Vertex[] graph);
 
   /**
-   *  Processes the specified vertex before its arcs are processed.
+   *  Processes the specified vertex before its outgoing arcs are processed.
    *  @param vertex Vertex to be processed.
    */
   protected abstract void processBefore(Vertex vertex);
@@ -117,7 +112,7 @@ public abstract class GraphProcessor
 
   /**
    *  Finishes processing.  Will be called in method
-   *  {@link deepSearchFirst}.
+   *  {@link #deepSearchFirst}.
    */
   protected abstract void finishProcessing(Vertex[] graph);
-} //interface
+}
