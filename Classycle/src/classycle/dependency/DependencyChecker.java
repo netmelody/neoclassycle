@@ -22,15 +22,12 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */
-package classycle;
+package classycle.dependency;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-import classycle.dependency.DefaultResultRenderer;
-import classycle.dependency.DependencyProcessor;
-import classycle.dependency.Result;
-import classycle.dependency.ResultRenderer;
+import classycle.Analyser;
 import classycle.graph.AtomicVertex;
 import classycle.util.StringPattern;
 
