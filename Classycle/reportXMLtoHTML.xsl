@@ -35,10 +35,30 @@
         <style type="text/css">
           body { font-family:Helvetica,Arial,sans-serif; } 
         </style>
+        <script type="text/javascript"><![CDATA[
+        <!--
+          function show(title, classes) {
+            list = window.open("", "list", 
+                "dependent=yes,location=no,menubar=no,toolbar=no,width=400,height=500");
+            list.document.close();
+            list.document.open();
+            list.document.write("<html><head><style type=\"text/css\">");
+            list.document.write("body { font-family:Helvetica,Arial,sans-serif; } </style></head><body>");
+            list.document.write("<h3>" + title + "</h3><p>");
+            list.document.write(classes.replace(/ /g,"<br/>"));
+            list.document.write("</body></html>");
+            list.document.close();
+            list.focus();
+          }
+        //-->
+        ]]>
+        </script>
       </head>
       <body>
-        <h1><img src="images/logo.png" alt="Classcyle" width="199" height="123"
-                 align="middle" hspace="4"/>
+        <h1><a href="http://classycle.sourceforge.net">
+              <img src="images/logo.png" alt="Classcyle" width="200" 
+                   height="135" border="0" align="middle" hspace="4"/>
+            </a>
             Analysis of <xsl:value-of select="/classycle/@title"/></h1>
         <xsl:apply-templates/>
       </body>
@@ -124,12 +144,12 @@
   <xsl:template name="classRefPopup">
     <xsl:param name="set"/>
     <xsl:param name="text"/>
-    <xsl:text>alert("</xsl:text>
-    <xsl:value-of select="$text"/><xsl:text>\n\n</xsl:text>
+    <xsl:text>javascript:show(&quot;</xsl:text>
+    <xsl:value-of select="$text"/><xsl:text>&quot;,&quot;</xsl:text>
     <xsl:for-each select="$set">
-      <xsl:value-of select="@name"/><xsl:text>\n</xsl:text>
+      <xsl:value-of select="@name"/><xsl:text> </xsl:text>
     </xsl:for-each>
-    <xsl:text>")</xsl:text>
+    <xsl:text>&quot;)</xsl:text>
   </xsl:template>
 
   <xsl:template match="classes">
