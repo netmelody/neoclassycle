@@ -28,6 +28,7 @@ import java.text.MessageFormat;
 
 import classycle.ClassAttributes;
 import classycle.graph.AtomicVertex;
+import classycle.graph.NameAttributes;
 
 /**
  * Renderer of an {@link AtomicVertex} with 
@@ -66,11 +67,19 @@ public class TemplateBasedClassRenderer implements AtomicVertexRenderer {
    */
   public String render(AtomicVertex vertex, int layerIndex) {
     String[] values = new String[8];
-    ClassAttributes attributes = (ClassAttributes) vertex.getAttributes();
+    NameAttributes attributes = (NameAttributes) vertex.getAttributes();
     values[0] = attributes.getName();
-    values[1] = attributes.getType();
-    values[2] = Long.toString(attributes.getSize());
-    values[3] = attributes.isInnerClass() ? "true" : "false";
+    values[2] = Integer.toString(attributes.getSize());
+    if (attributes instanceof ClassAttributes)
+    {
+      ClassAttributes ca = (ClassAttributes) attributes;
+      values[1] = ca.getType();
+      values[3] = ca.isInnerClass() ? "true" : "false";
+    } else
+    {
+      values[1] = "";
+      values[3] = "";
+    }
     values[4] = Integer.toString(vertex.getNumberOfIncomingArcs());
     int usesInternal = 0;
     int usesExternal = 0;

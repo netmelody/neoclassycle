@@ -24,10 +24,6 @@
  */
 package classycle.renderer;
 
-import java.text.MessageFormat;
-
-import classycle.ClassAttributes;
-import classycle.graph.AtomicVertex;
 
 /**
  * XML renderer of an {@link AtomicVertex} with 
@@ -35,45 +31,23 @@ import classycle.graph.AtomicVertex;
  * 
  * @author Franz-Josef Elmer
  */
-public class XMLClassRenderer implements AtomicVertexRenderer {
-  public static final String CLASS_ELEMENT = "class",
-                             CLASS_REF_ELEMENT = "classRef";
-  private static final AtomicVertexRenderer CLASS_RENDERER
-      = new TemplateBasedClassRenderer("    <" + CLASS_ELEMENT
-              + " name=\"{0}\" type=\"{1}\" innerClass=\"{3}\" size=\"{2}\""
-              + " usedBy=\"{4}\" usesInternal=\"{5}\" usesExternal=\"{6}\""
-              + " layer=\"{7}\">\n");
-  private static final String CLASS_END_TEMPLATE 
-      = "    </" + CLASS_ELEMENT + ">\n";
-  private static final MessageFormat CLASS_REF_FORMAT 
-      = new MessageFormat("      <" + CLASS_REF_ELEMENT + " name=\"{0}\"" 
-                          + " type=\"{1}\"/>\n");
+public class XMLClassRenderer extends XMLAtomicVertexRenderer 
+{
+  protected String getElement()
+  {
+    return "class";
+  }
 
-  /**
-   * Renderes the specified vertex. It is assumed that the vertex attributes
-   * are of the type {@link classycle.ClassAttributes}.
-   * @param vertex Vertex to be rendered.
-   * @return the rendered vertex.
-   */
-  public String render(AtomicVertex vertex, int layerIndex) {
-    StringBuffer result 
-        = new StringBuffer(CLASS_RENDERER.render(vertex, layerIndex));
+  protected String getRefElement()
+  {
+    return "classRef";
+  }
 
-    String[] values = new String[2];
-    for (int i = 0, n = vertex.getNumberOfIncomingArcs(); i < n; i++) {
-      values[0] = ((ClassAttributes) vertex.getTailVertex(i).getAttributes())
-                  .getName();
-      values[1] = "usedBy";
-      CLASS_REF_FORMAT.format(values, result, null);
-    }
-    for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) {
-      values[0] = ((ClassAttributes) vertex.getHeadVertex(i).getAttributes())
-                  .getName();
-      values[1] = ((AtomicVertex) vertex.getHeadVertex(i)).isGraphVertex()
-                                            ? "usesInternal" : "usesExternal";
-      CLASS_REF_FORMAT.format(values, result, null);
-    }
-    result.append(CLASS_END_TEMPLATE);
-    return new String(result);
+  protected AtomicVertexRenderer getVertexRenderer()
+  {
+    return new TemplateBasedClassRenderer("    <" + getElement()
+            + " name=\"{0}\" type=\"{1}\" innerClass=\"{3}\" size=\"{2}\""
+            + " usedBy=\"{4}\" usesInternal=\"{5}\" usesExternal=\"{6}\""
+            + " layer=\"{7}\">\n");
   }
 } //class

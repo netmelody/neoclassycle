@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2004, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -22,15 +22,36 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */
-package classycle.graph;
+package classycle;
+
+import classycle.renderer.AtomicVertexRenderer;
+import classycle.renderer.TemplateBasedClassRenderer;
+import classycle.renderer.XMLAtomicVertexRenderer;
+
 
 /**
- *  Interface of any general set of attributes a {@link Vertex} may
- *  have. These attributes are neither used or modified by any parsing or
- *  searching process.
- *
- *  @author Franz-Josef Elmer
+ * XML renderer of an {@link AtomicVertex} with 
+ * {@link NameAttributes}.
+ * 
+ * @author Franz-Josef Elmer
  */
-public interface Attributes extends Comparable 
+public class XMLPackageRenderer extends XMLAtomicVertexRenderer 
 {
-} //interface
+  protected String getElement()
+  {
+    return "package";
+  }
+
+  protected String getRefElement()
+  {
+    return "packageRef";
+  }
+
+  protected AtomicVertexRenderer getVertexRenderer()
+  {
+    return new TemplateBasedClassRenderer("    <" + getElement()
+            + " name=\"{0}\"  size=\"{2}\" usedBy=\"{4}\" usesInternal=\"{5}\""
+            + " usesExternal=\"{6}\" layer=\"{7}\">\n");
+  }
+
+} //class

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2004, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -25,12 +25,32 @@
 package classycle.graph;
 
 /**
- *  Interface of any general set of attributes a {@link Vertex} may
- *  have. These attributes are neither used or modified by any parsing or
- *  searching process.
- *
- *  @author Franz-Josef Elmer
+ * @author  Franz-Josef Elmer
  */
-public interface Attributes extends Comparable 
+public abstract class NameAttributes implements Attributes
 {
-} //interface
+  private final String _name;
+  
+  public NameAttributes(String name)
+  {
+    _name = name;
+  }
+  
+  /** Returns the name. */
+  public String getName() {
+    return _name;
+  }
+
+  public int compareTo(Object object)
+  {
+    int result = -1;
+    if (object instanceof NameAttributes && _name != null)
+    {
+      result = _name.compareTo(((NameAttributes) object).getName());
+    }
+    return result;
+  }
+  
+  public abstract int getSize();
+
+}

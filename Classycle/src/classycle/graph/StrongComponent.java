@@ -115,6 +115,23 @@ public class StrongComponent extends Vertex {
       }
     }
     
+    public int compareTo(Object object)
+    {
+      int result = 1;
+      if (object instanceof GeometryAttributes && _bestFragmenters.size() > 0)
+      {
+        ArrayList list = ((GeometryAttributes) object)._bestFragmenters;
+        if (list.size() > 0)
+        {
+          Attributes attributes 
+              = ((Vertex) _bestFragmenters.get(0)).getAttributes();
+          Attributes objectAttributes = ((Vertex) list.get(0)).getAttributes();
+          result = attributes.compareTo(objectAttributes);
+        }
+      }
+      return result;
+    }
+
   }
 
   private final Vector _vertices = new Vector();

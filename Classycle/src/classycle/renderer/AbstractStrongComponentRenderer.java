@@ -24,9 +24,11 @@
  */
 package classycle.renderer;
 
-import classycle.ClassAttributes;
 import classycle.graph.AtomicVertex;
+import classycle.graph.GraphAttributes;
+import classycle.graph.NameAttributes;
 import classycle.graph.StrongComponent;
+import classycle.graph.Vertex;
 
 /**
  * Abstract superclass of all {@link StrongComponentRenderer}.
@@ -44,10 +46,13 @@ public abstract class AbstractStrongComponentRenderer
    * class name of the outer class extended by "and inner classes".
    */
   protected String createName(StrongComponent component) {
-    String result = component.getVertex(0).getAttributes().toString();
+    GraphAttributes ga = (GraphAttributes) component.getAttributes();
+    Vertex fragmenter = ga.getBestFragmenters()[0];
+    String result = ((NameAttributes) fragmenter.getAttributes()).getName();
+    //String result = component.getVertex(0).getAttributes().toString();
     if (component.getNumberOfVertices() > 1) {
       AtomicVertex vertex = component.getVertex(0);
-      ClassAttributes attributes = (ClassAttributes) vertex.getAttributes();
+      NameAttributes attributes = (NameAttributes) vertex.getAttributes();
       String outerClass = attributes.getName();
       int index = outerClass.indexOf('$');
       if (index > 0) {
@@ -55,21 +60,20 @@ public abstract class AbstractStrongComponentRenderer
       }
       boolean isInnerClass = true;
       for (int i = 0, n = component.getNumberOfVertices(); i < n; i++) {
-        attributes = (ClassAttributes) component.getVertex(i).getAttributes();
+        attributes = (NameAttributes) component.getVertex(i).getAttributes();
         if (attributes.getName().equals(outerClass)) {
           vertex = component.getVertex(i);
-        } else if (
-          !attributes.getName().startsWith(outerClass)
+        } else if (!attributes.getName().startsWith(outerClass)
             || attributes.getName().charAt(outerClass.length()) != '$') {
           isInnerClass = false;
           break;
         }
       }
-      attributes = (ClassAttributes) vertex.getAttributes();
+      attributes = (NameAttributes) vertex.getAttributes();
       if (isInnerClass) {
         result = attributes.getName() + " and inner classes";
       } else {
-        result = attributes.getName() + " et al.";
+        result += " et al.";
       }
     }
     return result;

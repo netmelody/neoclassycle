@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2004, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -22,15 +22,41 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */
-package classycle.graph;
+package classycle;
+
+import java.util.ArrayList;
+
+import classycle.graph.NameAttributes;
 
 /**
- *  Interface of any general set of attributes a {@link Vertex} may
- *  have. These attributes are neither used or modified by any parsing or
- *  searching process.
- *
- *  @author Franz-Josef Elmer
+ * @author  Franz-Josef Elmer
  */
-public interface Attributes extends Comparable 
+public class PackageAttributes extends NameAttributes
 {
-} //interface
+  private final ArrayList _classes = new ArrayList();
+  
+  public PackageAttributes(String name)
+  {
+    super(name);
+  }
+  
+  public int getSize()
+  {
+    return _classes.size();
+  }
+  
+  public String[] getClasses()
+  {
+    return (String[]) _classes.toArray(new String[_classes.size()]);
+  }
+  
+  public void addClass(ClassAttributes classAttributes)
+  {
+    String className = classAttributes.getName();
+    if (!_classes.contains(className))
+    {
+      _classes.add(className);
+    } 
+  }
+
+}

@@ -15,6 +15,12 @@ public class GraphTestCase extends TestCase {
     public String toString() {
       return _name;
     }
+    public int compareTo(Object arg0)
+    {
+      // TODO Auto-generated method stub
+      return 0;
+    }
+
   }
 
   protected AtomicVertex _externalVertex = new AtomicVertex(null);

@@ -32,6 +32,7 @@ package classycle;
  */
 public class AnalyserCommandLine {
   private boolean _valid = true;
+  private boolean _packagesOnly;
   private boolean _raw;
   private boolean _cycles;
   private boolean _strong;
@@ -45,6 +46,9 @@ public class AnalyserCommandLine {
     for (;index < args.length && args[index].charAt(0) == '-'; index++) {
       if (args[index].equals("-raw")) {
         _raw = true;
+      }
+      else if (args[index].equals("-packagesOnly")) {
+        _packagesOnly = true;
       }
       else if (args[index].equals("-cycles")) {
         _cycles = true;
@@ -83,8 +87,9 @@ public class AnalyserCommandLine {
 
   /** Returns the usage of correct command line arguments and options. */
   public String getUsage() {
-    return "[-raw] [-cycles|-strong] [-xmlFile=<file>] [-csvFile=<file>] "
-          + "[-title=<title>] <class files, jar files, zip files, or folders>";
+    return "[-raw] [-packagesOnly] [-cycles|-strong] [-xmlFile=<file>] "
+        + "[-csvFile=<file>] [-title=<title>] "
+        + "<class files, jar files, zip files, or folders>";
   }
   
   /** 
@@ -98,6 +103,11 @@ public class AnalyserCommandLine {
   /** Returns <tt>true</tt> if the option <tt>-cycles</tt> has been set. */
   public boolean isCycles() {
     return _cycles;
+  }
+
+  /** Returns <tt>true</tt> if the option <tt>-package</tt> has been set. */
+  public boolean isPackagesOnly() {
+    return _packagesOnly;
   }
 
   /** Returns <tt>true</tt> if the option <tt>-raw</tt> has been set. */

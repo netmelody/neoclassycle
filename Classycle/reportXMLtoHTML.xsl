@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
-   Copyright (c) 2003, Franz-Josef Elmer, All rights reserved.
+   Copyright (c) 2003-2004, Franz-Josef Elmer, All rights reserved.
 
    Redistribution and use in source and binary forms, with or without
    modification, are permitted provided that the following conditions are met:
@@ -31,6 +31,7 @@
   <!ENTITY logoImg            "images/logo.png">
   <!ENTITY linkImg            "images/link.png">
   <!ENTITY mixImg             "images/mix.png">
+  <!ENTITY packageImg         "images/package.png">
   <!ENTITY innerImg           "images/inner.png">
   <!ENTITY classImg           "images/class.png">
   <!ENTITY abstractImg        "images/abstract.png">
@@ -73,6 +74,16 @@
        Calculates the number of classes.
        ==================================================================== -->
   <xsl:variable name="numberOfClasses" select="count(/classycle/classes/class)"/>
+
+  <!-- ====================================================================
+       Calculates the number of package cycles.
+       ==================================================================== -->
+  <xsl:variable name="numberOfPackageCycles" select="count(/classycle/packageCycles/packageCycle)"/>
+
+  <!-- ====================================================================
+       Calculates the number of packages.
+       ==================================================================== -->
+  <xsl:variable name="numberOfPackages" select="count(/classycle/packages/package)"/>
 
   <!-- ====================================================================
        Matches root element <classycle>. Creates HTML page with headers,
@@ -121,11 +132,12 @@
 
           function showText(text) {
             list = window.open("", "list",
-                "dependent=yes,location=no,menubar=no,toolbar=no,scrollbars=yes,width=500,height=400");
+                "dependent=yes,location=no,menubar=yes,resizable=yes,toolbar=no,scrollbars=yes,width=500,height=400");
             list.document.close();
             list.document.open();
             list.document.write("<html><head><style type=\"text/css\">");
             list.document.write("body { font-family:Helvetica,Arial,sans-serif; } ");
+            list.document.write(".link { cursor:pointer;text-decoration:underline; } ");
             list.document.writeln("th { background-color:#aaaaaa; } </style></head><body>");
             list.document.writeln(text);
             list.document.writeln("</body></html>");
@@ -143,9 +155,14 @@
             </a>
             Analysis of <xsl:value-of select="/classycle/@title"/></h1>
         <xsl:call-template name="createSummary"/>
-        <xsl:call-template name="createCyclesSection"/>
-        <xsl:call-template name="createLayersTable"/>
-        <xsl:call-template name="createClassesSection"/>
+        <xsl:if test="$numberOfClasses > 0">
+          <xsl:call-template name="createCyclesSection"/>
+        </xsl:if>
+        <xsl:call-template name="createPackageCyclesSection"/>
+        <xsl:if test="$numberOfClasses > 0">
+          <xsl:call-template name="createLayersTable"/>
+        </xsl:if>
+        <xsl:call-template name="createClassesAndPackagesSection"/>
       </body>
     </html>
   </xsl:template>
@@ -156,41 +173,90 @@
   <xsl:template name="createSummary">
     <h2>Summary</h2>
     <table border="0" cellpadding="0" cellspacing="0">
+      <xsl:if test="$numberOfClasses > 0">
+        <tr>
+          <td align="right">
+            <xsl:choose>
+              <xsl:when test="$numberOfCycles = 0">no</xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="$numberOfCycles"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </td>
+          <td width="5"/>
+          <td>
+            <xsl:choose>
+              <xsl:when test="$numberOfCycles = 0">class cycles</xsl:when>
+              <xsl:when test="$numberOfCycles = 1">
+                <a href="#cycles">class cycle</a>
+              </xsl:when>
+              <xsl:otherwise>
+                <a href="#cycles">class cycles</a>
+              </xsl:otherwise>
+            </xsl:choose>
+          </td>
+        </tr>
+        <tr><td align="right"><xsl:copy-of select="$numberOfLayers"/></td>
+            <td width="5"/><td><a href="#layers">class layers</a></td>
+        </tr>
+        <tr><td align="right"><xsl:value-of select="$numberOfClasses"/></td>
+            <td width="5"/>
+            <td><a href="#classes">classes</a> (using
+              <xsl:value-of select="/classycle/classes/@numberOfExternalClasses"/>
+              external classes) grouped in <xsl:value-of select="$numberOfPackages"/> packages
+            </td>
+        </tr>
+      </xsl:if>
       <tr>
         <td align="right">
           <xsl:choose>
-            <xsl:when test="$numberOfCycles = 0">no</xsl:when>
+            <xsl:when test="$numberOfPackageCycles = 0">no</xsl:when>
             <xsl:otherwise>
-              <xsl:value-of select="$numberOfCycles"/>
+              <xsl:value-of select="$numberOfPackageCycles"/>
             </xsl:otherwise>
           </xsl:choose>
         </td>
         <td width="5"/>
         <td>
           <xsl:choose>
-            <xsl:when test="$numberOfCycles = 0">cycles</xsl:when>
-            <xsl:when test="$numberOfCycles = 1">
-              <a href="#cycles">cycle</a>
+            <xsl:when test="$numberOfPackageCycles = 0">package cycles</xsl:when>
+            <xsl:when test="$numberOfPackageCycles = 1">
+              <a href="#packageCycles">package cycle</a>
             </xsl:when>
             <xsl:otherwise>
-              <a href="#cycles">cycles</a>
+              <a href="#packageCycles">package cycles</a>
             </xsl:otherwise>
           </xsl:choose>
         </td>
       </tr>
-      <tr><td align="right"><xsl:copy-of select="$numberOfLayers"/></td>
-          <td width="5"/><td><a href="#layers">layers</a></td>
-      </tr>
-      <tr><td align="right"><xsl:value-of select="$numberOfClasses"/></td>
-          <td width="5"/>
-          <td><a href="#classes">classes</a> (using
-            <xsl:value-of select="/classycle/classes/@numberOfExternalClasses"/>
-            external classes.)
+      <xsl:if test="$numberOfClasses = 0">
+        <tr>
+          <td align="right">
+            <xsl:choose>
+              <xsl:when test="$numberOfPackages = 0">no</xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="$numberOfPackages"/>
+              </xsl:otherwise>
+            </xsl:choose>
           </td>
-      </tr>
+          <td width="5"/>
+          <td>
+            <xsl:choose>
+              <xsl:when test="$numberOfPackages = 1">
+                <a href="#packageCycles">package</a>
+              </xsl:when>
+              <xsl:otherwise>
+                <a href="#packageCycles">packages</a>
+              </xsl:otherwise>
+            </xsl:choose>
+          </td>
+        </tr>
+      </xsl:if>
     </table>
     <p/>
-    <xsl:call-template name="createClassesSummary"/>
+    <xsl:if test="$numberOfClasses > 0">
+      <xsl:call-template name="createClassesSummary"/>
+    </xsl:if>
   </xsl:template>
 
   <!-- ====================================================================
@@ -247,6 +313,30 @@
   </xsl:template>
 
   <!-- ====================================================================
+       Subroutine which creates the package cycles table.
+       ==================================================================== -->
+  <xsl:template name="createPackageCyclesSection">
+    <xsl:if test="$numberOfPackageCycles &gt; 0">
+      <h2><a name="packageCycles">Package Cycles</a></h2>
+      <xsl:copy-of select="$infoLine"/>
+      <table border="1" cellpadding="5" cellspacing="0" width="770">
+        <tr>
+          <th>Name</th>
+          <th>Number of packagess</th>
+          <th>Best Fragment Size</th>
+          <th>Girth</th>
+          <th>Radius</th>
+          <th>Diameter</th>
+          <th>Layer</th>
+        </tr>
+        <xsl:for-each select="/classycle/packageCycles">
+          <xsl:apply-templates/> <!-- template for <cycle> element -->
+        </xsl:for-each>
+      </table>
+    </xsl:if>
+  </xsl:template>
+
+  <!-- ====================================================================
        Subroutine which creates the table with the layers statistics.
        ==================================================================== -->
   <xsl:template name="createLayersTable">
@@ -281,10 +371,14 @@
 
 
   <!-- ====================================================================
-       Subroutine creating the classes section.
+       Subroutine creating the classes and packages section.
        ==================================================================== -->
-  <xsl:template name="createClassesSection">
-    <h2><a name="classes">Classes</a></h2>
+  <xsl:template name="createClassesAndPackagesSection">
+    <h2>
+      <a name="classes">
+        <xsl:if test="$numberOfClasses > 0">Classes and </xsl:if>Packages
+      </a>
+    </h2>
     <xsl:copy-of select="$infoLine"/>
     <table cellpadding="3" cellspacing="0" border="1" width="770">
       <tr>
@@ -295,8 +389,96 @@
         <th>Uses external</th>
         <th>Layer</th>
       </tr>
-      <xsl:for-each select="/classycle/classes">
-        <xsl:apply-templates/>  <!-- template for <class> element -->
+      <xsl:for-each select="/classycle/classes/class|/classycle/packages/package">
+        <xsl:sort select="@name" case-order="upper-first" data-type="text"/>
+        <tr>
+          <td>
+            <xsl:choose>
+              <xsl:when test="@type='class' and @innerClass='true'">
+                <img src="&innerclassImg;" alt="inner class" width="20"
+                     height="20" align="middle" hspace="4"/>
+              </xsl:when>
+              <xsl:when test="@type='class' and @innerClass='false'">
+                <img src="&classImg;" alt="class" width="20" height="20"
+                     align="middle" hspace="4"/>
+              </xsl:when>
+              <xsl:when test="@type='abstract class' and @innerClass='true'">
+                <img src="&innerabstractImg;" alt="inner class" width="20"
+                     height="20" align="middle" hspace="4"/>
+              </xsl:when>
+              <xsl:when test="@type='abstract class' and @innerClass='false'">
+                <img src="&abstractImg;" alt="class" width="20" height="20"
+                    align="middle" hspace="4"/>
+              </xsl:when>
+              <xsl:when test="@type='interface' and @innerClass='true'">
+                <img src="&innerinterfaceImg;" alt="inner class" width="20"
+                     height="20" align="middle" hspace="4"/>
+              </xsl:when>
+              <xsl:when test="@type='interface' and @innerClass='false'">
+                <img src="&interfaceImg;" alt="class" width="20" height="20"
+                     align="middle" hspace="4"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <img src="&packageImg;" alt="package" width="20"
+                     height="20" align="middle" hspace="4"/>
+              </xsl:otherwise>
+            </xsl:choose>
+            <xsl:element name="a">
+              <xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
+              <xsl:value-of select="@name"/>
+            </xsl:element>
+          </td>
+          <td align="right"><xsl:value-of select="@size"/></td>
+          <xsl:if test="boolean(@type)">
+            <td align="right">
+              <xsl:call-template name="createListPopupWithLink">
+                <xsl:with-param name="set" select="classRef[@type='usedBy']"/>
+                <xsl:with-param name="number" select="count(classRef[@type='usedBy'])"/>
+                <xsl:with-param name="text">Classes using <xsl:value-of select="@name"/>:</xsl:with-param>
+              </xsl:call-template>
+            </td>
+            <td align="right">
+              <xsl:call-template name="createListPopupWithLink">
+                <xsl:with-param name="set" select="classRef[@type='usesInternal']"/>
+                <xsl:with-param name="number" select="count(classRef[@type='usesInternal'])"/>
+                <xsl:with-param name="text"><xsl:value-of select="@name"/> uses:</xsl:with-param>
+              </xsl:call-template>
+            </td>
+            <td align="right">
+              <xsl:call-template name="createListPopupWithLink">
+                <xsl:with-param name="noLink">true</xsl:with-param>
+                <xsl:with-param name="set" select="classRef[@type='usesExternal']"/>
+                <xsl:with-param name="number" select="count(classRef[@type='usesExternal'])"/>
+                <xsl:with-param name="text"><xsl:value-of select="@name"/> uses:</xsl:with-param>
+              </xsl:call-template>
+            </td>
+          </xsl:if>
+          <xsl:if test="boolean(@type) = false">
+            <td align="right">
+              <xsl:call-template name="createListPopupWithLink">
+                <xsl:with-param name="set" select="packageRef[@type='usedBy']"/>
+                <xsl:with-param name="number" select="count(packageRef[@type='usedBy'])"/>
+                <xsl:with-param name="text">Packages using <xsl:value-of select="@name"/>:</xsl:with-param>
+              </xsl:call-template>
+            </td>
+            <td align="right">
+              <xsl:call-template name="createListPopupWithLink">
+                <xsl:with-param name="set" select="packageRef[@type='usesInternal']"/>
+                <xsl:with-param name="number" select="count(packageRef[@type='usesInternal'])"/>
+                <xsl:with-param name="text"><xsl:value-of select="@name"/> uses:</xsl:with-param>
+              </xsl:call-template>
+            </td>
+            <td align="right">
+              <xsl:call-template name="createListPopupWithLink">
+                <xsl:with-param name="noLink">true</xsl:with-param>
+                <xsl:with-param name="set" select="packageRef[@type='usesExternal']"/>
+                <xsl:with-param name="number" select="count(packageRef[@type='usesExternal'])"/>
+                <xsl:with-param name="text"><xsl:value-of select="@name"/> uses:</xsl:with-param>
+              </xsl:call-template>
+            </td>
+          </xsl:if>
+          <td align="right"><xsl:value-of select="@layer"/></td>
+        </tr>
       </xsl:for-each>
     </table>
   </xsl:template>
@@ -310,11 +492,11 @@
       <td>
         <xsl:choose>
           <xsl:when test="contains(@name,'et al.')">
-            <img src="&mixImg;" alt="inner class" width="20"
+            <img src="&mixImg;" alt="class" width="20"
                  height="20" align="middle" hspace="4"/>
           </xsl:when>
           <xsl:when test="contains(@name,'inner classes')">
-            <img src="&innerImg;" alt="class" width="20" height="20"
+            <img src="&innerImg;" alt="inner class" width="20" height="20"
                  align="middle" hspace="4"/>
           </xsl:when>
         </xsl:choose>
@@ -347,6 +529,42 @@
   </xsl:template>
 
   <!-- ====================================================================
+       Matches element <packageCycle>. Creates a row in the cycles table with
+       JavaScript popups.
+       ==================================================================== -->
+  <xsl:template match="packageCycle">
+    <tr>
+      <td>
+        <img src="&mixImg;" alt="package" width="20" height="20" align="middle" hspace="4"/>
+        <xsl:value-of select="@name"/>
+      </td>
+      <td align="right">
+        <xsl:call-template name="classRefWithEccentricityPopup">
+          <xsl:with-param name="set" select="packages/packageRef"/>
+          <xsl:with-param name="text">Packages of cycle <xsl:value-of select="@name"/>:</xsl:with-param>
+        </xsl:call-template>
+      </td>
+      <td align="right">
+        <xsl:call-template name="createListPopupWithLink">
+          <xsl:with-param name="set" select="bestFragmenters/packageRef"/>
+          <xsl:with-param name="number" select="@bestFragmentSize"/>
+          <xsl:with-param name="text">Best fragmenter(s) of cycle <xsl:value-of select="@name"/>:</xsl:with-param>
+        </xsl:call-template>
+      </td>
+      <td align="right"><xsl:value-of select="@girth"/></td>
+      <td align="right">
+        <xsl:call-template name="createListPopupWithLink">
+          <xsl:with-param name="set" select="centerPackages/packageRef"/>
+          <xsl:with-param name="number" select="@radius"/>
+          <xsl:with-param name="text">Center packages of cycle <xsl:value-of select="@name"/>:</xsl:with-param>
+        </xsl:call-template>
+      </td>
+      <td align="right"><xsl:value-of select="@diameter"/></td>
+      <td align="right"><xsl:value-of select="@longestWalk"/></td>
+    </tr>
+  </xsl:template>
+
+  <!-- ====================================================================
        Subroutine which creates JavaScript popup listing the specified set
        and the appropriated link.
 
@@ -361,6 +579,7 @@
     <xsl:param name="set"/>
     <xsl:param name="number"/>
     <xsl:param name="text"/>
+    <xsl:param name="noLink"/>
     <xsl:value-of select="$number"/>
     <xsl:element name="a">
       <xsl:attribute name="style">cursor:pointer;</xsl:attribute>
@@ -369,7 +588,15 @@
         <xsl:value-of select="$text"/><xsl:text>&quot;,&quot;&quot;,&quot;</xsl:text>
         <xsl:for-each select="$set">
           <xsl:sort select="@name"/>
-          <xsl:value-of select="@name"/><xsl:text>;</xsl:text>
+          <xsl:if test="boolean($noLink)">
+            <xsl:value-of select="@name"/>
+          </xsl:if>
+          <xsl:if test="boolean($noLink) = false">
+            <xsl:call-template name="link">
+              <xsl:with-param name="name" select="@name"/>
+            </xsl:call-template>
+          </xsl:if>
+          <xsl:text>;</xsl:text>
         </xsl:for-each>
         <xsl:text>&quot;)</xsl:text>
       </xsl:attribute>
@@ -383,7 +610,7 @@
 
        parameters:
 
-       set Set of elements with the attributes "name", 
+       set Set of elements with the attributes "name",
            "maximumFragmentSize", and "eccentricity".
        text Explaining header of the popup
 
@@ -399,7 +626,11 @@
         <xsl:value-of select="$text"/>
         <xsl:text>&quot;,&quot;Name,Maximum fragment size,Eccentricity&quot;,&quot;</xsl:text>
         <xsl:for-each select="$set">
-          <xsl:value-of select="@name"/><xsl:text>,</xsl:text>
+          <xsl:sort select="@name"/>
+          <xsl:call-template name="link">
+            <xsl:with-param name="name" select="@name"/>
+          </xsl:call-template>
+          <xsl:text>,</xsl:text>
           <xsl:value-of select="@maximumFragmentSize"/><xsl:text>,</xsl:text>
           <xsl:value-of select="@eccentricity"/><xsl:text>;</xsl:text>
         </xsl:for-each>
@@ -409,71 +640,21 @@
     </xsl:element>
   </xsl:template>
 
-
   <!-- ====================================================================
-       Matches element <class>. Creates a row in the classes table with
-       JavaScript popups.
+       Subroutine which creates a link onto the opener site.
+
+       parameter:
+
+       name of the element and link
+
        ==================================================================== -->
-  <xsl:template match="class">
-     <tr>
-       <td>
-         <xsl:choose>
-           <xsl:when test="@type='class' and @innerClass='true'">
-             <img src="&innerclassImg;" alt="inner class" width="20"
-                  height="20" align="middle" hspace="4"/>
-           </xsl:when>
-           <xsl:when test="@type='class' and @innerClass='false'">
-             <img src="&classImg;" alt="class" width="20" height="20"
-                  align="middle" hspace="4"/>
-           </xsl:when>
-           <xsl:when test="@type='abstract class' and @innerClass='true'">
-             <img src="&innerabstractImg;" alt="inner class" width="20"
-                  height="20" align="middle" hspace="4"/>
-           </xsl:when>
-           <xsl:when test="@type='abstract class' and @innerClass='false'">
-             <img src="&abstractImg;" alt="class" width="20" height="20"
-                  align="middle" hspace="4"/>
-           </xsl:when>
-           <xsl:when test="@type='interface' and @innerClass='true'">
-             <img src="&innerinterfaceImg;" alt="inner class" width="20"
-                  height="20" align="middle" hspace="4"/>
-           </xsl:when>
-           <xsl:when test="@type='interface' and @innerClass='false'">
-             <img src="&interfaceImg;" alt="class" width="20" height="20"
-                  align="middle" hspace="4"/>
-           </xsl:when>
-         </xsl:choose>
-         <xsl:element name="a">
-           <xsl:attribute name="name">
-             <xsl:value-of select="@name"/>
-           </xsl:attribute>
-           <xsl:value-of select="@name"/>
-         </xsl:element>
-       </td>
-       <td align="right"><xsl:value-of select="@size"/></td>
-       <td align="right">
-         <xsl:call-template name="createListPopupWithLink">
-           <xsl:with-param name="set" select="classRef[@type='usedBy']"/>
-           <xsl:with-param name="number" select="count(classRef[@type='usedBy'])"/>
-           <xsl:with-param name="text">Classes using <xsl:value-of select="@name"/>:</xsl:with-param>
-         </xsl:call-template>
-       </td>
-       <td align="right">
-         <xsl:call-template name="createListPopupWithLink">
-           <xsl:with-param name="set" select="classRef[@type='usesInternal']"/>
-           <xsl:with-param name="number" select="count(classRef[@type='usesInternal'])"/>
-           <xsl:with-param name="text"><xsl:value-of select="@name"/> uses:</xsl:with-param>
-         </xsl:call-template>
-       </td>
-       <td align="right">
-         <xsl:call-template name="createListPopupWithLink">
-           <xsl:with-param name="set" select="classRef[@type='usesExternal']"/>
-           <xsl:with-param name="number" select="count(classRef[@type='usesExternal'])"/>
-           <xsl:with-param name="text"><xsl:value-of select="@name"/> uses:</xsl:with-param>
-         </xsl:call-template>
-       </td>
-      <td align="right"><xsl:value-of select="@layer"/></td>
-     </tr>
+  <xsl:template name="link">
+    <xsl:param name="name"/>
+    <xsl:text>&lt;div class='link' onclick='javascript:window.opener.location.href=\"#</xsl:text>
+    <xsl:value-of select="$name"/>
+    <xsl:text>\"'&gt;</xsl:text>
+    <xsl:value-of select="$name"/>
+    <xsl:text>&lt;/div&gt;</xsl:text>
   </xsl:template>
 
   <!-- ====================================================================

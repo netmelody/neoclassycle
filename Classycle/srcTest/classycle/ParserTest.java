@@ -7,9 +7,9 @@ import java.io.Writer;
 import java.util.HashSet;
 
 import junit.framework.TestCase;
-
 import classycle.classfile.ConstantPoolPrinter;
 import classycle.graph.AtomicVertex;
+
 import com.sun.tools.javac.Main;
 
 /**

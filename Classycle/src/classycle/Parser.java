@@ -40,6 +40,7 @@ import classycle.classfile.ClassConstant;
 import classycle.classfile.Constant;
 import classycle.classfile.UTF8Constant;
 import classycle.graph.AtomicVertex;
+import classycle.graph.NameAttributes;
 
 /**
  *  Utility methods for parsing class files and creating directed graphs.
@@ -52,7 +53,7 @@ public class Parser {
   private static final int ACC_INTERFACE = 0x200, ACC_ABSTRACT = 0x400;
 
   private static class UnresolvedNode implements Comparable {
-    ClassAttributes attributes;
+    NameAttributes attributes;
     ArrayList nodes = new ArrayList();
 
     public UnresolvedNode() {}
@@ -124,7 +125,7 @@ public class Parser {
     UnresolvedNode result = null;
     try {
       stream = new FileInputStream(file);
-      result = Parser.createNode(stream, file.length());
+      result = Parser.createNode(stream, (int) file.length());
     } catch (IOException e) {
       throw e;
     } finally {
@@ -143,7 +144,7 @@ public class Parser {
       ZipEntry entry = (ZipEntry) entries.nextElement();
       if (!entry.isDirectory() && entry.getName().endsWith(".class")) {
         InputStream stream = zipFile.getInputStream(entry);
-        unresolvedNodes.add(Parser.createNode(stream, entry.getSize()));
+        unresolvedNodes.add(Parser.createNode(stream, (int) entry.getSize()));
       }
     }
   }
@@ -157,7 +158,7 @@ public class Parser {
    *  @return a node with unresolved link of all classes used by the analysed
    *         class.
    */
-  private static UnresolvedNode createNode(InputStream stream, long size)
+  private static UnresolvedNode createNode(InputStream stream, int size)
                                                         throws IOException {
     // Reads constant pool, accessFlags, and class name
     DataInputStream dataStream = new DataInputStream(stream);
@@ -303,7 +304,7 @@ public class Parser {
     AtomicVertex[] result = new AtomicVertex[unresolvedNodes.length];
     Hashtable map = new Hashtable();
     for (int i = 0; i < result.length; i++) {
-      ClassAttributes attributes = unresolvedNodes[i].attributes;
+      NameAttributes attributes = unresolvedNodes[i].attributes;
       AtomicVertex vertex = new AtomicVertex(attributes);
       map.put(attributes.getName(), vertex);
       result[i] = vertex;

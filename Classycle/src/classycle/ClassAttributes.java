@@ -24,7 +24,7 @@
  */
 package classycle;
 
-import classycle.graph.Attributes;
+import classycle.graph.NameAttributes;
 
 /**
  * Immutable class holding the attributes of a class vertex. They are
@@ -36,17 +36,16 @@ import classycle.graph.Attributes;
  * 
  * @author Franz-Josef Elmer
  */
-public class ClassAttributes implements Attributes {
+public class ClassAttributes extends NameAttributes {
   /** Type constant. */
   public static final String INTERFACE = "interface",
                       ABSTRACT_CLASS = "abstract class",
                       CLASS = "class",
                       UNKNOWN = "unknown external class";
 
-  private final String _name;
   private final String _type;
   private final boolean _innerClass;
-  private final long _size;
+  private final int _size;
 
   /**
    * Creates an instance based on the specified name, type, and size.
@@ -55,8 +54,8 @@ public class ClassAttributes implements Attributes {
    * @param type Type.
    * @param size Size.
    */
-  private ClassAttributes(String name, String type, long size) {
-    _name = name;
+  private ClassAttributes(String name, String type, int size) {
+    super(name);
     _type = type;
     _innerClass = name != null && name.indexOf('$') > 0;
     _size = size;
@@ -68,7 +67,7 @@ public class ClassAttributes implements Attributes {
    * @param size Size of the class file.
    * @return a new instance.
    */
-  public static ClassAttributes createInterface(String name, long size) {
+  public static ClassAttributes createInterface(String name, int size) {
     return new ClassAttributes(name, INTERFACE, size);
   }
 
@@ -78,7 +77,7 @@ public class ClassAttributes implements Attributes {
    * @param size Size of the class file.
    * @return a new instance.
    */
-  public static ClassAttributes createAbstractClass(String name, long size) {
+  public static ClassAttributes createAbstractClass(String name, int size) {
     return new ClassAttributes(name, ABSTRACT_CLASS, size);
   }
 
@@ -88,7 +87,7 @@ public class ClassAttributes implements Attributes {
    * @param size Size of the class file.
    * @return a new instance.
    */
-  public static ClassAttributes createClass(String name, long size) {
+  public static ClassAttributes createClass(String name, int size) {
     return new ClassAttributes(name, CLASS, size);
   }
 
@@ -98,13 +97,8 @@ public class ClassAttributes implements Attributes {
    * @param size Size of the class file.
    * @return a new instance.
    */
-  public static ClassAttributes createUnknownClass(String name, long size) {
+  public static ClassAttributes createUnknownClass(String name, int size) {
     return new ClassAttributes(name, UNKNOWN, size);
-  }
-
-  /** Returns the fully qualified class name. */
-  public String getName() {
-    return _name;
   }
 
   /** 
@@ -122,14 +116,14 @@ public class ClassAttributes implements Attributes {
   }
 
   /** Returns the size of the class file in bytes. */
-  public long getSize() {
+  public int getSize() {
     return _size;
   }
 
   /** Returns the attributes as a string for pretty printing. */
   public String toString() {
     StringBuffer buffer = new StringBuffer(_innerClass ? "inner " : "");
-    buffer.append(_type).append(' ').append(_name);
+    buffer.append(_type).append(' ').append(getName());
     if (_size > 0) {
       buffer.append(" (").append(_size).append(" bytes)");
     }

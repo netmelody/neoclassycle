@@ -43,19 +43,22 @@ import java.util.Vector;
  *
  *  @author Franz-Josef Elmer
  */
-public class Vertex {
+public class Vertex implements Comparable 
+{
   private final Vector _heads = new Vector();
   private final Vector _tails = new Vector();
   private final Attributes _attributes;
   private boolean _visited;
 
   /** Create a new instance for the specified attributes. */
-  public Vertex(Attributes attributes) {
+  public Vertex(Attributes attributes) 
+  {
     _attributes = attributes;
   }
 
   /** Returns the attributes. */
-  public Attributes getAttributes() {
+  public Attributes getAttributes() 
+  {
     return _attributes;
   }
 
@@ -63,12 +66,14 @@ public class Vertex {
    * Returns the number of outgoing arcs. This is equivalent to the number
    * of head vertices.
    */
-  public int getNumberOfOutgoingArcs() {
+  public int getNumberOfOutgoingArcs() 
+  {
     return _heads.size();
   }
 
   /** Returns the head vertex of the specified outgoing arc. */
-  public Vertex getHeadVertex(int index) {
+  public Vertex getHeadVertex(int index) 
+  {
     return (Vertex) _heads.elementAt(index);
   }
 
@@ -80,8 +85,10 @@ public class Vertex {
    * @param headVertex Head vertex to be added to establish a new outgoing arc.
    *        <tt>Null</tt> is not allowed.
    */
-  public void addOutgoingArcTo(Vertex headVertex) {
-    if (!_heads.contains(headVertex)) {
+  public void addOutgoingArcTo(Vertex headVertex) 
+  {
+    if (!_heads.contains(headVertex)) 
+    {
       _heads.addElement(headVertex);
       headVertex.addIncomingArcTo(this);
     }
@@ -91,12 +98,14 @@ public class Vertex {
    * Returns the number of incoming arcs. This is equivalent to the number
    * of tail vertices.
    */
-  public int getNumberOfIncomingArcs() {
+  public int getNumberOfIncomingArcs() 
+  {
     return _tails.size();
   }
 
   /** Returns the tail vertex of the specified outgoing arc. */
-  public Vertex getTailVertex(int index) {
+  public Vertex getTailVertex(int index) 
+  {
     return (Vertex) _tails.elementAt(index);
   }
 
@@ -108,15 +117,18 @@ public class Vertex {
    * @param tailVertex Tail vertex to be added to establish a new incoming arc.
    *        <tt>Null</tt> is not allowed.
    */
-  public void addIncomingArcTo(Vertex tailVertex) {
-    if (!_tails.contains(tailVertex)) {
+  public void addIncomingArcTo(Vertex tailVertex) 
+  {
+    if (!_tails.contains(tailVertex)) 
+    {
       _tails.addElement(tailVertex);
       tailVertex.addOutgoingArcTo(this);
     }
   }
 
   /** Reset this vertex. That is, the visited flag is set to <tt>false</tt>. */
-  public void reset() {
+  public void reset() 
+  {
     _visited = false;
   }
 
@@ -124,12 +136,14 @@ public class Vertex {
    *  Marks this instance as visited.
    *  That is, the visited flag becomes <tt>true</tt>.
    */
-  public void visit() {
+  public void visit() 
+  {
     _visited = true;
   }
 
   /** Returns the visited flag. */
-  public boolean isVisited() {
+  public boolean isVisited() 
+  {
     return _visited;
   }
 
@@ -137,7 +151,8 @@ public class Vertex {
    *  Returns <tt>toString()</tt> of the attributes and the number of
    *  incoming and outgoing arcs.
    */
-  public String toString() {
+  public String toString() 
+  {
     StringBuffer result = new StringBuffer();
     result.append(getAttributes() == null ? super.toString() 
                                           : getAttributes().toString())
@@ -146,4 +161,15 @@ public class Vertex {
           .append(" outgoing arc(s).");
     return new String(result);
   }
+
+  public int compareTo(Object object)
+  {
+    int result = 1;
+    if (object instanceof Vertex && _attributes != null)
+    {
+      result = _attributes.compareTo(((Vertex) object)._attributes);
+    }
+    return result;
+  }
+
 } //class

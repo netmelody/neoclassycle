@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2004, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -22,15 +22,22 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */
-package classycle.graph;
+package classycle;
+
+import classycle.graph.AtomicVertex;
 
 /**
- *  Interface of any general set of attributes a {@link Vertex} may
- *  have. These attributes are neither used or modified by any parsing or
- *  searching process.
- *
- *  @author Franz-Josef Elmer
+ * @author  Franz-Josef Elmer
  */
-public interface Attributes extends Comparable 
+public class PackageVertex extends AtomicVertex
 {
-} //interface
+  public PackageVertex(String name)
+  {
+    super(new PackageAttributes(name));
+  }
+  
+  public void addClass(ClassAttributes classAttributes)
+  {
+    ((PackageAttributes) getAttributes()).addClass(classAttributes);
+  }
+}
