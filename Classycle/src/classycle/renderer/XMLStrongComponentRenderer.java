@@ -41,21 +41,19 @@ public class XMLStrongComponentRenderer
   public static final String CYCLE_ELEMENT = "cycle",
                              CLASS_REF_ELEMENT = "classRef",
                              CLASSES_ELEMENT = "classes",
-                             CENTER_CLASSES_ELEMENT = "centerClasses";
+                             CENTER_CLASSES_ELEMENT = "centerClasses",
+                             BEST_FRAGMENTERS_ELEMENT = "bestFragmenters";
   private static final MessageFormat CYCLES_START_FORMAT
       = new MessageFormat("    <" + CYCLE_ELEMENT
-                      + " name=\"{0}\" size=\"{1}\" longestWalk=\"{2}\""
-                      + " girth=\"{3}\" radius=\"{4}\" diameter=\"{5}\">\n");
+                          + " name=\"{0}\" size=\"{1}\" longestWalk=\"{2}\""
+                          + " girth=\"{3}\" radius=\"{4}\" diameter=\"{5}\""
+                          + " bestFragmentSize=\"{6}\">\n");
   private static final String CYCLES_END_TEMPLATE
       = "    </" + CYCLE_ELEMENT + ">\n";
   private static final String CLASSES_START_TEMPLATE
       = "      <" + CLASSES_ELEMENT + ">\n";
   private static final String CLASSES_END_TEMPLATE
       = "      </" + CLASSES_ELEMENT + ">\n";
-  private static final String CENTER_CLASSES_START_TEMPLATE
-      = "      <" + CENTER_CLASSES_ELEMENT + ">\n";
-  private static final String CENTER_CLASSES_END_TEMPLATE
-      = "      </" + CENTER_CLASSES_ELEMENT + ">\n";
   private static final MessageFormat CLASS_REF_FORMAT_WITH_ECCENTRICITY
       = new MessageFormat("        <" + CLASS_REF_ELEMENT
                           + " name=\"{0}\" eccentricity=\"{1}\""
@@ -78,7 +76,7 @@ public class XMLStrongComponentRenderer
   public String render(StrongComponent component) {
     StringBuffer result = new StringBuffer();
     if (component.getNumberOfVertices() >= _minimumSize) {
-      String[] values = new String[6];
+      String[] values = new String[7];
       values[0] = createName(component);
       values[1] = Integer.toString(component.getNumberOfVertices());
       values[2] = Integer.toString(component.getLongestWalk());
@@ -86,34 +84,45 @@ public class XMLStrongComponentRenderer
       values[3] = Integer.toString(attributes.getGirth());
       values[4] = Integer.toString(attributes.getRadius());
       values[5] = Integer.toString(attributes.getDiameter());
+      values[6] = Integer.toString(attributes.getBestFragmentSize());
       CYCLES_START_FORMAT.format(values, result, null);
 
-      result.append(CLASSES_START_TEMPLATE);
-      int[] eccentricities 
-          = ((GraphAttributes) component.getAttributes()).getEccentricities();
-      int[] maximumFragmentSizes 
-          = ((GraphAttributes) component.getAttributes())
-                                                    .getMaximumFragmentSizes();
-      for (int i = 0, n = component.getNumberOfVertices(); i < n; i++) {
-        values[0] = ((ClassAttributes) component.getVertex(i).getAttributes())
-                                                                    .getName();
-        values[1] = Integer.toString(eccentricities[i]);
-        values[2] = Integer.toString(maximumFragmentSizes[i]);
-        CLASS_REF_FORMAT_WITH_ECCENTRICITY.format(values, result, null);
-      }
-      result.append(CLASSES_END_TEMPLATE);
-
-      result.append(CENTER_CLASSES_START_TEMPLATE);
-      Vertex[] centerVertices = attributes.getCenterVertices();
-      for (int i = 0; i < centerVertices.length; i++) {
-        values[0] = ((ClassAttributes) centerVertices[i].getAttributes())
-                                                                    .getName();
-        CLASS_REF_FORMAT.format(values, result, null);
-      }
-      result.append(CENTER_CLASSES_END_TEMPLATE);
-
+      renderClasses(component, result);
+      renderVertices(attributes.getCenterVertices(), result, 
+                     CENTER_CLASSES_ELEMENT);
+      renderVertices(attributes.getBestFragmenters(), result, 
+                     BEST_FRAGMENTERS_ELEMENT);
       result.append(CYCLES_END_TEMPLATE);
     }
     return new String(result);
+  }
+
+  private void renderClasses(StrongComponent component, StringBuffer result) {
+    result.append(CLASSES_START_TEMPLATE);
+    int[] eccentricities 
+        = ((GraphAttributes) component.getAttributes()).getEccentricities();
+    int[] maximumFragmentSizes 
+        = ((GraphAttributes) component.getAttributes())
+                                                  .getMaximumFragmentSizes();
+    String[] values = new String[3];
+    for (int i = 0, n = component.getNumberOfVertices(); i < n; i++) {
+      values[0] = ((ClassAttributes) component.getVertex(i).getAttributes())
+                                                                  .getName();
+      values[1] = Integer.toString(eccentricities[i]);
+      values[2] = Integer.toString(maximumFragmentSizes[i]);
+      CLASS_REF_FORMAT_WITH_ECCENTRICITY.format(values, result, null);
+    }
+    result.append(CLASSES_END_TEMPLATE);
+  }
+  
+  private void renderVertices(Vertex[] vertices, StringBuffer result, 
+                              String tagName) {
+    result.append("      <").append(tagName).append(">\n");
+    String[] values = new String[1];
+    for (int i = 0; i < vertices.length; i++) {
+      values[0] = ((ClassAttributes) vertices[i].getAttributes()).getName();
+      CLASS_REF_FORMAT.format(values, result, null);
+    }
+    result.append("      </").append(tagName).append(">\n");
   }
 } //class
