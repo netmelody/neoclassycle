@@ -121,7 +121,7 @@ public class Analyser
     return _classAnalyser.getLayerMap();
   }
 
-  private long createPackageGraph() 
+  public long createPackageGraph() 
   {
     long time = System.currentTimeMillis();
     PackageProcessor processor = new PackageProcessor();
