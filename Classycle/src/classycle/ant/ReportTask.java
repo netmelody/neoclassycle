@@ -34,7 +34,7 @@ import org.apache.tools.ant.BuildException;
 import classycle.Analyser;
 
 /**
- * Ant Task for creating a Classycle report, either raw, CSV, or XML.
+ * Ant Task for creating a Classycle Analyser report, either raw, CSV, or XML.
  * <p>
  * <table border="1" cellpadding="5" cellspacing="0">
  * <tr><th>Attribute</th><th>Description</th><th>Required</th></tr>

@@ -40,6 +40,8 @@ import classycle.util.TrueStringPattern;
 import classycle.util.WildCardPattern;
 
 /**
+ * Common attributes of all Classyle Ant tasks.
+ * 
  * @author  Franz-Josef Elmer
  */
 public abstract class ClassycleTask extends Task
