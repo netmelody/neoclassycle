@@ -25,7 +25,9 @@
 package classycle;
 
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 
 import classycle.graph.AtomicVertex;
 import classycle.graph.LongestWalkProcessor;
@@ -47,6 +49,65 @@ import classycle.renderer.XMLStrongComponentRenderer;
 public class Analyser {
   private static final String VERSION = "0.91";
   private static final String INNER_CLASS = " and innerclasses";
+  
+  private final String[] _classFiles;
+  private AtomicVertex[] _graph;
+  private StrongComponent[] _components;
+  private HashMap _layerMap;
+  
+  public Analyser(String[] classFiles) {
+    _classFiles = classFiles;
+  }
+  
+  public long createGraph() throws IOException {
+    long time = System.currentTimeMillis();
+    _graph = Parser.readClassFiles(_classFiles);
+    return System.currentTimeMillis() - time;
+  }
+  
+  public AtomicVertex[] getGraph() throws IOException {
+    if (_graph == null) {
+      createGraph();
+    }
+    return _graph;
+  }
+
+  public long condenseGraph() throws IOException {
+    long time = System.currentTimeMillis();
+    StrongComponentProcessor processor = new StrongComponentProcessor();
+    processor.deepSearchFirst(getGraph());
+    _components = processor.getStrongComponents();
+    return System.currentTimeMillis() - time;
+  }
+
+  public StrongComponent[] getCondensedGraph() throws IOException {
+    if (_components == null) {
+      condenseGraph();
+    }
+    return _components;
+  }
+
+  public long calculateLayerMap() throws IOException {
+    long time = System.currentTimeMillis();
+    StrongComponent[] components = getCondensedGraph();
+    new LongestWalkProcessor().deepSearchFirst(components);
+    _layerMap = new HashMap();
+    for (int i = 0; i < components.length; i++) {
+      StrongComponent component = components[i];
+      Integer layer = new Integer(component.getLongestWalk());
+      for (int j = 0, n = component.getNumberOfVertices(); j < n; j++) {
+        _layerMap.put(component.getVertex(j), layer);
+      }
+    }
+    return System.currentTimeMillis() - time;
+  }
+
+  public HashMap getLayerMap() throws IOException {
+    if (_layerMap == null) {
+      calculateLayerMap();
+    }
+    return _layerMap;
+  }
 
   public static void main(String[] args) throws Exception {
     AnalyserCommandLine commandLine = new AnalyserCommandLine(args);
@@ -55,51 +116,50 @@ public class Analyser {
                          + commandLine.getUsage());
       System.exit(0);
     }
+    
+    Analyser analyser = new Analyser(commandLine.getClassFiles());
 
     // Read and analyse class files
     System.out.println("============= Classycle V" + VERSION 
                        + " ============");
     System.out.println("========== by Franz-Josef Elmer ==========");
-    System.out.print("read and analyse class files ... ");
-    long time = System.currentTimeMillis();
-    AtomicVertex[] graph = Parser.readClassFiles(commandLine.getClassFiles());
-    System.out.println("done after " + (System.currentTimeMillis() - time)
-                       + " ms: " + graph.length + " classes analysed.");
+    System.out.print("read class files and create graph ... ");
+    long duration = analyser.createGraph();
+    System.out.println("done after " + duration + " ms: " 
+                       + analyser.getGraph().length + " classes analysed.");
 
-    // Extract strong components
-    System.out.print("extract strong components ... ");
-    time = System.currentTimeMillis();
-    StrongComponentProcessor processor = new StrongComponentProcessor();
-    processor.deepSearchFirst(graph);
-    StrongComponent[] components = processor.getStrongComponents();
-    System.out.println("done after " + (System.currentTimeMillis() - time)
-                       + " ms: " + components.length + " components found.");
+    // Condense graph
+    System.out.print("condense graph ... ");
+    duration = analyser.condenseGraph();
+    System.out.println("done after " + duration + " ms: " 
+                       + analyser.getCondensedGraph().length 
+                       + " strong components found.");
 
-    // Find longest walks
-    System.out.print("find longest walks ... ");
-    time = System.currentTimeMillis();
-    new LongestWalkProcessor().deepSearchFirst(components);
-    System.out.println("done after " + (System.currentTimeMillis() - time)
-                       + " ms.");
+    // Calculate layer 
+    System.out.print("calculate layer indices ... ");
+    duration = analyser.calculateLayerMap();
+    System.out.println("done after " + duration + " ms.");
 
+    // Create report(s)
     if (commandLine.getXmlFile() != null) {
-      printXML(graph, components, commandLine.getTitle(),
+      printXML(analyser, commandLine.getTitle(),
                new PrintWriter(new FileWriter(commandLine.getXmlFile())));
     }
     if (commandLine.getCsvFile() != null) {
-      printCSV(graph, 
+      printCSV(analyser, 
                new PrintWriter(new FileWriter(commandLine.getCsvFile())));
     }
-
     if (commandLine.isRaw()) {
-      printRaw(graph);
+      printRaw(analyser);
     }
     if (commandLine.isCycles() || commandLine.isStrong()) {
-      printComponents(components, commandLine.isCycles() ? 2 : 1);
+      printComponents(analyser, commandLine.isCycles() ? 2 : 1);
     }
   }
 
-  private static void printRaw(AtomicVertex[] graph) {
+  
+  private static void printRaw(Analyser analyser) throws IOException {
+    AtomicVertex[] graph = analyser.getGraph();
     for (int i = 0; i < graph.length; i++) {
       AtomicVertex vertex = graph[i];
       System.out.println(vertex.getAttributes());
@@ -109,8 +169,9 @@ public class Analyser {
     }
   }
 
-  private static void printComponents(StrongComponent[] components,
-                                      int minSize) {
+  private static void printComponents(Analyser analyser, int minSize) 
+                                                      throws IOException {
+    StrongComponent[] components = analyser.getCondensedGraph();
     StrongComponentRenderer renderer = new PlainStrongComponentRenderer();
     for (int i = 0; i < components.length; i++) {
       StrongComponent component = components[i];
@@ -120,9 +181,9 @@ public class Analyser {
     }
   }
 
-  private static void printXML(AtomicVertex[] graph,
-                               StrongComponent[] components, String title,
-                               PrintWriter writer) {
+  private static void printXML(Analyser analyser, String title,
+                               PrintWriter writer) throws IOException {
+    StrongComponent[] components = analyser.getCondensedGraph();
     writer.println("<?xml version='1.0' encoding='UTF-8'?>");
     writer.println(
         "<?xml-stylesheet type='text/xsl' href='reportXMLtoHTML.xsl'?>");
@@ -135,27 +196,28 @@ public class Analyser {
     }
     writer.println("  </cycles>");
     writer.println("  <classes>");
-    AtomicVertexRenderer aRenderer = new XMLClassRenderer();
-    for (int i = 0; i < graph.length; i++) {
-      writer.print(aRenderer.render(graph[i]));
-    }
+    render(analyser, new XMLClassRenderer(), writer);
     writer.println("  </classes>");
     writer.println("</classycle>");
     writer.close();
   }
-  private static final String XML_TEMPLATE_CLASSES
-      = "    <class name=\"{0}\" type=\"{1}\" innerClass=\"{3}\" size=\"{2}\" "
-        + "usedBy=\"{4}\" usesInternal=\"{5}\" usesExternal=\"{6}\"/>\n";
 
+  private static void render(Analyser analyser, AtomicVertexRenderer renderer, 
+                             PrintWriter writer) throws IOException {
+    AtomicVertex[] graph = analyser.getGraph();
+    HashMap layerMap = analyser.getLayerMap();
+    for (int i = 0; i < graph.length; i++) {
+      Integer layerIndex = (Integer) layerMap.get(graph[i]);
+      writer.print(renderer.render(graph[i], 
+          layerIndex == null ? -1 : layerIndex.intValue()));
+    }
+  }
 
-  private static void printCSV(AtomicVertex[] graph, PrintWriter writer) {
+  private static void printCSV(Analyser analyser, PrintWriter writer) 
+                                                      throws IOException {
     writer.print("class name,type,inner class,size,used by,");
     writer.println("uses internal classes,uses external classes");
-    AtomicVertexRenderer renderer
-        = new TemplateBasedClassRenderer(CSV_TEMPLATE);
-    for (int i = 0; i < graph.length; i++) {
-     writer.println(renderer.render(graph[i]));
-    }
+    render(analyser, new TemplateBasedClassRenderer(CSV_TEMPLATE), writer);
     writer.close();
   }
   private static final String CSV_TEMPLATE  = "{0},{1},{3},{2},{4},{5},{6}";
