@@ -222,22 +222,97 @@ public class Parser
       }
       else if (pool[i] instanceof UTF8Constant)
       {
-        String str = ((UTF8Constant) pool[i]).getString();
-        while (str.startsWith("["))
-        {
-          str = str.substring(1);
-        }
-        if (str.startsWith("L") && str.endsWith(";"))
-        {
-          str = str.substring(1, str.length() - 1).replace('/', '.');
-          if (!str.equals(name))
-          {
-            node.nodes.add(str);
-          }
-        }
+        parseUTF8Constant((UTF8Constant) pool[i], node.nodes, name);
       }
     }
     return node;
+  }
+  
+  /** 
+   * Parses an UFT8Constant and picks class names if it has the correct syntax.
+   */  
+  private static void parseUTF8Constant(UTF8Constant constant, 
+                                        ArrayList nodes, String className) {
+    String str = constant.getString();
+    int len = str.length();
+    
+    // Gather possible class names and check syntax
+    ArrayList classNames = new ArrayList();
+    boolean valid = true;
+    int[] index = new int[1];
+    if (str.startsWith("(")) {
+      index[0]++;
+      while (valid && index[0] < len - 1 && str.charAt(index[0]) != ')') {
+        valid = parseType(str, index, classNames);
+      }
+      if (valid) {
+        valid = index[0] < len - 1 && str.charAt(index[0]++) == ')';
+        if (valid) {
+          valid = (index[0] == len - 1 && str.charAt(index[0]) == 'V')
+               || (parseType(str, index, classNames) && index[0] == len);
+        }
+      }
+    } else {
+      valid = parseType(str, index, classNames) && index[0] == len;
+    }      
+    
+    // If valid syntax add gathered class names to nodes
+    if (valid) {
+      for (int i = 0, n = classNames.size(); i < n; i++) {
+        if (!className.equals(classNames.get(i)))
+        {
+          nodes.add(classNames.get(i));
+        }
+      }
+    }
+  }
+  
+  private static boolean parseType(String str, int[] i, ArrayList classNames) {
+    //System.out.print(">"+str.substring(i[0])+"< ");
+    boolean validType = false;
+    boolean arrayType = false;
+    int n = str.length();
+    for (; i[0] < n && str.charAt(i[0]) == '['; i[0]++) {
+      arrayType = true;
+    }
+    if (i[0] < n) {
+      char c = str.charAt(i[0]++);
+      if ("BCDFIJSZ".indexOf(c) >= 0) {
+        validType = true;
+      } else if (c == 'L') {
+        int index = str.indexOf(';', i[0]);
+        if (index > i[0]) {
+          String className = str.substring(i[0], index).replace('/', '.');
+          classNames.add(className);
+          i[0] = index + 1;
+          validType = isValid(className);
+        }
+      }
+    } else {
+      validType = !arrayType;
+    }
+    //System.out.println(">" + str.substring(i[0]) + "< " + validType);
+    return validType;
+  } 
+  
+  /** Returns <tt>true</tt> if <tt>className</tt> is a valid class name. */
+  private static boolean isValid(String className) {
+    boolean valid = true;
+    boolean firstCharacter = true;
+    for (int i = 0, n = className.length(); valid && i < n; i++) {
+      char c = className.charAt(i);
+      if (firstCharacter) {
+        firstCharacter = false;
+        valid = Character.isJavaIdentifierStart(c);
+      } else {
+        if (c == '.') {
+          firstCharacter = true;
+        } else {
+          valid = Character.isJavaIdentifierPart(c);
+        }
+      }
+    }
+    return valid && !firstCharacter;
   }
 
   /**
