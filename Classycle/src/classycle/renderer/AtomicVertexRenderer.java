@@ -33,5 +33,5 @@ import classycle.graph.AtomicVertex;
  */
 public interface AtomicVertexRenderer {
   /** Renders an {@link AtomicVertex}. */
-  public String render(AtomicVertex vertex);
+  public String render(AtomicVertex vertex, int layerIndex);
 } //interface

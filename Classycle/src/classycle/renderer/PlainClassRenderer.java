@@ -40,7 +40,7 @@ public class PlainClassRenderer implements AtomicVertexRenderer {
    * @param vertex Vertex to be rendered.
    * @return the rendered vertex.
    */
-  public String render(AtomicVertex vertex) {
+  public String render(AtomicVertex vertex, int layerIndex) {
     if (vertex.getAttributes() instanceof ClassAttributes) {
       int usesInternal = 0;
       int usesExternal = 0;

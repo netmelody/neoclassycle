@@ -38,7 +38,7 @@ public class PlainStrongComponentRenderer
     StringBuffer result = new StringBuffer();
     int n = component.getNumberOfVertices();
     if (n == 1) {
-      result.append(classRenderer.render(component.getVertex(0)))
+      result.append(classRenderer.render(component.getVertex(0), 0))
             .append(". Longest walk: ").append(component.getLongestWalk());
     } else {
       result.append("Cycle: ").append(createName(component)).append(" with ")
@@ -46,7 +46,7 @@ public class PlainStrongComponentRenderer
             .append(" Longest walk: ").append(component.getLongestWalk());
       for (int i = 0; i < n; i++) {
         result.append("\n    ")
-              .append(classRenderer.render(component.getVertex(i)));
+              .append(classRenderer.render(component.getVertex(i), 0));
       }
     }
     return new String(result);

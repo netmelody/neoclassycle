@@ -63,7 +63,7 @@ public class TemplateBasedClassRenderer implements AtomicVertexRenderer {
    * @param vertex Vertex to be rendered.
    * @return the rendered vertex.
    */
-  public String render(AtomicVertex vertex) {
+  public String render(AtomicVertex vertex, int layerIndex) {
     String[] values = new String[7];
     ClassAttributes attributes = (ClassAttributes) vertex.getAttributes();
     values[0] = attributes.getName();

@@ -42,7 +42,8 @@ public class XMLClassRenderer implements AtomicVertexRenderer {
       = new MessageFormat("    <" + CLASS_ELEMENT
                           + " name=\"{0}\" type=\"{1}\" innerClass=\"{3}\""
                           + " size=\"{2}\" usedBy=\"{4}\""
-                          + " usesInternal=\"{5}\" usesExternal=\"{6}\">\n");
+                          + " usesInternal=\"{5}\" usesExternal=\"{6}\""
+                          + " layer=\"{7}\">\n");
   private static final String CLASS_END_TEMPLATE 
       = "    </" + CLASS_ELEMENT + ">\n";
   private static final MessageFormat CLASS_REF_FORMAT 
@@ -55,9 +56,9 @@ public class XMLClassRenderer implements AtomicVertexRenderer {
    * @param vertex Vertex to be rendered.
    * @return the rendered vertex.
    */
-  public String render(AtomicVertex vertex) {
+  public String render(AtomicVertex vertex, int layerIndex) {
     StringBuffer result = new StringBuffer();
-    String[] values = new String[7];
+    String[] values = new String[8];
     ClassAttributes attributes = (ClassAttributes) vertex.getAttributes();
     values[0] = attributes.getName();
     values[1] = attributes.getType();
@@ -75,6 +76,7 @@ public class XMLClassRenderer implements AtomicVertexRenderer {
     }
     values[5] = Integer.toString(usesInternal);
     values[6] = Integer.toString(usesExternal);
+    values[7] = Integer.toString(layerIndex);
     CLASS_START_FORMAT.format(values, result, null);
 
     for (int i = 0, n = vertex.getNumberOfIncomingArcs(); i < n; i++) {
