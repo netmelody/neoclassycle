@@ -24,6 +24,7 @@
  */
 package classycle.ant;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ import classycle.util.WildCardPattern;
  * <table border="1" cellpadding="5" cellspacing="0">
  * <tr><th>Attribute</th><th>Description</th><th>Required</th></tr>
  * <tr><td>reportFile</td>
- *     <td>File to be created and filled with the report.</td>
+ *     <td>Path of the report file relative to the base directory.</td>
  *     <td>Yes</td>
  * <tr><td>reportType</td>
  *     <td>Type of the report. Has be either <tt>raw</tt>, <tt>csv</tt>,
@@ -170,7 +171,9 @@ public class ReportTask extends Task
     try
     {
       analyser.readAndAnalyse(_packagesOnly);
-      PrintWriter writer = new PrintWriter(new FileWriter(_reportFile));
+      File f = new File(getOwningTarget().getProject().getBaseDir(), 
+                        _reportFile);
+      PrintWriter writer = new PrintWriter(new FileWriter(f));
       if (_reportType.equals(TYPE_XML))
       {
         analyser.printXML(_title, _packagesOnly, writer);
