@@ -56,6 +56,9 @@ public class XMLStrongComponentRenderer
       = "      <" + CENTER_CLASSES_ELEMENT + ">\n";
   private static final String CENTER_CLASSES_END_TEMPLATE
       = "      </" + CENTER_CLASSES_ELEMENT + ">\n";
+  private static final MessageFormat CLASS_REF_FORMAT_WITH_ECCENTRICITY
+      = new MessageFormat("        <" + CLASS_REF_ELEMENT
+                          + " name=\"{0}\" eccentricity=\"{1}\"/>\n");
   private static final MessageFormat CLASS_REF_FORMAT
       = new MessageFormat("        <" + CLASS_REF_ELEMENT
                           + " name=\"{0}\"/>\n");
@@ -85,10 +88,13 @@ public class XMLStrongComponentRenderer
       CYCLES_START_FORMAT.format(values, result, null);
 
       result.append(CLASSES_START_TEMPLATE);
+      int[] eccentricities 
+          = ((GraphAttributes) component.getAttributes()).getEccentricities();
       for (int i = 0, n = component.getNumberOfVertices(); i < n; i++) {
         values[0] = ((ClassAttributes) component.getVertex(i).getAttributes())
                                                                     .getName();
-        CLASS_REF_FORMAT.format(values, result, null);
+        values[1] = Integer.toString(eccentricities[i]);
+        CLASS_REF_FORMAT_WITH_ECCENTRICITY.format(values, result, null);
       }
       result.append(CLASSES_END_TEMPLATE);
 
