@@ -82,7 +82,7 @@ import classycle.util.Text;
  * </tr> 
  * <tr><td valign="top">failOnUnwantedDependencies</td>
  *     <td valign="top">If <tt>true</tt> the task will fail if an
- *         unwanted dependencies are found.
+ *         unwanted dependency is found.
  *     </td>
  *     <td valign="top">No. Default value is <tt>false</tt>.
  *     </td>
