@@ -109,7 +109,7 @@ public class StrongComponentProcessor extends GraphProcessor {
   /**
    * Adds all arcs to the strong components. There is an arc from a strong
    * component to another one if there is at least one arc from a vertex
-   * of one component to the other one.
+   * of one component to a vertex the other one.
    */
   protected void finishProcessing(Vertex[] graph) {
     _graph = new StrongComponent[_strongComponents.size()];
