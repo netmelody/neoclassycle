@@ -31,8 +31,13 @@ import classycle.graph.GraphAttributes;
 import classycle.graph.StrongComponent;
 import classycle.graph.Vertex;
 
-public class XMLStrongComponentRenderer extends AbstractStrongComponentRenderer
-{
+/**
+ * XML renderer of a {@link StrongComponent}.
+ * 
+ * @author Franz-Josef Elmer
+ */
+public class XMLStrongComponentRenderer 
+                          extends AbstractStrongComponentRenderer {
   public static final String CYCLE_ELEMENT = "cycle",
                              CLASS_REF_ELEMENT = "classRef",
                              CLASSES_ELEMENT = "classes",
@@ -57,16 +62,18 @@ public class XMLStrongComponentRenderer extends AbstractStrongComponentRenderer
 
   private final int _minimumSize;
 
-  public XMLStrongComponentRenderer(int minimumSize)
-  {
+  /**
+   * Creates an instance for the specified minimum number vertices. 
+   * @param minimumSize Minimum number of vertices the {@link StrongComponent}
+   *        should have to be rendered.
+   */
+  public XMLStrongComponentRenderer(int minimumSize) {
     _minimumSize = minimumSize;
   }
 
-  public String render(StrongComponent component)
-  {
+  public String render(StrongComponent component) {
     StringBuffer result = new StringBuffer();
-    if (component.getNumberOfVertices() >= _minimumSize)
-    {
+    if (component.getNumberOfVertices() >= _minimumSize) {
       String[] values = new String[6];
       values[0] = createName(component);
       values[1] = Integer.toString(component.getNumberOfVertices());
@@ -78,20 +85,18 @@ public class XMLStrongComponentRenderer extends AbstractStrongComponentRenderer
       CYCLES_START_FORMAT.format(values, result, null);
 
       result.append(CLASSES_START_TEMPLATE);
-      for (int i = 0, n = component.getNumberOfVertices(); i < n; i++)
-      {
+      for (int i = 0, n = component.getNumberOfVertices(); i < n; i++) {
         values[0] = ((ClassAttributes) component.getVertex(i).getAttributes())
-            .getName();
+                                                                    .getName();
         CLASS_REF_FORMAT.format(values, result, null);
       }
       result.append(CLASSES_END_TEMPLATE);
 
       result.append(CENTER_CLASSES_START_TEMPLATE);
       Vertex[] centerVertices = attributes.getCenterVertices();
-      for (int i = 0; i < centerVertices.length; i++)
-      {
+      for (int i = 0; i < centerVertices.length; i++) {
         values[0] = ((ClassAttributes) centerVertices[i].getAttributes())
-            .getName();
+                                                                    .getName();
         CLASS_REF_FORMAT.format(values, result, null);
       }
       result.append(CENTER_CLASSES_END_TEMPLATE);

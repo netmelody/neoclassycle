@@ -30,28 +30,40 @@ import classycle.ClassAttributes;
 import classycle.graph.AtomicVertex;
 
 /**
- *  Class vertex renderer based on a template and using
- *  <tt>java.text.MessageFormat</tt>.
+ * Renderer of an {@link AtomicVertex} with 
+ * {@link ClassAttributes}. The renderer is based on a 
+ * <tt>java.text.MessageFormat</tt> template. The variables in the
+ * template have the following meaning:
+ * <table border=1 cellpadding=5>
+ * <tr><th>Variable index</th><th>Description</th></tr>
+ * <tr><td>0</td><td>fully-qualified class name</td></tr>
+ * <tr><td>1</td><td>class type</td></tr>
+ * <tr><td>2</td><td>size of the class file in bytes</td></tr>
+ * <tr><td>3</td>
+ *     <td><tt>true</tt> if inner class otherwise <tt>false</tt></td></tr>
+ * <tr><td>4</td><td>Number of incoming arcs</td></tr>
+ * <tr><td>5</td>
+ *     <td>Number of outgoing arcs to other vertices in the graph</td></tr>
+ * <tr><td>6</td><td>Number of outgoing arcs to external vertices</td></tr>
+ * </table>
  *
- *  @author Franz-Josef Elmer
+ * @author Franz-Josef Elmer
  */
-public class TemplateBasedClassRenderer implements AtomicVertexRenderer
-{
+public class TemplateBasedClassRenderer implements AtomicVertexRenderer {
   private MessageFormat _format;
 
-  public TemplateBasedClassRenderer(String template)
-  {
+  /** Creates an instance for the specified template. */
+  public TemplateBasedClassRenderer(String template) {
     _format = new MessageFormat(template);
   }
 
   /**
    * Renderes the specified vertex. It is assumed that the vertex attributes
-   * are of the type {@link classycle.ClassAtributes}.
+   * are of the type {@link classycle.ClassAttributes}.
    * @param vertex Vertex to be rendered.
    * @return the rendered vertex.
    */
-  public String render(AtomicVertex vertex)
-  {
+  public String render(AtomicVertex vertex) {
     String[] values = new String[7];
     ClassAttributes attributes = (ClassAttributes) vertex.getAttributes();
     values[0] = attributes.getName();
@@ -61,14 +73,10 @@ public class TemplateBasedClassRenderer implements AtomicVertexRenderer
     values[4] = Integer.toString(vertex.getNumberOfIncomingArcs());
     int usesInternal = 0;
     int usesExternal = 0;
-    for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++)
-    {
-      if (((AtomicVertex) vertex.getHeadVertex(i)).isGraphVertex())
-      {
+    for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) {
+      if (((AtomicVertex) vertex.getHeadVertex(i)).isGraphVertex()) {
         usesInternal++;
-      }
-      else
-      {
+      } else {
         usesExternal++;
       }
     }

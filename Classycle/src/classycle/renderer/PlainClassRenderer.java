@@ -27,36 +27,39 @@ package classycle.renderer;
 import classycle.ClassAttributes;
 import classycle.graph.AtomicVertex;
 
-public class PlainClassRenderer implements AtomicVertexRenderer
-{
-  public String render(AtomicVertex vertex)
-  {
-    if (vertex.getAttributes() instanceof ClassAttributes)
-    {
+/**
+ * Plain text renderer of an {@link AtomicVertex} with 
+ * {@link ClassAttributes}.
+ * 
+ * @author Franz-Josef Elmer
+ */
+public class PlainClassRenderer implements AtomicVertexRenderer {
+  /**
+   * Renderes the specified vertex. It is assumed that the vertex attributes
+   * are of the type {@link classycle.ClassAttributes}.
+   * @param vertex Vertex to be rendered.
+   * @return the rendered vertex.
+   */
+  public String render(AtomicVertex vertex) {
+    if (vertex.getAttributes() instanceof ClassAttributes) {
       int usesInternal = 0;
       int usesExternal = 0;
-      for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++)
-      {
-        if (((AtomicVertex) vertex.getHeadVertex(i)).isGraphVertex())
-        {
+      for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) {
+        if (((AtomicVertex) vertex.getHeadVertex(i)).isGraphVertex()) {
           usesInternal++;
-        }
-        else
-        {
+        } else {
           usesExternal++;
         }
       }
-      StringBuffer result = new StringBuffer();
-      result.append("Used by ").append(vertex.getNumberOfIncomingArcs());
-      result.append(" classes. Uses ").append(usesInternal).append('/');
-      result.append(usesExternal).append(" internal/external classes: ");
-      result.append(vertex.getAttributes());
+      StringBuffer result = new StringBuffer("Used by ");
+      result.append(vertex.getNumberOfIncomingArcs())
+            .append(" classes. Uses ").append(usesInternal).append('/')
+            .append(usesExternal).append(" internal/external classes: ")
+            .append(vertex.getAttributes());
       return new String(result);
-    }
-    else
-    {
-      throw new IllegalArgumentException("Missing class attributes in vertex "
-                                         + vertex);
+    } else {
+      throw new IllegalArgumentException(
+        "Missing class attributes in vertex " + vertex);
     }
   }
 } //class

@@ -26,7 +26,12 @@ package classycle.renderer;
 
 import classycle.graph.StrongComponent;
 
-public interface StrongComponentRenderer
-{
+/**
+ * Interface for rendering a {@link StrongComponent}.
+ * 
+ * @author Franz-Josef Elmer
+ */
+public interface StrongComponentRenderer {
+  /** Renderes the specified {@link StrongComponent}. */
   public String render(StrongComponent component);
 } //interface

@@ -26,7 +26,12 @@ package classycle.renderer;
 
 import classycle.graph.AtomicVertex;
 
-public interface AtomicVertexRenderer
-{
+/**
+ * Renderer interface for {@link AtomicVertex AtomicVertices}.
+ * 
+ * @author Franz-Josef Elmer
+ */
+public interface AtomicVertexRenderer {
+  /** Renders an {@link AtomicVertex}. */
   public String render(AtomicVertex vertex);
 } //interface

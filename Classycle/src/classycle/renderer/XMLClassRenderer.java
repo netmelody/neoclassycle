@@ -29,23 +29,33 @@ import java.text.MessageFormat;
 import classycle.ClassAttributes;
 import classycle.graph.AtomicVertex;
 
-public class XMLClassRenderer implements AtomicVertexRenderer
-{
+/**
+ * XML renderer of an {@link AtomicVertex} with 
+ * {@link ClassAttributes}.
+ * 
+ * @author Franz-Josef Elmer
+ */
+public class XMLClassRenderer implements AtomicVertexRenderer {
   public static final String CLASS_ELEMENT = "class",
                              CLASS_REF_ELEMENT = "classRef";
-  private static final MessageFormat CLASS_START_FORMAT
+  private static final MessageFormat CLASS_START_FORMAT 
       = new MessageFormat("    <" + CLASS_ELEMENT
                           + " name=\"{0}\" type=\"{1}\" innerClass=\"{3}\""
                           + " size=\"{2}\" usedBy=\"{4}\""
                           + " usesInternal=\"{5}\" usesExternal=\"{6}\">\n");
-  private static final String CLASS_END_TEMPLATE
+  private static final String CLASS_END_TEMPLATE 
       = "    </" + CLASS_ELEMENT + ">\n";
-  private static final MessageFormat CLASS_REF_FORMAT
-      = new MessageFormat("      <" + CLASS_REF_ELEMENT + " name=\"{0}\""
+  private static final MessageFormat CLASS_REF_FORMAT 
+      = new MessageFormat("      <" + CLASS_REF_ELEMENT + " name=\"{0}\"" 
                           + " type=\"{1}\"/>\n");
 
-  public String render(AtomicVertex vertex)
-  {
+  /**
+   * Renderes the specified vertex. It is assumed that the vertex attributes
+   * are of the type {@link classycle.ClassAttributes}.
+   * @param vertex Vertex to be rendered.
+   * @return the rendered vertex.
+   */
+  public String render(AtomicVertex vertex) {
     StringBuffer result = new StringBuffer();
     String[] values = new String[7];
     ClassAttributes attributes = (ClassAttributes) vertex.getAttributes();
@@ -56,14 +66,10 @@ public class XMLClassRenderer implements AtomicVertexRenderer
     values[4] = Integer.toString(vertex.getNumberOfIncomingArcs());
     int usesInternal = 0;
     int usesExternal = 0;
-    for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++)
-    {
-      if (((AtomicVertex) vertex.getHeadVertex(i)).isGraphVertex())
-      {
+    for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) {
+      if (((AtomicVertex) vertex.getHeadVertex(i)).isGraphVertex()) {
         usesInternal++;
-      }
-      else
-      {
+      } else {
         usesExternal++;
       }
     }
@@ -71,19 +77,17 @@ public class XMLClassRenderer implements AtomicVertexRenderer
     values[6] = Integer.toString(usesExternal);
     CLASS_START_FORMAT.format(values, result, null);
 
-    for (int i = 0, n = vertex.getNumberOfIncomingArcs(); i < n; i++)
-    {
-      values[0] = ((ClassAttributes) vertex.getTailVertex(i)
-                                                .getAttributes()).getName();
+    for (int i = 0, n = vertex.getNumberOfIncomingArcs(); i < n; i++) {
+      values[0] = ((ClassAttributes) vertex.getTailVertex(i).getAttributes())
+                  .getName();
       values[1] = "usedBy";
       CLASS_REF_FORMAT.format(values, result, null);
     }
-    for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++)
-    {
-      values[0] = ((ClassAttributes) vertex.getHeadVertex(i)
-                                                .getAttributes()).getName();
+    for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) {
+      values[0] = ((ClassAttributes) vertex.getHeadVertex(i).getAttributes())
+                  .getName();
       values[1] = ((AtomicVertex) vertex.getHeadVertex(i)).isGraphVertex()
-          ? "usesInternal" : "usesExternal";
+                                            ? "usesInternal" : "usesExternal";
       CLASS_REF_FORMAT.format(values, result, null);
     }
     result.append(CLASS_END_TEMPLATE);
