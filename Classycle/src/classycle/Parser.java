@@ -41,6 +41,8 @@ import classycle.classfile.Constant;
 import classycle.classfile.UTF8Constant;
 import classycle.graph.AtomicVertex;
 import classycle.graph.NameAttributes;
+import classycle.util.StringPattern;
+import classycle.util.TrueStringPattern;
 
 /**
  *  Utility methods for parsing class files and creating directed graphs.
@@ -51,6 +53,8 @@ import classycle.graph.NameAttributes;
  */
 public class Parser {
   private static final int ACC_INTERFACE = 0x200, ACC_ABSTRACT = 0x400;
+  private static final String[] ZIP_FILE_TYPES 
+      = new String[] {".zip", ".jar", ".war", ".ear"}; 
 
   private static class UnresolvedNode implements Comparable {
     NameAttributes attributes;
@@ -62,10 +66,25 @@ public class Parser {
       return attributes.getName().compareTo(
                 ((UnresolvedNode) obj).attributes.getName());
     }
+    
+    public boolean isMatchedBy(StringPattern pattern)
+    {
+      return pattern.matches(attributes.getName());
+    }
   }
 
   /** Private constructor to prohibit instanciation. */
   private Parser() {
+  }
+  
+  /**
+   * Reads and parses class files and creates a direct graph. Short-cut of 
+   * <tt>readClassFiles(classFiles, new {@link TrueStringPattern}());</tt>
+   */
+  public static AtomicVertex[] readClassFiles(String[] classFiles)
+                               throws IOException 
+  {
+    return readClassFiles(classFiles, new TrueStringPattern());
   }
 
   /**
@@ -77,32 +96,61 @@ public class Parser {
    *  <ul>
    *    <li>name of a class file (file type <tt>.class</tt>)
    *    <li>name of a folder containing class files
-   *    <li>name of a zip file containing class file (file type <tt>.zip</tt>)
-   *    <li>name of a jar file (file type <tt>.jar</tt>)
+   *    <li>name of a file of type <code>.zip</code>, <code>.jar</code>,
+   *        <code>.war</code>, or <code>.ear</code>
+   *        containing class file
    *  </ul>
-   *  Folders and zip/jar files are searched recursively for class files.
+   *  Folders and zip/jar/war/ear files are searched recursively 
+   *  for class files.
    *  @param classFiles Array of file names.
+   *  @param pattern Pattern fully qualified class names have to match in order
+   *                 to be added to the graph. Otherwise they count as
+   *                 'external'.
    *  @return directed graph.
    */
-  public static AtomicVertex[] readClassFiles(String[] classFiles)
+  public static AtomicVertex[] readClassFiles(String[] classFiles, 
+                                              StringPattern pattern)
                                                           throws IOException {
     ArrayList unresolvedNodes = new ArrayList();
     for (int i = 0; i < classFiles.length; i++) {
       File file = new File(classFiles[i]);
       if (file.isDirectory() || file.getName().endsWith(".class")) {
         analyseClassFile(file, unresolvedNodes);
-      } else if (file.getName().endsWith(".zip") 
-                 || file.getName().endsWith(".jar")) {
+      } else if (isZipFile(file)) {
         analyseClassFiles(new ZipFile(file.getAbsoluteFile()), 
                           unresolvedNodes);
       } else {
         throw new IOException(classFiles[i] + " is an invalid file.");
       }
     }
-    UnresolvedNode[] nodes = new UnresolvedNode[unresolvedNodes.size()];
-    nodes = (UnresolvedNode[]) unresolvedNodes.toArray(nodes);
+    ArrayList filteredNodes = new ArrayList();
+    for (int i = 0, n = unresolvedNodes.size(); i < n; i++)
+    {
+      UnresolvedNode node = (UnresolvedNode) unresolvedNodes.get(i);
+      if (node.isMatchedBy(pattern))
+      {
+        filteredNodes.add(node);
+      }
+    }
+    UnresolvedNode[] nodes = new UnresolvedNode[filteredNodes.size()];
+    nodes = (UnresolvedNode[]) filteredNodes.toArray(nodes);
     Arrays.sort(nodes);
     return createGraph(nodes);
+  }
+
+  private static boolean isZipFile(File file) 
+  {
+    boolean result = false;
+    String name = file.getName();
+    for (int i = 0; i < ZIP_FILE_TYPES.length; i++) 
+    {
+      if (name.endsWith(ZIP_FILE_TYPES[i]))
+      {
+        result = true;
+        break;
+      }
+    }
+    return result;
   }
 
   private static void analyseClassFile(File file, ArrayList unresolvedNodes)
