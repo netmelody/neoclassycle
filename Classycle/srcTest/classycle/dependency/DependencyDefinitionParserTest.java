@@ -63,6 +63,40 @@ public class DependencyDefinitionParserTest extends TestCase
           new String[] {"check strictLayeringOf a b"});
   }
   
+  public void testSetDefinition() 
+  {
+    check("[a] = j.*", new String[][] {{"[a]", "j.*"}});
+    check("[a] = j.* k.*", new String[][] {{"[a]", "(j.* k.*)"}});
+    check("[a] = j.* k.* excluding a.b", 
+          new String[][] {{"[a]", "((j.* k.*) & !a.b)"}});
+    check("[a] = j.* k.* excluding a.b c.d", 
+          new String[][] {{"[a]", "((j.* k.*) & !(a.b c.d))"}});
+    check("[a] = k$t.*_$ excluding a.b c.d", 
+          new String[][] {{"[a]", "(k$t.*_$ & !(a.b c.d))"}});
+    check("[a] = excluding a.b c.d", 
+          new String[][] {{"[a]", "!(a.b c.d)"}});
+  }
+  
+  public void testSetDefinitions() 
+  {
+    check("[a] = a.*\n"
+          + "[b] = b.*\n"
+          + "[c] = [a] excluding j.*", 
+          new String[][] {{"[a]", "a.*"},
+                          {"[b]", "b.*"},
+                          {"[c]", "(a.* & !j.*)"}
+                         });
+    check("[a] = a.*\n"
+          + "[b] = b.*\n"
+          + "[c] = [a] j.*\n"
+          + "[d] = j.* [b] excluding [c] k.*\n", 
+          new String[][] {{"[a]", "a.*"},
+                          {"[b]", "b.*"},
+                          {"[c]", "(a.* j.*)"},
+                          {"[d]", "((j.* b.*) & !((a.* j.*) k.*))"}
+                         });
+  }
+  
   private void check(String definition, String[] expectedStatements) 
   {
     DependencyDefinitionParser parser 
@@ -84,26 +118,17 @@ public class DependencyDefinitionParserTest extends TestCase
     }
   }
   
-  private void check(String definition, String statementCodes) 
+  private void check(String definition, String[][] expectedSets) 
   {
     DependencyDefinitionParser parser 
         = new DependencyDefinitionParser(definition, new MockResultRenderer());
-    Statement[] statements = parser.getStatements();
-    int len = Math.min(statements.length, statementCodes.length());
-    for (int i = 0; i < len; i++)
+    SetDefinitionRepository definitions = parser._setDefinitions;
+    for (int i = 0; i < expectedSets.length; i++)
     {
-      String className = statements[i].getClass().getName();
-      int index = className.lastIndexOf('.');
-      assertEquals("Statement " + (i + 1), statementCodes.charAt(i), 
-                   Character.toLowerCase(className.charAt(index + 1)));
-    }
-    if (len < statements.length)
-    {
-      fail(statements.length - len + " additional statements");
-    }
-    if (len < statementCodes.length())
-    {
-      fail(statementCodes.length() - len + " missing statements");
+      String setName = expectedSets[i][0];
+      String expectedSet = expectedSets[i][1];
+      assertEquals("Set " + setName, expectedSet, 
+                   definitions.getPattern(setName) + "");
     }
   }
   
