@@ -27,13 +27,19 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version="1.0">
   <xsl:strip-space elements="*"/>
+  
+  <!-- ====================================================================
+       Matches root element <classycle>. Creates HTML page with headers, 
+       style sheets, JavaScript, and title.
+       ==================================================================== -->
   <xsl:template match="classycle">
     <html>
       <head>
         <title>Classycle Analysis of <xsl:value-of select="/classycle/@title"/>
         </title>
         <style type="text/css">
-          body { font-family:Helvetica,Arial,sans-serif; } 
+          body { font-family:Helvetica,Arial,sans-serif; }
+          th { background-color:#aaaaaa; } 
         </style>
         <script type="text/javascript"><![CDATA[
         <!--
@@ -65,11 +71,15 @@
     </html>
   </xsl:template>
 
+  <!-- ====================================================================
+       Matches element <cycles>. Creates cycles section of HTML page.
+       Creates summary and table headers.
+       ==================================================================== -->
   <xsl:template match="cycles">
     <h2>Cycles</h2>
     Summary: <xsl:value-of select="count(cycle)"/> cycles detected.
     <table border="1" cellpadding="5" cellspacing="0" width="770">
-      <tr bgcolor="#aaaaaa">
+      <tr>
         <th>Name</th>
         <th>Number of classes</th>
         <th>Girth</th>
@@ -81,6 +91,10 @@
     </table>
   </xsl:template>
 
+  <!-- ====================================================================
+       Matches element <cycle>. Creates a row in the cycles table with
+       JavaScript popups.
+       ==================================================================== -->
   <xsl:template match="cycle">
     <tr>
       <td>
@@ -100,7 +114,7 @@
         <div style="cursor:pointer;">
           <xsl:element name="a">
             <xsl:attribute name="onClick">
-              <xsl:call-template name="classRefPopup">
+              <xsl:call-template name="classRefWithEccentricityPopup">
                 <xsl:with-param name="set" select="classes/classRef"/>
                 <xsl:with-param name="text">Classes of cycle <xsl:value-of select="@name"/>:</xsl:with-param>
               </xsl:call-template>
@@ -128,6 +142,17 @@
     </tr>
   </xsl:template>
 
+  <!-- ====================================================================
+       Subroutine which creates JavaScript popup with sorted class 
+       references.
+       
+       parameters:
+       
+       set Set of elements with attribute "name". The set will be sorted in
+           accordance with this attribute.
+       text Explaining header of the popup
+       
+       ==================================================================== -->
   <xsl:template name="classRefPopupSorted">
     <xsl:param name="set"/>
     <xsl:param name="text"/>
@@ -138,9 +163,17 @@
       <xsl:with-param name="set" select="$set"/>
       <xsl:with-param name="text" select="$text"/>
     </xsl:call-template>
-
   </xsl:template>
 
+  <!-- ====================================================================
+       Subroutine which creates JavaScript popup class references.
+       
+       parameters:
+       
+       set Set of elements with attribute "name". 
+       text Explaining header of the popup
+       
+       ==================================================================== -->
   <xsl:template name="classRefPopup">
     <xsl:param name="set"/>
     <xsl:param name="text"/>
@@ -152,11 +185,38 @@
     <xsl:text>&quot;)</xsl:text>
   </xsl:template>
 
+  <!-- ====================================================================
+       Subroutine which creates JavaScript popup class references with
+       eccentricities.
+       
+       parameters:
+       
+       set Set of elements with attribute "eccentricity" and "name". 
+       text Explaining header of the popup
+       
+       ==================================================================== -->
+  <xsl:template name="classRefWithEccentricityPopup">
+    <xsl:param name="set"/>
+    <xsl:param name="text"/>
+    <xsl:text>javascript:show(&quot;</xsl:text>
+    <xsl:value-of select="$text"/><xsl:text>&quot;,&quot;</xsl:text>
+    <xsl:for-each select="$set">
+      <xsl:value-of select="@eccentricity"/><xsl:text>&amp;nbsp;</xsl:text>
+      <xsl:value-of select="@name"/><xsl:text> </xsl:text>
+    </xsl:for-each>
+    <xsl:text>&quot;)</xsl:text>
+  </xsl:template>
+
+  <!-- ====================================================================
+       Matches element <classes>. Creates classes section of HTML page.
+       Creates summary and table headers.
+       ==================================================================== -->
   <xsl:template match="classes">
     <h2>Classes</h2>
-    Summary: <xsl:value-of select="count(class)"/> classes
+    Summary: <xsl:value-of select="count(class)"/> classes using
+    <xsl:value-of select="@numberOfExternalClasses"/> external classes.
     <table border="1" cellpadding="5" cellspacing="0" width="770">
-      <tr bgcolor="#aaaaaa">
+      <tr>
         <th>Type</th>
         <th>Number of classes</th>
         <th>Averaged (maximum) size in bytes</th>
@@ -182,7 +242,7 @@
     </table>
     <p/>
     <table cellpadding="3" cellspacing="0" border="1" width="770">
-      <tr bgcolor="#aaaaaa">
+      <tr>
         <th>Class</th>
         <th>Size</th>
         <th>Used by</th>
@@ -194,6 +254,10 @@
     </table>
   </xsl:template>
 
+  <!-- ====================================================================
+       Matches element <class>. Creates a row in the classes table with
+       JavaScript popups.
+       ==================================================================== -->
   <xsl:template match="class">
      <tr>
        <td>
@@ -274,6 +338,17 @@
      </tr>
   </xsl:template>
 
+  <!-- ====================================================================
+       Subroutine which calculates the summary for the specified subset of
+       classes and adds a row to the class summary table.
+       
+       parameters:
+       
+       type Text which will appear in the column "Type"
+       set Subset of <class> elements
+       totalNumber Total number of <class> elements
+       
+       ==================================================================== -->
   <xsl:template name="summary">
     <xsl:param name="type"/>
     <xsl:param name="set"/>
