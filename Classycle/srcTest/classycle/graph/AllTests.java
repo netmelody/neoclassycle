@@ -16,6 +16,7 @@ public class AllTests extends TestCase
     TestSuite suite = new TestSuite("All package tests in "
         + "classycle.graph");
 
+    suite.addTestSuite(AtomicVertexTest.class);
     suite.addTestSuite(VertexTest.class);
 
     return suite;
