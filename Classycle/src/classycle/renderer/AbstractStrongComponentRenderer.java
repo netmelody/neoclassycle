@@ -45,7 +45,7 @@ public abstract class AbstractStrongComponentRenderer
    * only a class and its inner classes the name is the fully-qualified
    * class name of the outer class extended by "and inner classes".
    */
-  protected String createName(StrongComponent component) {
+  public static String createName(StrongComponent component) {
     GraphAttributes ga = (GraphAttributes) component.getAttributes();
     Vertex fragmenter = ga.getBestFragmenters()[0];
     String result = ((NameAttributes) fragmenter.getAttributes()).getName();
