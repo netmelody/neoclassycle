@@ -28,6 +28,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import classycle.graph.AtomicVertex;
 import classycle.graph.LongestWalkProcessor;
@@ -70,6 +71,26 @@ public class Analyser {
       createGraph();
     }
     return _graph;
+  }
+  
+  public int getNumberOfExternalClasses() throws IOException {
+    AtomicVertex[] graph = getGraph();
+    HashSet usedClasses = new HashSet();
+    int result = 0;
+    for (int i = 0; i < graph.length; i++) {
+      AtomicVertex vertex = graph[i];
+      for (int j = 0, n = vertex.getNumberOfOutgoingArcs(); j < n; j++) {
+        ClassAttributes attributes =
+            (ClassAttributes) vertex.getHeadVertex(j).getAttributes();
+        if (attributes.getType() == ClassAttributes.UNKNOWN) {
+          if (!usedClasses.contains(attributes.getName())) {
+            result++;
+            usedClasses.add(attributes.getName());
+          }
+        }
+      }
+    }
+    return result;
   }
 
   public long condenseGraph() throws IOException {
@@ -195,7 +216,8 @@ public class Analyser {
       writer.print(sRenderer.render(components[i]));
     }
     writer.println("  </cycles>");
-    writer.println("  <classes>");
+    writer.println("  <classes numberOfExternalClasses=\"" 
+                   + analyser.getNumberOfExternalClasses() + "\">");
     render(analyser, new XMLClassRenderer(), writer);
     writer.println("  </classes>");
     writer.println("</classycle>");
