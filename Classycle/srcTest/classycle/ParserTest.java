@@ -26,19 +26,25 @@ public class ParserTest extends TestCase {
   private static final String CLASS_FILE = TMP + CLASS_NAME + ".class";
   
   public static void main(String[] args) throws IOException {
-    Writer writer = new FileWriter("Test.java");
+    String file = "Test.java";
+    Writer writer = new FileWriter(file);
     writer.write(args[0]);
     writer.close();
-    if (JAVAC.compile(new String[] {"Test.java"}) == 0) {
+    if (compile(file) == 0) {
       ConstantPoolPrinter.main(new String[] {"Test.class"});
     }
   }
   
+  private static int compile(String file)
+  {
+    return JAVAC.compile(new String[] {file, "-target", "1.1"});
+  }
+
   private static AtomicVertex createVertex(String code) throws IOException {
     Writer writer = new FileWriter(JAVA_FILE);
     writer.write(code);
     writer.close();
-    assertEquals("Exit code", 0, JAVAC.compile(new String[] {JAVA_FILE}));
+    assertEquals("Exit code", 0, compile(JAVA_FILE));
     //System.out.println("======\n" + code);
     //ConstantPoolPrinter.main(new String[] {CLASS_FILE});
     return Parser.readClassFiles(new String[] {CLASS_FILE})[0];
