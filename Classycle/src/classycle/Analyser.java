@@ -38,21 +38,18 @@ import classycle.renderer.TemplateBasedClassRenderer;
 import classycle.renderer.XMLClassRenderer;
 import classycle.renderer.XMLStrongComponentRenderer;
 
-
 /**
  * Main class of the Classycle tool. Runs on the command line and
  * produces a report.
  * 
  * @author Franz-Josef Elmer
  */
-public class Analyser
-{
+public class Analyser {
+  private static final String VERSION = "0.91";
   private static final String INNER_CLASS = " and innerclasses";
 
-  public static void main(String[] args) throws Exception
-  {
-    if (args.length == 0)
-    {
+  public static void main(String[] args) throws Exception {
+    if (args.length == 0) {
       System.out.println(
           "Usage: java classycle.Analyser [-raw] [-cycles|-strong] "
           + "[-xmlFile=<file>] [-csvFile=<file>] [-title=<title>] "
@@ -66,42 +63,35 @@ public class Analyser
     String xmlFile = null;
     String csvFile = null;
     int index = 0;
-    for (;index < args.length && args[index].charAt(0) == '-'; index++)
-    {
-      if (args[index].equals("-raw"))
-      {
+    for (;index < args.length && args[index].charAt(0) == '-'; index++) {
+      if (args[index].equals("-raw")) {
         raw = true;
       }
-      else if (args[index].equals("-cycles"))
-      {
+      else if (args[index].equals("-cycles")) {
         cycles = true;
       }
-      else if (args[index].equals("-strong"))
-      {
+      else if (args[index].equals("-strong")) {
         strong = true;
       }
-      else if (args[index].startsWith("-title="))
-      {
+      else if (args[index].startsWith("-title=")) {
         title = args[index].substring("-title=".length());
       }
-      else if (args[index].startsWith("-xmlFile="))
-      {
+      else if (args[index].startsWith("-xmlFile=")) {
         xmlFile = args[index].substring("-xmlFile=".length());
       }
-      else if (args[index].startsWith("-csvFile="))
-      {
+      else if (args[index].startsWith("-csvFile=")) {
         csvFile = args[index].substring("-csvFile=".length());
       }
     }
     String[] classFiles = new String[args.length - index];
     System.arraycopy(args, index, classFiles, 0, classFiles.length);
-    if (title == null && classFiles.length > 0)
-    {
+    if (title == null && classFiles.length > 0) {
       title = classFiles[0];
     }
 
     // Read and analyse class files
-    System.out.println("============= Classycle V0.9 =============");
+    System.out.println("============= Classycle V" + VERSION 
+                       + " ============");
     System.out.println("========== by Franz-Josef Elmer ==========");
     System.out.print("read and analyse class files ... ");
     long time = System.currentTimeMillis();
@@ -125,68 +115,46 @@ public class Analyser
     System.out.println("done after " + (System.currentTimeMillis() - time)
                        + " ms.");
 
-    if (xmlFile != null)
-    {
+    if (xmlFile != null) {
       printXML(graph, components, title,
                new PrintWriter(new FileWriter(xmlFile)));
     }
-    if (csvFile != null)
-    {
+    if (csvFile != null) {
       printCSV(graph, new PrintWriter(new FileWriter(csvFile)));
     }
 
-    if (raw)
-    {
+    if (raw) {
       printRaw(graph);
     }
-    if (cycles || strong)
-    {
+    if (cycles || strong) {
       printComponents(components, cycles ? 2 : 1);
     }
   }
 
-
-  private static void printRaw(AtomicVertex[] graph)
-  {
-    for (int i = 0; i < graph.length; i++)
-    {
+  private static void printRaw(AtomicVertex[] graph) {
+    for (int i = 0; i < graph.length; i++) {
       AtomicVertex vertex = graph[i];
       System.out.println(vertex.getAttributes());
-      for (int j = 0, n = vertex.getNumberOfOutgoingArcs(); j < n; j++)
-      {
+      for (int j = 0, n = vertex.getNumberOfOutgoingArcs(); j < n; j++) {
         System.out.println("    " + vertex.getHeadVertex(j).getAttributes());
       }
     }
   }
 
-
   private static void printComponents(StrongComponent[] components,
-                                      int minSize)
-  {
+                                      int minSize) {
     StrongComponentRenderer renderer = new PlainStrongComponentRenderer();
-    for (int i = 0; i < components.length; i++)
-    {
+    for (int i = 0; i < components.length; i++) {
       StrongComponent component = components[i];
-      if (component.getNumberOfVertices() >= minSize)
-      {
+      if (component.getNumberOfVertices() >= minSize) {
         System.out.println(renderer.render(component));
       }
-      /*
-      // cyclic component
-      System.out.println("strong component " + i + " is cyclic: "
-                         + component.getNumberOfVertices() + " vertices");
-      for (int j = 0, n = component.getNumberOfVertices(); j < n; j++)
-      {
-        System.out.println("  " + component.getVertex(j).getAttributes());
-      }
-      */
     }
   }
 
   private static void printXML(AtomicVertex[] graph,
                                StrongComponent[] components, String title,
-                               PrintWriter writer)
-  {
+                               PrintWriter writer) {
     writer.println("<?xml version='1.0' encoding='UTF-8'?>");
     writer.println(
         "<?xml-stylesheet type='text/xsl' href='reportXMLtoHTML.xsl'?>");
@@ -194,15 +162,13 @@ public class Analyser
     writer.println("  <cycles>");
     StrongComponentRenderer sRenderer
         = new XMLStrongComponentRenderer(2);
-    for (int i = 0; i < components.length; i++)
-    {
+    for (int i = 0; i < components.length; i++) {
       writer.print(sRenderer.render(components[i]));
     }
     writer.println("  </cycles>");
     writer.println("  <classes>");
     AtomicVertexRenderer aRenderer = new XMLClassRenderer();
-    for (int i = 0; i < graph.length; i++)
-    {
+    for (int i = 0; i < graph.length; i++) {
       writer.print(aRenderer.render(graph[i]));
     }
     writer.println("  </classes>");
@@ -214,14 +180,12 @@ public class Analyser
         + "usedBy=\"{4}\" usesInternal=\"{5}\" usesExternal=\"{6}\"/>\n";
 
 
-  private static void printCSV(AtomicVertex[] graph, PrintWriter writer)
-  {
+  private static void printCSV(AtomicVertex[] graph, PrintWriter writer) {
     writer.print("class name,type,inner class,size,used by,");
     writer.println("uses internal classes,uses external classes");
     AtomicVertexRenderer renderer
         = new TemplateBasedClassRenderer(CSV_TEMPLATE);
-    for (int i = 0; i < graph.length; i++)
-    {
+    for (int i = 0; i < graph.length; i++) {
      writer.println(renderer.render(graph[i]));
     }
     writer.close();

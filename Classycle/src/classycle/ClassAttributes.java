@@ -26,72 +26,111 @@ package classycle;
 
 import classycle.graph.Attributes;
 
-public class ClassAttributes implements Attributes
-{
+/**
+ * Immutable class holding the attributes of a class vertex. They are
+ * <ul><li>fully-qualified class name
+ *     <li>type (interface, abstract, concrete, unknown)
+ *     <li>flag <tt>innerClass</tt>
+ *     <li>size of the class file
+ * </ul>
+ * 
+ * @author Franz-Josef Elmer
+ */
+public class ClassAttributes implements Attributes {
+  /** Type constant. */
   public static final String INTERFACE = "interface",
-                             ABSTRACT_CLASS = "abstract class",
-                             CLASS = "class",
-                             UNKNOWN = "unkown external class";
+                      ABSTRACT_CLASS = "abstract class",
+                      CLASS = "class",
+                      UNKNOWN = "unkown external class";
 
   private final String _name;
   private final String _type;
   private final boolean _innerClass;
   private final long _size;
 
-  private ClassAttributes(String name, String type, long size)
-  {
+  /**
+   * Creates an instance based on the specified name, type, and size.
+   * The innerclass flag will be set if the name contains a 'ä$' character.
+   * @param name Fully-qualified class name.
+   * @param type Type.
+   * @param size Size.
+   */
+  private ClassAttributes(String name, String type, long size) {
     _name = name;
     _type = type;
     _innerClass = name != null && name.indexOf('$') > 0;
     _size = size;
   }
 
-  public static ClassAttributes createInterface(String name, long size)
-  {
+  /**
+   * Creates an instance of the type {@link #INTERFACE}.
+   * @param name Fully-qualified class name.
+   * @param size Size of the class file.
+   * @return a new instance.
+   */
+  public static ClassAttributes createInterface(String name, long size) {
     return new ClassAttributes(name, INTERFACE, size);
   }
 
-  public static ClassAttributes createAbstractClass(String name, long size)
-  {
+  /**
+   * Creates an instance of the type {@link #ABSTRACT_CLASS}.
+   * @param name Fully-qualified class name.
+   * @param size Size of the class file.
+   * @return a new instance.
+   */
+  public static ClassAttributes createAbstractClass(String name, long size) {
     return new ClassAttributes(name, ABSTRACT_CLASS, size);
   }
 
-  public static ClassAttributes createClass(String name, long size)
-  {
+  /**
+   * Creates an instance of the type {@link #CLASS}.
+   * @param name Fully-qualified class name.
+   * @param size Size of the class file.
+   * @return a new instance.
+   */
+  public static ClassAttributes createClass(String name, long size) {
     return new ClassAttributes(name, CLASS, size);
   }
 
-  public static ClassAttributes createUnknownClass(String name, long size)
-  {
+  /**
+   * Creates an instance of the type {@link #UNKNOWN}.
+   * @param name Fully-qualified class name.
+   * @param size Size of the class file.
+   * @return a new instance.
+   */
+  public static ClassAttributes createUnknownClass(String name, long size) {
     return new ClassAttributes(name, UNKNOWN, size);
   }
 
-  public String getName()
-  {
+  /** Returns the fully qualified class name. */
+  public String getName() {
     return _name;
   }
 
-  public String getType()
-  {
+  /** 
+   * Returns the class type. 
+   * @return either {@link #INTERFACE}, {@link #ABSTRACT_CLASS}, 
+   *         {@link #CLASS}, or {@link #UNKNOWN}.
+   */ 
+  public String getType() {
     return _type;
   }
 
-  public boolean isInnerClass()
-  {
+  /** Returns <tt>true</tt> in the case of an inner class. */
+  public boolean isInnerClass() {
     return _innerClass;
   }
 
-  public long getSize()
-  {
+  /** Returns the size of the class file in bytes. */
+  public long getSize() {
     return _size;
   }
 
-  public String toString()
-  {
+  /** Returns the attributes as a string for pretty printing. */
+  public String toString() {
     StringBuffer buffer = new StringBuffer(_innerClass ? "inner " : "");
     buffer.append(_type).append(' ').append(_name);
-    if (_size > 0)
-    {
+    if (_size > 0) {
       buffer.append(" (").append(_size).append(" bytes)");
     }
     return new String(buffer);
