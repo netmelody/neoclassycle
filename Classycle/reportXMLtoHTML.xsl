@@ -305,7 +305,6 @@
               <xsl:call-template name="classRefWithEccentricityPopup">
                 <xsl:with-param name="set" select="classes/classRef"/>
                 <xsl:with-param name="text">Classes of cycle <xsl:value-of select="@name"/>:</xsl:with-param>
-                <xsl:with-param name="column">eccentricity</xsl:with-param>
               </xsl:call-template>
             </xsl:attribute>
             <img src="&linkImg;" hspace="3"/>
@@ -367,12 +366,11 @@
   <xsl:template name="classRefWithEccentricityPopup">
     <xsl:param name="set"/>
     <xsl:param name="text"/>
-    <xsl:param name="column"/>
     <xsl:text>javascript:showTable(&quot;</xsl:text>
     <xsl:value-of select="$text"/><xsl:text>&quot;,&quot;Name,Eccentricity&quot;,&quot;</xsl:text>
     <xsl:for-each select="$set">
       <xsl:value-of select="@name"/><xsl:text>,</xsl:text>
-      <xsl:value-of select="attribute::$column)"/><xsl:text>;</xsl:text>
+      <xsl:value-of select="@eccentricity"/><xsl:text>;</xsl:text>
     </xsl:for-each>
     <xsl:text>&quot;)</xsl:text>
   </xsl:template>
