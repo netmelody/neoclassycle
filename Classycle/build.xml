@@ -15,24 +15,6 @@
   <!-- set distribution file name ==========================================-->
   <property name="DIST_NAME" value="classycle.zip"/>
   
-  <!-- set classpath for compilation of src ================================-->
-  <path id="src_classpath">
-    <fileset dir="lib">
-      <include name="**/*.jar"/>
-      <include name="**/*.zip"/>
-    </fileset>
-  </path>
-
-  <!-- set classpath for compilation of srcTest ============================-->
-  <path id="srcTest_classpath">
-    <pathelement location="${OUTPUT_PATH_SRC}"/>
-    <path refid="src_classpath"/>
-    <fileset dir="libTest">
-      <include name="**/*.jar"/>
-      <include name="**/*.zip"/>
-    </fileset>
-  </path>
-
   <!-- set sourcepath for generation of apidoc =============================-->
   <path id="apidoc_srcpath">
     <pathelement location="src"/>
@@ -51,8 +33,7 @@
   <target name="compile_src" description="Compile sources.">
     <javac  srcdir="src"
             destdir="${OUTPUT_PATH_SRC}"
-            debug="true"
-            classpathref="src_classpath"/>
+            debug="true"/>
   </target>
   
   <!-- compiling test sources ============================================-->
@@ -60,8 +41,7 @@
           description="Compile test sources.">
     <javac  srcdir="srcTest"
             destdir="${OUTPUT_PATH_SRCTEST}"
-            debug="true"
-            classpathref="srcTest_classpath"/>
+            debug="true"/>
   </target>
   
   <!-- run all JUnit unit tests ==========================================-->
@@ -70,13 +50,12 @@
     <junit fork="yes"
            dir="."
            haltonfailure="true"
-           printsummary="true"
-	   >
+           printsummary="true">
       <classpath>
-        <path refid="srcTest_classpath"/>
+        <pathelement location="${OUTPUT_PATH_SRC}"/>
       </classpath>
       <formatter type="brief" usefile="false"/>
-      <test name="jcckit.AllTests"/>
+      <test name="classycle.AllTests"/>
     </junit>
   </target>
 
