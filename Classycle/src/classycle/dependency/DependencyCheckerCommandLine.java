@@ -24,11 +24,11 @@
  */
 package classycle.dependency;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.File;
 import java.io.IOException;
 
 import classycle.CommandLine;
+import classycle.util.Text;
 
 /**
  * @author  Franz-Josef Elmer
@@ -83,15 +83,7 @@ public class DependencyCheckerCommandLine extends CommandLine
     {
       try
       {
-        StringBuffer buffer = new StringBuffer();
-        BufferedReader reader 
-            = new BufferedReader(new FileReader(option.substring(1)));
-        String line;
-        while ((line = reader.readLine()) != null)
-        {
-          buffer.append(line).append('\n');
-        }
-        option = new String(buffer);
+        option = Text.readTextFile(new File(option.substring(1)));
       } catch (IOException e)
       {
         System.err.println("Error in reading dependencies description file: " 
