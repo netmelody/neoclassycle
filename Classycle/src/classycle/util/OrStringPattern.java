@@ -52,6 +52,6 @@ public class OrStringPattern extends StringPatternSequence
 
   protected String getOperatorSymbol()
   {
-    return ", ";
+    return " ";
   }
 }
