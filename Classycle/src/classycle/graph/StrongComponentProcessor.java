@@ -37,11 +37,21 @@ import java.util.Vector;
  *  @author Franz-Josef Elmer
  */
 public class StrongComponentProcessor extends GraphProcessor {
+  private final boolean _calculateAttributes;
   private int _counter;
   private Stack _vertexStack = new Stack();
   private Vector _strongComponents = new Vector();
   private Hashtable _vertexToComponents = new Hashtable();
   private StrongComponent[] _graph;
+  
+  /**
+   * Creates an instance.
+   * @param calculateAttributes If <tt>true</tt> the attributes of the
+   *        strong components will be calculated. Otherwise not.
+   */
+  public StrongComponentProcessor(boolean calculateAttributes) {
+    _calculateAttributes = calculateAttributes;
+  }
 
   /**
    *  Returns the result of {@link #deepSearchFirst}.
@@ -115,7 +125,9 @@ public class StrongComponentProcessor extends GraphProcessor {
     _graph = new StrongComponent[_strongComponents.size()];
     for (int i = 0; i < _graph.length; i++) {
       _graph[i] = (StrongComponent) _strongComponents.elementAt(i);
-      _graph[i].calculateAttributes();
+      if (_calculateAttributes) {
+        _graph[i].calculateAttributes();
+      }
     }
 
     Enumeration keys = _vertexToComponents.keys();
