@@ -24,18 +24,19 @@
  */
 package classycle.classfile;
 
-
-
-public class InterfaceMethodRefConstant extends RefConstant
-{
+/**
+ * Reference constant for an interface method.
+ * 
+ * @author Franz-Josef Elmer
+ */
+public class InterfaceMethodRefConstant extends RefConstant {
   public InterfaceMethodRefConstant(Constant[] pool, int classIndex,
-                            int nameAndTypeIndex)
-  {
+                                    int nameAndTypeIndex) {
     super(pool, classIndex, nameAndTypeIndex);
   }
 
-  public String toString()
-  {
+  /** Returns constant type, class name, method name, and descriptor. */
+  public String toString() {
     return toString("CONSTANT_InterfaceMethodRef");
   }
 } //class

@@ -24,18 +24,19 @@
  */
 package classycle.classfile;
 
-
-
-public class MethodRefConstant extends RefConstant
-{
+/**
+ * Reference constant for a method.
+ * 
+ * @author Franz-Josef Elmer
+ */
+public class MethodRefConstant extends RefConstant {
   public MethodRefConstant(Constant[] pool, int classIndex,
-                           int nameAndTypeIndex)
-  {
+                          int nameAndTypeIndex) {
     super(pool, classIndex, nameAndTypeIndex);
   }
 
-  public String toString()
-  {
+  /** Returns constant type, class name, method name, and descriptor. */
+  public String toString() {
     return toString("CONSTANT_MethodRef");
   }
 } //class

@@ -24,18 +24,19 @@
  */
 package classycle.classfile;
 
-
-
-public class FieldRefConstant extends RefConstant
-{
-  public FieldRefConstant(Constant[] pool, int classIndex,
-                          int nameAndTypeIndex)
-  {
+/**
+ * Reference constant for a field.
+ * 
+ * @author Franz-Josef Elmer
+ */
+public class FieldRefConstant extends RefConstant {
+  public FieldRefConstant(Constant[] pool, int classIndex, 
+                          int nameAndTypeIndex) {
     super(pool, classIndex, nameAndTypeIndex);
   }
 
-  public String toString()
-  {
+  /** Returns constant type, class name, field name, and descriptor. */
+  public String toString() {
     return toString("CONSTANT_FieldRef");
   }
 } //class
