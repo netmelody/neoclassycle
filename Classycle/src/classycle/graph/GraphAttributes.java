@@ -43,6 +43,10 @@ package classycle.graph;
  *     <dd>The set of vertices of the graph with the
  *         smallest eccentricities.
  *     </dd>
+ *     <dt>Maximum fragment sizes:</dt>
+ *     <dd>The size of the largest strong component of the graph after 
+ *         removing of the vertex specified by the index.
+ *     </dd>
  * </dl>
  * 
  * @author Franz-Josef Elmer
@@ -64,4 +68,10 @@ public interface GraphAttributes extends Attributes {
    * Returns the eccentricies of all vertices of a {@link StrongComponent}. 
    */
   public int[] getEccentricities();
+  
+  /**
+   * Returns the maximum fragment sizes of all vertices of 
+   * a {@link StrongComponent}.
+   */ 
+  public int[] getMaximumFragmentSizes();
 } //interface
