@@ -249,12 +249,13 @@ public class Analyser
     for (int i = 0; i < graph.length; i++) 
     {
       AtomicVertex vertex = graph[i];
-      System.out.println(vertex.getAttributes());
+      writer.println(vertex.getAttributes());
       for (int j = 0, n = vertex.getNumberOfOutgoingArcs(); j < n; j++) 
       {
         writer.println("    " + vertex.getHeadVertex(j).getAttributes());
       }
     }
+    writer.close();
   }
 
   /**
@@ -280,6 +281,7 @@ public class Analyser
         writer.println(renderer.render(component));
       }
     }
+    writer.close();
   }
 
   private void checkClassGraph(String method)
