@@ -38,37 +38,54 @@ import classycle.Analyser;
  * <p>
  * <table border="1" cellpadding="5" cellspacing="0">
  * <tr><th>Attribute</th><th>Description</th><th>Required</th></tr>
- * <tr><td>reportFile</td>
- *     <td>Path of the report file relative to the base directory.</td>
- *     <td>Yes</td>
- * <tr><td>reportType</td>
- *     <td>Type of the report. Has to be either <tt>raw</tt>, <tt>csv</tt>,
- *         or <tt>xml</tt>.</td>
- *     <td>No. Default is <tt>xml</tt></td>
+ * <tr><td valign="top">reportFile</td>
+ *     <td valign="top">Path of the report file relative to the base 
+ *        directory.</td>
+ *     <td valign="top">Yes</td>
+ * <tr><td valign="top">reportType</td>
+ *     <td valign="top">Type of the report. Has to be either <tt>raw</tt>, 
+ *        <tt>csv</tt>, or <tt>xml</tt>.</td>
+ *     <td valign="top">No. Default is <tt>xml</tt></td>
  * </tr> 
- * <tr><td>title</td>
- *     <td>Title of the XML report.</td>
- *     <td>No. Default is the first file in the file set.</td>
+ * <tr><td valign="top">title</td>
+ *     <td valign="top">Title of the XML report.</td>
+ *     <td valign="top">No. Default is the first file in the file set.</td>
  * </tr> 
- * <tr><td>packagesOnly</td>
- *     <td>If <tt>true</tt> only packages and their dependencies
+ * <tr><td valign="top">packagesOnly</td>
+ *     <td valign="top">If <tt>true</tt> only packages and their dependencies
  *         are analysed and reported (only in XML report).</td>
- *     <td>No. Default is <tt>false</tt>.</td>
+ *     <td valign="top">No. Default is <tt>false</tt>.</td>
  * </tr> 
- * <tr><td>includingClasses</td>
+ * <tr><td valign="top">includingClasses</td>
  *     <td>Comma or space separated list of wild-card patterns of
  *         fully-qualified class name which are included in the analysis.
  *         Only '*' are recognized as wild-card character.
  *     </td>
- *     <td>No. By default all classes defined in the file set are included.
+ *     <td valign="top">No. By default all classes defined in the file set 
+ *        are included.
  *     </td>
  * </tr> 
- * <tr><td>excludingClasses</td>
- *     <td>Comma or space separated list of wild-card patterns of
+ * <tr><td valign="top">excludingClasses</td>
+ *     <td valign="top">Comma or space separated list of wild-card patterns of
  *         fully-qualified class name which are excluded from the analysis.
  *         Only '*' are recognized as wild-card character.
  *     </td>
- *     <td>No. By default no class defined in the file set is excluded.
+ *     <td valign="top">No. By default no class defined in the file set is 
+ *        excluded.
+ *     </td>
+ * </tr> 
+ * <tr><td valign="top">reflectionPattern</td>
+ *     <td valign="top">Comma or space separated list of wild-card patterns of
+ *         fully-qualified class name. 
+ *         Only '*' are recognized as wild-card character.
+ *         <p>
+ *         If in the code of a class an ordinary string constant matches 
+ *         one of these patterns and if this string constant 
+ *         has a valid syntax for a fully-qualified 
+ *         class name this constant will be treated as a class reference.
+ *     </td>
+ *     <td valign="top">No. By default ordinary string constants are not 
+ *        treated as class references.
  *     </td>
  * </tr> 
  * </table>
