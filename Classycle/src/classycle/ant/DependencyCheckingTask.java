@@ -1,5 +1,26 @@
 /*
- * Created on 12.09.2004
+ * Copyright (c) 2003-2004, Franz-Josef Elmer, All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without 
+ * modification, are permitted provided that the following conditions are met:
+ * 
+ * - Redistributions of source code must retain the above copyright notice, 
+ *   this list of conditions and the following disclaimer.
+ * - Redistributions in binary form must reproduce the above copyright notice, 
+ *   this list of conditions and the following disclaimer in the documentation 
+ *   and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED 
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */
 package classycle.ant;
 
@@ -15,13 +36,79 @@ import classycle.dependency.ResultRenderer;
 import classycle.util.Text;
 
 /**
- * @author  Franz-Josef Elmer
+ * Ant Task for checking class dependencies.
+ * <p>
+ * <table border="1" cellpadding="5" cellspacing="0">
+ * <tr><th>Attribute</th><th>Description</th><th>Required</th></tr>
+ * <tr><td valign="top">includingClasses</td>
+ *     <td>Comma or space separated list of wild-card patterns of
+ *         fully-qualified class name which are included in the analysis.
+ *         Only '*' are recognized as wild-card character.
+ *     </td>
+ *     <td valign="top">No. By default all classes defined in the file set 
+ *        are included.
+ *     </td>
+ * </tr> 
+ * <tr><td valign="top">excludingClasses</td>
+ *     <td valign="top">Comma or space separated list of wild-card patterns of
+ *         fully-qualified class name which are excluded from the analysis.
+ *         Only '*' are recognized as wild-card character.
+ *     </td>
+ *     <td valign="top">No. By default no class defined in the file set is 
+ *        excluded.
+ *     </td>
+ * </tr> 
+ * <tr><td valign="top">reflectionPattern</td>
+ *     <td valign="top">Comma or space separated list of wild-card patterns of
+ *         fully-qualified class name. 
+ *         Only '*' are recognized as wild-card character.
+ *         <p>
+ *         If in the code of a class an ordinary string constant matches 
+ *         one of these patterns and if this string constant 
+ *         has a valid syntax for a fully-qualified 
+ *         class name this constant will be treated as a class reference.
+ *     </td>
+ *     <td valign="top">No. By default ordinary string constants are not 
+ *        treated as class references.
+ *     </td>
+ * </tr> 
+ * <tr><td valign="top">definitionFile</td>
+ *     <td valign="top">Path of the dependency definition file relative
+ *         to the base directory.
+ *     </td>
+ *     <td valign="top">No. By default the dependency definition commands
+ *         are embedded in the ant task.
+ *     </td>
+ * </tr> 
+ * <tr><td valign="top">failOnUnwantedDependencies</td>
+ *     <td valign="top">If <tt>true</tt> the task will fail if an
+ *         unwanted dependencies are found.
+ *     </td>
+ *     <td valign="top">No. Default value is <tt>false</tt>.
+ *     </td>
+ * </tr> 
+ * <tr><td valign="top">resultRenderer</td>
+ *     <td valign="top">Fully-qualified class name of a 
+ *         {@link ResultRenderer}.
+ *     </td>
+ *     <td valign="top">No. By default {@link DefaultResultRenderer} is used.
+ *     </td>
+ * </tr> 
+ * </table>
+ *  
+ * @author Franz-Josef Elmer
  */
 public class DependencyCheckingTask extends ClassycleTask
 {
   private String _definitionFile;
   private String _dependencyDefinition;
   private String _resultRenderer;
+  private boolean _failOnUnwantedDependencies;
+  
+  public void setFailOnUnwantedDependencies(boolean failOnUnwantedDependencies)
+  {
+    _failOnUnwantedDependencies = failOnUnwantedDependencies;
+  }
   
   public void setDefinitionFile(String definitionFile)
   {
@@ -52,17 +139,23 @@ public class DependencyCheckingTask extends ClassycleTask
       PrintWriter printWriter = new PrintWriter(System.out);
       ok = dependencyChecker.check(printWriter);
       printWriter.flush();
+    } catch (BuildException e)
+    {
+      throw e;
     } catch (Exception e)
     {
       throw new BuildException(e);
     }
-    if (ok == false) {
+    if (_failOnUnwantedDependencies && ok == false) 
+    {
       throw new BuildException(
-              "Invalid dependencies found. See output for details.");
+              "Unwanted dependencies found. See output for details.");
     }
   }
 
-  private ResultRenderer getRenderer() throws InstantiationException, IllegalAccessException, ClassNotFoundException
+  private ResultRenderer getRenderer() throws InstantiationException, 
+                                              IllegalAccessException, 
+                                              ClassNotFoundException
   {
     ResultRenderer renderer = new DefaultResultRenderer();
     if (_resultRenderer != null) 
@@ -72,16 +165,16 @@ public class DependencyCheckingTask extends ClassycleTask
     return renderer;
   }
 
-  private String getDependencyDefinitions() throws IOException
+  private String getDependencyDefinitions() throws IOException, BuildException
   {
-    String result = null;
+    String result = _dependencyDefinition;;
     if (_definitionFile != null) 
     {
       File baseDir = getOwningTarget().getProject().getBaseDir();
       result = Text.readTextFile(new File(baseDir, _definitionFile));
-    } else if (_dependencyDefinition.length() > 0)
-    {
-      result = _dependencyDefinition;
+    }
+    if (result.length() == 0) {
+      throw new BuildException("Empty dependency definition.");
     }
     return result;
   }
