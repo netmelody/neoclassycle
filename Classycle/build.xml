@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project default="all" name="JCCKit" basedir=".">
+<project default="all" name="Classycle" basedir=".">
   <!-- prefix that allows to reference environment variables ===============-->
   <property environment="env"/>
 
