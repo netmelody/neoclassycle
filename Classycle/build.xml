@@ -10,7 +10,7 @@
   <property name="OUTPUT_PATH_SRCTEST" value="classes"/>
 
   <!-- set output path for generation of apidoc ============================-->
-  <property name="OUTPUT_PATH_APIDOC" value="docs/WebSite/apidoc"/>
+  <property name="OUTPUT_PATH_APIDOC" value="docs/apidoc"/>
   
   <!-- set distribution file name ==========================================-->
   <property name="DIST_NAME" value="classycle.zip"/>
@@ -83,7 +83,7 @@
   </target>
 
   <!-- generate distribution ===============================================-->
-  <target name="distribution" depends="jar, apidoc" 
+  <target name="distribution" depends="jar" 
           description="generate a distribution">
     <delete file="src.zip ${DIST_NAME}"/>
     <zip destfile="src.zip" basedir="src"/>
@@ -92,7 +92,8 @@
         <include name="Classycle/LICENSE.txt"/>
         <include name="Classycle/README.html"/>
         <include name="Classycle/classycle.jar"/>
-        <include name="Classycle/resultXMLtoHTML.xsl"/>
+        <include name="Classycle/reportXMLtoHTML.xsl"/>
+        <include name="Classycle/images/*"/>
         <include name="Classycle/src.zip"/>
         <include name="Classycle/docs/WebSite/**/*"/>
       </fileset>
