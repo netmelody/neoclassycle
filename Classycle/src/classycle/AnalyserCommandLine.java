@@ -24,11 +24,6 @@
  */
 package classycle;
 
-import classycle.util.AndStringPattern;
-import classycle.util.NotStringPattern;
-import classycle.util.StringPattern;
-import classycle.util.StringPatternSequence;
-import classycle.util.WildCardPattern;
 
 /**
  * Process command line arguments and options for the main application
@@ -36,16 +31,12 @@ import classycle.util.WildCardPattern;
  * 
  * @author Franz-Josef Elmer
  */
-public class AnalyserCommandLine 
+public class AnalyserCommandLine extends CommandLine
 {
-  private static final String INCLUDING_CLASSES = "-includingClasses=";
-  private static final String EXCLUDING_CLASSES = "-excludingClasses=";
   private static final String XML_FILE = "-xmlFile=";
   private static final String CSV_FILE = "-csvFile=";
   private static final String TITLE = "-title=";
   
-  private boolean _valid = true;
-  private StringPatternSequence _pattern = new AndStringPattern();
   private boolean _packagesOnly;
   private boolean _raw;
   private boolean _cycles;
@@ -53,87 +44,63 @@ public class AnalyserCommandLine
   private String _title;
   private String _xmlFile;
   private String _csvFile;
-  private String[] _classFiles;
-
+  
   public AnalyserCommandLine(String[] args) 
   {
-    int index = 0;
-    for (;index < args.length && args[index].charAt(0) == '-'; index++) 
-    {
-      if (args[index].equals("-raw")) 
-      {
-        _raw = true;
-      } else if (args[index].equals("-packagesOnly")) 
-      {
-        _packagesOnly = true;
-      } else if (args[index].startsWith(INCLUDING_CLASSES)) 
-      {
-        String patterns = args[index].substring(INCLUDING_CLASSES.length());
-        _pattern.appendPattern(WildCardPattern.createFromsPatterns(patterns, ","));
-      } else if (args[index].startsWith(EXCLUDING_CLASSES)) 
-      {
-        String patterns = args[index].substring(EXCLUDING_CLASSES.length());
-        StringPattern p = WildCardPattern.createFromsPatterns(patterns, ",");
-        _pattern.appendPattern(new NotStringPattern(p));
-      } else if (args[index].equals("-cycles")) 
-      {
-        _cycles = true;
-      } else if (args[index].equals("-strong")) 
-      {
-        _strong = true;
-      } else if (args[index].startsWith(TITLE)) 
-      {
-        _title = args[index].substring(TITLE.length());
-        if (_title.length() == 0) 
-        {
-          _valid = false;
-        }
-      } else if (args[index].startsWith(XML_FILE)) 
-      {
-        _xmlFile = args[index].substring(XML_FILE.length());
-        if (_xmlFile.length() == 0) 
-        {
-          _valid = false;
-        }
-      } else if (args[index].startsWith(CSV_FILE)) 
-      {
-        _csvFile = args[index].substring(CSV_FILE.length());
-        if (_csvFile.length() == 0) 
-        {
-          _valid = false;
-        }
-      }
-    }
-    _classFiles = new String[args.length - index];
-    System.arraycopy(args, index, _classFiles, 0, _classFiles.length);
+    super(args);
     if (_title == null && _classFiles.length > 0) 
     {
       _title = _classFiles[0];
     }
-    if (_classFiles.length == 0) 
-    {
-      _valid = false;
-    }
   }
   
+  protected void handleOption(String argument)
+  {
+    if (argument.equals("-raw")) 
+    {
+      _raw = true;
+    } else if (argument.equals("-packagesOnly")) 
+    {
+      _packagesOnly = true;
+    } else if (argument.equals("-cycles")) 
+    {
+      _cycles = true;
+    } else if (argument.equals("-strong")) 
+    {
+      _strong = true;
+    } else if (argument.startsWith(TITLE)) 
+    {
+      _title = argument.substring(TITLE.length());
+      if (_title.length() == 0) 
+      {
+        _valid = false;
+      }
+    } else if (argument.startsWith(XML_FILE)) 
+    {
+      _xmlFile = argument.substring(XML_FILE.length());
+      if (_xmlFile.length() == 0) 
+      {
+        _valid = false;
+      }
+    } else if (argument.startsWith(CSV_FILE)) 
+    {
+      _csvFile = argument.substring(CSV_FILE.length());
+      if (_csvFile.length() == 0) 
+      {
+        _valid = false;
+      }
+    } else
+    {
+      super.handleOption(argument);
+    }
+  }
+
   /** Returns the usage of correct command line arguments and options. */
   public String getUsage() 
   {
     return "[-raw] [-packagesOnly] [-cycles|-strong] "
-        + "[" + INCLUDING_CLASSES + "<pattern1>,<pattern2>,...] "
-        + "[" + EXCLUDING_CLASSES + "<pattern1>,<pattern2>,...] "
         + "[" + XML_FILE + "<file>] [" + CSV_FILE + "<file>] "
-        + "[" + TITLE + "<title>] "
-        + "<class files, zip/jar/war/ear files, or folders>";
-  }
-  
-  /** 
-   * Returns <tt>true</tt> if the command line arguments and options are
-   * valid.
-   */
-  public boolean isValid() 
-  {
-    return _valid;
+        + "[" + TITLE + "<title>] " + super.getUsage();
   }
   
   /** Returns <tt>true</tt> if the option <tt>-cycles</tt> has been set. */
@@ -188,26 +155,5 @@ public class AnalyserCommandLine
   public String getXmlFile() 
   {
     return _xmlFile;
-  }
-
-  /**
-   * Returns all class file descriptors (i.e., class files, directorys,
-   * jar files, or zip files).
-   */
-  public String[] getClassFiles() 
-  {
-    return _classFiles;
-  }
-  
-  /**
-   * Returns the pattern fully qualified class names have to match. The
-   * pattern is based on the options <tt>-includingClasses</tt> and
-   * <tt>-excludingClasses</tt>. If <tt>-includingClasses</tt> is missing
-   * every classes is included which is not excluded. 
-   * If <tt>-excludingClasses</tt> is missing no class is excluded.
-   */
-  public StringPattern getPattern()
-  {
-    return _pattern;
   }
 }
