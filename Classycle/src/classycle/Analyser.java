@@ -363,6 +363,12 @@ public class Analyser
     return _packageAnalyser.getLayerMap();
   }
 
+  /**
+   * Reads and analyses class files. Does only package analysis if
+   * <tt>packagesOnly == true</tt>. Reports progress of analysis on
+   * <tt>System.out</tt>.
+   * @throws IOException in case of reading problems.
+   */
   public void readAndAnalyse(boolean packagesOnly) throws IOException
   {
     System.out.println("============= Classycle V" + VERSION 
