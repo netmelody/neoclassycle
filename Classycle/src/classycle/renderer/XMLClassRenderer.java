@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2004, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2005, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -48,6 +48,6 @@ public class XMLClassRenderer extends XMLAtomicVertexRenderer
     return new TemplateBasedClassRenderer("    <" + getElement()
             + " name=\"{0}\" type=\"{1}\" innerClass=\"{3}\" size=\"{2}\""
             + " usedBy=\"{4}\" usesInternal=\"{5}\" usesExternal=\"{6}\""
-            + " layer=\"{7}\">\n");
+            + " layer=\"{7}\" cycle=\"{8}\">\n");
   }
 } //class
