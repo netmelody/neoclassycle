@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2005, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2004, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -57,6 +57,8 @@ public abstract class Constant {
                                                     throws IOException {
     Constant[] pool = null;
     if (stream.readInt() == MAGIC) {
+      stream.readUnsignedShort();
+      stream.readUnsignedShort();
       pool = new Constant[stream.readUnsignedShort()];
       for (int i = 1; i < pool.length; ) {
         boolean skipIndex = false;
