@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2004, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2005, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -32,21 +32,26 @@ import classycle.graph.StrongComponent;
  * @author Franz-Josef Elmer
  */
 public class PlainStrongComponentRenderer 
-                                extends AbstractStrongComponentRenderer {
-  public String render(StrongComponent component) {
+                                extends AbstractStrongComponentRenderer 
+{
+  public String render(StrongComponent component) 
+  {
     AtomicVertexRenderer classRenderer = new PlainClassRenderer();
     StringBuffer result = new StringBuffer();
     int n = component.getNumberOfVertices();
-    if (n == 1) {
-      result.append(classRenderer.render(component.getVertex(0), 0))
+    if (n == 1) 
+    {
+      result.append(classRenderer.render(component.getVertex(0), null, 0))
             .append(". Layer: ").append(component.getLongestWalk());
-    } else {
+    } else 
+    {
       result.append("Cycle: ").append(createName(component)).append(" with ")
             .append(n).append(" vertices.")
             .append(" Layer: ").append(component.getLongestWalk());
-      for (int i = 0; i < n; i++) {
+      for (int i = 0; i < n; i++) 
+      {
         result.append("\n    ")
-              .append(classRenderer.render(component.getVertex(i), 0));
+              .append(classRenderer.render(component.getVertex(i), null, 0));
       }
     }
     return new String(result);
