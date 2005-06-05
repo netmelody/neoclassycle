@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2004, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2005, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -26,6 +26,7 @@ package classycle.renderer;
 
 import classycle.ClassAttributes;
 import classycle.graph.AtomicVertex;
+import classycle.graph.StrongComponent;
 
 /**
  * Plain text renderer of an {@link AtomicVertex} with 
@@ -33,21 +34,28 @@ import classycle.graph.AtomicVertex;
  * 
  * @author Franz-Josef Elmer
  */
-public class PlainClassRenderer implements AtomicVertexRenderer {
+public class PlainClassRenderer implements AtomicVertexRenderer 
+{
   /**
    * Renderes the specified vertex. It is assumed that the vertex attributes
    * are of the type {@link classycle.ClassAttributes}.
    * @param vertex Vertex to be rendered.
    * @return the rendered vertex.
    */
-  public String render(AtomicVertex vertex, int layerIndex) {
-    if (vertex.getAttributes() instanceof ClassAttributes) {
+  public String render(AtomicVertex vertex, StrongComponent cycle, 
+                       int layerIndex) 
+  {
+    if (vertex.getAttributes() instanceof ClassAttributes) 
+    {
       int usesInternal = 0;
       int usesExternal = 0;
-      for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) {
-        if (((AtomicVertex) vertex.getHeadVertex(i)).isGraphVertex()) {
+      for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) 
+      {
+        if (((AtomicVertex) vertex.getHeadVertex(i)).isGraphVertex()) 
+        {
           usesInternal++;
-        } else {
+        } else 
+        {
           usesExternal++;
         }
       }
@@ -57,9 +65,8 @@ public class PlainClassRenderer implements AtomicVertexRenderer {
             .append(" classes. Uses ").append(usesInternal).append('/')
             .append(usesExternal).append(" internal/external classes");
       return new String(result);
-    } else {
-      throw new IllegalArgumentException(
-        "Missing class attributes in vertex " + vertex);
-    }
+    } 
+    throw new IllegalArgumentException(
+                  "Missing class attributes in vertex " + vertex);
   }
 } //class

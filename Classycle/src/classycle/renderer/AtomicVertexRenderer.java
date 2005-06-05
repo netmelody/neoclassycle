@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2004, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2005, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -25,13 +25,24 @@
 package classycle.renderer;
 
 import classycle.graph.AtomicVertex;
+import classycle.graph.StrongComponent;
 
 /**
- * Renderer interface for {@link AtomicVertex AtomicVertices}.
+ * Renderer for {@link AtomicVertex AtomicVertices}.
  * 
  * @author Franz-Josef Elmer
  */
-public interface AtomicVertexRenderer {
-  /** Renders an {@link AtomicVertex}. */
-  public String render(AtomicVertex vertex, int layerIndex);
-} //interface
+public interface AtomicVertexRenderer 
+{
+  /** 
+   * Renders an {@link AtomicVertex}.
+   * @param vertex Vertex to be rendered.
+   * @param cycle Cycle to which <code>vertex</code> belongs. Will be
+   *        <code>null</code> if it does not belong to a cycle (i.e.
+   *        a strong component with more than one element). 
+   * @param layerIndex Index of the layer to which <code>vertex</code>
+   *        belongs.
+   */
+  public String render(AtomicVertex vertex, StrongComponent cycle, 
+                       int layerIndex);
+}

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2004, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2005, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -28,6 +28,7 @@ import java.text.MessageFormat;
 
 import classycle.graph.AtomicVertex;
 import classycle.graph.NameAttributes;
+import classycle.graph.StrongComponent;
 
 /**
  * XML renderer of an {@link AtomicVertex} with 
@@ -40,13 +41,13 @@ public abstract class XMLAtomicVertexRenderer implements AtomicVertexRenderer
   /**
    * Renderes the specified vertex. It is assumed that the vertex attributes
    * are of the type {@link classycle.ClassAttributes}.
-   * @param vertex Vertex to be rendered.
    * @return the rendered vertex.
    */
-  public String render(AtomicVertex vertex, int layerIndex) 
+  public String render(AtomicVertex vertex, StrongComponent cycle, 
+                       int layerIndex) 
   {
-    StringBuffer result 
-        = new StringBuffer(getVertexRenderer().render(vertex, layerIndex));
+    StringBuffer result = new StringBuffer();
+    result.append(getVertexRenderer().render(vertex, cycle, layerIndex));
     MessageFormat format = new MessageFormat("      <" + getRefElement() 
                                    + " name=\"{0}\"" + " type=\"{1}\"/>\n");
     String[] values = new String[2];
