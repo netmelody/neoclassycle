@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2004, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2005, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -133,11 +133,9 @@ public class WildCardPattern implements StringPattern
         {
           result = false;
           break;
-        } else
-        {
-          indexInString = index + constantPart.length();
-          result = matches(string, indexInString, indexInConstantParts + 1);
-        }
+        } 
+        indexInString = index + constantPart.length();
+        result = matches(string, indexInString, indexInConstantParts + 1);
       } while (result == false);
     } else
     {
