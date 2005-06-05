@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
-   Copyright (c) 2003-2004, Franz-Josef Elmer, All rights reserved.
+   Copyright (c) 2003-2005, Franz-Josef Elmer, All rights reserved.
 
    Redistribution and use in source and binary forms, with or without
    modification, are permitted provided that the following conditions are met:
@@ -30,6 +30,8 @@
        ==================================================================== -->
   <!ENTITY logoImg            "images/logo.png">
   <!ENTITY linkImg            "images/link.png">
+  <!ENTITY mixedCycleLinkImg       "images/mixedCycleLink.png">
+  <!ENTITY innerCycleLinkImg       "images/innerCycleLink.png">
   <!ENTITY mixImg             "images/mix.png">
   <!ENTITY packageImg         "images/package.png">
   <!ENTITY innerImg           "images/inner.png">
@@ -97,6 +99,7 @@
         <style type="text/css">
           body { font-family:Helvetica,Arial,sans-serif; }
           th { background-color:#aaaaaa; }
+		  td a img { border-width:0; margin-left:5pt; vertical-align:middle;}
         </style>
         <script type="text/javascript"><![CDATA[
         <!--
@@ -154,6 +157,7 @@
                    height="135" border="0" align="middle" hspace="4"/>
             </a>
             Analysis of <xsl:value-of select="/classycle/@title"/></h1>
+        Date: <xsl:value-of select="/classycle/@date"/>
         <xsl:call-template name="createSummary"/>
         <xsl:if test="$numberOfClasses > 0">
           <xsl:call-template name="createCyclesSection"/>
@@ -381,6 +385,10 @@
         <xsl:if test="$numberOfClasses > 0">Classes and </xsl:if>Packages
       </a>
     </h2>
+    Click on <img src="&mixedCycleLinkImg;" align="center"/> or 
+    <img src="&innerCycleLinkImg;" align="center"/> to go to the cycle to
+    which the class/package belongs.
+    <br/>
     <xsl:copy-of select="$infoLine"/>
     <table cellpadding="3" cellspacing="0" border="1" width="770">
       <tr>
@@ -391,44 +399,35 @@
         <th>Uses external</th>
         <th>Layer</th>
       </tr>
-      <xsl:for-each select="/classycle/classes/class|/classycle/packages/package">
+      <xsl:for-each select="/classycle/classes/class|/classycle/packages/package">	
         <xsl:sort select="@name" case-order="upper-first" data-type="text"/>
         <tr>
           <td>
-            <xsl:choose>
-              <xsl:when test="@type='class' and @innerClass='true'">
-                <img src="&innerclassImg;" alt="inner class" width="20"
-                     height="20" align="middle" hspace="4"/>
-              </xsl:when>
-              <xsl:when test="@type='class' and @innerClass='false'">
-                <img src="&classImg;" alt="class" width="20" height="20"
-                     align="middle" hspace="4"/>
-              </xsl:when>
-              <xsl:when test="@type='abstract class' and @innerClass='true'">
-                <img src="&innerabstractImg;" alt="inner class" width="20"
-                     height="20" align="middle" hspace="4"/>
-              </xsl:when>
-              <xsl:when test="@type='abstract class' and @innerClass='false'">
-                <img src="&abstractImg;" alt="class" width="20" height="20"
-                    align="middle" hspace="4"/>
-              </xsl:when>
-              <xsl:when test="@type='interface' and @innerClass='true'">
-                <img src="&innerinterfaceImg;" alt="inner class" width="20"
-                     height="20" align="middle" hspace="4"/>
-              </xsl:when>
-              <xsl:when test="@type='interface' and @innerClass='false'">
-                <img src="&interfaceImg;" alt="class" width="20" height="20"
-                     align="middle" hspace="4"/>
-              </xsl:when>
-              <xsl:otherwise>
-                <img src="&packageImg;" alt="package" width="20"
-                     height="20" align="middle" hspace="4"/>
-              </xsl:otherwise>
-            </xsl:choose>
+			<nobr>
+			<xsl:call-template name="showIcon">
+				<xsl:with-param name="type" select="@type"/>
+				<xsl:with-param name="innerClass" select="@innerClass"/>
+			</xsl:call-template>
             <xsl:element name="a">
               <xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
               <xsl:value-of select="@name"/>
             </xsl:element>
+			<xsl:variable name="name"><xsl:value-of select="@name"/></xsl:variable>
+			<xsl:if test="string-length(@cycle) &gt; 0">
+			  <a>
+				<xsl:attribute name="href">#<xsl:value-of select="translate(@cycle,' ','_')"/></xsl:attribute>
+				<xsl:attribute name="title">Member of cycle <xsl:value-of select="@cycle"/></xsl:attribute>
+				<xsl:choose>
+				  <xsl:when test="contains(@cycle, 'et al.')">
+					<img src="&mixedCycleLinkImg;"/>
+				  </xsl:when>
+				  <xsl:otherwise>
+					<img src="&innerCycleLinkImg;"/>
+				  </xsl:otherwise>
+				</xsl:choose>
+              </a>
+			</xsl:if>
+			</nobr>
           </td>
           <td align="right"><xsl:value-of select="@size"/></td>
           <xsl:if test="boolean(@type)">
@@ -484,6 +483,42 @@
       </xsl:for-each>
     </table>
   </xsl:template>
+  
+  <xsl:template name="showIcon">
+    <xsl:param name="type"/>
+    <xsl:param name="innerClass"/>
+    <xsl:choose>
+      <xsl:when test="$type='class' and $innerClass='true'">
+        <img src="&innerclassImg;" alt="inner class" width="20"
+             height="20" align="middle" hspace="4"/>
+      </xsl:when>
+      <xsl:when test="$type='class' and $innerClass='false'">
+        <img src="&classImg;" alt="class" width="20" height="20"
+             align="middle" hspace="4"/>
+      </xsl:when>
+      <xsl:when test="$type='abstract class' and $innerClass='true'">
+        <img src="&innerabstractImg;" alt="inner class" width="20"
+             height="20" align="middle" hspace="4"/>
+      </xsl:when>
+      <xsl:when test="$type='abstract class' and $innerClass='false'">
+        <img src="&abstractImg;" alt="class" width="20" height="20"
+            align="middle" hspace="4"/>
+      </xsl:when>
+      <xsl:when test="$type='interface' and $innerClass='true'">
+        <img src="&innerinterfaceImg;" alt="inner class" width="20"
+             height="20" align="middle" hspace="4"/>
+      </xsl:when>
+      <xsl:when test="$type='interface' and $innerClass='false'">
+        <img src="&interfaceImg;" alt="class" width="20" height="20"
+             align="middle" hspace="4"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <img src="&packageImg;" alt="package" width="20"
+             height="20" align="middle" hspace="4"/>
+      </xsl:otherwise>
+</xsl:choose>
+		
+  </xsl:template>
 
   <!-- ====================================================================
        Matches element <cycle>. Creates a row in the cycles table with
@@ -492,6 +527,7 @@
   <xsl:template name="cycle">
     <tr>
       <td>
+		<a><xsl:attribute name="name"><xsl:value-of select="translate(@name,' ','_')"/></xsl:attribute></a>
         <xsl:choose>
           <xsl:when test="contains(@name,'et al.')">
             <img src="&mixImg;" alt="class" width="20"
@@ -537,6 +573,7 @@
   <xsl:template name="packageCycle">
     <tr>
       <td>
+		<a><xsl:attribute name="name"><xsl:value-of select="translate(@name,' ','_')"/></xsl:attribute></a>
         <img src="&mixImg;" alt="package" width="20" height="20" align="middle" hspace="4"/>
         <xsl:value-of select="@name"/>
       </td>
