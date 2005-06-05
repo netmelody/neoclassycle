@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2004, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2005, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -24,9 +24,6 @@
  */
 package classycle;
 
-import classycle.util.StringPattern;
-import classycle.util.TrueStringPattern;
-import classycle.util.WildCardPattern;
 
 
 /**
