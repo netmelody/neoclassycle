@@ -27,7 +27,10 @@ package classycle;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +57,8 @@ import classycle.util.TrueStringPattern;
 public class Analyser 
 {
   private static final String VERSION = "1.2";
+  private static final DateFormat DATE_FORMAT 
+                                        = new SimpleDateFormat("yyyy-MM-dd");
   private static final String CSV_TEMPLATE 
                                       = "{0},{1},{3},{2},{4},{5},{6},{7}\n";
   
@@ -435,7 +440,11 @@ public class Analyser
     writer.println("<?xml version='1.0' encoding='UTF-8'?>");
     writer.println("<?xml-stylesheet type='text/xsl' "
                    + "href='reportXMLtoHTML.xsl'?>");
-    writer.println("<classycle title='" + Text.excapeForXML(title) + "'>");
+    writer.print("<classycle title='");
+    writer.print(Text.excapeForXML(title));
+    writer.print("' date='");
+    writer.print(DATE_FORMAT.format(new Date()));
+    writer.println("'>");
     if (!packagesOnly)
     {
       StrongComponent[] components = getCondensedClassGraph();
