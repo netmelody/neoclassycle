@@ -3,6 +3,9 @@
  */
 package classycle.ant;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.apache.tools.ant.BuildException;
 
 /**
@@ -79,7 +82,8 @@ public class ReportTaskTest extends ClassycleTaskTestCase
   {
     executeTarget("testXMLPackagesOnly");
     checkNumberOfLines(34, "reportTaskTest.xml");
-    checkLine("<classycle title='&lt;hel&amp;lo&gt;'>", 3, 
+    String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+    checkLine("<classycle title='&lt;hel&amp;lo&gt;' date='" + date + "'>", 3, 
               "reportTaskTest.xml");
   }
 
