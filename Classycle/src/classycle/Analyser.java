@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2004, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2005, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,9 @@ package classycle;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import classycle.graph.AtomicVertex;
@@ -51,7 +53,7 @@ import classycle.util.TrueStringPattern;
  */
 public class Analyser 
 {
-  private static final String VERSION = "1.0";
+  private static final String VERSION = "1.2";
   private static final String CSV_TEMPLATE 
                                       = "{0},{1},{3},{2},{4},{5},{6},{7}\n";
   
@@ -244,7 +246,7 @@ public class Analyser
     Map map = getClassLayerMap();
     writer.println("class name,type,inner class,size,used by,"
             + "uses internal classes,uses external classes,layer index");
-    render(graph, map, new TemplateBasedClassRenderer(CSV_TEMPLATE), writer);
+    render(graph, null, map, new TemplateBasedClassRenderer(CSV_TEMPLATE), writer);
     writer.close();
   }
 
@@ -449,7 +451,7 @@ public class Analyser
                      + getNumberOfExternalClasses() + "\">");
       AtomicVertex[] graph = getClassGraph();
       Map layerMap = getClassLayerMap();
-      render(graph, layerMap, new XMLClassRenderer(), writer);
+      render(graph, components, layerMap, new XMLClassRenderer(), writer);
       writer.println("  </classes>");
     }
     StrongComponent[] components = getCondensedPackageGraph();
@@ -464,22 +466,57 @@ public class Analyser
     writer.println("  <packages>");
     AtomicVertex[] graph = getPackageGraph();
     Map layerMap = getPackageLayerMap();
-    render(graph, layerMap, new XMLPackageRenderer(), writer);
+    render(graph, components, layerMap, new XMLPackageRenderer(), writer);
     writer.println("  </packages>");
     
     writer.println("</classycle>");
     writer.close();
   }
 
-  private void render(AtomicVertex[] graph, Map layerMap,
-          AtomicVertexRenderer renderer, PrintWriter writer)  
+  private void render(AtomicVertex[] graph, StrongComponent[] cycles, 
+          Map layerMap, AtomicVertexRenderer renderer, PrintWriter writer)  
   {
+    List list = getTrueCycles(cycles);
     for (int i = 0; i < graph.length; i++) 
     {
-      Integer layerIndex = (Integer) layerMap.get(graph[i]);
-      writer.print(renderer.render(graph[i], 
-      layerIndex == null ? -1 : layerIndex.intValue()));
+      AtomicVertex vertex = graph[i];
+      Integer layerIndex = (Integer) layerMap.get(vertex);
+      writer.print(renderer.render(vertex, 
+                         getCycleFor(vertex, list), 
+                         layerIndex == null ? -1 : layerIndex.intValue()));
     }
+  }
+  
+  private List getTrueCycles(StrongComponent[] cycles)
+  {
+    List list = new ArrayList();
+    if (cycles != null)
+    {
+      for (int i = 0; i < cycles.length; i++)
+      {
+        if (cycles[i].getNumberOfVertices() > 1)
+        {
+          list.add(cycles[i]);
+        }
+      }
+    }
+    return list;
+  }
+
+  private StrongComponent getCycleFor(AtomicVertex vertex, List cycles)
+  {
+    for (int i = 0, n = cycles.size(); i < n; i++)
+    {
+      StrongComponent cycle = (StrongComponent) cycles.get(i);
+      for (int j = 0, m = cycle.getNumberOfVertices(); j < m; j++)
+      {
+        if (cycle.getVertex(j) == vertex) 
+        {
+          return cycle;
+        }
+      }
+    }
+    return null;
   }
 
   private void checkPackageGraph(String method)
