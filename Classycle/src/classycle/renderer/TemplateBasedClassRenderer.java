@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2004, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2005, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -29,6 +29,7 @@ import java.text.MessageFormat;
 import classycle.ClassAttributes;
 import classycle.graph.AtomicVertex;
 import classycle.graph.NameAttributes;
+import classycle.graph.StrongComponent;
 
 /**
  * Renderer of an {@link AtomicVertex} with 
@@ -47,15 +48,18 @@ import classycle.graph.NameAttributes;
  *     <td>Number of outgoing arcs to other vertices in the graph</td></tr>
  * <tr><td>6</td><td>Number of outgoing arcs to external vertices</td></tr>
  * <tr><td>7</td><td>Layer index</td></tr>
+ * <tr><td>8</td><td>Name of the cycle or empty string</td></tr>
  * </table>
  *
  * @author Franz-Josef Elmer
  */
-public class TemplateBasedClassRenderer implements AtomicVertexRenderer {
+public class TemplateBasedClassRenderer implements AtomicVertexRenderer 
+{
   private MessageFormat _format;
 
   /** Creates an instance for the specified template. */
-  public TemplateBasedClassRenderer(String template) {
+  public TemplateBasedClassRenderer(String template) 
+  {
     _format = new MessageFormat(template);
   }
 
@@ -65,8 +69,10 @@ public class TemplateBasedClassRenderer implements AtomicVertexRenderer {
    * @param vertex Vertex to be rendered.
    * @return the rendered vertex.
    */
-  public String render(AtomicVertex vertex, int layerIndex) {
-    String[] values = new String[8];
+  public String render(AtomicVertex vertex, StrongComponent cycle, 
+                       int layerIndex) 
+  {
+    String[] values = new String[9];
     NameAttributes attributes = (NameAttributes) vertex.getAttributes();
     values[0] = attributes.getName();
     values[2] = Integer.toString(attributes.getSize());
@@ -83,16 +89,21 @@ public class TemplateBasedClassRenderer implements AtomicVertexRenderer {
     values[4] = Integer.toString(vertex.getNumberOfIncomingArcs());
     int usesInternal = 0;
     int usesExternal = 0;
-    for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) {
-      if (((AtomicVertex) vertex.getHeadVertex(i)).isGraphVertex()) {
+    for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) 
+    {
+      if (((AtomicVertex) vertex.getHeadVertex(i)).isGraphVertex()) 
+      {
         usesInternal++;
-      } else {
+      } else 
+      {
         usesExternal++;
       }
     }
     values[5] = Integer.toString(usesInternal);
     values[6] = Integer.toString(usesExternal);
     values[7] = Integer.toString(layerIndex);
+    values[8] = cycle == null ? "" 
+                          : AbstractStrongComponentRenderer.createName(cycle); 
     return _format.format(values);
   }
-} //class
+}
