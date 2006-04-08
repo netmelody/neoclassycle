@@ -37,10 +37,10 @@ public class DependencyProcessorTest extends TestCase
              + "check sets [a] b.* blabla";
     check(SHOW_ALLRESULTS + s, 
             new String[] {SHOW_ONLY_ALL, 
-                          "Set [a] has 2 classes.", 
-                          "Set b.* has one class.", 
-                          "Set blabla is empty."});
-    check(s, new String[] {"", "", "Set blabla is empty."});
+                          "Set [a] has 2 classes.\n", 
+                          "Set b.* has one class.\n", 
+                          "Set blabla is empty.\n"});
+    check(s, new String[] {"", "", "Set blabla is empty.\n"});
   }
   
   public void testClassCycleCheck()
