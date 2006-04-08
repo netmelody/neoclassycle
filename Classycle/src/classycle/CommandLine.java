@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2004, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2006, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -36,11 +36,12 @@ import classycle.util.WildCardPattern;
  */
 public abstract class CommandLine
 {
+  private static final String MERGE_INNER_CLASSES = "-mergeInnerClasses";
+  private static final String INCLUDING_CLASSES = "-includingClasses=";
+  private static final String EXCLUDING_CLASSES = "-excludingClasses=";
+  private static final String REFLECTION_PATTERN = "-reflectionPattern=";
 
-  protected static final String INCLUDING_CLASSES = "-includingClasses=";
-  protected static final String EXCLUDING_CLASSES = "-excludingClasses=";
-  protected static final String REFLECTION_PATTERN = "-reflectionPattern=";
-
+  private boolean _mergeInnerClasses;
   protected boolean _valid = true;
   protected StringPatternSequence _pattern = new AndStringPattern();
   protected StringPattern _reflectionPattern;
@@ -63,7 +64,10 @@ public abstract class CommandLine
   
   protected void handleOption(String argument)
   {
-    if (argument.startsWith(INCLUDING_CLASSES)) 
+    if (argument.startsWith(MERGE_INNER_CLASSES)) 
+    {
+      _mergeInnerClasses = true;
+    } else if (argument.startsWith(INCLUDING_CLASSES)) 
     {
       String patterns = argument.substring(INCLUDING_CLASSES.length());
       _pattern.appendPattern(WildCardPattern.createFromsPatterns(patterns, ","));
@@ -125,11 +129,22 @@ public abstract class CommandLine
   {
     return _valid;
   }
+
+  /**
+   * Returns <code>true</code> if the command line option 
+   * <code>-mergeInnerClasses</code> occured.
+   */
+  public boolean isMergeInnerClasses()
+  {
+    return _mergeInnerClasses;
+  }
+
   
   /** Returns the usage of correct command line arguments and options. */
   public String getUsage() 
   {
-    return "[" + INCLUDING_CLASSES + "<pattern1>,<pattern2>,...] "
+    return "[" + MERGE_INNER_CLASSES + "] "
+        + "[" + INCLUDING_CLASSES + "<pattern1>,<pattern2>,...] "
         + "[" + EXCLUDING_CLASSES + "<pattern1>,<pattern2>,...] "
         + "[" + REFLECTION_PATTERN + "<pattern1>,<pattern2>,...] "
         + "<class files, zip/jar/war/ear files, or folders>";

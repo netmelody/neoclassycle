@@ -3,6 +3,8 @@
   <taskdef name="classycleDependencyCheck" 
            classname="classycle.ant.DependencyCheckingTask"/>
 
+  <property name="package" value="example"/>
+
   <target name="testEmbeddedDefinitions">
     <classycleDependencyCheck>
       <fileset dir="../classes/example">
@@ -23,7 +25,7 @@
       </fileset>
       show allResults
       [A] = *A*
-      [non-A] = example.* excluding [A]
+      [non-A] = ${package}.* excluding [A]
       check [A] independentOf [non-A]
       check [non-A] independentOf [A]
     </classycleDependencyCheck>
@@ -35,6 +37,27 @@
         <include name="**/*.class"/>
       </fileset>
       check *A independentOf java.*.Ob*
+    </classycleDependencyCheck>
+  </target>
+
+  <target name="testCheckCyclesFailureOn">
+    <classycleDependencyCheck failOnUnwantedDependencies="true">
+      <fileset dir="../classes/example">
+        <include name="**/*.class"/>
+      </fileset>
+      check absenceOfClassCycles > 1 ${package}.*
+    </classycleDependencyCheck>
+  </target>
+
+  <target name="testCheckCyclesMergedInnerClassesFailureOn">
+    <classycleDependencyCheck mergeInnerClasses="true"
+  							  failOnUnwantedDependencies="true">
+      <fileset dir="../classes/example">
+        <include name="**/*.class"/>
+      </fileset>
+      {pckg} = example
+      show allResults
+      check absenceOfClassCycles &gt; 1 ${pckg}.*
     </classycleDependencyCheck>
   </target>
 

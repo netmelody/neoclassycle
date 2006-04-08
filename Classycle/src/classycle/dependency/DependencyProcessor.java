@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2004, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2006, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -34,7 +34,6 @@ import classycle.graph.AtomicVertex;
  */
 public class DependencyProcessor
 {
-  private final ResultRenderer _renderer;
   private final Statement[] _statements;
   private int _index;
   
@@ -44,15 +43,18 @@ public class DependencyProcessor
    * 
    * @param dependencyDefinition Dependency definition as read from a
    *        .ddf file.
+   * @param properties Contains predefined properties and will also
+   *        be populated by definition in <code>dependencyDefinition</code>.
    * @param renderer Renderer for processing results.
    * @throws IllegalArgumentException if <tt>dependencyDefinition</tt> 
    *        is invalid.
    */
   public DependencyProcessor(String dependencyDefinition, 
+                             DependencyProperties properties, 
                              ResultRenderer renderer) 
   {
-    _renderer = renderer;
     _statements = new DependencyDefinitionParser(dependencyDefinition, 
+                                                 properties, 
                                                  renderer).getStatements();
   }
   

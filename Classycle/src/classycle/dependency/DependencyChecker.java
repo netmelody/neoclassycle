@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2004, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2006, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -25,11 +25,10 @@
 package classycle.dependency;
 
 import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.util.Map;
 
 import classycle.Analyser;
 import classycle.graph.AtomicVertex;
-import classycle.util.StringPattern;
 
 /**
  * Checks a class graph for unwanted dependencies. The dependencies are
@@ -42,31 +41,26 @@ public class DependencyChecker
   private final Analyser _analyser;
   private final ResultRenderer _renderer;
   private final DependencyProcessor _processor;
-  private final ArrayList _checkingResults = new ArrayList();
   
   /**
-   * Creates a new instance. The first three parameters define the graph to be
-   * checked. They are identical to the parameters of
-   * {@link Analyser#Analyser(String[], StringPattern, StringPattern)}.
-   * <p>
+   * Creates a new instance.
    * Note, that the constructor does not create the graph. It only parses
    * <tt>dependencyDefinition</tt> as a preprocessing step. The calculation
    * of the graph is done in {@link #check(PrintWriter)}.
    * 
-   * @param classFiles Class files or directories with class files.
-   * @param pattern Pattern of classes included in the graph.
-   * @param reflectionPattern Pattern of classes referred by plain strings.
+   * @param analyser Analyzer instance.
    * @param dependencyDefinition Description (as read from a .ddf file) of the
    *        dependencies to be checked.
    * @param renderer Output renderer for unwanted dependencies found.
    */
-  public DependencyChecker(String[] classFiles, StringPattern pattern,
-                           StringPattern reflectionPattern,
-                           String dependencyDefinition, ResultRenderer renderer)
+  public DependencyChecker(Analyser analyser,
+                           String dependencyDefinition, Map properties,
+                           ResultRenderer renderer)
   {
-    _analyser = new Analyser(classFiles, pattern, reflectionPattern);
+    _analyser = analyser;
     _renderer = renderer;
-    _processor = new DependencyProcessor(dependencyDefinition, renderer);
+    DependencyProperties dp = new DependencyProperties(properties);
+    _processor = new DependencyProcessor(dependencyDefinition, dp, renderer);
   }
   
   /**
@@ -81,7 +75,6 @@ public class DependencyChecker
     while (_processor.hasMoreStatements())
     {
       Result result = _processor.executeNextStatement(graph);
-//      System.out.println(result);
       if (result.isOk() == false)
       {
         ok = false;
@@ -106,11 +99,14 @@ public class DependencyChecker
       System.exit(1);
     }
 
+    Analyser analyser = new Analyser(commandLine.getClassFiles(), 
+                                     commandLine.getPattern(), 
+                                     commandLine.getReflectionPattern(), 
+                                     commandLine.isMergeInnerClasses());
     DependencyChecker dependencyChecker 
-        = new DependencyChecker(commandLine.getClassFiles(), 
-                                commandLine.getPattern(), 
-                                commandLine.getReflectionPattern(),
-                                commandLine.getDependencyDefinition(), 
+        = new DependencyChecker(analyser, 
+                                commandLine.getDependencyDefinition(),
+                                System.getProperties(),
                                 commandLine.getRenderer());
     PrintWriter printWriter = new PrintWriter(System.out);
     boolean ok = dependencyChecker.check(printWriter);

@@ -31,6 +31,50 @@ public class DependencyProcessorTest extends TestCase
     super(s);
   }
 
+  public void testCheckSets()
+  {
+    String s = "[a] = a.*\n"
+             + "check sets [a] b.* blabla";
+    check(SHOW_ALLRESULTS + s, 
+            new String[] {SHOW_ONLY_ALL, 
+                          "Set [a] has 2 classes.", 
+                          "Set b.* has one class.", 
+                          "Set blabla is empty."});
+    check(s, new String[] {"", "", "Set blabla is empty."});
+  }
+  
+  public void testClassCycleCheck()
+  {
+    String s = "[a] = a.*\n"
+             + "check absenceOfClassCycles > 1 b.*\n"
+             + "check absenceOfClassCycles > 1 [a]";
+    String result = "check absenceOfClassCycles > 1 [a]\n" + 
+                        "\ta.A et al. contains 2 classes:\n" + 
+                        "\t\ta.A\n" + 
+                        "\t\ta.B\n";
+    check(SHOW_ALLRESULTS + s, 
+            new String[] {SHOW_ONLY_ALL, 
+                          "check absenceOfClassCycles > 1 b.*\tOK\n", 
+                          result});
+    check(s, new String[] {"", result});
+  }
+  
+  public void testPackageCycleCheck()
+  {
+    String s = "[A] = *.A\n"
+             + "check absenceOfPackageCycles > 1 *.B\n"
+             + "check absenceOfPackageCycles > 1 [A]";
+    String result = "check absenceOfPackageCycles > 1 [A]\n" + 
+                          "\ti et al. contains 2 packages:\n" + 
+                          "\t\ti\n" + 
+                          "\t\tb\n";
+    check(SHOW_ALLRESULTS + s, 
+            new String[] {SHOW_ONLY_ALL, 
+                          "check absenceOfPackageCycles > 1 *.B\tOK\n", 
+                          result});
+    check(s, new String[] {"", result});
+  }
+  
   public void testSimpleDependencyCheck()
   {
     String s = "check b.* independentOf c.*"; 
@@ -131,7 +175,7 @@ public class DependencyProcessorTest extends TestCase
     AtomicVertex[] graph = createGraph();
     ResultRenderer renderer = new DefaultResultRenderer();
     DependencyProcessor processor 
-                          = new DependencyProcessor(description, renderer);
+                          = new DependencyProcessor(description, null, renderer);
     int i = 0;
     while (processor.hasMoreStatements())
     {
@@ -147,15 +191,16 @@ public class DependencyProcessorTest extends TestCase
   private AtomicVertex[] createGraph()
   {
     return createGraph(new String[] {"a.A", "a.B", "b.A", "c.A", 
-                                     "e.A", "e.B", "f.A", "h.A"},
+                                     "e.A", "e.B", "f.A", "h.A", "i.A", },
                        new int[][] {{1},      // 0: a.A
-                                    {0},   // 1: a.B
-                                    {},       // 2: b.A
+                                    {0},      // 1: a.B
+                                    {8},      // 2: b.A
                                     {},       // 3: c.A
                                     {0, 5},   // 4: e.A
                                     {2},      // 5: e.B
                                     {2},      // 6: f.A
-                                    {0, 4, 6} // 7: h.A
+                                    {0, 4, 6},// 7: h.A
+                                    {2},      // 8: i.A
                                    });
 
   }

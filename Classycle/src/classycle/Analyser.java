@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2005, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2006, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -65,6 +65,7 @@ public class Analyser
   private final String[] _classFiles;
   private final StringPattern _pattern;
   private final StringPattern _reflectionPattern;
+  private final boolean _mergeInnerClasses;
   private StrongComponentAnalyser _classAnalyser;
   private StrongComponentAnalyser _packageAnalyser;
   
@@ -74,7 +75,7 @@ public class Analyser
    */
   public Analyser(String[] classFiles) 
   {
-    this(classFiles, new TrueStringPattern(), null);
+    this(classFiles, new TrueStringPattern(), null, false);
   }
 
   /**
@@ -88,13 +89,16 @@ public class Analyser
    *        In addition such strings have to be syntactically valid 
    *        fully qualified class names. If <tt>null</tt> ordinary string 
    *        constants will not be checked.
+   * @param mergeInnerClasses If <code>true</code> 
+   *        merge inner classes with its outer class
    */
   public Analyser(String[] classFiles, StringPattern pattern,
-                  StringPattern reflectionPattern) 
+                  StringPattern reflectionPattern, boolean mergeInnerClasses) 
   {
     _classFiles = classFiles;
     _pattern = pattern;
     _reflectionPattern = reflectionPattern;
+    _mergeInnerClasses = mergeInnerClasses;
   }
   
   /**
@@ -106,9 +110,9 @@ public class Analyser
   {
     long time = System.currentTimeMillis();
     AtomicVertex[] classGraph = Parser.readClassFiles(_classFiles, _pattern, 
-                                                      _reflectionPattern);
-    _classAnalyser = new StrongComponentAnalyser(
-                            classGraph);
+                                                      _reflectionPattern, 
+                                                      _mergeInnerClasses);
+    _classAnalyser = new StrongComponentAnalyser(classGraph);
     return System.currentTimeMillis() - time;
   }
   
@@ -553,7 +557,8 @@ public class Analyser
     
     Analyser analyser = new Analyser(commandLine.getClassFiles(), 
                                      commandLine.getPattern(),
-                                     commandLine.getReflectionPattern());
+                                     commandLine.getReflectionPattern(), 
+                                     commandLine.isMergeInnerClasses());
     analyser.readAndAnalyse(commandLine.isPackagesOnly());
 
     // Create report(s)

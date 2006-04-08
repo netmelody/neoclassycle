@@ -3,12 +3,14 @@ package classycle.graph;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import classycle.ClassAttributes;
+
 import junit.framework.TestCase;
 
 public class GraphTestCase extends TestCase {
-  public static class MockAttributes extends NameAttributes {
+  public static class MockAttributes extends ClassAttributes {
     public MockAttributes(String name) {
-      super(name);
+      super(name, ClassAttributes.CLASS, 42);
     }
     public int getSize()
     {

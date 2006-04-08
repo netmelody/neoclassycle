@@ -4,11 +4,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.HashSet;
 
 import junit.framework.TestCase;
 import classycle.classfile.ConstantPoolPrinter;
 import classycle.graph.AtomicVertex;
+import classycle.graph.NameAttributes;
 import classycle.graph.Vertex;
 import classycle.util.StringPattern;
 import classycle.util.TrueStringPattern;
@@ -22,6 +24,9 @@ import com.sun.tools.javac.Main;
  * @author Franz-Josef Elmer
  */
 public class ParserTest extends TestCase {
+  private static final String INNER_CLASS_EXAMPLE = "class Test {" 
+              + "interface A { String b();}"
+              + "Integer i;}";
   private static final String REFLECTION_EXAMPLE 
       = "class Test { "
       + "  String[] a = {\"java.util.Vector\", \"hello\", \"www.w3c.org\"};"
@@ -33,39 +38,34 @@ public class ParserTest extends TestCase {
   private static final String JAVA_FILE = TMP + CLASS_NAME + ".java";
   private static final String CLASS_FILE = TMP + CLASS_NAME + ".class";
   
-  public static void main(String[] args) throws IOException {
-    String file = "Test.java";
-    Writer writer = new FileWriter(file);
-    writer.write(args[0]);
-    writer.close();
-    if (compile(file) == 0) {
-      ConstantPoolPrinter.main(new String[] {"Test.class"});
-    }
-  }
-  
   private static int compile(String file)
   {
     return JAVAC.compile(new String[] {file, "-target", "1.1"});
   }
 
-  private static AtomicVertex createVertex(String code) throws IOException 
-  {
-    return createVertex(code, new TrueStringPattern());
-  }
-  
   private static AtomicVertex createVertex(String code, 
-                                           StringPattern reflectionPattern) 
+                                           StringPattern reflectionPattern, 
+                                           boolean mergeInnerClasses) 
                  throws IOException 
   {
     Writer writer = new FileWriter(JAVA_FILE);
     writer.write(code);
     writer.close();
     assertEquals("Exit code", 0, compile(JAVA_FILE));
-    //System.out.println("======\n" + code);
-    //ConstantPoolPrinter.main(new String[] {CLASS_FILE});
-    return Parser.readClassFiles(new String[] {CLASS_FILE}, 
-                                 new TrueStringPattern(), 
-                                 reflectionPattern)[0];
+    AtomicVertex[] vertices = Parser.readClassFiles(new String[] {TMP}, 
+                                                    new TrueStringPattern(), 
+                                                    reflectionPattern, 
+                                                    mergeInnerClasses);
+    for (int i = 0; i < vertices.length; i++)
+    {
+      NameAttributes attributes = (NameAttributes) vertices[i].getAttributes();
+      if (attributes.getName().equals(CLASS_NAME))
+      {
+        AtomicVertex vertex = vertices[i];
+        return vertex;
+      }
+    }
+    throw new IOException("Test class not found: " + Arrays.asList(vertices));
   }
 
   public ParserTest(String name) {
@@ -77,21 +77,27 @@ public class ParserTest extends TestCase {
   }
 
   protected void tearDown() throws Exception {
-    new File(JAVA_FILE).delete();
-    new File(CLASS_FILE).delete();
-    new File(TMP).delete();
+    File dir = new File(TMP);
+    File[] files = dir.listFiles();
+    for (int i = 0; i < files.length; i++)
+    {
+      files[i].delete();
+    }
+    dir.delete();
   }
 
   private void check(String[] expectedClasses, String javaCode) 
                throws IOException 
   {
-     check(expectedClasses, javaCode, null); 
+     check(expectedClasses, javaCode, null, false); 
   }
 
   private void check(String[] expectedClasses, String javaCode, 
-                     StringPattern reflectionPattern) 
+                     StringPattern reflectionPattern, 
+                     boolean mergeInnerClasses) 
                throws IOException {
-    AtomicVertex vertex = createVertex(javaCode, reflectionPattern);
+    AtomicVertex vertex = createVertex(javaCode, reflectionPattern, 
+                                       mergeInnerClasses);
     HashSet classSet = new HashSet();
     for (int i = 0; i < expectedClasses.length; i++) {
       classSet.add(expectedClasses[i]);
@@ -134,14 +140,14 @@ public class ParserTest extends TestCase {
             "java.util.Vector", "java.lang.Thread", 
             "hello", "www.w3c.org"},
             REFLECTION_EXAMPLE,
-            new TrueStringPattern());
+            new TrueStringPattern(), false);
     check(new String[] {"java.lang.Object", "java.lang.String", 
             "java.lang.Class", "java.lang.NoClassDefFoundError",
             "java.lang.ClassNotFoundException", 
             "java.lang.Throwable", 
             "java.util.Vector", "java.lang.Thread"},
             REFLECTION_EXAMPLE,
-            new WildCardPattern("java.*"));
+            new WildCardPattern("java.*"), false);
   }
 
   public void testInvalidFieldDescriptors() throws IOException {
@@ -186,10 +192,41 @@ public class ParserTest extends TestCase {
             "class Test extends java.awt.Canvas implements Runnable {"
             + "public void run() {}}");
   }
+  
   public void testCastingElementaryDataTypeArray() throws IOException {
     check(new String[] {"java.lang.Object"},
             "class Test { Object a() { return null; } "
             + "void b() { byte[][] n = (byte[][]) a();}}");
+  }
+  
+  public void testInnerClasses() throws IOException {
+    check(new String[] {"java.lang.Object", "java.lang.Integer", "Test$A"},
+            INNER_CLASS_EXAMPLE);
+  }
+  
+  public void testMergeInnerClasses() throws IOException {
+    check(new String[] {"java.lang.Object", "java.lang.Integer", 
+                        "java.lang.String"},
+            INNER_CLASS_EXAMPLE, new TrueStringPattern(), true);
+
+    // check that size of merged vertices is the sum of vertices sizes
+    AtomicVertex vertex = createVertex(INNER_CLASS_EXAMPLE, 
+                                       new TrueStringPattern(), false);
+    int size1 = ((ClassAttributes) vertex.getAttributes()).getSize();
+    Vertex innerClass = null;
+    for (int i = 0; i < vertex.getNumberOfOutgoingArcs(); i++)
+    {
+      innerClass = vertex.getHeadVertex(i);
+      String name = ((ClassAttributes) innerClass.getAttributes()).getName();
+      if (name.startsWith(CLASS_NAME))
+      {
+        break;
+      }
+    }
+    int size2 = ((ClassAttributes) innerClass.getAttributes()).getSize();
+    vertex = createVertex(INNER_CLASS_EXAMPLE, new TrueStringPattern(), true);
+    int size = ((ClassAttributes) vertex.getAttributes()).getSize();
+    assertEquals(size1 + size2, size);
   }
   
 }

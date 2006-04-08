@@ -5,10 +5,10 @@ package classycle.dependency;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import classycle.util.StringPattern;
+import java.util.Hashtable;
 
 import junit.framework.TestCase;
+import classycle.util.StringPattern;
 
 /**
  * @author  Franz-Josef Elmer
@@ -16,15 +16,35 @@ import junit.framework.TestCase;
 public class DependencyDefinitionParserTest extends TestCase
 {
   
+  private Hashtable _defaultProps;
+
   public void testShowStatements() 
   {
     check("show a b c", new String[] {"[a, b, c]"});
     check("show a\n show b c", new String[] {"[a]", "[b, c]"});
   }
   
+  public void testCheckSetStatements() 
+  {
+    check("check sets ${package}.lang.*", new String[] {"check set java.lang.*"});
+    check("[lang] = java.lang.*\n"
+          + "check sets [lang] java.util.*", 
+          new String[] {"check set [lang]", 
+                        "check set java.util.*"});
+  }
+  
+  public void testCheckCycleStatements() 
+  {
+    check("[base] = base.*\n"
+          + "check   absenceOfClassCycles   >    10     java.lang.*\n"
+          + "check absenceOfPackageCycles > 0  [base]", 
+            new String[] {"check absenceOfClassCycles > 10 java.lang.*",
+                          "check absenceOfPackageCycles > 0 [base]"});
+  }
+  
   public void testDependencyStatements() 
   {
-    check("check java.lang.* independentOf java.awt.*", 
+    check("check java.lang.* independentOf ${awt}", 
           new String[] {"check java.lang.* independentOf java.awt.*"});
     check("[lang] = java.lang.*\n"
           + "show shortestPathsOnly\n"
@@ -32,11 +52,13 @@ public class DependencyDefinitionParserTest extends TestCase
           new String[] {"[shortestPathsOnly]",
                         "check [lang] independentOf java.awt.*"});
     check("[lang] = java.lang.*\n"
-          + "  check   [lang]   java.util.*   independentOf java.awt.*",  
+          + "  check   [lang]   ${package}.util.*   independentOf ${awt}",  
           new String[] {"check [lang] java.util.* independentOf java.awt.*"});
-    check("[lang] = java.lang.*\n"
-          + "  check   [lang]   java.util.*   independentOf\\\njava.awt.*",  
+    check("{jojo}   =   ${package}   \n"
+          + "[lang] = java.lang.*\n"
+          + "  check   [lang]   ${jojo}.util.*   independentOf\\\njava.awt.*",  
           new String[] {"check [lang] java.util.* independentOf java.awt.*"});
+    assertEquals(2, _defaultProps.size()); // We expect ${jojo} not in there
     check("######\n"
           + "[lang] = java.lang.*\n"
           + "# this is a comment\n"
@@ -118,8 +140,7 @@ public class DependencyDefinitionParserTest extends TestCase
   
   private void check(String definition, String[] expectedStatements) 
   {
-    DependencyDefinitionParser parser 
-        = new DependencyDefinitionParser(definition, new MockResultRenderer());
+    DependencyDefinitionParser parser = createParser(definition);
     Statement[] statements = parser.getStatements();
     int len = Math.min(statements.length, expectedStatements.length);
     for (int i = 0; i < len; i++)
@@ -136,11 +157,22 @@ public class DependencyDefinitionParserTest extends TestCase
       fail(expectedStatements.length - len + " missing statements");
     }
   }
+
+  private DependencyDefinitionParser createParser(String definition)
+  {
+    _defaultProps = new Hashtable();
+    _defaultProps.put("package", "java");
+    _defaultProps.put("awt", "java.awt.*");
+    DependencyProperties properties = new DependencyProperties(_defaultProps);
+    DependencyDefinitionParser parser 
+        = new DependencyDefinitionParser(definition, properties, 
+                                         new MockResultRenderer());
+    return parser;
+  }
   
   private void check(String definition, String[][] expectedSets) 
   {
-    DependencyDefinitionParser parser 
-        = new DependencyDefinitionParser(definition, new MockResultRenderer());
+    DependencyDefinitionParser parser = createParser(definition);
     SetDefinitionRepository definitions = parser._setDefinitions;
     for (int i = 0; i < expectedSets.length; i++)
     {
@@ -154,8 +186,7 @@ public class DependencyDefinitionParserTest extends TestCase
   private void check(String definition, String[] layerNames, 
                      String[][] expectedLayers)
   {
-    DependencyDefinitionParser parser 
-        = new DependencyDefinitionParser(definition, new MockResultRenderer());
+    DependencyDefinitionParser parser = createParser(definition);
     LayerDefinitionRepository definitions = parser._layerDefinitions;
     for (int i = 0; i < expectedLayers.length; i++)
     {

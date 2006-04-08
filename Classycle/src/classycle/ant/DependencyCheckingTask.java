@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2004, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2006, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -27,9 +27,11 @@ package classycle.ant;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
 
+import classycle.Analyser;
 import classycle.dependency.DefaultResultRenderer;
 import classycle.dependency.DependencyChecker;
 import classycle.dependency.ResultRenderer;
@@ -57,6 +59,12 @@ import classycle.util.Text;
  *     <td valign="top">No. By default no class defined in the file set is 
  *        excluded.
  *     </td>
+ * </tr> 
+ * <tr><td valign="top">mergeInnerClasses</td>
+ *     <td valign="top">If <code>true</code> all class vertices are merged 
+ *         with the vertices of the corresponding inner classes.
+ *     </td>
+ *     <td valign="top">No. Default is <tt>false</tt>.</td>
  * </tr> 
  * <tr><td valign="top">reflectionPattern</td>
  *     <td valign="top">Comma or space separated list of wild-card patterns of
@@ -132,10 +140,16 @@ public class DependencyCheckingTask extends ClassycleTask
     boolean ok = false;
     try
     {
+      Analyser analyser = new Analyser(getClassFileNames(), getPattern(), 
+                                       getReflectionPattern(), 
+                                       isMergeInnerClasses());
+      Map properties = _definitionFile == null ? getProject().getProperties() 
+                                               : System.getProperties();
       DependencyChecker dependencyChecker 
-          = new DependencyChecker(getClassFileNames(), getPattern(), 
-                                  getReflectionPattern(),
-                                  getDependencyDefinitions(), getRenderer());
+                        = new DependencyChecker(analyser,
+                                                getDependencyDefinitions(),
+                                                properties,
+                                                getRenderer());
       PrintWriter printWriter = new PrintWriter(System.out);
       ok = dependencyChecker.check(printWriter);
       printWriter.flush();

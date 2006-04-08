@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2004, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2006, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -73,6 +73,12 @@ import classycle.Analyser;
  *     <td valign="top">No. By default no class defined in the file set is 
  *        excluded.
  *     </td>
+ * </tr> 
+ * <tr><td valign="top">mergeInnerClasses</td>
+ *     <td valign="top">If <code>true</code> all class vertices are merged 
+ *         with the vertices of the corresponding inner classes.
+ *     </td>
+ *     <td valign="top">No. Default is <tt>false</tt>.</td>
  * </tr> 
  * <tr><td valign="top">reflectionPattern</td>
  *     <td valign="top">Comma or space separated list of wild-card patterns of
@@ -152,7 +158,8 @@ public class ReportTask extends ClassycleTask
       _title = classFiles[0];
     }
     Analyser analyser = new Analyser(classFiles, getPattern(), 
-                                     getReflectionPattern());
+                                     getReflectionPattern(), 
+                                     isMergeInnerClasses());
     try
     {
       analyser.readAndAnalyse(_packagesOnly);

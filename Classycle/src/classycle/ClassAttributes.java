@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2004, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2006, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -49,18 +49,18 @@ public class ClassAttributes extends NameAttributes {
 
   /**
    * Creates an instance based on the specified name, type, and size.
-   * The innerclass flag will be set if the name contains a 'ä$' character.
+   * The innerclass flag will be set if the name contains a '$' character.
    * @param name Fully-qualified class name.
    * @param type Type.
    * @param size Size.
    */
-  private ClassAttributes(String name, String type, int size) {
+  public ClassAttributes(String name, String type, int size) {
     super(name);
     _type = type;
     _innerClass = name != null && name.indexOf('$') > 0;
     _size = size;
   }
-
+  
   /**
    * Creates an instance of the type {@link #INTERFACE}.
    * @param name Fully-qualified class name.

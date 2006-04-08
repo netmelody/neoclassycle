@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2004, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2006, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -46,11 +46,17 @@ import classycle.util.WildCardPattern;
  */
 public abstract class ClassycleTask extends Task
 {
+  private boolean _mergeInnerClasses;
   private StringPattern _includingClasses = new TrueStringPattern();
   private StringPattern _excludingClasses = new TrueStringPattern();
   private StringPattern _reflectionPattern;
   private LinkedList _fileSets = new LinkedList();
 
+  public void setMergeInnerClasses(boolean mergeInnerClasses)
+  {
+    _mergeInnerClasses = mergeInnerClasses;
+  }
+  
   public void setIncludingClasses(String patternList)
   {
     _includingClasses = WildCardPattern.createFromsPatterns(patternList, ", ");
@@ -120,4 +126,11 @@ public abstract class ClassycleTask extends Task
   {
     return _reflectionPattern;
   }
+
+  protected boolean isMergeInnerClasses()
+  {
+    return _mergeInnerClasses;
+  }
+  
+ 
 }

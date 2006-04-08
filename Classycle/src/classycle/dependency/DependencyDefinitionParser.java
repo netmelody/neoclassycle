@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2004, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2006, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -50,11 +50,18 @@ public class DependencyDefinitionParser
                              CHECK_KEY_WORD = "check",
                              LAYER_KEY_WORD = "layer",
                              SHOW_KEY_WORD = "show",
+                             SETS_KEY_WORD = "sets",
+                             CLASS_CYCLES_KEY_WORD = "absenceOfClassCycles",
+                             PACKAGE_CYCLES_KEY_WORD = "absenceOfPackageCycles",
                              LAYERING_OF_KEY_WORD = "layeringOf",
                              STRICT_LAYERING_OF_KEY_WORD = "strictLayeringOf";
   private static final String[] INDEPENDENT = new String[] {INDEPENDENT_OF_KEY_WORD, DIRECTLY_INDEPENDENT_OF_KEY_WORD};
   private static final String[] EXCLUDING = new String[] {EXCLUDING_KEY_WORD};
+  private static final String PROP_DEF_BEGIN = "{";
+  private static final String PROP_BEGIN = "${";
+  private static final String PROP_END = "}";
   
+  private final DependencyProperties _properties;
   private final ResultRenderer _renderer;
   final SetDefinitionRepository _setDefinitions 
                     = new SetDefinitionRepository();
@@ -63,8 +70,10 @@ public class DependencyDefinitionParser
   private final ArrayList _statements = new ArrayList();
   
   public DependencyDefinitionParser(String dependencyDefinition,
+                                    DependencyProperties properties, 
                                     ResultRenderer renderer) 
   {
+    _properties = properties;
     _renderer = renderer;
     try
     {
@@ -86,16 +95,11 @@ public class DependencyDefinitionParser
             buffer.deleteCharAt(buffer.length() - 1).append(' ');
           } else
           {
-            String logicalLine = new String(buffer).trim();
+            String logicalLine = replaceProperties(new String(buffer).trim(), 
+                                              lineNumberOfCurrentLogicalLine);
             if (logicalLine.length() > 0)
             {
-              StringTokenizer tokenizer = new StringTokenizer(logicalLine);
-              String[] tokens = new String[tokenizer.countTokens()];
-              for (int i = 0; i < tokens.length; i++)
-              {
-                tokens[i] = tokenizer.nextToken();
-              }
-              parseLine(tokens, lineNumberOfCurrentLogicalLine);
+              parseLine(logicalLine, lineNumberOfCurrentLogicalLine);
             }
             buffer.setLength(0);
             lineNumberOfCurrentLogicalLine = lineNumber + 1;
@@ -108,12 +112,57 @@ public class DependencyDefinitionParser
     }
   }
   
+  private String replaceProperties(String line, int lineNumber)
+  {
+    StringBuffer buffer = new StringBuffer();
+    for (int i = 0; i < line.length(); )
+    {
+      int index = line.indexOf(PROP_BEGIN, i);
+      if (index >= 0)
+      {
+        buffer.append(line.substring(i, index));
+        i = line.indexOf(PROP_END, index);
+        if (i < 0)
+        {
+          throwException("Missing '" + PROP_END + "'.", lineNumber, -1);
+        }
+        String name = line.substring(index + PROP_BEGIN.length(), i);
+        i += PROP_END.length();
+        String property = _properties.getProperty(name);
+        if (property == null)
+        {
+          String message = "Undefines property " + line.substring(index, i);
+          throwException(message, lineNumber, -1);
+        } else
+        {
+          buffer.append(property);
+        }
+      } else
+      {
+        buffer.append(line.substring(i));
+        i = line.length();
+      }
+    }
+    return new String(buffer);
+  }
+  
   public Statement[] getStatements() 
   {
     return (Statement[]) _statements.toArray(new Statement[0]);
   }
   
-  private void parseLine(String[] tokens, int lineNumber) {
+  private void parseLine(String line, int lineNumber) {
+    if (line.startsWith(PROP_DEF_BEGIN))
+    {
+      parsePropertyDefinition(line, lineNumber);
+      return;
+    }
+    StringTokenizer tokenizer = new StringTokenizer(line);
+    String[] tokens = new String[tokenizer.countTokens()];
+    for (int i = 0; i < tokens.length; i++)
+    {
+      tokens[i] = tokenizer.nextToken();
+    }
     String firstToken = tokens[0];
     if (firstToken.startsWith("["))
     {
@@ -131,11 +180,28 @@ public class DependencyDefinitionParser
 
     } else
     {
-      throwException("Expecting either a set name, '" 
+      throwException("Expecting either a property definition, a set name, '" 
                      + SHOW_KEY_WORD + "', '" + LAYER_KEY_WORD + "', or '" 
                      + CHECK_KEY_WORD + "'.", 
                      lineNumber, 0);
     }
+  }
+  
+  private void parsePropertyDefinition(String line, int lineNumber)
+  {
+    int index = line.indexOf(PROP_END);
+    if (index < 0)
+    {
+      throwException("Missing '" + PROP_END + "' in property definition.", 
+                     lineNumber, -1);
+    }
+    String name = line.substring(PROP_DEF_BEGIN.length(), index);
+    String def = line.substring(index + PROP_END.length()).trim();
+    if (def.startsWith("=") == false)
+    {
+      throwException("Missing '=' in propety definition.", lineNumber, -1);
+    }
+    _properties.setProperty(name, def.substring(1).trim());
   }
   
   private void parseSetDefinition(String[] tokens, int lineNumber)
@@ -257,8 +323,53 @@ public class DependencyDefinitionParser
         || tokens[1].equals(LAYERING_OF_KEY_WORD))
     {
       createLayeringStatement(tokens, lineNumber);
-    } else {
+    } else if (tokens[1].equals(SETS_KEY_WORD))
+    {
+      createCheckSetStatements(tokens, lineNumber);
+    } else if (tokens[1].equals(CLASS_CYCLES_KEY_WORD)
+            || tokens[1].equals(PACKAGE_CYCLES_KEY_WORD))
+    {
+      createCyclesStatement(tokens, lineNumber);
+    } else 
+    {
       createDependencyStatement(tokens, lineNumber);
+    }
+  }
+  
+  private void createCyclesStatement(String[]  tokens, int lineNumber)
+  {
+    boolean packageCycles = tokens[1].equals(PACKAGE_CYCLES_KEY_WORD);
+    if (tokens.length != 5)
+    {
+      throwException("Invalid statement.", lineNumber, tokens.length);
+    }
+    if (tokens[2].equals(">") == false)
+    {
+      throwException("'>' expected.", lineNumber, 2);
+    }
+    int size = 0;
+    try
+    {
+      size = Integer.parseInt(tokens[3]);
+    } catch (NumberFormatException e)
+    {
+      throwException("Number expected.", lineNumber, 3);
+    }
+    StringPattern pattern = createPattern(tokens[4], lineNumber, 4);
+    _statements.add(new CheckCyclesStatement(pattern, size, packageCycles, 
+                                             _setDefinitions));
+  }
+  
+  private void createCheckSetStatements(String[] tokens, int lineNumber)
+  {
+    if (tokens.length < 3)
+    {
+      throwException("No sets to check.", lineNumber, 2);
+    }
+    for (int i = 2; i < tokens.length; i++)
+    {
+      StringPattern pattern = createPattern(tokens[i], lineNumber, i);
+      _statements.add(new CheckSetStatement(pattern, _setDefinitions));
     }
   }
   
@@ -341,7 +452,13 @@ public class DependencyDefinitionParser
   private void throwException(String message, int lineNumber, 
                               int tokenIndex) 
   {
-    throw new IllegalArgumentException("Error in line " + lineNumber 
-                      + " token " + (tokenIndex + 1) + ": " + message);
+    StringBuffer buffer = new StringBuffer("Error in line ");
+    buffer.append(lineNumber);
+    if (tokenIndex >= 0)
+    {
+      buffer.append(" token ").append(tokenIndex + 1);
+    }
+    buffer.append(": ").append(message);
+    throw new IllegalArgumentException(new String(buffer));
   }
 }

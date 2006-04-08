@@ -9,6 +9,13 @@
     </classycleReport>
   </target>
 
+  <target name="testMergeInnerClasses">
+    <classycleReport reportType="raw" reportFile="reportTaskTest.txt"
+    				 mergeInnerClasses="true">
+      <fileset dir="../classes/example"/>
+    </classycleReport>
+  </target>
+
   <target name="testOnlyA">
     <classycleReport reportType="raw" reportFile="reportTaskTest.txt">
       <fileset dir="../classes/example">

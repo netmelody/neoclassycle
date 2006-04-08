@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2004, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2006, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -32,7 +32,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -41,7 +42,6 @@ import classycle.classfile.Constant;
 import classycle.classfile.StringConstant;
 import classycle.classfile.UTF8Constant;
 import classycle.graph.AtomicVertex;
-import classycle.graph.NameAttributes;
 import classycle.util.StringPattern;
 import classycle.util.TrueStringPattern;
 
@@ -52,18 +52,21 @@ import classycle.util.TrueStringPattern;
  *
  *  @author Franz-Josef Elmer
  */
-public class Parser {
+public class Parser 
+{
   private static final int ACC_INTERFACE = 0x200, ACC_ABSTRACT = 0x400;
   private static final String[] ZIP_FILE_TYPES 
       = new String[] {".zip", ".jar", ".war", ".ear"}; 
 
-  private static class UnresolvedNode implements Comparable {
-    NameAttributes attributes;
+  private static class UnresolvedNode implements Comparable 
+  {
+    ClassAttributes attributes;
     ArrayList nodes = new ArrayList();
 
     public UnresolvedNode() {}
 
-    public int compareTo(Object obj) {
+    public int compareTo(Object obj) 
+    {
       return attributes.getName().compareTo(
                 ((UnresolvedNode) obj).attributes.getName());
     }
@@ -80,12 +83,13 @@ public class Parser {
   
   /**
    * Reads and parses class files and creates a direct graph. Short-cut of 
-   * <tt>readClassFiles(classFiles, new {@link TrueStringPattern}(), null);</tt>
+   * <tt>readClassFiles(classFiles, new {@link TrueStringPattern}(), 
+   * null, false);</tt>
    */
   public static AtomicVertex[] readClassFiles(String[] classFiles)
                                throws IOException 
   {
-    return readClassFiles(classFiles, new TrueStringPattern(), null);
+    return readClassFiles(classFiles, new TrueStringPattern(), null, false);
   }
 
   /**
@@ -113,22 +117,30 @@ public class Parser {
    *                 syntactically valid fully qualified class names. If
    *                 <tt>null</tt> ordinary string constants will not be 
    *                 checked.
+   *  @param mergeInnerClasses If <code>true</code> 
+   *                 merge inner classes with its outer class
    *  @return directed graph.
    */
   public static AtomicVertex[] readClassFiles(String[] classFiles, 
                                               StringPattern pattern,
-                                              StringPattern reflectionPattern)
-                               throws IOException {
+                                              StringPattern reflectionPattern, 
+                                              boolean mergeInnerClasses)
+                               throws IOException 
+  {
     ArrayList unresolvedNodes = new ArrayList();
-    for (int i = 0; i < classFiles.length; i++) {
+    for (int i = 0; i < classFiles.length; i++) 
+    {
       File file = new File(classFiles[i]);
-      if (file.isDirectory() || file.getName().endsWith(".class")) {
+      if (file.isDirectory() || file.getName().endsWith(".class")) 
+      {
         analyseClassFile(file, unresolvedNodes, reflectionPattern);
-      } else if (isZipFile(file)) {
+      } else if (isZipFile(file)) 
+      {
         analyseClassFiles(new ZipFile(file.getAbsoluteFile()), 
                           unresolvedNodes, 
                           reflectionPattern);
-      } else {
+      } else 
+      {
         throw new IOException(classFiles[i] + " is an invalid file.");
       }
     }
@@ -144,7 +156,7 @@ public class Parser {
     UnresolvedNode[] nodes = new UnresolvedNode[filteredNodes.size()];
     nodes = (UnresolvedNode[]) filteredNodes.toArray(nodes);
     Arrays.sort(nodes);
-    return createGraph(nodes);
+    return createGraph(nodes, mergeInnerClasses);
   }
 
   private static boolean isZipFile(File file) 
@@ -164,33 +176,40 @@ public class Parser {
 
   private static void analyseClassFile(File file, ArrayList unresolvedNodes, 
                                        StringPattern reflectionPattern)
-                      throws IOException {
-    if (file.isDirectory()) {
+                      throws IOException 
+  {
+    if (file.isDirectory()) 
+    {
       String[] files = file.list();
-      for (int i = 0; i < files.length; i++) {
+      for (int i = 0; i < files.length; i++) 
+      {
         File child = new File(file, files[i]);
-        if (child.isDirectory() || files[i].endsWith(".class")) {
+        if (child.isDirectory() || files[i].endsWith(".class")) 
+        {
           analyseClassFile(child, unresolvedNodes, reflectionPattern);
         }
       }
-    } else {
+    } else 
+    {
       unresolvedNodes.add(extractNode(file, reflectionPattern));
     }
   }
 
   private static UnresolvedNode extractNode(File file, 
                                             StringPattern reflectionPattern) 
-                                throws IOException {
+                                throws IOException 
+  {
     InputStream stream = null;
     UnresolvedNode result = null;
-    try {
+    try 
+    {
       stream = new FileInputStream(file);
       result = Parser.createNode(stream, (int) file.length(), 
                                  reflectionPattern);
-    } catch (IOException e) {
-      throw e;
-    } finally {
-      try {
+    } finally 
+    {
+      try 
+      {
         stream.close();
       } catch (IOException e) {}
     }
@@ -200,11 +219,14 @@ public class Parser {
   private static void analyseClassFiles(ZipFile zipFile,
                                         ArrayList unresolvedNodes,
                                         StringPattern reflectionPattern)
-                      throws IOException {
+                      throws IOException 
+  {
     Enumeration entries = zipFile.entries();
-    while (entries.hasMoreElements()) {
+    while (entries.hasMoreElements()) 
+    {
       ZipEntry entry = (ZipEntry) entries.nextElement();
-      if (!entry.isDirectory() && entry.getName().endsWith(".class")) {
+      if (!entry.isDirectory() && entry.getName().endsWith(".class")) 
+      {
         InputStream stream = zipFile.getInputStream(entry);
         unresolvedNodes.add(Parser.createNode(stream, (int) entry.getSize(), 
                                               reflectionPattern));
@@ -225,7 +247,8 @@ public class Parser {
    */
   private static UnresolvedNode createNode(InputStream stream, int size,
                                            StringPattern reflectionPattern)
-                                throws IOException {
+                                throws IOException 
+  {
     // Reads constant pool, accessFlags, and class name
     DataInputStream dataStream = new DataInputStream(stream);
     Constant[] pool = Constant.extractConstantPool(dataStream);
@@ -233,12 +256,16 @@ public class Parser {
     String name =
         ((ClassConstant) pool[dataStream.readUnsignedShort()]).getName();
     ClassAttributes attributes = null;
-    if ((accessFlags & ACC_INTERFACE) != 0) {
+    if ((accessFlags & ACC_INTERFACE) != 0) 
+    {
       attributes = ClassAttributes.createInterface(name, size);
-    } else {
-      if ((accessFlags & ACC_ABSTRACT) != 0) {
+    } else 
+    {
+      if ((accessFlags & ACC_ABSTRACT) != 0) 
+      {
         attributes = ClassAttributes.createAbstractClass(name, size);
-      } else {
+      } else 
+      {
         attributes = ClassAttributes.createClass(name, size);
       }
     }
@@ -246,19 +273,25 @@ public class Parser {
     // Creates a new node with unresolved references
     UnresolvedNode node = new UnresolvedNode();
     node.attributes = attributes;
-    for (int i = 0; i < pool.length; i++) {
+    for (int i = 0; i < pool.length; i++) 
+    {
       Constant constant = pool[i];
-      if (constant instanceof ClassConstant) {
+      if (constant instanceof ClassConstant) 
+      {
         ClassConstant cc = (ClassConstant) constant;
-        if (!cc.getName().startsWith(("[")) && !cc.getName().equals(name)) {
+        if (!cc.getName().startsWith(("[")) && !cc.getName().equals(name)) 
+        {
           node.nodes.add(cc.getName());
         }
-      } else if (constant instanceof UTF8Constant) {
+      } else if (constant instanceof UTF8Constant) 
+      {
         parseUTF8Constant((UTF8Constant) constant, node.nodes, name);
       } else if (reflectionPattern != null 
-                 && constant instanceof StringConstant) {
+                 && constant instanceof StringConstant) 
+      {
         String str = ((StringConstant) constant).getString();
-        if (isValid(str) && reflectionPattern.matches(str)) {
+        if (isValid(str) && reflectionPattern.matches(str)) 
+        {
           node.nodes.add(str);
         }
       }
@@ -271,7 +304,8 @@ public class Parser {
    * of a field or method descirptor.
    */
   private static void parseUTF8Constant(UTF8Constant constant,
-                                        ArrayList nodes, String className) {
+                                        ArrayList nodes, String className) 
+  {
     final String str = constant.getString();
     int len = str.length();
 
@@ -279,26 +313,34 @@ public class Parser {
     ArrayList classNames = new ArrayList();
     boolean valid = true;
     int[] index = new int[1];
-    if (str.startsWith("(")) {
+    if (str.startsWith("(")) 
+    {
       index[0]++;
-      while (valid && index[0] < len - 1 && str.charAt(index[0]) != ')') {
+      while (valid && index[0] < len - 1 && str.charAt(index[0]) != ')') 
+      {
         valid = parseType(str, index, classNames);
       }
-      if (valid) {
+      if (valid) 
+      {
         valid = index[0] < len - 1 && str.charAt(index[0]++) == ')';
-        if (valid) {
+        if (valid) 
+        {
           valid = (index[0] == len - 1 && str.charAt(index[0]) == 'V')
                   || (parseType(str, index, classNames) && index[0] == len);
         }
       }
-    } else {
+    } else 
+    {
       valid = parseType(str, index, classNames) && index[0] == len;
     }
 
     // If valid syntax add gathered class names to nodes
-    if (valid) {
-      for (int i = 0, n = classNames.size(); i < n; i++) {
-        if (!className.equals(classNames.get(i))) {
+    if (valid) 
+    {
+      for (int i = 0, n = classNames.size(); i < n; i++) 
+      {
+        if (!className.equals(classNames.get(i))) 
+        {
           nodes.add(classNames.get(i));
         }
       }
@@ -317,45 +359,58 @@ public class Parser {
    *        name will be added.
    * @return <tt>false</tt> if a syntax error has been detected.
    */
-  private static boolean parseType(String str, int[] i, ArrayList classNames) {
+  private static boolean parseType(String str, int[] i, ArrayList classNames) 
+  {
     boolean validType = false;
     boolean arrayType = false;
     int n = str.length();
-    for (; i[0] < n && str.charAt(i[0]) == '['; i[0]++) {
+    for (; i[0] < n && str.charAt(i[0]) == '['; i[0]++) 
+    {
       arrayType = true;
     }
-    if (i[0] < n) {
+    if (i[0] < n) 
+    {
       char c = str.charAt(i[0]++);
-      if ("BCDFIJSZ".indexOf(c) >= 0) {
+      if ("BCDFIJSZ".indexOf(c) >= 0) 
+      {
         validType = true;
-      } else if (c == 'L') {
+      } else if (c == 'L') 
+      {
         int index = str.indexOf(';', i[0]);
-        if (index > i[0]) {
+        if (index > i[0]) 
+        {
           String className = str.substring(i[0], index).replace('/', '.');
           classNames.add(className);
           i[0] = index + 1;
           validType = isValid(className);
         }
       }
-    } else {
+    } else 
+    {
       validType = !arrayType;
     }
     return validType;
   }
 
   /** Returns <tt>true</tt> if <tt>className</tt> is a valid class name. */
-  private static boolean isValid(String className) {
+  private static boolean isValid(String className) 
+  {
     boolean valid = true;
     boolean firstCharacter = true;
-    for (int i = 0, n = className.length(); valid && i < n; i++) {
+    for (int i = 0, n = className.length(); valid && i < n; i++) 
+    {
       char c = className.charAt(i);
-      if (firstCharacter) {
+      if (firstCharacter) 
+      {
         firstCharacter = false;
         valid = Character.isJavaIdentifierStart(c);
-      } else {
-        if (c == '.') {
+      } else 
+      {
+        if (c == '.') 
+        {
           firstCharacter = true;
-        } else {
+        } else 
+        {
           valid = Character.isJavaIdentifierPart(c);
         }
       }
@@ -366,40 +421,85 @@ public class Parser {
   /**
    *  Creates a graph from the bunch of unresolved nodes.
    *  @param unresolvedNodes All nodes with unresolved references.
+   * @param mergeInnerClasses TODO
    *  @return an array of length <tt>unresolvedNodes.size()</tt> with all
    *          unresolved nodes transformed into <tt>Node</tt> objects
    *          with appropriated links. External nodes are created and linked
    *          but not added to the result array.
    */
-  private static AtomicVertex[] createGraph(UnresolvedNode[] unresolvedNodes) {
-    // Creates an array with all vertices having the right attributes
-    // but initially no arcs.
-    AtomicVertex[] result = new AtomicVertex[unresolvedNodes.length];
-    Hashtable map = new Hashtable();
-    for (int i = 0; i < result.length; i++) {
-      NameAttributes attributes = unresolvedNodes[i].attributes;
-      AtomicVertex vertex = new AtomicVertex(attributes);
-      map.put(attributes.getName(), vertex);
-      result[i] = vertex;
-    }
-
-    // Adds the arcs to the vertices
-    for (int i = 0; i < result.length; i++) {
+  private static AtomicVertex[] createGraph(UnresolvedNode[] unresolvedNodes, 
+                                            boolean mergeInnerClasses) 
+  {
+    Map vertices = createVertices(unresolvedNodes, mergeInnerClasses);
+    AtomicVertex[] result 
+        = (AtomicVertex[]) vertices.values().toArray(new AtomicVertex[0]);
+    
+    // Add arces to vertices
+    for (int i = 0; i < unresolvedNodes.length; i++)
+    {
       UnresolvedNode node = unresolvedNodes[i];
-      AtomicVertex vertex = result[i];
-      for (int j = 0, m = node.nodes.size(); j < m; j++) {
-        String name = (String) node.nodes.get(j);
-        AtomicVertex head = (AtomicVertex) map.get(name);
-        if (head == null) {
-          // external node created and added to the hash map
+      String name = normalize(node.attributes.getName(), mergeInnerClasses);
+      AtomicVertex vertex = (AtomicVertex) vertices.get(name);
+      for (int j = 0, m = node.nodes.size(); j < m; j++) 
+      {
+        name = normalize((String) node.nodes.get(j), mergeInnerClasses);
+        AtomicVertex head = (AtomicVertex) vertices.get(name);
+        if (head == null) 
+        {
+          // external node created and added to the map but not to the result
           head = new AtomicVertex(ClassAttributes.createUnknownClass(name, 0));
-          map.put(name, head);
+          vertices.put(name, head);
         }
-        vertex.addOutgoingArcTo(head);
+        if (vertex != head)
+        {
+          vertex.addOutgoingArcTo(head);
+        }
       }
     }
-
+    
     return result;
+  }
+
+  private static Map createVertices(UnresolvedNode[] unresolvedNodes, 
+                                    boolean mergeInnerClasses)
+  {
+    Map vertices = new HashMap();
+    for (int i = 0; i < unresolvedNodes.length; i++)
+    {
+      ClassAttributes attributes = unresolvedNodes[i].attributes;
+      String type = attributes.getType();
+      String originalName = attributes.getName();
+      int size = attributes.getSize();
+      String name = normalize(originalName, mergeInnerClasses);
+      AtomicVertex vertex = (AtomicVertex) vertices.get(name);
+      if (vertex != null)
+      {
+        ClassAttributes vertexAttributes 
+                              = (ClassAttributes) vertex.getAttributes();
+        size += vertexAttributes.getSize();
+        if (name.equals(originalName) == false)
+        {
+          type = vertexAttributes.getType();
+        }
+      }
+      attributes = new ClassAttributes(name, type, size);
+      vertex = new AtomicVertex(attributes);
+      vertices.put(name, vertex);
+    }
+    return vertices;
+  }
+
+  private static String normalize(String name, boolean mergeInnerClasses)
+  {
+    if (mergeInnerClasses)
+    {
+      int index = name.indexOf('$');
+      if (index >= 0)
+      {
+        name = name.substring(0, index);
+      }
+    }
+    return name;
   }
 
 } //class

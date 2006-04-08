@@ -30,6 +30,12 @@ public class ReportTaskTest extends ClassycleTaskTestCase
     checkNumberOfLines(26, "reportTaskTest.txt");
   }
 
+  public void testMergeInnerClasses() throws Exception
+  {
+    executeTarget("testMergeInnerClasses");
+    checkNumberOfLines(22, "reportTaskTest.txt");
+  }
+  
   public void testOnlyA() throws Exception
   {
     executeTarget("testOnlyA");
