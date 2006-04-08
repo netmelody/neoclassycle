@@ -42,9 +42,10 @@
 
   <target name="testCheckCyclesFailureOn">
     <classycleDependencyCheck failOnUnwantedDependencies="true">
-      <fileset dir="../classes/example">
+      <fileset dir="../classes">
         <include name="**/*.class"/>
       </fileset>
+      check ${package}.A* independentOf ${package}.B*
       check absenceOfClassCycles > 1 ${package}.*
     </classycleDependencyCheck>
   </target>

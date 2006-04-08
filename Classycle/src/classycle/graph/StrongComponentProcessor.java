@@ -138,7 +138,7 @@ public class StrongComponentProcessor extends GraphProcessor {
         AtomicVertex h = (AtomicVertex) vertex.getHeadVertex(i);
         if (h.isGraphVertex()) {
           StrongComponent head = (StrongComponent) _vertexToComponents.get(h);
-          if (head != tail) {
+          if (head != null && head != tail) {
             tail.addOutgoingArcTo(head);
           }
         }
