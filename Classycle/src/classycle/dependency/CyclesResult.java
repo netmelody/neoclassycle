@@ -31,10 +31,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.omg.CORBA._PolicyStub;
-
 import classycle.graph.AtomicVertex;
-import classycle.graph.GraphAttributes;
 import classycle.graph.NameAttributes;
 import classycle.graph.StrongComponent;
 import classycle.renderer.AbstractStrongComponentRenderer;
