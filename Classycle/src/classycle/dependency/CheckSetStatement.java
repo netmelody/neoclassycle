@@ -65,7 +65,7 @@ public class CheckSetStatement implements Statement
     {
       buffer.append(" has ").append(size).append(" classes.");
     }
-    return new TextResult(new String(buffer), size > 0);
+    return new TextResult(new String(buffer.append('\n')), size > 0);
   }
 
   public String toString()
