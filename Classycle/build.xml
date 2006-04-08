@@ -49,7 +49,8 @@
           description="Compile test sources.">
     <javac  srcdir="srcTest"
             destdir="${OUTPUT_PATH_SRCTEST}"
-            debug="true"/>
+            debug="true"
+            classpathref="src_classpath"/>
   </target>
 
   <!-- run all JUnit unit tests ==========================================-->
