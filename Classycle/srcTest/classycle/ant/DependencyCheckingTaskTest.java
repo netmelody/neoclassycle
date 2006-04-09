@@ -63,7 +63,7 @@ public class DependencyCheckingTaskTest extends ClassycleTaskTestCase
   {
     executeTarget("testCheckCyclesMergedInnerClassesFailureOn");
     checkNumberOfOutputLines(2);
-    checkLine("check absenceOfClassCycles > 1 example.*\tOK", 2);
+    checkLine("check absenceOfClassCycles > 1 in example.*\tOK", 2);
   }
   
   public void testCheckCyclesFailureOn() throws Exception
@@ -75,7 +75,7 @@ public class DependencyCheckingTaskTest extends ClassycleTaskTestCase
     } catch (BuildException e)
     {
       checkNumberOfOutputLines(4);
-      checkLine("check absenceOfClassCycles > 1 example.*", 1);
+      checkLine("check absenceOfClassCycles > 1 in example.*", 1);
       checkLine("\texample.B and inner classes contains 2 classes:", 2);
       checkLine("\t\texample.B", 3);
       checkLine("\t\texample.B$M", 4);

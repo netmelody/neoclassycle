@@ -22,10 +22,7 @@ public class DependencyProcessorTest extends TestCase
   private static final String SHOW_ALL = "show allPaths allResults\n";
   private static final String SHOW_ONLY_ALL 
        = "show onlyShortestPaths allResults\n";
-  private static final String SHOW_ALL_ONLY 
-       = "show allPaths onlyFailures\n";
-  private static final String SHOW_ONLY 
-       = "show onlyShortestPaths onlyFailures\n";
+
   public DependencyProcessorTest(String s)
   {
     super(s);
@@ -46,15 +43,15 @@ public class DependencyProcessorTest extends TestCase
   public void testClassCycleCheck()
   {
     String s = "[a] = a.*\n"
-             + "check absenceOfClassCycles > 1 b.*\n"
-             + "check absenceOfClassCycles > 1 [a]";
-    String result = "check absenceOfClassCycles > 1 [a]\n" + 
+             + "check absenceOfClassCycles > 1 in b.*\n"
+             + "check absenceOfClassCycles > 1 in [a]";
+    String result = "check absenceOfClassCycles > 1 in [a]\n" + 
                         "\ta.A et al. contains 2 classes:\n" + 
                         "\t\ta.A\n" + 
                         "\t\ta.B\n";
     check(SHOW_ALLRESULTS + s, 
             new String[] {SHOW_ONLY_ALL, 
-                          "check absenceOfClassCycles > 1 b.*\tOK\n", 
+                          "check absenceOfClassCycles > 1 in b.*\tOK\n", 
                           result});
     check(s, new String[] {"", result});
   }
@@ -62,15 +59,15 @@ public class DependencyProcessorTest extends TestCase
   public void testPackageCycleCheck()
   {
     String s = "[A] = *.A\n"
-             + "check absenceOfPackageCycles > 1 *.B\n"
-             + "check absenceOfPackageCycles > 1 [A]";
-    String result = "check absenceOfPackageCycles > 1 [A]\n" + 
+             + "check absenceOfPackageCycles > 1 in *.B\n"
+             + "check absenceOfPackageCycles > 1 in [A]";
+    String result = "check absenceOfPackageCycles > 1 in [A]\n" + 
                           "\ti et al. contains 2 packages:\n" + 
                           "\t\ti\n" + 
                           "\t\tb\n";
     check(SHOW_ALLRESULTS + s, 
             new String[] {SHOW_ONLY_ALL, 
-                          "check absenceOfPackageCycles > 1 *.B\tOK\n", 
+                          "check absenceOfPackageCycles > 1 in *.B\tOK\n", 
                           result});
     check(s, new String[] {"", result});
   }

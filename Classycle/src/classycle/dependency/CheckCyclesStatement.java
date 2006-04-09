@@ -102,6 +102,7 @@ public class CheckCyclesStatement implements Statement
       buffer.append(DependencyDefinitionParser.CLASS_CYCLES_KEY_WORD);
     }
     buffer.append(" > ").append(_maximumSize).append(' ');
+    buffer.append(DependencyDefinitionParser.IN_KEY_WORD).append(' ');
     buffer.append(_repository.toString(_set));
     return new String(buffer);
   }

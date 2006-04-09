@@ -28,6 +28,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 import classycle.util.AndStringPattern;
@@ -53,9 +54,12 @@ public class DependencyDefinitionParser
                              SETS_KEY_WORD = "sets",
                              CLASS_CYCLES_KEY_WORD = "absenceOfClassCycles",
                              PACKAGE_CYCLES_KEY_WORD = "absenceOfPackageCycles",
+                             IN_KEY_WORD = "in",
                              LAYERING_OF_KEY_WORD = "layeringOf",
                              STRICT_LAYERING_OF_KEY_WORD = "strictLayeringOf";
-  private static final String[] INDEPENDENT = new String[] {INDEPENDENT_OF_KEY_WORD, DIRECTLY_INDEPENDENT_OF_KEY_WORD};
+  private static final String[] INDEPENDENT 
+      = new String[] {INDEPENDENT_OF_KEY_WORD, 
+                      DIRECTLY_INDEPENDENT_OF_KEY_WORD};
   private static final String[] EXCLUDING = new String[] {EXCLUDING_KEY_WORD};
   private static final String PROP_DEF_BEGIN = "{";
   private static final String PROP_BEGIN = "${";
@@ -339,7 +343,7 @@ public class DependencyDefinitionParser
   private void createCyclesStatement(String[]  tokens, int lineNumber)
   {
     boolean packageCycles = tokens[1].equals(PACKAGE_CYCLES_KEY_WORD);
-    if (tokens.length != 5)
+    if (tokens.length != 6)
     {
       throwException("Invalid statement.", lineNumber, tokens.length);
     }
@@ -355,7 +359,11 @@ public class DependencyDefinitionParser
     {
       throwException("Number expected.", lineNumber, 3);
     }
-    StringPattern pattern = createPattern(tokens[4], lineNumber, 4);
+    if (tokens[4].equals(IN_KEY_WORD) == false)
+    {
+      throwException("'in' expected.", lineNumber, 4);
+    }
+    StringPattern pattern = createPattern(tokens[5], lineNumber, 4);
     _statements.add(new CheckCyclesStatement(pattern, size, packageCycles, 
                                              _setDefinitions));
   }
@@ -399,7 +407,7 @@ public class DependencyDefinitionParser
     }
     if (lists[1].length == 0) 
     {
-      throwException("Missing end sets.", lineNumber, tokens.length);
+      throwException("Missing end sets. Probably one of the following key words are missing: " + Arrays.asList(INDEPENDENT), lineNumber, tokens.length);
     }
     boolean directPathsOnly = DIRECTLY_INDEPENDENT_OF_KEY_WORD.equals(
                                                 tokens[lists[0].length + 1]);

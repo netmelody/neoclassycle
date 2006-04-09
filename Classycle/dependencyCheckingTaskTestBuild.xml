@@ -46,7 +46,7 @@
         <include name="**/*.class"/>
       </fileset>
       check ${package}.A* independentOf ${package}.B*
-      check absenceOfClassCycles > 1 ${package}.*
+      check absenceOfClassCycles > 1 in ${package}.*
     </classycleDependencyCheck>
   </target>
 
@@ -58,7 +58,7 @@
       </fileset>
       {pckg} = example
       show allResults
-      check absenceOfClassCycles &gt; 1 ${pckg}.*
+      check absenceOfClassCycles &gt; 1 in ${pckg}.*
     </classycleDependencyCheck>
   </target>
 
