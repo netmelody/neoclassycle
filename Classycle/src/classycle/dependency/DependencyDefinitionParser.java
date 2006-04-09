@@ -407,7 +407,9 @@ public class DependencyDefinitionParser
     }
     if (lists[1].length == 0) 
     {
-      throwException("Missing end sets. Probably one of the following key words are missing: " + Arrays.asList(INDEPENDENT), lineNumber, tokens.length);
+      throwException("Missing end sets. Probably one of the following "
+                     + "key words are missing: " 
+                     + Arrays.asList(INDEPENDENT), lineNumber, tokens.length);
     }
     boolean directPathsOnly = DIRECTLY_INDEPENDENT_OF_KEY_WORD.equals(
                                                 tokens[lists[0].length + 1]);
