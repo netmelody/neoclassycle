@@ -359,6 +359,10 @@ public class DependencyDefinitionParser
     {
       throwException("Number expected.", lineNumber, 3);
     }
+    if (size < 1)
+    {
+      throwException("Size has to be >= 1", lineNumber, 3);
+    }
     if (tokens[4].equals(IN_KEY_WORD) == false)
     {
       throwException("'in' expected.", lineNumber, 4);
