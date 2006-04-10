@@ -46,9 +46,9 @@ public class DependencyProcessorTest extends TestCase
              + "check absenceOfClassCycles > 1 in b.*\n"
              + "check absenceOfClassCycles > 1 in [a]";
     String result = "check absenceOfClassCycles > 1 in [a]\n" + 
-                        "\ta.A et al. contains 2 classes:\n" + 
-                        "\t\ta.A\n" + 
-                        "\t\ta.B\n";
+                        "  a.A et al. contains 2 classes:\n" + 
+                        "    a.A\n" + 
+                        "    a.B\n";
     check(SHOW_ALLRESULTS + s, 
             new String[] {SHOW_ONLY_ALL, 
                           "check absenceOfClassCycles > 1 in b.*\tOK\n", 
@@ -62,9 +62,9 @@ public class DependencyProcessorTest extends TestCase
              + "check absenceOfPackageCycles > 1 in *.B\n"
              + "check absenceOfPackageCycles > 1 in [A]";
     String result = "check absenceOfPackageCycles > 1 in [A]\n" + 
-                          "\ti et al. contains 2 packages:\n" + 
-                          "\t\ti\n" + 
-                          "\t\tb\n";
+                          "  i et al. contains 2 packages:\n" + 
+                          "    i\n" + 
+                          "    b\n";
     check(SHOW_ALLRESULTS + s, 
             new String[] {SHOW_ONLY_ALL, 
                           "check absenceOfPackageCycles > 1 in *.B\tOK\n", 

@@ -70,13 +70,13 @@ public class CyclesResult implements Result
       {
         StrongComponent component = (StrongComponent) iter.next();
         int numberOfVertices = component.getNumberOfVertices();
-        buffer.append("\n\t");
+        buffer.append("\n  ");
         buffer.append(AbstractStrongComponentRenderer.createName(component));
         buffer.append(" contains ").append(numberOfVertices);
         buffer.append(' ').append(_vertexType).append(':');
         for (int i = 0; i < numberOfVertices; i++)
         {
-          buffer.append("\n\t\t");
+          buffer.append("\n    ");
           AtomicVertex vertex = component.getVertex(i);
           buffer.append(((NameAttributes) vertex.getAttributes()).getName());
         }

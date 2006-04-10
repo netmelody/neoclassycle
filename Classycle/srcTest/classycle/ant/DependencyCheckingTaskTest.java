@@ -76,9 +76,9 @@ public class DependencyCheckingTaskTest extends ClassycleTaskTestCase
     {
       checkNumberOfOutputLines(4);
       checkLine("check absenceOfClassCycles > 1 in example.*", 1);
-      checkLine("\texample.B and inner classes contains 2 classes:", 2);
-      checkLine("\t\texample.B", 3);
-      checkLine("\t\texample.B$M", 4);
+      checkLine("  example.B and inner classes contains 2 classes:", 2);
+      checkLine("    example.B", 3);
+      checkLine("    example.B$M", 4);
     }
   }
   

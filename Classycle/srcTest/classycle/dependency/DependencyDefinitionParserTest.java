@@ -37,9 +37,9 @@ public class DependencyDefinitionParserTest extends TestCase
   {
     check("[base] = base.*\n"
           + "check   absenceOfClassCycles   >    10  in   java.lang.*\n"
-          + "check absenceOfPackageCycles > 0  in [base]", 
+          + "check absenceOfPackageCycles > 1  in [base]", 
             new String[] {"check absenceOfClassCycles > 10 in java.lang.*",
-                          "check absenceOfPackageCycles > 0 in [base]"});
+                          "check absenceOfPackageCycles > 1 in [base]"});
   }
   
   public void testDependencyStatements() 
