@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2006, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2007, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -47,7 +47,7 @@ public class UTF8Constant extends Constant {
     return _string;
   }
 
-  /** Returns the constant type and the wraüüpped string. */
+  /** Returns the constant type and the wraï¿½ï¿½pped string. */
   public String toString() {
     return "CONSTANT_Utf8: " + _string;
   }
