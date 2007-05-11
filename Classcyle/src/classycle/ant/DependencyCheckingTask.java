@@ -108,7 +108,7 @@ import classycle.util.Text;
  */
 public class DependencyCheckingTask extends ClassycleTask
 {
-  private String _definitionFile;
+  private File _definitionFile;
   private String _dependencyDefinition;
   private String _resultRenderer;
   private boolean _failOnUnwantedDependencies;
@@ -118,7 +118,7 @@ public class DependencyCheckingTask extends ClassycleTask
     _failOnUnwantedDependencies = failOnUnwantedDependencies;
   }
   
-  public void setDefinitionFile(String definitionFile)
+  public void setDefinitionFile(File definitionFile)
   {
     _definitionFile = definitionFile;
   }
@@ -184,8 +184,7 @@ public class DependencyCheckingTask extends ClassycleTask
     String result = _dependencyDefinition;;
     if (_definitionFile != null) 
     {
-      File baseDir = getOwningTarget().getProject().getBaseDir();
-      result = Text.readTextFile(new File(baseDir, _definitionFile));
+      result = Text.readTextFile(_definitionFile);
     }
     if (result.length() == 0) {
       throw new BuildException("Empty dependency definition.");
