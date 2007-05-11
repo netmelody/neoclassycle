@@ -39,8 +39,8 @@ import classycle.Analyser;
  * <table border="1" cellpadding="5" cellspacing="0">
  * <tr><th>Attribute</th><th>Description</th><th>Required</th></tr>
  * <tr><td valign="top">reportFile</td>
- *     <td valign="top">Path of the report file relative to the base 
- *        directory.</td>
+ *     <td valign="top">Path of the report file. 
+ *        It is either absolute or relative to the base directory.</td>
  *     <td valign="top">Yes</td>
  * <tr><td valign="top">reportType</td>
  *     <td valign="top">Type of the report. Has to be either <tt>raw</tt>, 
@@ -114,7 +114,7 @@ public class ReportTask extends ClassycleTask
   }
   
   private boolean _packagesOnly;
-  private String _reportFile;
+  private File _reportFile;
   private String _reportType = TYPE_XML;
   private String _title;
   
@@ -123,7 +123,7 @@ public class ReportTask extends ClassycleTask
     _packagesOnly = packagesOnly;
   }
 
-  public void setReportFile(String xmlFile)
+  public void setReportFile(File xmlFile)
   {
     _reportFile = xmlFile;
   }
@@ -163,9 +163,7 @@ public class ReportTask extends ClassycleTask
     try
     {
       analyser.readAndAnalyse(_packagesOnly);
-      File f = new File(getOwningTarget().getProject().getBaseDir(), 
-                        _reportFile);
-      PrintWriter writer = new PrintWriter(new FileWriter(f));
+      PrintWriter writer = new PrintWriter(new FileWriter(_reportFile));
       if (_reportType.equals(TYPE_XML))
       {
         analyser.printXML(_title, _packagesOnly, writer);
