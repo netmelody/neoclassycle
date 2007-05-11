@@ -81,8 +81,8 @@ import classycle.util.Text;
  *     </td>
  * </tr> 
  * <tr><td valign="top">definitionFile</td>
- *     <td valign="top">Path of the dependency definition file relative
- *         to the base directory.
+ *     <td valign="top">Path of the dependency definition file. 
+ *          It is either absolute or relative to the base directory.
  *     </td>
  *     <td valign="top">No. By default the dependency definition commands
  *         are embedded in the ant task.
