@@ -17,6 +17,7 @@ public class AllTests extends TestCase {
     TestSuite suite= new TestSuite();
     suite.addTestSuite(AnalyserCommandLineTest.class);
     suite.addTestSuite(ParserTest.class);
+    suite.addTestSuite(PackageProcessorTest.class);
     suite.addTest(classycle.ant.AllTests.suite());
     suite.addTest(classycle.dependency.AllTests.suite());
     suite.addTest(classycle.graph.AllTests.suite());

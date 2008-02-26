@@ -27,6 +27,7 @@ package classycle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import classycle.graph.AtomicVertex;
 import classycle.graph.GraphProcessor;
@@ -40,7 +41,28 @@ import classycle.graph.Vertex;
  */
 public class PackageProcessor extends GraphProcessor
 {
+  private static final class Arc
+  {
+    final AtomicVertex tail;
+    final AtomicVertex head;
+    final boolean internalHeadClass;
+    Arc(AtomicVertex tail, AtomicVertex head, boolean internalHeadClass)
+    {
+      this.tail = tail;
+      this.head = head;
+      this.internalHeadClass = internalHeadClass;
+    }
+    void create()
+    {
+      if (internalHeadClass || head.isGraphVertex() == false)
+      {
+        tail.addOutgoingArcTo(head);
+      }
+    }
+  }
+  
   private final HashMap _packageVertices = new HashMap();
+  private final List _arcs = new ArrayList();
   private AtomicVertex[] _packageGraph;
   
   /**
@@ -65,7 +87,8 @@ public class PackageProcessor extends GraphProcessor
   {
     PackageVertex tailPackage = getPackageVertex(tail);
     PackageVertex headPackage = getPackageVertex(head);
-    tailPackage.addOutgoingArcTo(headPackage);
+    boolean internalHeadClass = ((AtomicVertex) head).isGraphVertex();
+    _arcs.add(new Arc(tailPackage, headPackage, internalHeadClass));
   }
 
   private PackageVertex getPackageVertex(Vertex vertex)
@@ -79,16 +102,21 @@ public class PackageProcessor extends GraphProcessor
     if (result == null)
     {
       result = new PackageVertex(packageName);
-      if (vertex instanceof AtomicVertex 
-          && ((AtomicVertex) vertex).isGraphVertex())
-      {
-        // not an external package
-        result.reset();
-      }
       _packageVertices.put(packageName, result);
+    }
+    if (isVertexFromGraph(vertex))
+    {
+      // not an external package
+      result.reset();
     }
     result.addClass(classAttributes);
     return result;
+  }
+
+  private boolean isVertexFromGraph(Vertex vertex)
+  {
+    return vertex instanceof AtomicVertex
+            && ((AtomicVertex) vertex).isGraphVertex();
   }
 
   protected void processAfter(Vertex vertex)
@@ -97,6 +125,10 @@ public class PackageProcessor extends GraphProcessor
 
   protected void finishProcessing(Vertex[] graph)
   {
+    for (int i = 0; i < _arcs.size(); i++)
+    {
+      ((Arc) _arcs.get(i)).create();
+    }
     Iterator vertices = _packageVertices.values().iterator();
     ArrayList list = new ArrayList();
     
