@@ -47,7 +47,7 @@ public class UTF8Constant extends Constant {
     return _string;
   }
 
-  /** Returns the constant type and the wra��pped string. */
+  /** Returns the constant type and the wrapped string. */
   public String toString() {
     return "CONSTANT_Utf8: " + _string;
   }
