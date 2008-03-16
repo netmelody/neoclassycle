@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2007, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2008, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -348,9 +348,15 @@ public class Parser
         AtomicVertex head = (AtomicVertex) vertices.get(name);
         if (head == null) 
         {
-          // external node created and added to the map but not to the result
-          head = new AtomicVertex(ClassAttributes.createUnknownClass(name, 0));
-          vertices.put(name, head);
+//          if (name.startsWith("examples"))
+//          {
+//            head = vertex;
+//          } else
+//          {
+            // external node created and added to the map but not to the result
+            head = new AtomicVertex(ClassAttributes.createUnknownClass(name, 0));
+            vertices.put(name, head);
+//          }
         }
         if (vertex != head)
         {
