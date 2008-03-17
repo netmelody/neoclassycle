@@ -56,7 +56,7 @@ import classycle.util.TrueStringPattern;
  */
 public class Analyser 
 {
-  private static final String VERSION = "1.3.1";
+  private static final String VERSION = "1.3.2";
   private static final DateFormat DATE_FORMAT 
                                         = new SimpleDateFormat("yyyy-MM-dd");
   private static final String CSV_TEMPLATE 
