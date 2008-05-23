@@ -26,6 +26,7 @@ package classycle;
 
 import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -103,13 +104,14 @@ public class Parser
    *  working directory) which are interpreted depending on its file type as
    *  <ul>
    *    <li>name of a class file (file type <tt>.class</tt>)
-   *    <li>name of a folder containing class files
    *    <li>name of a file of type <code>.zip</code>, <code>.jar</code>,
    *        <code>.war</code>, or <code>.ear</code>
    *        containing class file
+   *    <li>name of a folder containing class files or zip/jar/war/ear files
    *  </ul>
    *  Folders and zip/jar/war/ear files are searched recursively 
-   *  for class files.
+   *  for class files. If a folder is specified only the top-level 
+   *  zip/jar/war/ear files of that folder are analysed.
    *  @param classFiles Array of file names.
    *  @param pattern Pattern fully qualified class names have to match in order
    *                 to be added to the graph. Otherwise they count as
@@ -133,19 +135,35 @@ public class Parser
     ArrayList unresolvedNodes = new ArrayList();
     for (int i = 0; i < classFiles.length; i++) 
     {
-      File file = new File(classFiles[i]);
-      if (file.isDirectory() || file.getName().endsWith(".class")) 
+      String classFile = classFiles[i];
+      File file = new File(classFile);
+      if (file.isDirectory()) 
       {
-        String source = file.isDirectory() ? classFiles[i] : "";
-        analyseClassFile(file, source, unresolvedNodes, reflectionPattern);
+        analyseClassFile(file, classFile, unresolvedNodes, reflectionPattern);
+        File[] files = file.listFiles(new FileFilter()
+                                      {
+                                        public boolean accept(File file)
+                                        {
+                                          return isZipFile(file);
+                                        }
+                                      });
+        for (int j = 0; j < files.length; j++)
+        {
+          String source = createSourceName(classFile, files[j].getName());
+          analyseClassFiles(new ZipFile(files[j].getAbsoluteFile()), source, 
+                            unresolvedNodes, reflectionPattern);
+        }
+      } else if (file.getName().endsWith(".class")) 
+      {
+        analyseClassFile(file, "", unresolvedNodes, reflectionPattern);
       } else if (isZipFile(file)) 
       {
-        analyseClassFiles(new ZipFile(file.getAbsoluteFile()), classFiles[i],
+        analyseClassFiles(new ZipFile(file.getAbsoluteFile()), classFile,
                           unresolvedNodes, 
                           reflectionPattern);
       } else 
       {
-        throw new IOException(classFiles[i] + " is an invalid file.");
+        throw new IOException(classFile + " is an invalid file.");
       }
     }
     ArrayList filteredNodes = new ArrayList();
@@ -161,6 +179,12 @@ public class Parser
     nodes = (UnresolvedNode[]) filteredNodes.toArray(nodes);
     Arrays.sort(nodes);
     return createGraph(nodes, mergeInnerClasses);
+  }
+
+  private static String createSourceName(String classFile, String name)
+  {
+    return classFile + (classFile.endsWith(File.separator) ? name 
+                                            : File.separatorChar + name);
   }
 
   private static boolean isZipFile(File file) 
