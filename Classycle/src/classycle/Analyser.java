@@ -251,11 +251,14 @@ public class Analyser
    */
   public void printCSV(PrintWriter writer) 
   {
+    StrongComponent[] cycles = getCondensedClassGraph();
     AtomicVertex[] graph = getClassGraph();
     Map map = getClassLayerMap();
     writer.println("class name,type,inner class,size,used by,"
-            + "uses internal classes,uses external classes,layer index");
-    render(graph, null, map, new TemplateBasedClassRenderer(CSV_TEMPLATE), writer);
+                   + "uses internal classes,uses external classes,"
+                   + "layer index,cycle,source");
+    render(graph, cycles, map, new TemplateBasedClassRenderer(CSV_TEMPLATE), 
+           writer);
     writer.close();
   }
 
