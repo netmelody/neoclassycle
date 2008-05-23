@@ -60,7 +60,7 @@ public class Analyser
   private static final DateFormat DATE_FORMAT 
                                         = new SimpleDateFormat("yyyy-MM-dd");
   private static final String CSV_TEMPLATE 
-                                      = "{0},{1},{3},{2},{4},{5},{6},{7}\n";
+                                      = "{0},{1},{3},{2},{4},{5},{6},{7},{8},{9}\n";
   
   private final String[] _classFiles;
   private final StringPattern _pattern;

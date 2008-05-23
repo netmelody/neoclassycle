@@ -27,6 +27,7 @@ package classycle.renderer;
 import java.text.MessageFormat;
 
 import classycle.ClassAttributes;
+import classycle.PackageAttributes;
 import classycle.graph.AtomicVertex;
 import classycle.graph.NameAttributes;
 import classycle.graph.StrongComponent;
@@ -49,6 +50,7 @@ import classycle.graph.StrongComponent;
  * <tr><td>6</td><td>Number of outgoing arcs to external vertices</td></tr>
  * <tr><td>7</td><td>Layer index</td></tr>
  * <tr><td>8</td><td>Name of the cycle or empty string</td></tr>
+ * <tr><td>9</td><td>Source of class file if known</td></tr>
  * </table>
  *
  * @author Franz-Josef Elmer
@@ -72,7 +74,7 @@ public class TemplateBasedClassRenderer implements AtomicVertexRenderer
   public String render(AtomicVertex vertex, StrongComponent cycle, 
                        int layerIndex) 
   {
-    String[] values = new String[9];
+    String[] values = new String[10];
     NameAttributes attributes = (NameAttributes) vertex.getAttributes();
     values[0] = attributes.getName();
     values[2] = Integer.toString(attributes.getSize());
@@ -81,10 +83,16 @@ public class TemplateBasedClassRenderer implements AtomicVertexRenderer
       ClassAttributes ca = (ClassAttributes) attributes;
       values[1] = ca.getType();
       values[3] = ca.isInnerClass() ? "true" : "false";
+      values[9] = ca.getSource();
     } else
     {
       values[1] = "";
       values[3] = "";
+      values[9] = "";
+      if (attributes instanceof PackageAttributes)
+      {
+        values[9] = ((PackageAttributes) attributes).getSources();
+      }
     }
     values[4] = Integer.toString(vertex.getNumberOfIncomingArcs());
     int usesInternal = 0;

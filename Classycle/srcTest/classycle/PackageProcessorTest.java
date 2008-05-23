@@ -16,11 +16,11 @@ public class PackageProcessorTest extends TestCase
   protected void setUp() throws Exception
   {
     
-    _a = new AtomicVertex(ClassAttributes.createClass("p.A", 1));
-    _b = new AtomicVertex(ClassAttributes.createClass("q.B", 2));
-    _c = new AtomicVertex(ClassAttributes.createClass("q.C", 3));
-    _d = new AtomicVertex(ClassAttributes.createClass("p.D", 4));
-    _o = new AtomicVertex(ClassAttributes.createClass("lang.Object", 42));
+    _a = new AtomicVertex(ClassAttributes.createClass("p.A", "", 1));
+    _b = new AtomicVertex(ClassAttributes.createClass("q.B", "", 2));
+    _c = new AtomicVertex(ClassAttributes.createClass("q.C", "", 3));
+    _d = new AtomicVertex(ClassAttributes.createClass("p.D", "", 4));
+    _o = new AtomicVertex(ClassAttributes.createClass("lang.Object", "", 42));
     _o.setDefaultValueOfGraphVertexFlag(false);
     _a.addOutgoingArcTo(_o);
     _a.addOutgoingArcTo(_b);

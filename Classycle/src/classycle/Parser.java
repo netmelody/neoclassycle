@@ -136,10 +136,11 @@ public class Parser
       File file = new File(classFiles[i]);
       if (file.isDirectory() || file.getName().endsWith(".class")) 
       {
-        analyseClassFile(file, unresolvedNodes, reflectionPattern);
+        String source = file.isDirectory() ? classFiles[i] : "";
+        analyseClassFile(file, source, unresolvedNodes, reflectionPattern);
       } else if (isZipFile(file)) 
       {
-        analyseClassFiles(new ZipFile(file.getAbsoluteFile()), 
+        analyseClassFiles(new ZipFile(file.getAbsoluteFile()), classFiles[i],
                           unresolvedNodes, 
                           reflectionPattern);
       } else 
@@ -177,7 +178,8 @@ public class Parser
     return result;
   }
 
-  private static void analyseClassFile(File file, ArrayList unresolvedNodes, 
+  private static void analyseClassFile(File file, String source, 
+                                       ArrayList unresolvedNodes, 
                                        StringPattern reflectionPattern)
                       throws IOException 
   {
@@ -189,16 +191,16 @@ public class Parser
         File child = new File(file, files[i]);
         if (child.isDirectory() || files[i].endsWith(".class")) 
         {
-          analyseClassFile(child, unresolvedNodes, reflectionPattern);
+          analyseClassFile(child, source, unresolvedNodes, reflectionPattern);
         }
       }
     } else 
     {
-      unresolvedNodes.add(extractNode(file, reflectionPattern));
+      unresolvedNodes.add(extractNode(file, source, reflectionPattern));
     }
   }
 
-  private static UnresolvedNode extractNode(File file, 
+  private static UnresolvedNode extractNode(File file, String source,  
                                             StringPattern reflectionPattern) 
                                 throws IOException 
   {
@@ -207,7 +209,7 @@ public class Parser
     try 
     {
       stream = new FileInputStream(file);
-      result = Parser.createNode(stream, (int) file.length(), 
+      result = Parser.createNode(stream, source, (int) file.length(), 
                                  reflectionPattern);
     } finally 
     {
@@ -219,7 +221,7 @@ public class Parser
     return result;
   }
 
-  private static void analyseClassFiles(ZipFile zipFile,
+  private static void analyseClassFiles(ZipFile zipFile, String source, 
                                         ArrayList unresolvedNodes,
                                         StringPattern reflectionPattern)
                       throws IOException 
@@ -231,7 +233,8 @@ public class Parser
       if (!entry.isDirectory() && entry.getName().endsWith(".class")) 
       {
         InputStream stream = zipFile.getInputStream(entry);
-        unresolvedNodes.add(Parser.createNode(stream, (int) entry.getSize(), 
+        int size = (int) entry.getSize();
+        unresolvedNodes.add(Parser.createNode(stream, source, size, 
                                               reflectionPattern));
       }
     }
@@ -242,13 +245,15 @@ public class Parser
    *  @param stream A just opended byte stream of a class file.
    *         If this method finishes succefully the internal pointer of the
    *         stream will point onto the superclass index.
+   * @param source Optional source of the class file. Can be <code>null</code>.
    *  @param size Number of bytes of the class file.
    *  @param reflectionPattern Pattern used to check whether a
    *         {@link StringConstant} refer to a class. Can be <tt>null</tt>.
    *  @return a node with unresolved link of all classes used by the analysed
    *         class.
    */
-  private static UnresolvedNode createNode(InputStream stream, int size,
+  private static UnresolvedNode createNode(InputStream stream, String source, 
+                                           int size,
                                            StringPattern reflectionPattern)
                                 throws IOException 
   {
@@ -261,15 +266,15 @@ public class Parser
     ClassAttributes attributes = null;
     if ((accessFlags & ACC_INTERFACE) != 0) 
     {
-      attributes = ClassAttributes.createInterface(name, size);
+      attributes = ClassAttributes.createInterface(name, source, size);
     } else 
     {
       if ((accessFlags & ACC_ABSTRACT) != 0) 
       {
-        attributes = ClassAttributes.createAbstractClass(name, size);
+        attributes = ClassAttributes.createAbstractClass(name, source, size);
       } else 
       {
-        attributes = ClassAttributes.createClass(name, size);
+        attributes = ClassAttributes.createClass(name, source, size);
       }
     }
 
@@ -390,7 +395,7 @@ public class Parser
           type = vertexAttributes.getType();
         }
       }
-      attributes = new ClassAttributes(name, type, size);
+      attributes = new ClassAttributes(name, attributes.getSource(), type, size);
       vertex = new AtomicVertex(attributes);
       vertices.put(name, vertex);
     }

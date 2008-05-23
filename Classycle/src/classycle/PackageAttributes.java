@@ -25,6 +25,7 @@
 package classycle;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import classycle.graph.NameAttributes;
 
@@ -33,7 +34,8 @@ import classycle.graph.NameAttributes;
  */
 public class PackageAttributes extends NameAttributes
 {
-  private final ArrayList _classes = new ArrayList();
+  private final List _classes = new ArrayList();
+  private final List _sources = new ArrayList();
   
   public PackageAttributes(String name)
   {
@@ -53,10 +55,28 @@ public class PackageAttributes extends NameAttributes
   public void addClass(ClassAttributes classAttributes)
   {
     String className = classAttributes.getName();
-    if (!_classes.contains(className))
+    if (_classes.contains(className) == false)
     {
       _classes.add(className);
     } 
+    String source = classAttributes.getSource();
+    if (source != null && _sources.contains(source) == false)
+    {
+      _sources.add(source);
+    }
   }
 
+  public String getSources()
+  {
+    StringBuffer buffer = new StringBuffer();
+    for (int i = 0, n = _sources.size(); i < n; i++)
+    {
+      buffer.append(_sources.get(i));
+      if (i < n - 1)
+      {
+        buffer.append(", ");
+      }
+    }
+    return buffer.toString();
+  }
 }

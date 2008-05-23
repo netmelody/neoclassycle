@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 public abstract class GraphTestCase extends TestCase {
   public static class MockAttributes extends ClassAttributes {
     public MockAttributes(String name) {
-      super(name, ClassAttributes.CLASS, 42);
+      super(name, "", ClassAttributes.CLASS, 42);
     }
     public int getSize()
     {

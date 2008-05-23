@@ -43,6 +43,7 @@ public class ClassAttributes extends NameAttributes {
                       CLASS = "class",
                       UNKNOWN = "unknown external class";
 
+  private final String _source;
   private final String _type;
   private final boolean _innerClass;
   private final int _size;
@@ -51,11 +52,13 @@ public class ClassAttributes extends NameAttributes {
    * Creates an instance based on the specified name, type, and size.
    * The innerclass flag will be set if the name contains a '$' character.
    * @param name Fully-qualified class name.
+   * @param source Optional source of the class file. Can be <code>null</code>.
    * @param type Type.
    * @param size Size.
    */
-  public ClassAttributes(String name, String type, int size) {
+  public ClassAttributes(String name, String source, String type, int size) {
     super(name);
+    _source = source;
     _type = type;
     _innerClass = name != null && name.indexOf('$') > 0;
     _size = size;
@@ -64,31 +67,37 @@ public class ClassAttributes extends NameAttributes {
   /**
    * Creates an instance of the type {@link #INTERFACE}.
    * @param name Fully-qualified class name.
+   * @param source Optional source of the class file. Can be <code>null</code>.
    * @param size Size of the class file.
    * @return a new instance.
    */
-  public static ClassAttributes createInterface(String name, int size) {
-    return new ClassAttributes(name, INTERFACE, size);
+  public static ClassAttributes createInterface(String name, String source, 
+                                                int size) {
+    return new ClassAttributes(name, source, INTERFACE, size);
   }
 
   /**
    * Creates an instance of the type {@link #ABSTRACT_CLASS}.
    * @param name Fully-qualified class name.
+   * @param source Optional source of the class file. Can be <code>null</code>.
    * @param size Size of the class file.
    * @return a new instance.
    */
-  public static ClassAttributes createAbstractClass(String name, int size) {
-    return new ClassAttributes(name, ABSTRACT_CLASS, size);
+  public static ClassAttributes createAbstractClass(String name, String source, 
+                                                    int size) {
+    return new ClassAttributes(name, source, ABSTRACT_CLASS, size);
   }
 
   /**
    * Creates an instance of the type {@link #CLASS}.
    * @param name Fully-qualified class name.
+   * @param source Optional source of the class file. Can be <code>null</code>.
    * @param size Size of the class file.
    * @return a new instance.
    */
-  public static ClassAttributes createClass(String name, int size) {
-    return new ClassAttributes(name, CLASS, size);
+  public static ClassAttributes createClass(String name, String source, 
+                                            int size) {
+    return new ClassAttributes(name, source, CLASS, size);
   }
 
   /**
@@ -98,7 +107,7 @@ public class ClassAttributes extends NameAttributes {
    * @return a new instance.
    */
   public static ClassAttributes createUnknownClass(String name, int size) {
-    return new ClassAttributes(name, UNKNOWN, size);
+    return new ClassAttributes(name, "", UNKNOWN, size);
   }
 
   /** 
@@ -119,6 +128,11 @@ public class ClassAttributes extends NameAttributes {
   public int getSize() {
     return _size;
   }
+  
+  /** Returns the source of the class file. Can be <code>null</code>. */
+  public String getSource() {
+    return _source;
+  }
 
   /** Returns the attributes as a string for pretty printing. */
   public String toString() {
@@ -126,6 +140,10 @@ public class ClassAttributes extends NameAttributes {
     buffer.append(_type).append(' ').append(getName());
     if (_size > 0) {
       buffer.append(" (").append(_size).append(" bytes)");
+    }
+    if (_source != null)
+    {
+      buffer.append(" source: ").append(_source);
     }
     return new String(buffer);
   }

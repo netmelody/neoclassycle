@@ -50,8 +50,9 @@ public class XMLPackageRenderer extends XMLAtomicVertexRenderer
   protected AtomicVertexRenderer getVertexRenderer()
   {
     return new TemplateBasedClassRenderer("    <" + getElement()
-            + " name=\"{0}\"  size=\"{2}\" usedBy=\"{4}\" usesInternal=\"{5}\""
-            + " usesExternal=\"{6}\" layer=\"{7}\" cycle=\"{8}\">\n");
+            + " name=\"{0}\" sources=\"{9}\"  size=\"{2}\" usedBy=\"{4}\""
+            + " usesInternal=\"{5}\" usesExternal=\"{6}\" layer=\"{7}\"" 
+            + " cycle=\"{8}\">\n");
   }
 
 } //class
