@@ -24,7 +24,6 @@
  */
 package classycle;
 
-import classycle.graph.NameAttributes;
 
 /**
  * Immutable class holding the attributes of a class vertex. They are
@@ -36,14 +35,13 @@ import classycle.graph.NameAttributes;
  * 
  * @author Franz-Josef Elmer
  */
-public class ClassAttributes extends NameAttributes {
+public class ClassAttributes extends NameAndSourceAttributes {
   /** Type constant. */
   public static final String INTERFACE = "interface",
                       ABSTRACT_CLASS = "abstract class",
                       CLASS = "class",
                       UNKNOWN = "unknown external class";
 
-  private final String _source;
   private final String _type;
   private final boolean _innerClass;
   private final int _size;
@@ -58,7 +56,10 @@ public class ClassAttributes extends NameAttributes {
    */
   public ClassAttributes(String name, String source, String type, int size) {
     super(name);
-    _source = source;
+    if (source != null)
+    {
+      addSource(source);
+    }
     _type = type;
     _innerClass = name != null && name.indexOf('$') > 0;
     _size = size;
@@ -107,7 +108,7 @@ public class ClassAttributes extends NameAttributes {
    * @return a new instance.
    */
   public static ClassAttributes createUnknownClass(String name, int size) {
-    return new ClassAttributes(name, "", UNKNOWN, size);
+    return new ClassAttributes(name, null, UNKNOWN, size);
   }
 
   /** 
@@ -129,11 +130,6 @@ public class ClassAttributes extends NameAttributes {
     return _size;
   }
   
-  /** Returns the source of the class file. Can be <code>null</code>. */
-  public String getSource() {
-    return _source;
-  }
-
   /** Returns the attributes as a string for pretty printing. */
   public String toString() {
     StringBuffer buffer = new StringBuffer(_innerClass ? "inner " : "");
@@ -141,9 +137,10 @@ public class ClassAttributes extends NameAttributes {
     if (_size > 0) {
       buffer.append(" (").append(_size).append(" bytes)");
     }
-    if (_source != null)
+    String sources = getSources();
+    if (sources.length() > 0)
     {
-      buffer.append(" source: ").append(_source);
+      buffer.append(" sources: ").append(sources);
     }
     return new String(buffer);
   }

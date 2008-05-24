@@ -46,7 +46,7 @@ public class XMLClassRenderer extends XMLAtomicVertexRenderer
   protected AtomicVertexRenderer getVertexRenderer()
   {
     return new TemplateBasedClassRenderer("    <" + getElement()
-            + " name=\"{0}\" source=\"{9}\" type=\"{1}\" innerClass=\"{3}\""
+            + " name=\"{0}\" sources=\"{9}\" type=\"{1}\" innerClass=\"{3}\""
             + " size=\"{2}\" usedBy=\"{4}\" usesInternal=\"{5}\""
             + " usesExternal=\"{6}\" layer=\"{7}\" cycle=\"{8}\">\n");
   }

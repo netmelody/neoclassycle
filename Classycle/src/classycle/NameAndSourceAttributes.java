@@ -24,39 +24,65 @@
  */
 package classycle;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeSet;
+
+import classycle.graph.Attributes;
+import classycle.graph.NameAttributes;
 
 /**
+ * Abstract super class of {@link Attributes} with a name and a set of sources.
+ *
  * @author  Franz-Josef Elmer
  */
-public class PackageAttributes extends NameAndSourceAttributes
+public abstract class NameAndSourceAttributes extends NameAttributes
 {
-  private final List _classes = new ArrayList();
-  
-  public PackageAttributes(String name)
+  private final Set _sources = new TreeSet();
+
+  /**
+   * Creates an instance for the specified name. Initially there are no
+   * sources.
+   */
+  public NameAndSourceAttributes(String name)
   {
     super(name);
   }
-  
-  public int getSize()
+
+  /**
+   * Adds the specified source.
+   */
+  protected void addSource(String source)
   {
-    return _classes.size();
-  }
-  
-  public String[] getClasses()
-  {
-    return (String[]) _classes.toArray(new String[_classes.size()]);
-  }
-  
-  public void addClass(ClassAttributes classAttributes)
-  {
-    String className = classAttributes.getName();
-    if (_classes.contains(className) == false)
-    {
-      _classes.add(className);
-    } 
-    addSourcesOf(classAttributes);
+    _sources.add(source);
   }
 
+  /**
+   * Adds the source of the specified attributes.
+   */
+  protected void addSourcesOf(NameAndSourceAttributes attributes)
+  {
+    _sources.addAll(attributes._sources);
+  }
+
+  /**
+   * Returns a comma separated list of sources.
+   */
+  public String getSources()
+  {
+    StringBuffer buffer = new StringBuffer();
+    for (Iterator iterator = _sources.iterator(); iterator.hasNext();)
+    {
+      String source = (String) iterator.next();
+      if (source.length() > 0)
+      {
+        if (buffer.length() > 0)
+        {
+          buffer.append(", ");
+        }
+        buffer.append(source);
+      }
+    }
+    return buffer.toString();
+  }
 }

@@ -31,12 +31,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -62,25 +59,6 @@ public class Parser
   private static final String[] ZIP_FILE_TYPES 
       = new String[] {".zip", ".jar", ".war", ".ear"}; 
   
-  private static class UnresolvedNode implements Comparable 
-  {
-    ClassAttributes attributes;
-    ArrayList nodes = new ArrayList();
-
-    public UnresolvedNode() {}
-
-    public int compareTo(Object obj) 
-    {
-      return attributes.getName().compareTo(
-                ((UnresolvedNode) obj).attributes.getName());
-    }
-    
-    public boolean isMatchedBy(StringPattern pattern)
-    {
-      return pattern.matches(attributes.getName());
-    }
-  }
-
   /** Private constructor to prohibit instanciation. */
   private Parser() {
   }
@@ -155,7 +133,7 @@ public class Parser
         }
       } else if (file.getName().endsWith(".class")) 
       {
-        analyseClassFile(file, "", unresolvedNodes, reflectionPattern);
+        analyseClassFile(file, null, unresolvedNodes, reflectionPattern);
       } else if (isZipFile(file)) 
       {
         analyseClassFiles(new ZipFile(file.getAbsoluteFile()), classFile,
@@ -166,7 +144,7 @@ public class Parser
         throw new IOException(classFile + " is an invalid file.");
       }
     }
-    ArrayList filteredNodes = new ArrayList();
+    List filteredNodes = new ArrayList();
     for (int i = 0, n = unresolvedNodes.size(); i < n; i++)
     {
       UnresolvedNode node = (UnresolvedNode) unresolvedNodes.get(i);
@@ -177,8 +155,7 @@ public class Parser
     }
     UnresolvedNode[] nodes = new UnresolvedNode[filteredNodes.size()];
     nodes = (UnresolvedNode[]) filteredNodes.toArray(nodes);
-    Arrays.sort(nodes);
-    return createGraph(nodes, mergeInnerClasses);
+    return GraphBuilder.createGraph(nodes, mergeInnerClasses);
   }
 
   private static String createSourceName(String classFile, String name)
@@ -304,7 +281,7 @@ public class Parser
 
     // Creates a new node with unresolved references
     UnresolvedNode node = new UnresolvedNode();
-    node.attributes = attributes;
+    node.setAttributes(attributes);
     for (int i = 0; i < pool.length; i++) 
     {
       Constant constant = pool[i];
@@ -313,18 +290,18 @@ public class Parser
         ClassConstant cc = (ClassConstant) constant;
         if (!cc.getName().startsWith(("[")) && !cc.getName().equals(name)) 
         {
-          node.nodes.add(cc.getName());
+          node.addLinkTo(cc.getName());
         }
       } else if (constant instanceof UTF8Constant) 
       {
-        parseUTF8Constant((UTF8Constant) constant, node.nodes, name);
+        parseUTF8Constant((UTF8Constant) constant, node, name);
       } else if (reflectionPattern != null 
                  && constant instanceof StringConstant) 
       {
         String str = ((StringConstant) constant).getString();
         if (ClassNameExtractor.isValid(str) && reflectionPattern.matches(str)) 
         {
-          node.nodes.add(str);
+          node.addLinkTo(str);
         }
       }
     }
@@ -335,7 +312,7 @@ public class Parser
    * Parses an UFT8Constant and picks class names if it has the correct syntax
    * of a field or method descirptor.
    */
-  static void parseUTF8Constant(UTF8Constant constant, List nodes, 
+  static void parseUTF8Constant(UTF8Constant constant, UnresolvedNode node, 
                                 String className) 
   {
     Set classNames = new ClassNameExtractor(constant).extract();
@@ -344,99 +321,10 @@ public class Parser
       String element = (String) iter.next();
       if (className.equals(element) == false)
       {
-        nodes.add(element);
+        node.addLinkTo(element);
       }
     }
   }
 
-  /**
-   *  Creates a graph from the bunch of unresolved nodes.
-   *  @param unresolvedNodes All nodes with unresolved references.
-   * @param mergeInnerClasses TODO
-   *  @return an array of length <tt>unresolvedNodes.size()</tt> with all
-   *          unresolved nodes transformed into <tt>Node</tt> objects
-   *          with appropriated links. External nodes are created and linked
-   *          but not added to the result array.
-   */
-  private static AtomicVertex[] createGraph(UnresolvedNode[] unresolvedNodes, 
-                                            boolean mergeInnerClasses) 
-  {
-    Map vertices = createVertices(unresolvedNodes, mergeInnerClasses);
-    AtomicVertex[] result 
-        = (AtomicVertex[]) vertices.values().toArray(new AtomicVertex[0]);
-    
-    // Add arces to vertices
-    for (int i = 0; i < unresolvedNodes.length; i++)
-    {
-      UnresolvedNode node = unresolvedNodes[i];
-      String name = normalize(node.attributes.getName(), mergeInnerClasses);
-      AtomicVertex vertex = (AtomicVertex) vertices.get(name);
-      for (int j = 0, m = node.nodes.size(); j < m; j++) 
-      {
-        name = normalize((String) node.nodes.get(j), mergeInnerClasses);
-        AtomicVertex head = (AtomicVertex) vertices.get(name);
-        if (head == null) 
-        {
-//          if (name.startsWith("examples"))
-//          {
-//            head = vertex;
-//          } else
-//          {
-            // external node created and added to the map but not to the result
-            head = new AtomicVertex(ClassAttributes.createUnknownClass(name, 0));
-            vertices.put(name, head);
-//          }
-        }
-        if (vertex != head)
-        {
-          vertex.addOutgoingArcTo(head);
-        }
-      }
-    }
-    
-    return result;
-  }
-
-  private static Map createVertices(UnresolvedNode[] unresolvedNodes, 
-                                    boolean mergeInnerClasses)
-  {
-    Map vertices = new HashMap();
-    for (int i = 0; i < unresolvedNodes.length; i++)
-    {
-      ClassAttributes attributes = unresolvedNodes[i].attributes;
-      String type = attributes.getType();
-      String originalName = attributes.getName();
-      int size = attributes.getSize();
-      String name = normalize(originalName, mergeInnerClasses);
-      AtomicVertex vertex = (AtomicVertex) vertices.get(name);
-      if (vertex != null)
-      {
-        ClassAttributes vertexAttributes 
-                              = (ClassAttributes) vertex.getAttributes();
-        size += vertexAttributes.getSize();
-        if (name.equals(originalName) == false)
-        {
-          type = vertexAttributes.getType();
-        }
-      }
-      attributes = new ClassAttributes(name, attributes.getSource(), type, size);
-      vertex = new AtomicVertex(attributes);
-      vertices.put(name, vertex);
-    }
-    return vertices;
-  }
-
-  private static String normalize(String name, boolean mergeInnerClasses)
-  {
-    if (mergeInnerClasses)
-    {
-      int index = name.indexOf('$');
-      if (index >= 0)
-      {
-        name = name.substring(0, index);
-      }
-    }
-    return name;
-  }
 
 } //class

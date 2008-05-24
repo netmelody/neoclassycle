@@ -97,7 +97,7 @@ public class ParserTest extends TestCase {
                throws IOException {
     AtomicVertex vertex = createVertex(javaCode, reflectionPattern, 
                                        mergeInnerClasses);
-    assertEquals(TMP, ((ClassAttributes) vertex.getAttributes()).getSource());
+    assertEquals(TMP, ((ClassAttributes) vertex.getAttributes()).getSources());
     HashSet classSet = new HashSet();
     for (int i = 0; i < expectedClasses.length; i++) {
       classSet.add(expectedClasses[i]);

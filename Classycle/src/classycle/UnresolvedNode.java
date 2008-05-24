@@ -25,38 +25,67 @@
 package classycle;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import classycle.util.StringPattern;
+
 /**
+ * Class representing a node without resolved links.
+ *   
  * @author  Franz-Josef Elmer
  */
-public class PackageAttributes extends NameAndSourceAttributes
+class UnresolvedNode implements Comparable 
 {
-  private final List _classes = new ArrayList();
-  
-  public PackageAttributes(String name)
+  private ClassAttributes _attributes;
+  private List _nodes = new ArrayList();
+
+  void setAttributes(ClassAttributes attributes)
   {
-    super(name);
-  }
-  
-  public int getSize()
-  {
-    return _classes.size();
-  }
-  
-  public String[] getClasses()
-  {
-    return (String[]) _classes.toArray(new String[_classes.size()]);
-  }
-  
-  public void addClass(ClassAttributes classAttributes)
-  {
-    String className = classAttributes.getName();
-    if (_classes.contains(className) == false)
-    {
-      _classes.add(className);
-    } 
-    addSourcesOf(classAttributes);
+    _attributes = attributes;
   }
 
+  ClassAttributes getAttributes()
+  {
+    return _attributes;
+  }
+  
+  void addLinkTo(String node)
+  {
+    _nodes.add(node);
+  }
+  
+  Iterator linkIterator()
+  {
+    return new Iterator()
+      {
+        private int _index;
+        
+        public void remove()
+        {
+          throw new UnsupportedOperationException();
+        }
+    
+        public boolean hasNext()
+        {
+          return _index < _nodes.size();
+        }
+        
+        public Object next()
+        {
+          return hasNext() ? _nodes.get(_index++) : null;
+        }
+      };
+  }
+
+  public int compareTo(Object obj) 
+  {
+    return getAttributes().getName().compareTo(
+              ((UnresolvedNode) obj).getAttributes().getName());
+  }
+  
+  public boolean isMatchedBy(StringPattern pattern)
+  {
+    return pattern.matches(getAttributes().getName());
+  }
 }

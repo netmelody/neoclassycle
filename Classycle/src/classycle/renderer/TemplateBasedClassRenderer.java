@@ -27,9 +27,8 @@ package classycle.renderer;
 import java.text.MessageFormat;
 
 import classycle.ClassAttributes;
-import classycle.PackageAttributes;
+import classycle.NameAndSourceAttributes;
 import classycle.graph.AtomicVertex;
-import classycle.graph.NameAttributes;
 import classycle.graph.StrongComponent;
 
 /**
@@ -75,24 +74,19 @@ public class TemplateBasedClassRenderer implements AtomicVertexRenderer
                        int layerIndex) 
   {
     String[] values = new String[10];
-    NameAttributes attributes = (NameAttributes) vertex.getAttributes();
+    NameAndSourceAttributes attributes = (NameAndSourceAttributes) vertex.getAttributes();
     values[0] = attributes.getName();
     values[2] = Integer.toString(attributes.getSize());
+    values[9] = attributes.getSources();
     if (attributes instanceof ClassAttributes)
     {
       ClassAttributes ca = (ClassAttributes) attributes;
       values[1] = ca.getType();
       values[3] = ca.isInnerClass() ? "true" : "false";
-      values[9] = ca.getSource();
     } else
     {
       values[1] = "";
       values[3] = "";
-      values[9] = "";
-      if (attributes instanceof PackageAttributes)
-      {
-        values[9] = ((PackageAttributes) attributes).getSources();
-      }
     }
     values[4] = Integer.toString(vertex.getNumberOfIncomingArcs());
     int usesInternal = 0;
