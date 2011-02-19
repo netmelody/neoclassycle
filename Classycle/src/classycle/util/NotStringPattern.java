@@ -54,6 +54,8 @@ public class NotStringPattern implements StringPattern
 
   public String toString()
   {
-    return '!' + _pattern.toString();
+    String expression = _pattern.toString();
+    boolean bracketsNeeded = expression.startsWith("(") == false && expression.indexOf(' ') > 0;
+    return '!' + (bracketsNeeded ? '(' + expression + ')' : expression);
   }
 }

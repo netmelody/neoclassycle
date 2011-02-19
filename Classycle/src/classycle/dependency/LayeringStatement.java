@@ -24,6 +24,7 @@
  */
 package classycle.dependency;
 
+import static classycle.dependency.DependencyDefinitionParser.DIRECTLY_INDEPENDENT_OF_KEY_WORD;
 import classycle.graph.AtomicVertex;
 import classycle.util.StringPattern;
 
@@ -56,18 +57,20 @@ public class LayeringStatement implements Statement
     for (int i = 0; i < _layers.length; i++)
     {
       checkIntraLayerDependencies(result, _layers[i], graph);
-      for (int j = i + 1; j < _layers.length; j++) 
+      for (int j = i + 1; j < _layers.length; j++)
       {
-        DependencyStatement s = new DependencyStatement(_layers[i], _layers[j], 
-                                                 true, _repository, _renderer);
+        DependencyStatement s =
+                new DependencyStatement(_layers[i], _layers[j], DIRECTLY_INDEPENDENT_OF_KEY_WORD,
+                        _repository, _renderer);
         result.add(s.execute(graph));
       }
-      if (_strictLayering) 
+      if (_strictLayering)
       {
-        for (int j = i - 2; j >= 0; j--) 
+        for (int j = i - 2; j >= 0; j--)
         {
-          DependencyStatement s = new DependencyStatement(_layers[i], 
-                                     _layers[j], true, _repository, _renderer);
+          DependencyStatement s =
+                  new DependencyStatement(_layers[i], _layers[j], DIRECTLY_INDEPENDENT_OF_KEY_WORD,
+                          _repository, _renderer);
           result.add(s.execute(graph));
         }
       }
@@ -86,8 +89,9 @@ public class LayeringStatement implements Statement
       startSets[0] = patterns[i];
       System.arraycopy(patterns, 0, endSets, 0, i);
       System.arraycopy(patterns, i + 1, endSets, i, patterns.length - i - 1);
-      DependencyStatement s = new DependencyStatement(startSets, endSets, 
-                                              true, _repository, _renderer);
+      DependencyStatement s =
+              new DependencyStatement(startSets, endSets, DIRECTLY_INDEPENDENT_OF_KEY_WORD,
+                      _repository, _renderer);
       result.add(s.execute(graph));
     }
   }

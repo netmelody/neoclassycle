@@ -44,22 +44,22 @@ import classycle.util.WildCardPattern;
  */
 public class DependencyDefinitionParser
 {
-  public static final String INDEPENDENT_OF_KEY_WORD = "independentOf",                            
-                             EXCLUDING_KEY_WORD = "excluding",
-                             DIRECTLY_INDEPENDENT_OF_KEY_WORD 
-                                         = "directlyIndependentOf",
-                             CHECK_KEY_WORD = "check",
-                             LAYER_KEY_WORD = "layer",
-                             SHOW_KEY_WORD = "show",
-                             SETS_KEY_WORD = "sets",
-                             CLASS_CYCLES_KEY_WORD = "absenceOfClassCycles",
-                             PACKAGE_CYCLES_KEY_WORD = "absenceOfPackageCycles",
-                             IN_KEY_WORD = "in",
-                             LAYERING_OF_KEY_WORD = "layeringOf",
-                             STRICT_LAYERING_OF_KEY_WORD = "strictLayeringOf";
+  public static final String INDEPENDENT_OF_KEY_WORD = "independentOf";
+  public static final String EXCLUDING_KEY_WORD = "excluding";
+  public static final String DIRECTLY_INDEPENDENT_OF_KEY_WORD = "directlyIndependentOf";
+  public static final String DEPENDENT_ONLY_ON_KEY_WORD = "dependentOnlyOn";
+  public static final String CHECK_KEY_WORD = "check";
+  public static final String LAYER_KEY_WORD = "layer";
+  public static final String SHOW_KEY_WORD = "show";
+  public static final String SETS_KEY_WORD = "sets";
+  public static final String CLASS_CYCLES_KEY_WORD = "absenceOfClassCycles";
+  public static final String PACKAGE_CYCLES_KEY_WORD = "absenceOfPackageCycles";
+  public static final String IN_KEY_WORD = "in";
+  public static final String LAYERING_OF_KEY_WORD = "layeringOf";
+  public static final String STRICT_LAYERING_OF_KEY_WORD = "strictLayeringOf";
   private static final String[] INDEPENDENT 
       = new String[] {INDEPENDENT_OF_KEY_WORD, 
-                      DIRECTLY_INDEPENDENT_OF_KEY_WORD};
+                      DIRECTLY_INDEPENDENT_OF_KEY_WORD, DEPENDENT_ONLY_ON_KEY_WORD};
   private static final String[] EXCLUDING = new String[] {EXCLUDING_KEY_WORD};
   private static final String PROP_DEF_BEGIN = "{";
   private static final String PROP_BEGIN = "${";
@@ -424,7 +424,7 @@ public class DependencyDefinitionParser
     }
     boolean directPathsOnly = DIRECTLY_INDEPENDENT_OF_KEY_WORD.equals(
                                                 tokens[lists[0].length + 1]);
-    _statements.add(new DependencyStatement(lists[0], lists[1], directPathsOnly, _setDefinitions,
+    _statements.add(new DependencyStatement(lists[0], lists[1], tokens[lists[0].length + 1], _setDefinitions,
                                             _renderer));
   }
   

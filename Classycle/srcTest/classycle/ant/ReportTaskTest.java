@@ -27,25 +27,25 @@ public class ReportTaskTest extends ClassycleTaskTestCase
   public void testRaw() throws Exception
   {
     executeTarget("testRaw");
-    checkNumberOfLines(26, "reportTaskTest.txt");
+    checkNumberOfLines(23, "reportTaskTest.txt");
   }
 
   public void testMergeInnerClasses() throws Exception
   {
     executeTarget("testMergeInnerClasses");
-    checkNumberOfLines(22, "reportTaskTest.txt");
+    checkNumberOfLines(19, "reportTaskTest.txt");
   }
   
   public void testOnlyA() throws Exception
   {
     executeTarget("testOnlyA");
-    checkNumberOfLines(17, "reportTaskTest.txt");
+    checkNumberOfLines(14, "reportTaskTest.txt");
   }
 
   public void testIncludingA() throws Exception
   {
     executeTarget("testIncludingA");
-    checkNumberOfLines(17, "reportTaskTest.txt");
+    checkNumberOfLines(14, "reportTaskTest.txt");
   }
 
   public void testIncludingAExcludingB() throws Exception
@@ -69,19 +69,19 @@ public class ReportTaskTest extends ClassycleTaskTestCase
   public void testXML() throws Exception
   {
     executeTarget("testXML");
-    checkNumberOfLines(93, "reportTaskTest.xml");
+    checkNumberOfLines(90, "reportTaskTest.xml");
   }
 
   public void testReflectionAll() throws Exception
   {
     executeTarget("testReflectionAll");
-    checkNumberOfLines(28, "reportTaskTest.txt");
+    checkNumberOfLines(24, "reportTaskTest.txt");
   }
 
   public void testReflectionRestricted() throws Exception
   {
     executeTarget("testReflectionRestricted");
-    checkNumberOfLines(27, "reportTaskTest.txt");
+    checkNumberOfLines(23, "reportTaskTest.txt");
   }
 
   public void testXMLPackagesOnly() throws Exception

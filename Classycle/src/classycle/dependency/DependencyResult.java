@@ -33,7 +33,7 @@ import classycle.util.StringPattern;
 public class DependencyResult implements Result
 {
   static final String OK = "\tOK";
-  static final String DEPENDENCY_FOUND = "\n  Dependency found:";
+  static final String DEPENDENCIES_FOUND = "\n  Unexpected dependencies found:";
   private final StringPattern _startSet;
   private final StringPattern _finalSet;
   private final String _statement;
@@ -82,7 +82,7 @@ public class DependencyResult implements Result
               = new DependencyPathsRenderer(_paths, 
                                          new PatternVertexCondition(_startSet), 
                                          new PatternVertexCondition(_finalSet));
-      buffer.append(DEPENDENCY_FOUND).append(renderer.renderGraph("  "));
+      buffer.append(DEPENDENCIES_FOUND).append(renderer.renderGraph("  "));
     }
     return new String(buffer.append('\n'));
   }

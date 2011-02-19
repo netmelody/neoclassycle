@@ -17,7 +17,7 @@ public class DependencyProcessorTest extends TestCase
   private static final String CHECK 
       = DependencyDefinitionParser.CHECK_KEY_WORD + ' ';
   private static final String OK = DependencyResult.OK + '\n';
-  private String DF = DependencyResult.DEPENDENCY_FOUND;
+  private String DF = DependencyResult.DEPENDENCIES_FOUND;
   private static final String SHOW_ALLRESULTS = "show allResults\n";
   private static final String SHOW_ALL = "show allPaths allResults\n";
   private static final String SHOW_ONLY_ALL 

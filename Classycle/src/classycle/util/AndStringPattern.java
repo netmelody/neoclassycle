@@ -32,6 +32,14 @@ package classycle.util;
 public class AndStringPattern extends StringPatternSequence
 {
   /**
+   * Creates instance with specified patterns.
+   */
+  public AndStringPattern(StringPattern... pattern)
+  {
+    super(pattern);
+  }
+  
+  /**
    * Return <code>false</code> if a pattern in the sequence returns 
    * <code>false</code>. Otherwise <code>true</code> is returned.
    */

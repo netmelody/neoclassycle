@@ -72,6 +72,16 @@
     </classycleDependencyCheck>
   </target>
 
+  <target name="testDependentOnlyOn">
+    <classycleDependencyCheck>
+      <fileset dir="../classes/example">
+        <include name="**/*.class"/>
+      </fileset>
+      [A-not-p] = *A excluding example.p.*
+      check [A-not-p] dependentOnlyOn java.lang.* example.A*
+    </classycleDependencyCheck>
+  </target>
+
   <target name="testReflection">
     <classycleDependencyCheck reflectionPattern="">
       <fileset dir="../classes/example">

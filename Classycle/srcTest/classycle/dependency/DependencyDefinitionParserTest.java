@@ -64,6 +64,15 @@ public class DependencyDefinitionParserTest extends TestCase
     
     try
     {
+      createParser("check b.* dependingOn [set]");
+      fail("IllegalArgumentException expected because of miss-spelled keyword");
+    } catch (IllegalArgumentException e)
+    {
+      assertContains("dependingOn", e);
+    }
+    
+    try
+    {
       createParser("check layeringof [set]");
       fail("IllegalArgumentException expected because of miss-spelled keyword");
     } catch (IllegalArgumentException e)
@@ -101,8 +110,10 @@ public class DependencyDefinitionParserTest extends TestCase
   
   public void testDependencyStatements() 
   {
+    check("check java.lang.Integer dependentOnlyOn java.lang.Number", 
+          new String[] {"check java.lang.Integer dependentOnlyOn java.lang.Number"});
     check("check java.lang.* independentOf ${awt}", 
-          new String[] {"check java.lang.* independentOf java.awt.*"});
+            new String[] {"check java.lang.* independentOf java.awt.*"});
     check("[lang] = java.lang.*\n"
           + "show shortestPathsOnly\n"
           + "check [lang] independentOf java.awt.*",  
@@ -147,11 +158,11 @@ public class DependencyDefinitionParserTest extends TestCase
   public void testSetDefinition() 
   {
     check("[a] = j.*", new String[][] {{"[a]", "j.*"}});
-    check("[a] = j.* k.*", new String[][] {{"[a]", "(j.* k.*)"}});
+    check("[a] = j.* k.*", new String[][] {{"[a]", "j.* k.*"}});
     check("[a] = j.* k.* excluding a.b", 
-          new String[][] {{"[a]", "((j.* k.*) & !a.b)"}});
+          new String[][] {{"[a]", "(j.* k.* & !a.b)"}});
     check("[a] = j.* k.* excluding a.b c.d", 
-          new String[][] {{"[a]", "((j.* k.*) & !(a.b c.d))"}});
+          new String[][] {{"[a]", "(j.* k.* & !(a.b c.d))"}});
     check("[a] = k$t.*_$ excluding a.b c.d", 
           new String[][] {{"[a]", "(k$t.*_$ & !(a.b c.d))"}});
     check("[a] = excluding a.b c.d", 
@@ -173,8 +184,8 @@ public class DependencyDefinitionParserTest extends TestCase
           + "[d] = j.* [b] excluding [c] k.*\n", 
           new String[][] {{"[a]", "a.*"},
                           {"[b]", "b.*"},
-                          {"[c]", "(a.* j.*)"},
-                          {"[d]", "((j.* b.*) & !((a.* j.*) k.*))"}
+                          {"[c]", "a.* j.*"},
+                          {"[d]", "(j.* b.* & !(a.* j.* k.*))"}
                          });
   }
   

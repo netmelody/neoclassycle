@@ -25,6 +25,8 @@
 package classycle.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Sequence of {@link StringPattern StringPatterns}.
@@ -33,7 +35,12 @@ import java.util.ArrayList;
  */
 public abstract class StringPatternSequence implements StringPattern
 {
-  protected final ArrayList _patterns = new ArrayList();
+  protected final List<StringPattern> _patterns = new ArrayList<StringPattern>();
+  
+  protected StringPatternSequence(StringPattern[] pattern)
+  {
+    _patterns.addAll(Arrays.asList(pattern));
+  }
   
   /**
    * Appends the specified pattern.
@@ -47,7 +54,9 @@ public abstract class StringPatternSequence implements StringPattern
   {
     StringBuffer buffer = new StringBuffer();
     int size = _patterns.size();
-    if (size > 1)
+    String operatorSymbol = getOperatorSymbol();
+    boolean bracketsNeeded = size > 1 && operatorSymbol.equals(" & ");
+    if (bracketsNeeded)
     {
       buffer.append('(');
     }
@@ -55,11 +64,11 @@ public abstract class StringPatternSequence implements StringPattern
     {
       if (i != 0)
       {
-        buffer.append(getOperatorSymbol());
+        buffer.append(operatorSymbol);
       }
       buffer.append(_patterns.get(i));
     }
-    return new String(size > 1 ? buffer.append(')') : buffer);
+    return new String(bracketsNeeded ? buffer.append(')') : buffer);
   }
   
   /**

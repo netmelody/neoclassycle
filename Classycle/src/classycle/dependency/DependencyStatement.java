@@ -24,9 +24,16 @@
  */
 package classycle.dependency;
 
+import static classycle.dependency.DependencyDefinitionParser.DIRECTLY_INDEPENDENT_OF_KEY_WORD;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import classycle.graph.AtomicVertex;
 import classycle.graph.PathsFinder;
+import classycle.graph.Vertex;
 import classycle.graph.VertexCondition;
+import classycle.util.OrStringPattern;
 import classycle.util.StringPattern;
 
 /**
@@ -34,33 +41,54 @@ import classycle.util.StringPattern;
  */
 public class DependencyStatement implements Statement
 {
-  private static final String IDOF 
-      = DependencyDefinitionParser.INDEPENDENT_OF_KEY_WORD;
-  private static final String DIDOF 
-      = DependencyDefinitionParser.DIRECTLY_INDEPENDENT_OF_KEY_WORD;
-  private static final String CHECK 
-      = DependencyDefinitionParser.CHECK_KEY_WORD + ' ';
+  private static final class VertexUnionCondition implements VertexCondition
+  {
+    private final VertexCondition[] _conditions;
+
+    VertexUnionCondition(VertexCondition[] conditions)
+    {
+      _conditions = conditions;
+    }
+
+    public boolean isFulfilled(Vertex vertex)
+    {
+      for (VertexCondition condition : _conditions)
+      {
+        if (condition.isFulfilled(vertex))
+        {
+          return true;
+        }
+      }
+      return false;
+    }
+  }
+  
+  private static final String CHECK = DependencyDefinitionParser.CHECK_KEY_WORD + ' ';
   private final StringPattern[] _startSets;
   private final StringPattern[] _finalSets;
-  private final boolean _directPathsOnly;
+  private final StringPattern _finalSet;
+  private final String _dependencyType;
   private final VertexCondition[] _startConditions;
   private final VertexCondition[] _finalConditions;
+  private final VertexCondition _finalCondition;
   private final SetDefinitionRepository _repository;
   private final ResultRenderer _renderer;
   
   public DependencyStatement(StringPattern[] startSets,
                              StringPattern[] finalSets,
-                             boolean directPathsOnly,
+                             String dependencyType,
                              SetDefinitionRepository repository,
                              ResultRenderer renderer)
   {
     _startSets = startSets;
     _finalSets = finalSets;
-    _directPathsOnly = directPathsOnly;
+    _dependencyType = dependencyType;
     _repository = repository;
     _renderer = renderer;
     _startConditions = createVertexConditions(startSets);
     _finalConditions = createVertexConditions(finalSets);
+    _finalSet = new OrStringPattern(_finalSets);
+    _finalCondition = new VertexUnionCondition(_finalConditions);
   }
   
   private VertexCondition[] createVertexConditions(StringPattern[] patterns)
@@ -76,16 +104,43 @@ public class DependencyStatement implements Statement
   public Result execute(AtomicVertex[] graph)
   {
     ResultContainer result = new ResultContainer();
+    boolean directPathsOnly = DIRECTLY_INDEPENDENT_OF_KEY_WORD.equals(_dependencyType);
+    boolean dependsOnly = DependencyDefinitionParser.DEPENDENT_ONLY_ON_KEY_WORD.equals(_dependencyType);
     for (int i = 0; i < _startConditions.length; i++)
     {
-      for (int j = 0; j < _finalConditions.length; j++)
+      VertexCondition startCondition = _startConditions[i];
+      StringPattern startSet = _startSets[i];
+      if (dependsOnly)
       {
-        PathsFinder finder = new PathsFinder(_startConditions[i], 
-                                             _finalConditions[j], 
-                                             _renderer.onlyShortestPaths(),
-                                             _directPathsOnly);
-        result.add(new DependencyResult(_startSets[i], _finalSets[j],
-                              toString(i, j), finder.findPaths(graph)));
+        List<AtomicVertex> invalids = new ArrayList<AtomicVertex>();
+        for (AtomicVertex vertex : graph)
+        {
+          if (startCondition.isFulfilled(vertex))
+          {
+            for (int j = 0, n = vertex.getNumberOfOutgoingArcs(); j < n; j++)
+            {
+              Vertex headVertex = vertex.getHeadVertex(j);
+              if (_finalCondition.isFulfilled(headVertex) == false)
+              {
+                invalids.add(vertex);
+                invalids.add((AtomicVertex) headVertex);
+                break;
+              }
+            }
+          }
+        }
+        result.add(new DependencyResult(startSet, _finalSet, toString(startSet, _finalSet),
+                invalids.toArray(new AtomicVertex[0])));
+      } else
+      {
+        for (int j = 0; j < _finalConditions.length; j++)
+        {
+          PathsFinder finder =
+                  new PathsFinder(startCondition, _finalConditions[j], _renderer
+                          .onlyShortestPaths(), directPathsOnly);
+          result.add(new DependencyResult(startSet, _finalSets[j], toString(i, j), finder
+                  .findPaths(graph)));
+        }
       }
     }
     return result;
@@ -93,10 +148,15 @@ public class DependencyStatement implements Statement
   
   private String toString(int i, int j)
   {
+    return toString(_startSets[i], _finalSets[j]);
+  }
+
+  private String toString(StringPattern startSet, StringPattern finalSet)
+  {
     StringBuffer buffer = new StringBuffer(CHECK);
-    buffer.append(_repository.toString(_startSets[i])).append(' ')
-          .append(getKeyWord()).append(' ')
-          .append(_repository.toString(_finalSets[j]));
+    buffer.append(_repository.toString(startSet)).append(' ')
+          .append(_dependencyType).append(' ')
+          .append(_repository.toString(finalSet));
     return new String(buffer);
   }
   
@@ -107,7 +167,7 @@ public class DependencyStatement implements Statement
     {
       buffer.append(_repository.toString(_startSets[i])).append(' ');
     }
-    buffer.append(getKeyWord()).append(' ');
+    buffer.append(_dependencyType).append(' ');
     for (int i = 0; i < _finalSets.length; i++)
     {
       buffer.append(_repository.toString(_finalSets[i])).append(' ');
@@ -115,10 +175,4 @@ public class DependencyStatement implements Statement
 
     return new String(buffer.substring(0, buffer.length() - 1));
   }
-
-  private String getKeyWord()
-  {
-    return _directPathsOnly ? DIDOF : IDOF;
-  }
-
 }

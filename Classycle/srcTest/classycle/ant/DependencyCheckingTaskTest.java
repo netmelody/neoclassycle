@@ -41,7 +41,7 @@ public class DependencyCheckingTaskTest extends ClassycleTaskTestCase
     executeTarget("testEmbeddedDefinitions");
     checkNumberOfOutputLines(8);
     checkLine("check [non-A] independentOf [A]", 1);
-    checkLine("  Dependency found:", 2);
+    checkLine("  Unexpected dependencies found:", 2);
   }
   
   public void testEmbeddedDefinitionsFailureOn() throws Exception
@@ -55,7 +55,7 @@ public class DependencyCheckingTaskTest extends ClassycleTaskTestCase
       checkNumberOfOutputLines(10);
       checkLine("check [A] independentOf [non-A]\tOK", 2);
       checkLine("check [non-A] independentOf [A]", 3);
-      checkLine("  Dependency found:", 4);
+      checkLine("  Unexpected dependencies found:", 4);
     }
   }
   
@@ -91,23 +91,34 @@ public class DependencyCheckingTaskTest extends ClassycleTaskTestCase
   public void testResetGraphAfterCheck() throws Exception
   {
     executeTarget("testResetGraphAfterCheck");
-    checkNumberOfOutputLines(10);
+    checkNumberOfOutputLines(8);
     checkLine("check [A-not-p] independentOf *h*", 1);
     checkLine("check [A-not-p] independentOf *S*", 5);
-    checkLine("    -> java.lang.String", 10);
+    checkLine("    -> java.lang.String", 8);
+  }
+  
+  public void testDependentOnlyOn() throws Exception
+  {
+    executeTarget("testDependentOnlyOn");
+    assertEquals("check [A-not-p] dependentOnlyOn java.lang.* example.A*\n"
+            + "  Unexpected dependencies found:\n" 
+            + "  example.BofA\n" 
+            + "    -> example.p.A\n",
+            getOutput());
   }
   
   public void testReflection() throws Exception
   {
     executeTarget("testReflection");
-    checkNumberOfOutputLines(7);
+    checkNumberOfOutputLines(6);
     checkLine("check [A-not-p] independentOf *h*", 1);
+    assertTrue(getOutput().indexOf("-> hello") > 0);
   }
   
   public void testReflectionWithRestriction() throws Exception
   {
     executeTarget("testReflectionWithRestriction");
-    checkNumberOfOutputLines(5);
+    checkNumberOfOutputLines(4);
     checkLine("check [A-not-p] independentOf *h*", 1);
     assertTrue(getOutput().indexOf("-> java.lang.Thread") > 0);
   }

@@ -28,8 +28,8 @@ public class ParserTest extends TestCase {
               + "Integer i;}";
   private static final String REFLECTION_EXAMPLE 
       = "class Test { "
-      + "  String[] a = {\"java.util.Vector\", \"hello\", \"www.w3c.org\"};"
-      + "  Class c = Thread.class;"
+      + "  String[] a = {\"java.util.Date\", \"hello\", \"www.w3c.org\"};"
+      + "  Class c = Integer.class;"
       + "}";
   private static final Main JAVAC = new Main();
   private static final String TMP = "temporaryDirectory" + File.separator;
@@ -39,7 +39,7 @@ public class ParserTest extends TestCase {
   
   private static int compile(String file)
   {
-    return JAVAC.compile(new String[] {file, "-target", "1.1"});
+    return JAVAC.compile(new String[] {file, "-target", "1.5"});
   }
 
   private static AtomicVertex createVertex(String code, 
@@ -125,27 +125,21 @@ public class ParserTest extends TestCase {
   public void testNoReflection() throws IOException
   {
     check(new String[] {"java.lang.Object", "java.lang.String", 
-                        "java.lang.Class", "java.lang.NoClassDefFoundError",
-                        "java.lang.ClassNotFoundException", 
-                        "java.lang.Throwable"},
+                        "java.lang.Class",  "java.lang.Integer"},
           REFLECTION_EXAMPLE);
   }
 
   public void testReflection() throws IOException
   {
     check(new String[] {"java.lang.Object", "java.lang.String", 
-            "java.lang.Class", "java.lang.NoClassDefFoundError",
-            "java.lang.ClassNotFoundException", 
-            "java.lang.Throwable", 
-            "java.util.Vector", "java.lang.Thread", 
+            "java.lang.Class", "java.lang.Integer",
+            "java.util.Date", 
             "hello", "www.w3c.org"},
             REFLECTION_EXAMPLE,
             new TrueStringPattern(), false);
     check(new String[] {"java.lang.Object", "java.lang.String", 
-            "java.lang.Class", "java.lang.NoClassDefFoundError",
-            "java.lang.ClassNotFoundException", 
-            "java.lang.Throwable", 
-            "java.util.Vector", "java.lang.Thread"},
+            "java.lang.Class", "java.lang.Integer", 
+            "java.util.Date"},
             REFLECTION_EXAMPLE,
             new WildCardPattern("java.*"), false);
   }
@@ -176,8 +170,7 @@ public class ParserTest extends TestCase {
   }
   
   public void testIndirectReference() throws IOException {
-    check(new String[] {"java.lang.Object", "java.util.Enumeration",
-                        "java.util.Hashtable", "java.lang.System",
+    check(new String[] {"java.lang.Object", "java.util.Enumeration", "java.lang.System",
                         "java.util.Properties"},
           "class Test { Object e = System.getProperties().keys();}");
   }

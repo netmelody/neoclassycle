@@ -33,6 +33,14 @@ package classycle.util;
 public class OrStringPattern extends StringPatternSequence
 {
   /**
+   * Creates instance with specified patterns.
+   */
+  public OrStringPattern(StringPattern... pattern)
+  {
+    super(pattern);
+  }
+
+  /**
    * Return <code>true</code> if a pattern in the sequence returns 
    * <code>true</code>. Otherwise <code>false</code> is returned.
    */
