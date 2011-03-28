@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2008, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2011, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -28,39 +28,51 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Container of {@link Result} instances.
+ * 
  * @author  Franz-Josef Elmer
  */
 public class ResultContainer implements Result
 {
-  private final List _list = new ArrayList();
+  private final List<Result> _list = new ArrayList<Result>();
   
+  /**
+   * Adds a result.
+   */
   public void add(Result result) 
   {
     _list.add(result);
   }
 
+  /**
+   * Returns the number of added results.
+   */
   public int getNumberOfResults()
   {
     return _list.size();
   }
-  
+
+  /**
+   * Returns the result with specified index.
+   */
   public Result getResult(int index)
   {
-    return (Result) _list.get(index);
+    return _list.get(index);
   }
-  
+
+  /**
+   * Returns <code>true</code> if all added {@link Result} instances returned <code>true</code>.
+   */
   public boolean isOk()
   {
-    boolean ok = true;
     for (int i = 0, n = _list.size(); i < n; i++)
     {
       if (getResult(i).isOk() == false)
       {
-        ok = false;
-        break;
+        return false;
       }
     }
-    return ok;
+    return true;
   }
   
   public String toString()

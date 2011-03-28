@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2008, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2011, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -25,6 +25,8 @@
 package classycle.dependency;
 
 /**
+ * Result as a text.
+ * 
  * @author  Franz-Josef Elmer
  */
 public class TextResult implements Result
@@ -32,11 +34,17 @@ public class TextResult implements Result
   private final String _text;
   private final boolean _ok;
   
+  /**
+   * Creates an instance with specified text which is ok.
+   */
   public TextResult(String text)
   {
     this(text, true);
   }
 
+  /**
+   * Creates an instance with specified text and specified OK flag.
+   */
   public TextResult(String text, boolean ok)
   {
     _text = text;
@@ -48,6 +56,9 @@ public class TextResult implements Result
     return _ok;
   }
 
+  /**
+   * Returns the text specified in the constructor.
+   */
   public String toString()
   {
     return _text;

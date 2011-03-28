@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2008, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2011, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -25,9 +25,14 @@
 package classycle.dependency;
 
 /**
+ * Common interface of all result checking statements.
+ * 
  * @author  Franz-Josef Elmer
  */
 public interface Result
 {
+  /**
+   * Returns <code>true</code> if the checking result is positive. 
+   */
   public boolean isOk();
 }

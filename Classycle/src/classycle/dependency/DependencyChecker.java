@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2008, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2011, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -70,18 +70,23 @@ public class DependencyChecker
    */
   public boolean check(PrintWriter writer)
   {
-    boolean ok = true;
+    Result result = check();
+    writer.print(_renderer.render(result));
+    return result.isOk();
+  }
+
+  /**
+   * Checks the graph.
+   */
+  public Result check()
+  {
     AtomicVertex[] graph = _analyser.getClassGraph();
+    ResultContainer result = new ResultContainer();
     while (_processor.hasMoreStatements())
     {
-      Result result = _processor.executeNextStatement(graph);
-      if (result.isOk() == false)
-      {
-        ok = false;
-      }
-      writer.print(_renderer.render(result));
+      result.add(_processor.executeNextStatement(graph));
     }
-    return ok;
+    return result;
   }
   
   /**

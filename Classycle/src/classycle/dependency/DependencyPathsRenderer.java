@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2008, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2011, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -25,10 +25,12 @@
 package classycle.dependency;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import classycle.graph.NameAttributes;
 import classycle.graph.Vertex;
 import classycle.graph.VertexCondition;
+import classycle.util.StringPattern;
 
 /**
  * @author  Franz-Josef Elmer
@@ -39,10 +41,18 @@ public class DependencyPathsRenderer
   private final Vertex[] _graph;
   private final VertexCondition _startSetCondition;
   private final VertexCondition _finalSetCondition;
-  private final HashSet _vertices = new HashSet();
+  private final Set<Vertex> _vertices = new HashSet<Vertex>();
   
   public DependencyPathsRenderer(Vertex[] graph, 
-                                 VertexCondition startSetCondition, 
+                                 StringPattern startSetPattern, 
+                                 StringPattern finalSetPattern)
+  {
+    this(graph, new PatternVertexCondition(startSetPattern), 
+                new PatternVertexCondition(finalSetPattern));
+  }
+  
+  public DependencyPathsRenderer(Vertex[] graph, 
+                                 VertexCondition startSetCondition,
                                  VertexCondition finalSetCondition)
   {
     _graph = graph;
@@ -54,42 +64,78 @@ public class DependencyPathsRenderer
     }
   }
   
-  public String renderGraph(String lineStart)
+  public String renderGraph(final String lineStart)
   {
-    lineStart = '\n' + lineStart;
-    StringBuffer buffer = new StringBuffer();
-    HashSet visitedVertices = new HashSet();
+    final StringBuffer buffer = new StringBuffer();
+    DependencyPathRenderer renderer = new DependencyPathRenderer()
+      {
+        String _start = '\n' + lineStart;
+        private int _indentation;
+    
+        public void increaseIndentation()
+        {
+          _indentation++;
+        }
+    
+        public void add(String nodeName)
+        {
+          buffer.append(_start);
+          for (int i = 0; i < _indentation; i++)
+          {
+            buffer.append(INDENT);
+          }
+          if (_indentation > 0)
+          {
+            buffer.append("-> ");
+          }
+          buffer.append(nodeName);
+        }
+        
+        public void decreaseIndentation()
+        {
+          _indentation--;
+        }
+    
+      };
+    renderGraph(renderer);
+    
+    return new String(buffer);
+  }
+  
+  public void renderGraph(DependencyPathRenderer renderer)
+  {
+    Set<Vertex> visitedVertices = new HashSet<Vertex>();
     for (int i = 0; i < _graph.length; i++)
     {
       Vertex vertex = _graph[i];
       if (_startSetCondition.isFulfilled(vertex))
       {
-        buffer.append(lineStart).append(getNameOf(vertex));
-        renderPaths(buffer, lineStart + INDENT, vertex, visitedVertices);
+        renderer.add(getNameOf(vertex));
+        renderPaths(renderer, vertex, visitedVertices);
       }
     }
-    
-    return new String(buffer);
   }
 
-  private void renderPaths(StringBuffer buffer, String lineStart, 
-                           Vertex vertex, HashSet visitedVertices)
+  private void renderPaths(DependencyPathRenderer renderer, Vertex vertex, 
+                           Set<Vertex> visitedVertices)
   {
     visitedVertices.add(vertex);
+    renderer.increaseIndentation();
     for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++)
     {
       Vertex headVertex = vertex.getHeadVertex(i);
       if (_vertices.contains(headVertex)
           && !_startSetCondition.isFulfilled(headVertex))
       {
-        buffer.append(lineStart).append("-> ").append(getNameOf(headVertex));
+        renderer.add(getNameOf(headVertex));
         if (!_finalSetCondition.isFulfilled(headVertex) 
             && !visitedVertices.contains(headVertex))
         {
-          renderPaths(buffer, lineStart + INDENT, headVertex, visitedVertices);
+          renderPaths(renderer, headVertex, visitedVertices);
         }
       }
     }
+    renderer.decreaseIndentation();
   }
 
   private String getNameOf(Vertex vertex)
