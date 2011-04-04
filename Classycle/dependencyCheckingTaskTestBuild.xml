@@ -5,8 +5,8 @@
 
   <property name="package" value="example"/>
 
-  <target name="testEmbeddedDefinitions">
-    <classycleDependencyCheck>
+  <target name="testEmbeddedDefinitions" >
+    <classycleDependencyCheck resultRenderer="classycle.dependency.XMLResultRenderer">
       <fileset dir="../classes/example">
         <include name="**/*.class"/>
       </fileset>
@@ -51,7 +51,9 @@
   </target>
 
   <target name="testCheckCyclesMergedInnerClassesFailureOn">
-    <classycleDependencyCheck mergeInnerClasses="true"
+    <classycleDependencyCheck mergeInnerClasses="true" 
+                  resultRenderer="classycle.dependency.XMLResultRenderer"
+    	            reportFile="dependency-checking-result.xml"
   							  failOnUnwantedDependencies="true">
       <fileset dir="../classes/example">
         <include name="**/*.class"/>

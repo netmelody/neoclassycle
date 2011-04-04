@@ -39,9 +39,9 @@ public class DependencyCheckingTaskTest extends ClassycleTaskTestCase
   public void testEmbeddedDefinitions() throws Exception
   {
     executeTarget("testEmbeddedDefinitions");
-    checkNumberOfOutputLines(8);
-    checkLine("check [non-A] independentOf [A]", 1);
-    checkLine("  Unexpected dependencies found:", 2);
+    checkNumberOfOutputLines(14);
+    checkLine("  <unexpected-dependencies statement='check [A] independentOf [non-A]'/>", 3);
+    checkLine("  <unexpected-dependencies statement='check [non-A] independentOf [A]'>", 4);
   }
   
   public void testEmbeddedDefinitionsFailureOn() throws Exception
@@ -62,8 +62,12 @@ public class DependencyCheckingTaskTest extends ClassycleTaskTestCase
   public void testCheckCyclesMergedInnerClassesFailureOn() throws Exception
   {
     executeTarget("testCheckCyclesMergedInnerClassesFailureOn");
-    checkNumberOfOutputLines(2);
-    checkLine("check absenceOfClassCycles > 1 in example.*\tOK", 2);
+    assertEquals("<?xml version='1.0' encoding='UTF-8'?>\n" 
+            + "<dependency-checking-results>\n"
+            + "  <cycles statement='check absenceOfClassCycles &gt; 1 "
+            +          "in example.*' vertex-type='class'/>\n" 
+            + "</dependency-checking-results>\n",
+            readFile("dependency-checking-result.xml"));
   }
   
   public void testCheckCyclesFailureOn() throws Exception

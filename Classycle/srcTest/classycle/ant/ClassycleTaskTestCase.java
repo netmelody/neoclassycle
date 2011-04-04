@@ -75,5 +75,19 @@ public abstract class ClassycleTaskTestCase extends BuildFileTest
     while ((line = br.readLine()) != null && --lineNumber > 0);
     assertEquals(expectedLine, line);
   }
+  
+  protected String readFile(String fileName) throws Exception
+  {
+    File file = new File(TMP_DIR, fileName);
+    BufferedReader reader = new BufferedReader(new FileReader(file));
+    StringBuilder builder = new StringBuilder();
+    String line;
+    while ((line = reader.readLine()) != null)
+    {
+      builder.append(line).append('\n');
+    }
+    return builder.toString();
+    
+  }
 
 }

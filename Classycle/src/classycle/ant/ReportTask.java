@@ -24,7 +24,6 @@
  */
 package classycle.ant;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.HashSet;
@@ -114,18 +113,12 @@ public class ReportTask extends ClassycleTask
   }
   
   private boolean _packagesOnly;
-  private File _reportFile;
   private String _reportType = TYPE_XML;
   private String _title;
   
   public void setPackagesOnly(boolean packagesOnly)
   {
     _packagesOnly = packagesOnly;
-  }
-
-  public void setReportFile(File xmlFile)
-  {
-    _reportFile = xmlFile;
   }
 
   public void setReportType(String csvFile)

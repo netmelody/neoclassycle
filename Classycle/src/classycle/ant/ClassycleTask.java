@@ -24,6 +24,7 @@
  */
 package classycle.ant;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -51,6 +52,7 @@ public abstract class ClassycleTask extends Task
   private StringPattern _excludingClasses = new TrueStringPattern();
   private StringPattern _reflectionPattern;
   private LinkedList _fileSets = new LinkedList();
+  protected File _reportFile;
 
   public void setMergeInnerClasses(boolean mergeInnerClasses)
   {
@@ -130,6 +132,11 @@ public abstract class ClassycleTask extends Task
   protected boolean isMergeInnerClasses()
   {
     return _mergeInnerClasses;
+  }
+
+  public void setReportFile(File xmlFile)
+  {
+    _reportFile = xmlFile;
   }
   
  

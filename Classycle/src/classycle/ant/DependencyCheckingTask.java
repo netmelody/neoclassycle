@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2008, Franz-Josef Elmer, All rights reserved.
+ * Copyright (c) 2003-2011, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without 
  * modification, are permitted provided that the following conditions are met:
@@ -25,6 +25,7 @@
 package classycle.ant;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
@@ -95,6 +96,10 @@ import classycle.util.Text;
  *     <td valign="top">No. Default value is <tt>false</tt>.
  *     </td>
  * </tr> 
+ * <tr><td valign="top">reportFile</td>
+ *     <td valign="top">Path of the report file. 
+ *        It is either absolute or relative to the base directory.</td>
+ *     <td valign="top">No. By default the result is written onto the console.</td>
  * <tr><td valign="top">resultRenderer</td>
  *     <td valign="top">Fully-qualified class name of a 
  *         {@link ResultRenderer}.
@@ -138,6 +143,7 @@ public class DependencyCheckingTask extends ClassycleTask
     super.execute();
     
     boolean ok = false;
+    PrintWriter printWriter = null;
     try
     {
       Analyser analyser = new Analyser(getClassFileNames(), getPattern(), 
@@ -150,15 +156,23 @@ public class DependencyCheckingTask extends ClassycleTask
                                                 getDependencyDefinitions(),
                                                 properties,
                                                 getRenderer());
-      PrintWriter printWriter = new PrintWriter(System.out);
+      printWriter = _reportFile == null ? new PrintWriter(System.out) 
+                                        : new PrintWriter(new FileWriter(_reportFile));
       ok = dependencyChecker.check(printWriter);
       printWriter.flush();
+      printWriter.close();
     } catch (BuildException e)
     {
       throw e;
     } catch (Exception e)
     {
       throw new BuildException(e);
+    } finally
+    {
+      if (printWriter != null)
+      {
+        printWriter.close();
+      }
     }
     if (_failOnUnwantedDependencies && ok == false) 
     {
