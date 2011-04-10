@@ -104,11 +104,28 @@ public class DependencyCheckingTaskTest extends ClassycleTaskTestCase
   public void testDependentOnlyOn() throws Exception
   {
     executeTarget("testDependentOnlyOn");
-    assertEquals("check [A-not-p] dependentOnlyOn java.lang.* example.A*\n"
+    assertEquals("check example.B* dependentOnlyOn java.lang.* example.A*\n"
             + "  Unexpected dependencies found:\n" 
+            + "  example.B$M\n" 
+            + "    -> example.p.A\n"
             + "  example.BofA\n" 
-            + "    -> example.p.A\n",
-            getOutput());
+            + "    -> example.p.A\n"
+            + "check [set] dependentOnlyOn java.lang.*\n" 
+            + "  Unexpected dependencies found:\n"
+            + "  example.B$M\n"
+            + "    -> example.A\n" 
+            + "  example.p.A\n" 
+            + "    -> example.A\n"
+            + "  example.B\n" 
+            + "    -> example.A\n" 
+            + "check example.B* dependentOnlyOn *A\n"
+            + "  Unexpected dependencies found:\n" 
+            + "  example.B$M\n"
+            + "    -> java.lang.Object\n" 
+            + "  example.BofA\n" 
+            + "    -> java.lang.Object\n"
+            + "    -> java.lang.Class\n" 
+            + "    -> java.lang.Thread\n", getOutput());
   }
   
   public void testReflection() throws Exception

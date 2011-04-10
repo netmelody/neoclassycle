@@ -26,8 +26,8 @@ package classycle.dependency;
 
 import static classycle.dependency.DependencyDefinitionParser.DIRECTLY_INDEPENDENT_OF_KEY_WORD;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import classycle.graph.AtomicVertex;
 import classycle.graph.PathsFinder;
@@ -112,7 +112,7 @@ public class DependencyStatement implements Statement
       StringPattern startSet = _startSets[i];
       if (dependsOnly)
       {
-        List<AtomicVertex> invalids = new ArrayList<AtomicVertex>();
+        Set<AtomicVertex> invalids = new HashSet<AtomicVertex>();
         for (AtomicVertex vertex : graph)
         {
           if (startCondition.isFulfilled(vertex))
@@ -120,11 +120,11 @@ public class DependencyStatement implements Statement
             for (int j = 0, n = vertex.getNumberOfOutgoingArcs(); j < n; j++)
             {
               Vertex headVertex = vertex.getHeadVertex(j);
-              if (_finalCondition.isFulfilled(headVertex) == false)
+              if (_finalCondition.isFulfilled(headVertex) == false
+                      && startCondition.isFulfilled(headVertex) == false)
               {
                 invalids.add(vertex);
                 invalids.add((AtomicVertex) headVertex);
-                break;
               }
             }
           }

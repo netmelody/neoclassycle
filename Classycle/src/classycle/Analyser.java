@@ -56,7 +56,7 @@ import classycle.util.TrueStringPattern;
  */
 public class Analyser 
 {
-  private static final String VERSION = "1.3.3";
+  private static final String VERSION = "1.4";
   private static final DateFormat DATE_FORMAT 
                                         = new SimpleDateFormat("yyyy-MM-dd");
   private static final String CSV_TEMPLATE 
@@ -397,7 +397,7 @@ public class Analyser
   {
     System.out.println("============= Classycle V" + VERSION 
                        + " =============");
-    System.out.println("=========== by Franz-Josef Elmer ===========");
+    System.out.println("========== by Franz-Josef Elmer ==========");
     System.out.print("read class files and create class graph ... ");
     long duration = createClassGraph();
     System.out.println("done after " + duration + " ms: " 

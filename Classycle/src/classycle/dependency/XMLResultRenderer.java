@@ -36,7 +36,7 @@ import classycle.util.StringPattern;
 import classycle.util.Text;
 
 /**
- * Renderer which renders dependency checking results as XML. 
+ * Renderer which renders dependency checking results as XML. It ignores preferences.
  *
  * @author Franz-Josef Elmer
  */

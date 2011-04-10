@@ -79,8 +79,10 @@
       <fileset dir="../classes/example">
         <include name="**/*.class"/>
       </fileset>
-      [A-not-p] = *A excluding example.p.*
-      check [A-not-p] dependentOnlyOn java.lang.* example.A*
+      check example.B* example.p.* dependentOnlyOn java.lang.* example.A*
+    	[set] = example.B* example.p.*
+      check [set] dependentOnlyOn java.lang.*
+    	check example.B* dependentOnlyOn *A
     </classycleDependencyCheck>
   </target>
 

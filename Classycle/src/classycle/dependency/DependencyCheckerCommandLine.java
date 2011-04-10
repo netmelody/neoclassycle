@@ -39,7 +39,7 @@ public class DependencyCheckerCommandLine extends CommandLine
                               RENDERER = "-renderer=";
   
   private String _dependencyDefinition;
-  private ResultRenderer _renderer = new DefaultResultRenderer();
+  private ResultRenderer _renderer;
   
   public DependencyCheckerCommandLine(String[] args)
   {
@@ -73,7 +73,7 @@ public class DependencyCheckerCommandLine extends CommandLine
   
   public ResultRenderer getRenderer() 
   {
-    return _renderer;
+    return _renderer == null ? new DefaultResultRenderer() : _renderer;
   }
   
   private void handleDependenciesOption(String option)
