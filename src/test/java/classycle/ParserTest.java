@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -14,8 +15,6 @@ import classycle.graph.Vertex;
 import classycle.util.StringPattern;
 import classycle.util.TrueStringPattern;
 import classycle.util.WildCardPattern;
-
-import com.sun.tools.javac.Main;
 
 /**
  * 
@@ -31,7 +30,6 @@ public class ParserTest extends TestCase {
       + "  String[] a = {\"java.util.Date\", \"hello\", \"www.w3c.org\"};"
       + "  Class c = Integer.class;"
       + "}";
-  private static final Main JAVAC = new Main();
   private static final String TMP = "temporaryDirectory" + File.separator;
   private static final String CLASS_NAME = "Test";
   private static final String JAVA_FILE = TMP + CLASS_NAME + ".java";
@@ -39,7 +37,14 @@ public class ParserTest extends TestCase {
   
   private static int compile(String file)
   {
-    return JAVAC.compile(new String[] {file, "-target", "1.5"});
+    try {
+        final Class<?> compilerClass = Class.forName("com.sun.tools.javac.Main");
+        final Object compiler = compilerClass.newInstance();
+        final Method compileMethod = compilerClass.getMethod("compile", String[].class);
+        return (Integer)compileMethod.invoke(compiler, ((Object)new String[] {file, "-target", "1.5"}));
+    } catch (Exception e) {
+        throw new IllegalStateException(e);
+    }
   }
 
   private static AtomicVertex createVertex(String code, 
