@@ -1,119 +1,169 @@
 <?xml version="1.0"?>
-<project default="jar" name="Classycle" basedir=".">
-  <property name="version" value="1.4"/>
+<project name="neoclassycle" default="jar" basedir=".">
+    <property name="target.version" value="2.0.0"/>
 
-  <!-- prefix that allows to reference environment variables ===============-->
-  <property environment="env"/>
+    <property name="build.dir"      value="build"/>
+    <property name="lib.dir"        value="vendor/lib"/>
+    <property name="testlib.dir"    value="vendor/testlib"/>
+    <property name="built-main.dir" value="${build.dir}/main"/>
+    <property name="built-test.dir" value="${build.dir}/test"/>
 
-  <!-- set output path for compiled src ====================================-->
-  <property name="OUTPUT_PATH_SRC" value="classes"/>
+    <tstamp><format property="build.number" pattern="yyyyMMddHHmmss" timezone="GMT"/></tstamp>
+    <tstamp><format property="build.timestamp" pattern="yyyy-MM-dd HH:mm:ss" timezone="GMT"/></tstamp>
 
-  <!-- set output path for compiled src ====================================-->
-  <property name="OUTPUT_PATH_SRCTEST" value="classes"/>
+    <path id="compile-main.req">
+        <fileset dir="${lib.dir}" includes="**/*.jar"/>
+    </path>
 
-  <!-- set output path for generation of apidoc ============================-->
-  <property name="OUTPUT_PATH_APIDOC" value="docs/WebSite/apidoc"/>
+    <path id="run-main.req">
+        <path refid="compile-main.req"/>
+        <pathelement location="${built-main.dir}"/>
+    </path>
 
-  <!-- set distribution file name ==========================================-->
-  <property name="DIST_NAME" value="classycle${version}.zip"/>
+    <path id="compile-test.req">
+        <path refid="run-main.req"/>
+        <fileset dir="${testlib.dir}" includes="**/*.jar"/>
+    </path>
 
-  <!-- set classpath for compilation of src ================================-->
-  <path id="src_classpath">
-    <fileset dir="lib">
-      <include name="**/*.jar"/>
-    </fileset>
-  </path>
+    <macrodef name="compile-module">
+        <attribute name="srcdir"/>
+        <attribute name="destdir"/>
+        <attribute name="classpathref"/>
 
-  <!-- set sourcepath for generation of apidoc =============================-->
-  <path id="apidoc_srcpath">
-    <pathelement location="src"/>
-  </path>
+        <sequential>
+            <javac srcdir="@{srcdir}/java"
+                   includes="**"
+                   includeantruntime="false"
+                   encoding="utf-8"
+                   destdir="@{destdir}"
+                   source="1.5"
+                   target="1.5"
+                   debug="true"
+                   debuglevel="lines,source">
+                <classpath refid="@{classpathref}"/>
+            </javac>
 
-  <!-- ======= TARGETS =====================================================-->
-  <!-- removing all class files -->
-  <target name="clean" description="Delete all classes">
-    <delete dir="${OUTPUT_PATH_SRC}"/>
-    <mkdir dir="${OUTPUT_PATH_SRC}"/>
-    <delete dir="${OUTPUT_PATH_SRCTEST}"/>
-    <mkdir dir="${OUTPUT_PATH_SRCTEST}"/>
-  </target>
+            <copy todir="@{destdir}">
+                <fileset dir="@{srcdir}/java" excludes="**/*.java"/>
+            </copy>
+        </sequential>
+    </macrodef>
 
-  <!-- compiling sources ==================================================-->
-  <target name="compile_src" description="Compile sources.">
-    <javac  srcdir="src"
-            destdir="${OUTPUT_PATH_SRC}"
-            debug="true"
-            classpathref="src_classpath"/>
-  </target>
+    <target name="version-for-snapshot" unless="version.label">
+        <property name="version.label" value="${target.version}-SNAPSHOT-${build.number}"/>
+    </target>
 
-  <!-- compiling test sources ============================================-->
-  <target name="compile_srcTest" depends="compile_src"
-          description="Compile test sources.">
-    <javac  srcdir="srcTest"
-            destdir="${OUTPUT_PATH_SRCTEST}"
-            debug="true"
-            classpathref="src_classpath"/>
-  </target>
+    <target name="version-for-release" unless="version.label">
+        <property name="version.label" value="${target.version}"/>
+    </target>
 
-  <!-- run all JUnit unit tests ==========================================-->
-  <target name="test" depends="clean, compile_srcTest"
-          description="Rebuilt classes and run all tests">
-    <junit fork="yes"
-           dir="."
-           haltonfailure="true"
-           printsummary="true">
-      <classpath>
-        <pathelement path="${java.class.path}"/>
-        <pathelement location="${OUTPUT_PATH_SRC}"/>
-      </classpath>
-      <formatter type="brief" usefile="false"/>
-      <test name="classycle.AllTests"/>
-    </junit>
-  </target>
+    <target name="version" depends="version-for-snapshot,version-for-release">
+        <echo message="Building version ${version.label}"/>
+    </target>
 
-  <!-- generate jar ======================================================-->
-  <target name="jar" depends="clean, compile_src"
-          description="Create jar">
-    <jar destfile="classycle.jar" basedir="${OUTPUT_PATH_SRC}">
-      <manifest>
-        <attribute name="Main-Class" value="classycle.Analyser"/>
-      </manifest>
-    </jar>
-  </target>
+    <target name="clean" description="Clean this project">
+        <delete dir="${build.dir}" failonerror="false"/>
+    </target>
 
-  <!-- generate apidoc =====================================================-->
-  <target name="apidoc" description="generate API doc">
-    <delete dir="${OUTPUT_PATH_APIDOC}"/>
-    <mkdir dir="${OUTPUT_PATH_APIDOC}"/>
-    <javadoc  packagenames="classycle.*"
-              sourcepathref="apidoc_srcpath"
-              defaultexcludes="yes"
-              private="false"
-              destdir="${OUTPUT_PATH_APIDOC}"
-              author="true"
-              version="true"
-              use="true"
-              windowtitle="Classycle"
-              overview="overview.html"
-              failonerror="true"/>
-  </target>
+    <target name="prepare">
+        <mkdir dir="${build.dir}"/>
+    </target>
 
-  <!-- generate distribution ===============================================-->
-  <target name="distribution" depends="jar" 
-          description="generate a distribution">
-    <delete file="src.zip ${DIST_NAME}"/>
-    <zip destfile="src.zip" basedir="src"/>
-    <zip destfile="${DIST_NAME}">
-      <zipfileset prefix="Classycle${version}" dir="${basedir}">
-        <include name="LICENSE.txt"/>
-        <include name="README.html"/>
-        <include name="classycle.jar"/>
-        <include name="reportXMLtoHTML.xsl"/>
-        <include name="images/*"/>
-        <include name="src.zip"/>
-        <include name="docs/WebSite/**/*"/>
-      </zipfileset>
-    </zip>
-  </target>
+    <target name="compile-main" depends="prepare">
+        <mkdir dir="${built-main.dir}"/>
+        <compile-module srcdir="src/main" destdir="${built-main.dir}" classpathref="compile-main.req"/>
+    </target>
 
+    <target name="compile-test" depends="prepare,compile-main">
+        <mkdir dir="${built-test.dir}"/>
+        <compile-module srcdir="src/test" destdir="${built-test.dir}" classpathref="compile-test.req"/>
+    </target>
+
+    <target name="jar-main" depends="clean,compile-main,version">
+        <jar destfile="${build.dir}/${ant.project.name}-${version.label}.jar">
+            <fileset dir="${built-main.dir}"/>
+            <fileset dir="${basedir}" includes="LICENSE.txt README.html"/>
+
+            <manifest>
+                <attribute name="Main-Class" value="classycle.Analyser"/>
+                <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="Implementation-Vendor" value="netmelody.org"/>
+                <attribute name="Implementation-Title" value="${ant.project.name}"/>
+                <attribute name="Implementation-Version" value="${version.label}"/>
+                <attribute name="Built-Date" value="${build.timestamp}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="jar-test" depends="clean,compile-test,version">
+        <jar destfile="${build.dir}/${ant.project.name}-tests-${version.label}.jar">
+            <fileset dir="${built-test.dir}"/>
+            <fileset dir="${basedir}" includes="LICENSE NOTICE README"/>
+
+            <zipfileset src="${testlib.dir}/ant-testutil.jar" excludes="**/META-INF/**"/>
+            <zipfileset src="${testlib.dir}/junit-dep-4.10.jar" excludes="**/META-INF/**"/>
+
+            <manifest>
+                <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="Implementation-Vendor" value="netmelody.org"/>
+                <attribute name="Implementation-Title" value="${ant.project.name} Tests"/>
+                <attribute name="Implementation-Version" value="${version.label}"/>
+                <attribute name="Built-Date" value="${build.timestamp}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="jar" description="Create jar files" depends="jar-main,jar-test"/>
+
+    <target name="test" description="Test this project" depends="jar">
+        <property name="test-report.dir" value="${build.dir}/testreport"/>
+        <mkdir dir="${test-report.dir}"/>
+
+        <junit printsummary="yes" haltonfailure="yes">
+            <classpath>
+              <pathelement location="${build.dir}/${ant.project.name}-${version.label}.jar"/>
+              <pathelement location="${build.dir}/${ant.project.name}-tests-${version.label}.jar"/>
+            </classpath>
+            <formatter type="plain"/>
+            <batchtest fork="yes" todir="${test-report.dir}">
+                <zipfileset src="${build.dir}/${ant.project.name}-tests-${version.label}.jar">
+                    <include name="**/classycle/**/*Test.class"/>
+                </zipfileset>
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="apidoc" description="generate API doc">
+        <mkdir dir="${build.dir}/api-doc"/>
+        <javadoc packagenames="classycle.*"
+                 sourcedir="src/main/java"
+                 defaultexcludes="yes"
+                 private="false"
+                 destdir="${build.dir}/api-doc"
+                 author="true"
+                 version="true"
+                 use="true"
+                 windowtitle="neoclassycle"
+                 overview="overview.html"
+                 failonerror="true"/>
+    </target>
+
+    <target name="snapshot" description="Create a tested snapshot jar file" depends="test"/>
+
+    <target name="release" description="Create a tested release jar file" depends="version-for-release,snapshot">
+        <zip destfile="${build.dir}/src.zip" basedir="src/main/java"/>
+        <zip destfile="${build.dir}/${ant.project.name}-${version.label}.zip">
+            <zipfileset prefix="." dir="${basedir}">
+                <include name="LICENSE.txt"/>
+                <include name="README.html"/>
+                <include name="reportXMLtoHTML.xsl"/>
+                <include name="images/*"/>
+                <include name="docs/WebSite/**/*"/>
+            </zipfileset>
+            <zipfileset prefix="." dir="${basedir}/build">
+                <include name="${build.dir}/${ant.project.name}-${version.label}.jar"/>
+                <include name="src.zip"/>
+            </zipfileset>
+        </zip>
+    </target>
 </project>
