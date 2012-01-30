@@ -1,0 +1,6 @@
+bin
+build
+out
+.idea/workspace.xml
+*.swp
+*.*~
