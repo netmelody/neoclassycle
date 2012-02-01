@@ -46,15 +46,20 @@ public class GraphBuilderTest extends TestCase
     AtomicVertex[] graph = GraphBuilder.createGraph(nodes, false);
     
     assertEquals(2, graph.length);
-    AtomicVertex node = graph[0];
-    assertEquals(3, node.getNumberOfOutgoingArcs());
-    assertEquals(0, node.getNumberOfIncomingArcs());
-    ClassAttributes attributes = (ClassAttributes) node.getAttributes();
+    AtomicVertex node1 = graph[0];
+    AtomicVertex node2 = graph[1];
+    if (!"a".equals(((ClassAttributes)node1.getAttributes()).getName())) {
+        node1 = graph[1];
+        node2 = graph[0];
+    }
+    
+    assertEquals(3, node1.getNumberOfOutgoingArcs());
+    assertEquals(0, node1.getNumberOfIncomingArcs());
+    ClassAttributes attributes = (ClassAttributes) node1.getAttributes();
     assertEquals("a", attributes.getName());
-    node = graph[1];
-    assertEquals(2, node.getNumberOfOutgoingArcs());
-    assertEquals(1, node.getNumberOfIncomingArcs());
-    attributes = (ClassAttributes) node.getAttributes();
+    assertEquals(2, node2.getNumberOfOutgoingArcs());
+    assertEquals(1, node2.getNumberOfIncomingArcs());
+    attributes = (ClassAttributes) node2.getAttributes();
     assertEquals("a$1", attributes.getName());
   }
   

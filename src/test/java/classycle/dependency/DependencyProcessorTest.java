@@ -3,6 +3,10 @@
  */
 package classycle.dependency;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import junit.framework.TestCase;
 import classycle.graph.AtomicVertex;
 import classycle.graph.GraphTestCase.MockAttributes;
@@ -61,15 +65,22 @@ public class DependencyProcessorTest extends TestCase
     String s = "[A] = *.A\n"
              + "check absenceOfPackageCycles > 1 in *.B\n"
              + "check absenceOfPackageCycles > 1 in [A]";
-    String result = "check absenceOfPackageCycles > 1 in [A]\n" + 
+    String result1 = "check absenceOfPackageCycles > 1 in [A]\n" + 
                           "  i et al. contains 2 packages:\n" + 
                           "    i\n" + 
                           "    b\n";
+    String result2 = "check absenceOfPackageCycles > 1 in [A]\n" + 
+                          "  b et al. contains 2 packages:\n" + 
+                          "    b\n" + 
+                          "    i\n";
     check(SHOW_ALLRESULTS + s, 
             new String[] {SHOW_ONLY_ALL, 
                           "check absenceOfPackageCycles > 1 in *.B\tOK\n", 
-                          result});
-    check(s, new String[] {"", result});
+                          result2}, 
+            new String[] {SHOW_ONLY_ALL, 
+                          "check absenceOfPackageCycles > 1 in *.B\tOK\n", 
+                          result2});
+    check(s, new String[] {"", result1}, new String[] {"", result2});
   }
   
   public void testSimpleDependencyCheck()
@@ -167,21 +178,23 @@ public class DependencyProcessorTest extends TestCase
                             + "\n  h.A\n    -> a.A\n"});  
   }
   
-  private void check(String description, String[] expectedResults)
+  private void check(String description, String[] expectedResults) {
+      check(description, expectedResults, expectedResults);
+  }
+  private void check(String description, String[] expectedResults1, String[] expectedResults2)
   {
     AtomicVertex[] graph = createGraph();
     ResultRenderer renderer = new DefaultResultRenderer();
-    DependencyProcessor processor 
-                          = new DependencyProcessor(description, null, renderer);
-    int i = 0;
-    while (processor.hasMoreStatements())
-    {
-      assertEquals("Result " + i, expectedResults[i++], 
-                   renderer.render(processor.executeNextStatement(graph)));
+    DependencyProcessor processor = new DependencyProcessor(description, null, renderer);
+    final List<String> results = new ArrayList<String>();
+    while (processor.hasMoreStatements()) {
+      results.add(renderer.render(processor.executeNextStatement(graph)));
     }
-    if (i < expectedResults.length)
-    {
-      fail((expectedResults.length - i) + " more results expected");
+    try {
+        assertEquals(Arrays.asList(expectedResults1), results);
+    }
+    catch (AssertionError e) {
+        assertEquals(Arrays.asList(expectedResults2), results);
     }
   }
   
