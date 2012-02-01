@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="src" path="src/test/resources"/>
 	<classpathentry kind="lib" path="vendor/lib/ant.jar" sourcepath="vendor/src/apache-ant-1.8.2-src.zip"/>
 	<classpathentry kind="lib" path="vendor/testlib/junit-dep-4.10.jar" sourcepath="vendor/src/junit-dep-4.10-sources.jar"/>
 	<classpathentry kind="lib" path="vendor/testlib/ant-testutil.jar" sourcepath="vendor/src/apache-ant-1.8.2-src.zip"/>
