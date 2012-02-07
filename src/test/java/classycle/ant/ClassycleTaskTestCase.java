@@ -3,47 +3,34 @@
  */
 package classycle.ant;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 
 import org.apache.tools.ant.BuildFileTest;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 
 /**
  * @author  Franz-Josef Elmer
  */
-public abstract class ClassycleTaskTestCase extends BuildFileTest
-{
-  protected static final String TMP_DIR = "temporaryTestDirectory";
+public abstract class ClassycleTaskTestCase {
   
-  public ClassycleTaskTestCase(String arg0)
-  {
-    super(arg0);
-  }
+  @Rule
+  public TemporaryFolder folder = new TemporaryFolder();
   
-  protected void createTempDir()
-  {
-    new File(TMP_DIR).mkdir();
-  }
-
-  protected void tearDown() throws Exception
-  {
-    File dir = new File(TMP_DIR);
-    String[] files = dir.list();
-    for (int i = 0; i < files.length; i++)
-    {
-      File file = new File(TMP_DIR, files[i]);
-      assertTrue("Couldn't delete " + file, file.delete());
-    }
-    dir.delete();
-  }
-  
+  public final BuildFileTest antTestcase = new BuildFileTest() { };
+    
   protected void checkNumberOfLines(int expectedNumberOfLines, String fileName)
                  throws Exception
   {
-    File file = new File(TMP_DIR, fileName);
+    File file = new File(folder.getRoot(), fileName);
     FileReader reader = new FileReader(file);
     checkNumberOfLines(reader, expectedNumberOfLines);
   }
@@ -63,7 +50,7 @@ public abstract class ClassycleTaskTestCase extends BuildFileTest
   protected void checkLine(String expectedLine, int lineNumber, String fileName)
                  throws Exception
   {
-    File file = new File(TMP_DIR, fileName);
+    File file = new File(folder.getRoot(), fileName);
     FileReader reader = new FileReader(file);
     checkLine(reader, expectedLine, lineNumber);
   }
@@ -78,7 +65,7 @@ public abstract class ClassycleTaskTestCase extends BuildFileTest
   
   protected String readFile(String fileName) throws Exception
   {
-    File file = new File(TMP_DIR, fileName);
+    File file = new File(folder.getRoot(), fileName);
     BufferedReader reader = new BufferedReader(new FileReader(file));
     StringBuilder builder = new StringBuilder();
     String line;
@@ -90,4 +77,33 @@ public abstract class ClassycleTaskTestCase extends BuildFileTest
     
   }
 
+  protected void configureProject(String resourceName) {
+    final File file = new File(folder.getRoot(), resourceName);
+    final InputStream in = ClassycleTaskTestCase.class.getResourceAsStream("/" + resourceName);
+    try {
+        final FileOutputStream out = new FileOutputStream(file);
+        byte[] buffer = new byte[1024];
+        int len = in.read(buffer);
+        while (len != -1) {
+            out.write(buffer, 0, len);
+            len = in.read(buffer);
+        }
+        out.close();
+        in.close();
+        
+        System.setProperty("classes.dir", ClassycleTaskTestCase.class.getResource("/").toURI().toURL().getFile());
+        antTestcase.configureProject(file.getAbsolutePath());
+    }
+    catch (Exception e) {
+        throw new IllegalStateException(e);
+    }
+  }
+  
+  protected void executeTarget(String targetName) {
+    antTestcase.executeTarget(targetName);
+  }
+  
+  protected String getOutput() {
+    return antTestcase.getOutput();
+  }
 }

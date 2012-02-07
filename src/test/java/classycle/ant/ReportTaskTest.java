@@ -3,87 +3,98 @@
  */
 package classycle.ant;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.tools.ant.BuildException;
-
+import org.junit.Before;
+import org.junit.Test;
 /**
  * @author  Franz-Josef Elmer
  */
 public class ReportTaskTest extends ClassycleTaskTestCase
 {
-  public ReportTaskTest(String arg0)
+
+  @Before
+  public void setUp() throws Exception
   {
-    super(arg0);
-  }
-  
-  protected void setUp() throws Exception
-  {
-    createTempDir();
     configureProject("reportTaskTestBuild.xml");
   }
   
+  @Test
   public void testRaw() throws Exception
   {
     executeTarget("testRaw");
     checkNumberOfLines(23, "reportTaskTest.txt");
   }
 
+  @Test
   public void testMergeInnerClasses() throws Exception
   {
     executeTarget("testMergeInnerClasses");
     checkNumberOfLines(19, "reportTaskTest.txt");
   }
   
+  @Test
   public void testOnlyA() throws Exception
   {
     executeTarget("testOnlyA");
     checkNumberOfLines(14, "reportTaskTest.txt");
   }
 
+  @Test
   public void testIncludingA() throws Exception
   {
     executeTarget("testIncludingA");
     checkNumberOfLines(14, "reportTaskTest.txt");
   }
 
+  @Test
   public void testIncludingAExcludingB() throws Exception
   {
     executeTarget("testIncludingAExcludingB");
     checkNumberOfLines(9, "reportTaskTest.txt");
   }
 
+  @Test
   public void testIncludingAExcludingBp() throws Exception
   {
     executeTarget("testIncludingAExcludingBp");
     checkNumberOfLines(6, "reportTaskTest.txt");
   }
 
+  @Test
   public void testCSV() throws Exception
   {
     executeTarget("testCSV");
     checkNumberOfLines(7, "reportTaskTest.csv");
   }
 
+  @Test
   public void testXML() throws Exception
   {
     executeTarget("testXML");
     checkNumberOfLines(90, "reportTaskTest.xml");
   }
 
+  @Test
   public void testReflectionAll() throws Exception
   {
     executeTarget("testReflectionAll");
     checkNumberOfLines(24, "reportTaskTest.txt");
   }
 
+  @Test
   public void testReflectionRestricted() throws Exception
   {
     executeTarget("testReflectionRestricted");
     checkNumberOfLines(23, "reportTaskTest.txt");
   }
 
+  @Test
   public void testXMLPackagesOnly() throws Exception
   {
     executeTarget("testXMLPackagesOnly");
@@ -93,6 +104,7 @@ public class ReportTaskTest extends ClassycleTaskTestCase
               "reportTaskTest.xml");
   }
 
+  @Test
   public void testInvalidReportType() throws Exception
   {
     try
@@ -105,6 +117,7 @@ public class ReportTaskTest extends ClassycleTaskTestCase
     }
   }
 
+  @Test
   public void testMissingReportFile() throws Exception
   {
     try
@@ -117,6 +130,7 @@ public class ReportTaskTest extends ClassycleTaskTestCase
     }
   }
 
+  @Test
   public void testMissingFileSet() throws Exception
   {
     try

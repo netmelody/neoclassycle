@@ -1,5 +1,4 @@
-<project name="DependencyCheckingTaskTest" default="testEmbeddedDefinitions" 
-         basedir="temporaryTestDirectory">
+<project name="DependencyCheckingTaskTest" default="testEmbeddedDefinitions"  basedir=".">
   <taskdef name="classycleDependencyCheck" 
            classname="classycle.ant.DependencyCheckingTask"/>
 
@@ -7,7 +6,7 @@
 
   <target name="testEmbeddedDefinitions" >
     <classycleDependencyCheck resultRenderer="classycle.dependency.XMLResultRenderer">
-      <fileset dir="../classes/example">
+      <fileset dir="${classes.dir}/example">
         <include name="**/*.class"/>
       </fileset>
 #      show allResults
@@ -20,7 +19,7 @@
 
   <target name="testEmbeddedDefinitionsFailureOn">
     <classycleDependencyCheck failOnUnwantedDependencies="true">
-      <fileset dir="../classes/example">
+      <fileset dir="${classes.dir}/example">
         <include name="**/*.class"/>
       </fileset>
       show allResults
@@ -33,7 +32,7 @@
 
   <target name="testExcluding">
     <classycleDependencyCheck excludingClasses="example.p.*">
-      <fileset dir="../classes/example">
+      <fileset dir="${classes.dir}/example">
         <include name="**/*.class"/>
       </fileset>
       check *A independentOf java.*.Ob*
@@ -42,7 +41,7 @@
 
   <target name="testCheckCyclesFailureOn">
     <classycleDependencyCheck failOnUnwantedDependencies="true">
-      <fileset dir="../classes">
+      <fileset dir="${classes.dir}">
         <include name="**/*.class"/>
       </fileset>
       check ${package}.A* independentOf ${package}.B*
@@ -55,7 +54,7 @@
                   resultRenderer="classycle.dependency.XMLResultRenderer"
     	            reportFile="dependency-checking-result.xml"
   							  failOnUnwantedDependencies="true">
-      <fileset dir="../classes/example">
+      <fileset dir="${classes.dir}/example">
         <include name="**/*.class"/>
       </fileset>
       {pckg} = example
@@ -66,7 +65,7 @@
 
   <target name="testResetGraphAfterCheck">
     <classycleDependencyCheck>
-      <fileset dir="../classes/example">
+      <fileset dir="${classes.dir}/example">
         <include name="**/*.class"/>
       </fileset>
       [A-not-p] = *A excluding example.p.*
@@ -76,7 +75,7 @@
 
   <target name="testDependentOnlyOn">
     <classycleDependencyCheck>
-      <fileset dir="../classes/example">
+      <fileset dir="${classes.dir}/example">
         <include name="**/*.class"/>
       </fileset>
       check example.B* example.p.* dependentOnlyOn java.lang.* example.A*
@@ -88,7 +87,7 @@
 
   <target name="testReflection">
     <classycleDependencyCheck reflectionPattern="">
-      <fileset dir="../classes/example">
+      <fileset dir="${classes.dir}/example">
         <include name="**/*.class"/>
       </fileset>
       [A-not-p] = *A excluding example.p.*
@@ -98,7 +97,7 @@
 
   <target name="testReflectionWithRestriction">
     <classycleDependencyCheck reflectionPattern="java.*">
-      <fileset dir="../classes/example">
+      <fileset dir="${classes.dir}/example">
         <include name="**/*.class"/>
       </fileset>
       [A-not-p] = *A excluding example.p.*
@@ -108,7 +107,7 @@
 
   <target name="testFile">
     <classycleDependencyCheck definitionFile="test.ddf">
-      <fileset dir="../classes/example">
+      <fileset dir="${classes.dir}/example">
         <include name="**/*.class"/>
       </fileset>
       bla bla
@@ -123,7 +122,7 @@
 
   <target name="testEmpty">
     <classycleDependencyCheck>
-      <fileset dir="../classes/example">
+      <fileset dir="${classes.dir}/example">
         <include name="**/*.class"/>
       </fileset>
     </classycleDependencyCheck>
