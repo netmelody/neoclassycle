@@ -5,8 +5,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 import junit.framework.TestCase;
 import classycle.graph.AtomicVertex;
@@ -38,7 +42,7 @@ public class ParserTest extends TestCase {
   private static int compile(String file)
   {
     try {
-        final Class<?> compilerClass = Class.forName("com.sun.tools.javac.Main");
+        final Class<?> compilerClass = Class.forName("com.sun.tools.javac.Main", true, compilerClassLoader());
         final Object compiler = compilerClass.newInstance();
         final Method compileMethod = compilerClass.getMethod("compile", String[].class);
         return (Integer)compileMethod.invoke(compiler, ((Object)new String[] {file, "-target", "1.5"}));
@@ -47,6 +51,16 @@ public class ParserTest extends TestCase {
     }
   }
 
+  private static ClassLoader compilerClassLoader() {
+      try {
+          final List<URL> urls = new ArrayList<URL>();
+          urls.add(new File(System.getenv("JAVA_HOME") + File.separator + "lib" + File.separator + "tools.jar").toURI().toURL());
+          return new URLClassLoader(urls.toArray(new URL[urls.size()]));
+      } catch (Exception e) {
+          throw new IllegalStateException(e);
+      }
+  }
+  
   private static AtomicVertex createVertex(String code, 
                                            StringPattern reflectionPattern, 
                                            boolean mergeInnerClasses) 
