@@ -77,6 +77,9 @@
     <target name="compile-test" depends="prepare,compile-main">
         <mkdir dir="${built-test.dir}"/>
         <compile-module srcdir="src/test" destdir="${built-test.dir}" classpathref="compile-test.req"/>
+        <copy todir="${built-test.dir}">
+            <fileset dir="src/test/resources" includes="**/*"/>
+        </copy>
     </target>
 
     <target name="jar-main" depends="clean,compile-main,version">
