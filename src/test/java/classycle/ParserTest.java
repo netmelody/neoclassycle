@@ -1,5 +1,8 @@
 package classycle;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,7 +15,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+
 import classycle.graph.AtomicVertex;
 import classycle.graph.NameAttributes;
 import classycle.graph.Vertex;
@@ -21,11 +27,9 @@ import classycle.util.TrueStringPattern;
 import classycle.util.WildCardPattern;
 
 /**
- * 
- * 
  * @author Franz-Josef Elmer
  */
-public class ParserTest extends TestCase {
+public final class ParserTest {
   private static final String INNER_CLASS_EXAMPLE = "class Test {" 
               + "interface A { String b();}"
               + "Integer i;}";
@@ -34,10 +38,10 @@ public class ParserTest extends TestCase {
       + "  String[] a = {\"java.util.Date\", \"hello\", \"www.w3c.org\"};"
       + "  Class c = Integer.class;"
       + "}";
-  private static final String TMP = "temporaryDirectory" + File.separator;
   private static final String CLASS_NAME = "Test";
-  private static final String JAVA_FILE = TMP + CLASS_NAME + ".java";
-  private static final String CLASS_FILE = TMP + CLASS_NAME + ".class";
+  
+  @Rule
+  public TemporaryFolder folder = new TemporaryFolder();
   
   private static int compile(String file)
   {
@@ -61,16 +65,17 @@ public class ParserTest extends TestCase {
       }
   }
   
-  private static AtomicVertex createVertex(String code, 
+  private AtomicVertex createVertex(String code, 
                                            StringPattern reflectionPattern, 
                                            boolean mergeInnerClasses) 
                  throws IOException 
   {
-    Writer writer = new FileWriter(JAVA_FILE);
+    final File sourceFile = new File(folder.getRoot(), CLASS_NAME + ".java");
+    Writer writer = new FileWriter(sourceFile);
     writer.write(code);
     writer.close();
-    assertEquals("Exit code", 0, compile(JAVA_FILE));
-    AtomicVertex[] vertices = Parser.readClassFiles(new String[] {TMP}, 
+    assertEquals("Exit code", 0, compile(sourceFile.getAbsolutePath()));
+    AtomicVertex[] vertices = Parser.readClassFiles(new String[] {folder.getRoot().getAbsolutePath()}, 
                                                     new TrueStringPattern(), 
                                                     reflectionPattern, 
                                                     mergeInnerClasses);
@@ -86,24 +91,6 @@ public class ParserTest extends TestCase {
     throw new IOException("Test class not found: " + Arrays.asList(vertices));
   }
 
-  public ParserTest(String name) {
-    super(name);
-  }
-  
-  protected void setUp() throws Exception {
-    new File(TMP).mkdir();
-  }
-
-  protected void tearDown() throws Exception {
-    File dir = new File(TMP);
-    File[] files = dir.listFiles();
-    for (int i = 0; i < files.length; i++)
-    {
-      files[i].delete();
-    }
-    dir.delete();
-  }
-
   private void check(String[] expectedClasses, String javaCode) 
                throws IOException 
   {
@@ -116,7 +103,7 @@ public class ParserTest extends TestCase {
                throws IOException {
     AtomicVertex vertex = createVertex(javaCode, reflectionPattern, 
                                        mergeInnerClasses);
-    assertEquals(TMP, ((ClassAttributes) vertex.getAttributes()).getSources());
+    assertEquals(folder.getRoot().getAbsolutePath(), ((ClassAttributes) vertex.getAttributes()).getSources());
     HashSet classSet = new HashSet();
     for (int i = 0; i < expectedClasses.length; i++) {
       classSet.add(expectedClasses[i]);
@@ -132,6 +119,7 @@ public class ParserTest extends TestCase {
                  vertex.getNumberOfOutgoingArcs());
   }
 
+  @Test
   public void testParseFieldDescriptor() throws IOException {
     check(new String[] {"java.lang.Object", "java.awt.color.ICC_ColorSpace", 
                         "java.lang.String", "java.awt.LayoutManager2",
@@ -140,7 +128,8 @@ public class ParserTest extends TestCase {
           + "StringBuffer[] sb;"
           + "double[] d; boolean[][] z; java.awt.color.ICC_ColorSpace cs;}");
   }
-  
+
+  @Test  
   public void testNoReflection() throws IOException
   {
     check(new String[] {"java.lang.Object", "java.lang.String", 
@@ -148,6 +137,7 @@ public class ParserTest extends TestCase {
           REFLECTION_EXAMPLE);
   }
 
+  @Test
   public void testReflection() throws IOException
   {
     check(new String[] {"java.lang.Object", "java.lang.String", 
@@ -163,12 +153,14 @@ public class ParserTest extends TestCase {
             new WildCardPattern("java.*"), false);
   }
 
+  @Test
   public void testInvalidFieldDescriptors() throws IOException {
     check(new String[] {"java.lang.Object", "java.lang.String"},
           "class Test { String[] a = {\"La;a\", \"[Lb;?\", \"L;\", \"L ;\","
           + "\"La.;\", \"L.a;\", \"La..b;\", \"L1;\", };}");
   }
-  
+
+  @Test
   public void testParseMethodDescriptor() throws IOException {
     check(new String[] {"java.lang.String", "java.lang.Integer",
                         "java.lang.Double", "java.lang.Boolean",
@@ -179,7 +171,8 @@ public class ParserTest extends TestCase {
           + "Exception d(double d, Double d2); int e(Boolean[][] z);"
           + "short f(Byte b, int[][] i); Short g(Long l, Class c);}");
   }
-  
+
+  @Test
   public void testInvalidMethodDescriptors() throws IOException {
     check(new String[] {"java.lang.Object", "java.lang.String"},
           "class Test { String[] a = {\"(La;\", \"(La1;??\", \"(Lb;)\","
@@ -187,35 +180,41 @@ public class ParserTest extends TestCase {
           + "\"(Lh;)Li;?\", \"([)Lj;\", \"(L2;)Lk;\", \"( )Ll;\", \"(d)Lm;\","
           + "\"(Ln;[)Lo;\", \"(Lp;L)V\"};}");
   }
-  
+
+  @Test
   public void testIndirectReference() throws IOException {
     check(new String[] {"java.lang.Object", "java.util.Enumeration", "java.lang.System",
                         "java.util.Properties"},
           "class Test { Object e = System.getProperties().keys();}");
   }
-  
+
+  @Test
   public void testConstantsReference() throws IOException {
     check(new String[] {"java.lang.Object"},
             "class Test { int e = java.awt.Label.LEFT;}");
   }
-  
+
+  @Test
   public void testSuperClass() throws IOException {
     check(new String[] {"java.lang.Runnable", "java.awt.Canvas"},
             "class Test extends java.awt.Canvas implements Runnable {"
             + "public void run() {}}");
   }
-  
+
+  @Test
   public void testCastingElementaryDataTypeArray() throws IOException {
     check(new String[] {"java.lang.Object"},
             "class Test { Object a() { return null; } "
             + "void b() { byte[][] n = (byte[][]) a();}}");
   }
-  
+
+  @Test
   public void testInnerClasses() throws IOException {
     check(new String[] {"java.lang.Object", "java.lang.Integer", "Test$A"},
             INNER_CLASS_EXAMPLE);
   }
-  
+
+  @Test
   public void testMergeInnerClasses() throws IOException {
     check(new String[] {"java.lang.Object", "java.lang.Integer", 
                         "java.lang.String"},
