@@ -16,7 +16,6 @@ import java.io.Writer;
 import java.util.Arrays;
 
 import org.apache.tools.ant.BuildException;
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
