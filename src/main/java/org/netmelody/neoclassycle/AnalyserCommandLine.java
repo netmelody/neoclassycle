@@ -88,9 +88,8 @@ public class AnalyserCommandLine extends CommandLine {
 
     /** Returns the usage of correct command line arguments and options. */
     @Override
-    public String getUsage() {
-        return "[-raw] [-packagesOnly] [-cycles|-strong] " + "[" + XML_FILE + "<file>] [" + CSV_FILE + "<file>] " + "[" + TITLE
-                + "<title>] " + super.getUsage();
+    public String specificUsage() {
+        return "[-raw] [-packagesOnly] [-cycles|-strong] " + "[" + XML_FILE + "<file>] [" + CSV_FILE + "<file>] " + "[" + TITLE + "<title>] ";
     }
 
     /** Returns <tt>true</tt> if the option <tt>-cycles</tt> has been set. */

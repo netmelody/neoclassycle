@@ -129,10 +129,13 @@ public abstract class CommandLine {
     }
 
     /** Returns the usage of correct command line arguments and options. */
-    public String getUsage() {
-        return "[" + MERGE_INNER_CLASSES + "] " + "[" + INCLUDING_CLASSES + "<pattern1>,<pattern2>,...] " + "[" + EXCLUDING_CLASSES
+    public final String getUsage() {
+        return specificUsage() + 
+                "[" + MERGE_INNER_CLASSES + "] " + "[" + INCLUDING_CLASSES + "<pattern1>,<pattern2>,...] " + "[" + EXCLUDING_CLASSES
                 + "<pattern1>,<pattern2>,...] " + "[" + REFLECTION_PATTERN + "<pattern1>,<pattern2>,...] "
                 + "<class files, zip/jar/war/ear files, or folders>";
     }
+    
+    protected abstract String specificUsage();
 
 }

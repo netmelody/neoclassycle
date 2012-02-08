@@ -58,9 +58,8 @@ public class DependencyCheckerCommandLine extends CommandLine {
 
     /** Returns the usage of correct command line arguments and options. */
     @Override
-    public String getUsage() {
-        return DEPENDENCIES + "<description>|@<description file> " + "[" + RENDERER + "<fully qualified class name of a ResultRenderer>] "
-                + super.getUsage();
+    public String specificUsage() {
+        return DEPENDENCIES + "<description>|@<description file> " + "[" + RENDERER + "<fully qualified class name of a ResultRenderer>] ";
     }
 
     public String getDependencyDefinition() {
