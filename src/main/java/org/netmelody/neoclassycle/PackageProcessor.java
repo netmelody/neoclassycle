@@ -58,8 +58,8 @@ public class PackageProcessor extends GraphProcessor {
         }
     }
 
-    private final HashMap _packageVertices = new HashMap();
-    private final List _arcs = new ArrayList();
+    private final HashMap<String, PackageVertex> _packageVertices = new HashMap<String, PackageVertex>();
+    private final List<Arc> _arcs = new ArrayList<Arc>();
     private AtomicVertex[] _packageGraph;
 
     /**
@@ -114,8 +114,8 @@ public class PackageProcessor extends GraphProcessor {
         for (int i = 0; i < _arcs.size(); i++) {
             ((Arc) _arcs.get(i)).create();
         }
-        Iterator vertices = _packageVertices.values().iterator();
-        ArrayList list = new ArrayList();
+        Iterator<PackageVertex> vertices = _packageVertices.values().iterator();
+        ArrayList<AtomicVertex> list = new ArrayList<AtomicVertex>();
 
         while (vertices.hasNext()) {
             AtomicVertex vertex = (AtomicVertex) vertices.next();

@@ -37,7 +37,7 @@ import org.netmelody.neoclassycle.graph.NameAttributes;
  * @author Franz-Josef Elmer
  */
 public abstract class NameAndSourceAttributes extends NameAttributes {
-    private final Set _sources = new TreeSet();
+    private final Set<String> _sources = new TreeSet<String>();
 
     /**
      * Creates an instance for the specified name. Initially there are no
@@ -66,7 +66,7 @@ public abstract class NameAndSourceAttributes extends NameAttributes {
      */
     public String getSources() {
         StringBuffer buffer = new StringBuffer();
-        for (Iterator iterator = _sources.iterator(); iterator.hasNext();) {
+        for (Iterator<String> iterator = _sources.iterator(); iterator.hasNext();) {
             String source = (String) iterator.next();
             if (source.length() > 0) {
                 if (buffer.length() > 0) {

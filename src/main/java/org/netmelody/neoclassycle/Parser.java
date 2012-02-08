@@ -103,7 +103,7 @@ public class Parser {
      */
     public static AtomicVertex[] readClassFiles(String[] classFiles, StringPattern pattern, StringPattern reflectionPattern,
             boolean mergeInnerClasses) throws IOException {
-        ArrayList unresolvedNodes = new ArrayList();
+        ArrayList<UnresolvedNode> unresolvedNodes = new ArrayList<UnresolvedNode>();
         for (int i = 0; i < classFiles.length; i++) {
             String classFile = classFiles[i];
             File file = new File(classFile);
@@ -129,7 +129,7 @@ public class Parser {
                 throw new IOException(classFile + " is an invalid file.");
             }
         }
-        List filteredNodes = new ArrayList();
+        List<UnresolvedNode> filteredNodes = new ArrayList<UnresolvedNode>();
         for (int i = 0, n = unresolvedNodes.size(); i < n; i++) {
             UnresolvedNode node = (UnresolvedNode) unresolvedNodes.get(i);
             if (node.isMatchedBy(pattern)) {
@@ -157,7 +157,7 @@ public class Parser {
         return result;
     }
 
-    private static void analyseClassFile(File file, String source, ArrayList unresolvedNodes, StringPattern reflectionPattern)
+    private static void analyseClassFile(File file, String source, ArrayList<UnresolvedNode> unresolvedNodes, StringPattern reflectionPattern)
             throws IOException {
         if (file.isDirectory()) {
             String[] files = file.list();
@@ -190,9 +190,9 @@ public class Parser {
         return result;
     }
 
-    private static void analyseClassFiles(ZipFile zipFile, String source, ArrayList unresolvedNodes, StringPattern reflectionPattern)
+    private static void analyseClassFiles(ZipFile zipFile, String source, ArrayList<UnresolvedNode> unresolvedNodes, StringPattern reflectionPattern)
             throws IOException {
-        Enumeration entries = zipFile.entries();
+        final Enumeration<? extends ZipEntry> entries = zipFile.entries();
         while (entries.hasMoreElements()) {
             ZipEntry entry = (ZipEntry) entries.nextElement();
             if (!entry.isDirectory() && entry.getName().endsWith(".class")) {
@@ -269,8 +269,8 @@ public class Parser {
      * of a field or method descirptor.
      */
     static void parseUTF8Constant(UTF8Constant constant, UnresolvedNode node, String className) {
-        Set classNames = new ClassNameExtractor(constant).extract();
-        for (Iterator iter = classNames.iterator(); iter.hasNext();) {
+        Set<String> classNames = new ClassNameExtractor(constant).extract();
+        for (Iterator<String> iter = classNames.iterator(); iter.hasNext();) {
             String element = (String) iter.next();
             if (className.equals(element) == false) {
                 node.addLinkTo(element);

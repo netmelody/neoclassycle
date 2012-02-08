@@ -136,7 +136,7 @@ public class Analyser {
      */
     public int getNumberOfExternalClasses() {
         AtomicVertex[] graph = getClassGraph();
-        HashSet usedClasses = new HashSet();
+        HashSet<String> usedClasses = new HashSet<String>();
         int result = 0;
         for (int i = 0; i < graph.length; i++) {
             AtomicVertex vertex = graph[i];
@@ -203,7 +203,7 @@ public class Analyser {
      * @throws IllegalStateException
      *             if this method is called before {@link #createClassGraph()}.
      */
-    public Map getClassLayerMap() {
+    public Map<AtomicVertex, Integer> getClassLayerMap() {
         checkClassGraph("getClassLayerMap()");
         return _classAnalyser.getLayerMap();
     }
@@ -244,7 +244,7 @@ public class Analyser {
     public void printCSV(PrintWriter writer) {
         StrongComponent[] cycles = getCondensedClassGraph();
         AtomicVertex[] graph = getClassGraph();
-        Map map = getClassLayerMap();
+        Map<AtomicVertex, Integer> map = getClassLayerMap();
         writer.println("class name,type,inner class,size,used by," + "uses internal classes,uses external classes,"
                 + "layer index,cycle,source");
         render(graph, cycles, map, new TemplateBasedClassRenderer(CSV_TEMPLATE), writer);
@@ -370,7 +370,7 @@ public class Analyser {
      *             if this method is called before {@link #createPackageGraph()}
      *             .
      */
-    public Map getPackageLayerMap() {
+    public Map<AtomicVertex, Integer> getPackageLayerMap() {
         checkPackageGraph("getPackageLayerMap()");
         return _packageAnalyser.getLayerMap();
     }
@@ -446,7 +446,7 @@ public class Analyser {
             writer.println("  </cycles>");
             writer.println("  <classes numberOfExternalClasses=\"" + getNumberOfExternalClasses() + "\">");
             AtomicVertex[] graph = getClassGraph();
-            Map layerMap = getClassLayerMap();
+            Map<AtomicVertex, Integer> layerMap = getClassLayerMap();
             render(graph, components, layerMap, new XMLClassRenderer(), writer);
             writer.println("  </classes>");
         }
@@ -459,7 +459,7 @@ public class Analyser {
         writer.println("  </packageCycles>");
         writer.println("  <packages>");
         AtomicVertex[] graph = getPackageGraph();
-        Map layerMap = getPackageLayerMap();
+        Map<AtomicVertex, Integer> layerMap = getPackageLayerMap();
         render(graph, components, layerMap, new XMLPackageRenderer(), writer);
         writer.println("  </packages>");
 
@@ -467,8 +467,8 @@ public class Analyser {
         writer.close();
     }
 
-    private void render(AtomicVertex[] graph, StrongComponent[] cycles, Map layerMap, AtomicVertexRenderer renderer, PrintWriter writer) {
-        List list = getTrueCycles(cycles);
+    private void render(AtomicVertex[] graph, StrongComponent[] cycles, Map<AtomicVertex, Integer> layerMap, AtomicVertexRenderer renderer, PrintWriter writer) {
+        List<StrongComponent> list = getTrueCycles(cycles);
         for (int i = 0; i < graph.length; i++) {
             AtomicVertex vertex = graph[i];
             Integer layerIndex = (Integer) layerMap.get(vertex);
@@ -476,8 +476,8 @@ public class Analyser {
         }
     }
 
-    private List getTrueCycles(StrongComponent[] cycles) {
-        List list = new ArrayList();
+    private List<StrongComponent> getTrueCycles(StrongComponent[] cycles) {
+        List<StrongComponent> list = new ArrayList<StrongComponent>();
         if (cycles != null) {
             for (int i = 0; i < cycles.length; i++) {
                 if (cycles[i].getNumberOfVertices() > 1) {
@@ -488,7 +488,7 @@ public class Analyser {
         return list;
     }
 
-    private StrongComponent getCycleFor(AtomicVertex vertex, List cycles) {
+    private StrongComponent getCycleFor(AtomicVertex vertex, List<StrongComponent> cycles) {
         for (int i = 0, n = cycles.size(); i < n; i++) {
             StrongComponent cycle = (StrongComponent) cycles.get(i);
             for (int j = 0, m = cycle.getNumberOfVertices(); j < m; j++) {

@@ -31,7 +31,7 @@ import java.util.List;
  * @author Franz-Josef Elmer
  */
 public class PackageAttributes extends NameAndSourceAttributes {
-    private final List _classes = new ArrayList();
+    private final List<String> _classes = new ArrayList<String>();
 
     public PackageAttributes(String name) {
         super(name);
