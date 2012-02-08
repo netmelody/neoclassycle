@@ -78,6 +78,26 @@ public abstract class ClassycleTaskTestCase {
   }
 
   protected void configureProject(String resourceName) {
+    final File file = copyResource(resourceName);
+    
+    folder.newFolder("example/p").mkdirs();
+    copyResource("example/A.class");
+    copyResource("example/AA.class");
+    copyResource("example/B.class");
+    copyResource("example/B$M.class");
+    copyResource("example/BofA.class");
+    copyResource("example/p/A.class");
+    
+    try {
+        System.setProperty("classes.dir", folder.getRoot().getAbsolutePath());
+        antTestcase.configureProject(file.getAbsolutePath());
+    }
+    catch (Exception e) {
+        throw new IllegalStateException(e);
+    }
+  }
+
+  public File copyResource(String resourceName) {
     final File file = new File(folder.getRoot(), resourceName);
     final InputStream in = ClassycleTaskTestCase.class.getResourceAsStream("/" + resourceName);
     try {
@@ -90,13 +110,11 @@ public abstract class ClassycleTaskTestCase {
         }
         out.close();
         in.close();
-        
-        System.setProperty("classes.dir", ClassycleTaskTestCase.class.getResource("/").toURI().toURL().getFile());
-        antTestcase.configureProject(file.getAbsolutePath());
     }
     catch (Exception e) {
         throw new IllegalStateException(e);
     }
+    return file;
   }
   
   protected void executeTarget(String targetName) {
