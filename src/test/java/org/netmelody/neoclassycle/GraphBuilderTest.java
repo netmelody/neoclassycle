@@ -81,7 +81,7 @@ public class GraphBuilderTest extends TestCase
   
   private UnresolvedNode[] createNodes(String description)
   {
-    List nodes = new ArrayList();
+    List<UnresolvedNode> nodes = new ArrayList<UnresolvedNode>();
     StringTokenizer tokenizer = new StringTokenizer(description, ";");
     while (tokenizer.hasMoreTokens())
     {

@@ -6,6 +6,7 @@ package org.netmelody.neoclassycle.dependency;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 
 import junit.framework.TestCase;
 import org.netmelody.neoclassycle.util.StringPattern;
@@ -16,7 +17,7 @@ import org.netmelody.neoclassycle.util.StringPattern;
 public class DependencyDefinitionParserTest extends TestCase
 {
   
-  private Hashtable _defaultProps;
+  private Hashtable<String, String> _defaultProps;
 
   public void testShowStatements() 
   {
@@ -228,7 +229,7 @@ public class DependencyDefinitionParserTest extends TestCase
 
   private DependencyDefinitionParser createParser(String definition)
   {
-    _defaultProps = new Hashtable();
+    _defaultProps = new Hashtable<String, String>();
     _defaultProps.put("package", "java");
     _defaultProps.put("awt", "java.awt.*");
     DependencyProperties properties = new DependencyProperties(_defaultProps);
@@ -295,10 +296,10 @@ public class DependencyDefinitionParserTest extends TestCase
   
   private static class MockPreferenceFactory implements PreferenceFactory
   {
-    private final HashMap _keyToPreferenceMap = new HashMap();
+    private final HashMap<String, Preference> _keyToPreferenceMap = new HashMap<String, Preference>();
     public Preference get(String key)
     {
-      Preference preference = (Preference) _keyToPreferenceMap.get(key);
+      Preference preference = _keyToPreferenceMap.get(key);
       if (preference == null)
       {
         preference = new MockPreference(key);
@@ -310,7 +311,7 @@ public class DependencyDefinitionParserTest extends TestCase
   
   private static class MockResultRenderer extends ResultRenderer
   {
-    ArrayList list = new ArrayList();
+    List<Preference> list = new ArrayList<Preference>();
     private PreferenceFactory _factory = new MockPreferenceFactory();
     public void considerPreference(Preference preference)
     {
@@ -332,10 +333,8 @@ public class DependencyDefinitionParserTest extends TestCase
   
   private static class MockResult implements Result
   {
-    String value;
     public MockResult(String value)
     {
-      this.value = value;
     }
     public boolean isOk()
     {

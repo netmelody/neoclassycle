@@ -104,7 +104,7 @@ public final class ParserTest {
     AtomicVertex vertex = createVertex(javaCode, reflectionPattern, 
                                        mergeInnerClasses);
     assertEquals(folder.getRoot().getAbsolutePath(), ((ClassAttributes) vertex.getAttributes()).getSources());
-    HashSet classSet = new HashSet();
+    HashSet<String> classSet = new HashSet<String>();
     for (int i = 0; i < expectedClasses.length; i++) {
       classSet.add(expectedClasses[i]);
     }

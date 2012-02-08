@@ -17,7 +17,7 @@ public class PathsFinderTest extends TestCase
 {
   private static class MockVertexCondition implements VertexCondition
   {
-    private final HashSet _vertices = new HashSet();
+    private final HashSet<Vertex> _vertices = new HashSet<Vertex>();
     
     public MockVertexCondition(Vertex[] vertices)
     {
@@ -33,8 +33,8 @@ public class PathsFinderTest extends TestCase
     }
   }
   
-  private static final HashMap REPOSITORY = new HashMap();
-  private static final HashSet GRAPH = new HashSet();
+  private static final HashMap<String, MockVertex> REPOSITORY = new HashMap<String, MockVertex>();
+  private static final HashSet<Vertex> GRAPH = new HashSet<Vertex>();
   
   private static MockVertex getVertex(String name)
   {
@@ -202,7 +202,7 @@ public class PathsFinderTest extends TestCase
     }
     Vertex[] paths = pathsFinder.findPaths(getAllVertices());
 
-    HashSet pathNodes = new HashSet(Arrays.asList(paths));
+    HashSet<Vertex> pathNodes = new HashSet<Vertex>(Arrays.asList(paths));
     if (expectedPaths.length == pathNodes.size() 
         && expectedPaths.length == paths.length)
     {

@@ -65,7 +65,7 @@ class ClassNameExtractor
   
   private int _index;
   private int _endIndex;
-  private Set _classNames = new LinkedHashSet();
+  private Set<String> _classNames = new LinkedHashSet<String>();
   private boolean _valid = true;
   
   ClassNameExtractor(UTF8Constant constant)
@@ -74,7 +74,7 @@ class ClassNameExtractor
     _endIndex = _constant.length();
   }
   
-  Set extract()
+  Set<String> extract()
   {
     if (getCurrentCharacter() == '<')
     {
@@ -118,7 +118,7 @@ class ClassNameExtractor
         setInvalid();
       }
     }
-    return _valid ? _classNames : Collections.EMPTY_SET;
+    return _valid ? _classNames : Collections.<String>emptySet();
   }
   
   private int parseTypes(boolean generics)

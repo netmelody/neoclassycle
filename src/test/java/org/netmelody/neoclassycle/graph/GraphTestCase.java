@@ -30,7 +30,7 @@ public abstract class GraphTestCase extends TestCase {
 
   protected StrongComponent[] check(String[] expectedStrongComponents, 
                                     int[][] nodeLinks) {
-    HashSet expectedFingerPrints = new HashSet();
+    HashSet<String> expectedFingerPrints = new HashSet<String>();
     for (int i = 0; i < expectedStrongComponents.length; i++) {
       expectedFingerPrints.add(expectedStrongComponents[i]);
     }

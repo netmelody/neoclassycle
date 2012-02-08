@@ -3,6 +3,7 @@ package org.netmelody.neoclassycle;
 import java.util.Set;
 
 import junit.framework.TestCase;
+
 import org.netmelody.neoclassycle.classfile.UTF8Constant;
 
 public class ClassNameExtractorTest extends TestCase
@@ -61,7 +62,7 @@ public class ClassNameExtractorTest extends TestCase
 
   private void parseAndCheck(String expectedList, String constant)
   {
-    Set names = new ClassNameExtractor(new UTF8Constant(null, constant)).extract();
+    Set<String> names = new ClassNameExtractor(new UTF8Constant(null, constant)).extract();
     assertEquals(expectedList, names.toString());
   }
 
