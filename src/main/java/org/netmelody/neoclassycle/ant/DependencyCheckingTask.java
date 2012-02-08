@@ -1,4 +1,8 @@
 /*
+ * Copyright (c) 2012 Tom Denley
+ * This file incorporates work covered by the following copyright and
+ * permission notice:
+ *
  * Copyright (c) 2003-2011, Franz-Josef Elmer, All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
