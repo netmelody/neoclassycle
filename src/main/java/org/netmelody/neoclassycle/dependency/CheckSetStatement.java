@@ -31,7 +31,7 @@ import org.netmelody.neoclassycle.graph.AtomicVertex;
 import org.netmelody.neoclassycle.graph.NameAttributes;
 import org.netmelody.neoclassycle.util.StringPattern;
 
-public class CheckSetStatement implements Statement {
+public final class CheckSetStatement implements Statement {
     private final StringPattern _set;
     private final SetDefinitionRepository _repository;
 

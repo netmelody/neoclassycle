@@ -53,7 +53,7 @@ import java.util.StringTokenizer;
  *
  * @author Franz-Josef Elmer
  */
-public class WildCardPattern implements StringPattern {
+public final class WildCardPattern implements StringPattern {
     private static final String WILD_CARD = "*";
 
     /**

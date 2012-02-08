@@ -7,7 +7,7 @@ import org.netmelody.neoclassycle.classfile.UTF8Constant;
 
 import static org.junit.Assert.assertEquals;
 
-public class ClassNameExtractorTest {
+public final class ClassNameExtractorTest {
     @Test
     public void testIsValid() {
         assertEquals(true, ClassNameExtractor.isValid("java.lang.String"));

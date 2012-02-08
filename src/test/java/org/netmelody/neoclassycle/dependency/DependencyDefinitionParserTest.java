@@ -18,7 +18,7 @@ import static org.junit.Assert.fail;
 /**
  * @author Franz-Josef Elmer
  */
-public class DependencyDefinitionParserTest {
+public final class DependencyDefinitionParserTest {
 
     private Hashtable<Object, Object> _defaultProps;
 

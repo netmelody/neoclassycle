@@ -32,7 +32,7 @@ import org.netmelody.neoclassycle.util.StringPattern;
  *
  * @author Franz-Josef Elmer
  */
-public class DependencyResult implements Result {
+public final class DependencyResult implements Result {
     static final String OK = "\tOK";
     static final String DEPENDENCIES_FOUND = "\n  Unexpected dependencies found:";
     private final StringPattern _startSet;

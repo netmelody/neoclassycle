@@ -1,5 +1,5 @@
 package example;
 
-public class A {
+public final class A {
     String s = "hello";
 }

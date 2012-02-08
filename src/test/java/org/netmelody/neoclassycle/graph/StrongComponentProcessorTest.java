@@ -9,7 +9,7 @@ import static org.junit.Assert.assertEquals;
  *
  * @author Franz-Josef Elmer
  */
-public class StrongComponentProcessorTest extends GraphTestCase {
+public final class StrongComponentProcessorTest extends GraphTestCase {
 
     @Test
     public void testZeroVertexGraph() {

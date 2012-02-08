@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Franz-Josef Elmer
  */
-public class AnalyserCommandLineTest {
+public final class AnalyserCommandLineTest {
     @Test
     public void testNoOptionsNoClasses() {
         final AnalyserCommandLine commandLine = new AnalyserCommandLine(new String[0]);

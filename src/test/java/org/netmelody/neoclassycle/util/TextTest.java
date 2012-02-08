@@ -10,7 +10,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Franz-Josef Elmer
  */
-public class TextTest {
+public final class TextTest {
 
     @Test
     public void testExcapeForXML() {

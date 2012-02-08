@@ -32,7 +32,7 @@ import java.util.HashSet;
  *
  * @author Franz-Josef Elmer
  */
-public class PathsFinder {
+public final class PathsFinder {
     private final VertexCondition _startSetCondition;
     private final VertexCondition _finalSetCondition;
     private final boolean _shortestPathsOnly;

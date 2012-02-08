@@ -34,7 +34,7 @@ import java.util.Vector;
  *
  * @author Franz-Josef Elmer
  */
-public class StrongComponent extends Vertex {
+public final class StrongComponent extends Vertex {
     private static class GeometryAttributes implements GraphAttributes {
         private int _girth;
         private int _radius;

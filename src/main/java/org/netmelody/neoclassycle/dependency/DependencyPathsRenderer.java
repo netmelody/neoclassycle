@@ -35,7 +35,7 @@ import org.netmelody.neoclassycle.util.StringPattern;
 /**
  * @author Franz-Josef Elmer
  */
-public class DependencyPathsRenderer {
+public final class DependencyPathsRenderer {
     private static final String INDENT = "  ";
     private final Vertex[] _graph;
     private final VertexCondition _startSetCondition;

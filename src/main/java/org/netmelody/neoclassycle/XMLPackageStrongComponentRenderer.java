@@ -29,7 +29,7 @@ import org.netmelody.neoclassycle.renderer.XMLStrongComponentRenderer;
 /**
  * @author Franz-Josef Elmer
  */
-public class XMLPackageStrongComponentRenderer extends XMLStrongComponentRenderer {
+public final class XMLPackageStrongComponentRenderer extends XMLStrongComponentRenderer {
     public XMLPackageStrongComponentRenderer(final int minimumSize) {
         super(minimumSize, "packageCycle", "packages", "packageRef", "centerPackages");
     }

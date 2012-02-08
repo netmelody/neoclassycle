@@ -32,7 +32,7 @@ import java.util.List;
  *
  * @author Franz-Josef Elmer
  */
-public class ResultContainer implements Result {
+public final class ResultContainer implements Result {
     private final List<Result> _list = new ArrayList<Result>();
 
     /**

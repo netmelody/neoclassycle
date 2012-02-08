@@ -31,7 +31,7 @@ import org.netmelody.neoclassycle.graph.AtomicVertex;
 /**
  * @author Franz-Josef Elmer
  */
-public class ShowStatement implements Statement {
+public final class ShowStatement implements Statement {
     private final ResultRenderer _renderer;
     private final Preference[] _preferences;
 

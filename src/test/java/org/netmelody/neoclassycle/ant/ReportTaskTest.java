@@ -16,7 +16,7 @@ import static org.junit.Assert.fail;
 /**
  * @author Franz-Josef Elmer
  */
-public class ReportTaskTest extends ClassycleTaskTestCase {
+public final class ReportTaskTest extends ClassycleTaskTestCase {
 
     @Before
     public void setUp() throws Exception {

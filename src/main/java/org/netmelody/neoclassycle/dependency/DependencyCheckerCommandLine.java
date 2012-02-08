@@ -33,7 +33,7 @@ import org.netmelody.neoclassycle.util.Text;
 /**
  * @author Franz-Josef Elmer
  */
-public class DependencyCheckerCommandLine extends CommandLine {
+public final class DependencyCheckerCommandLine extends CommandLine {
     private static final String DEPENDENCIES = "-dependencies=", RENDERER = "-renderer=";
 
     private String _dependencyDefinition;

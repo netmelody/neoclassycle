@@ -10,7 +10,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Franz-Josef Elmer
  */
-public class WildCardPatternTest {
+public final class WildCardPatternTest {
 
     @Test
     public void testOnNull() {

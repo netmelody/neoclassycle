@@ -40,7 +40,7 @@ import org.netmelody.neoclassycle.renderer.AbstractStrongComponentRenderer;
  *
  * @author Franz-Josef Elmer
  */
-public class CyclesResult implements Result {
+public final class CyclesResult implements Result {
     private final List<StrongComponent> _cycles = new ArrayList<StrongComponent>();
     private final String _statement;
     private final boolean _packageCycle;

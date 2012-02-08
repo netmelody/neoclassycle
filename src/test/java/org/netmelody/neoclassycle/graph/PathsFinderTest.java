@@ -18,7 +18,7 @@ import static org.junit.Assert.fail;
 /**
  * @author Franz-Josef Elmer
  */
-public class PathsFinderTest {
+public final class PathsFinderTest {
     private static class MockVertexCondition implements VertexCondition {
         private final HashSet<Vertex> _vertices = new HashSet<Vertex>();
 

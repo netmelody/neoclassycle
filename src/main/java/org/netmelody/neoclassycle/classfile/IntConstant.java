@@ -29,7 +29,7 @@ package org.netmelody.neoclassycle.classfile;
  *
  * @author Franz-Josef Elmer
  */
-public class IntConstant extends Constant {
+public final class IntConstant extends Constant {
     private final int _value;
 
     /** Creates an instance for the specified int value. */

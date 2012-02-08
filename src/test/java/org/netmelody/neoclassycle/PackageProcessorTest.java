@@ -8,7 +8,7 @@ import org.netmelody.neoclassycle.graph.Vertex;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
-public class PackageProcessorTest {
+public final class PackageProcessorTest {
     private AtomicVertex _a;
     private AtomicVertex _b;
     private AtomicVertex _c;

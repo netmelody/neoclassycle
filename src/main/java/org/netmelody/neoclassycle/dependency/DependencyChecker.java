@@ -36,7 +36,7 @@ import org.netmelody.neoclassycle.graph.AtomicVertex;
  *
  * @author Franz-Josef Elmer
  */
-public class DependencyChecker {
+public final class DependencyChecker {
     private final Analyser _analyser;
     private final ResultRenderer _renderer;
     private final DependencyProcessor _processor;

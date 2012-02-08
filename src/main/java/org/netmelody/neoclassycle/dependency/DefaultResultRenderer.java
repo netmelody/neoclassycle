@@ -27,7 +27,7 @@ package org.netmelody.neoclassycle.dependency;
 /**
  * @author Franz-Josef Elmer
  */
-public class DefaultResultRenderer extends ResultRenderer {
+public final class DefaultResultRenderer extends ResultRenderer {
     private static final String SHOW = DependencyDefinitionParser.SHOW_KEY_WORD + ' ';
     private static final PreferenceFactory FACTORY = new DefaultPreferenceFactory();
 

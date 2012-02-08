@@ -33,7 +33,7 @@ import org.netmelody.neoclassycle.graph.StrongComponent;
  *
  * @author Franz-Josef Elmer
  */
-public class PlainClassRenderer implements AtomicVertexRenderer {
+public final class PlainClassRenderer implements AtomicVertexRenderer {
     /**
      * Renderes the specified vertex. It is assumed that the vertex attributes
      * are of the type {@link org.netmelody.neoclassycle.ClassAttributes}.

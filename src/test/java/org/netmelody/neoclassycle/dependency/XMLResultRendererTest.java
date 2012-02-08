@@ -25,7 +25,7 @@ import org.netmelody.neoclassycle.util.WildCardPattern;
 
 import static org.junit.Assert.assertEquals;
 
-public class XMLResultRendererTest {
+public final class XMLResultRendererTest {
     @Test
     public void testCyclesResultOk() {
         final CyclesResult result = new CyclesResult("test statement", false);

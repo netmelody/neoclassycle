@@ -32,7 +32,7 @@ import static org.netmelody.neoclassycle.dependency.DependencyDefinitionParser.D
 /**
  * @author Franz-Josef Elmer
  */
-public class LayeringStatement implements Statement {
+public final class LayeringStatement implements Statement {
     private final StringPattern[][] _layers;
     private final boolean _strictLayering;
     private final SetDefinitionRepository _repository;

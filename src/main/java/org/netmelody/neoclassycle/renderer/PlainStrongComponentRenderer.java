@@ -31,7 +31,7 @@ import org.netmelody.neoclassycle.graph.StrongComponent;
  *
  * @author Franz-Josef Elmer
  */
-public class PlainStrongComponentRenderer extends AbstractStrongComponentRenderer {
+public final class PlainStrongComponentRenderer extends AbstractStrongComponentRenderer {
     @Override
     public String render(final StrongComponent component) {
         final AtomicVertexRenderer classRenderer = new PlainClassRenderer();

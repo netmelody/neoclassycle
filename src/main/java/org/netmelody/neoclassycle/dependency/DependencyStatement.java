@@ -39,7 +39,7 @@ import static org.netmelody.neoclassycle.dependency.DependencyDefinitionParser.D
 /**
  * @author Franz-Josef Elmer
  */
-public class DependencyStatement implements Statement {
+public final class DependencyStatement implements Statement {
     private static final class VertexUnionCondition implements VertexCondition {
         private final VertexCondition[] _conditions;
 

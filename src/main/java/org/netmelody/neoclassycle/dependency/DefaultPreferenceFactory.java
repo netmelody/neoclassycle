@@ -56,7 +56,7 @@ import java.util.HashMap;
  *
  * @author Franz-Josef Elmer
  */
-public class DefaultPreferenceFactory implements PreferenceFactory {
+public final class DefaultPreferenceFactory implements PreferenceFactory {
     public static final Preference ONLY_SHORTEST_PATHS = new DefaultPreference("onlyShortestPaths");
     public static final Preference ALL_PATHS = new DefaultPreference("allPaths");
     public static final Preference ALL_RESULTS = new DefaultPreference("allResults");

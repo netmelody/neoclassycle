@@ -29,7 +29,7 @@ package org.netmelody.neoclassycle.classfile;
  *
  * @author Franz-Josef Elmer
  */
-public class LongConstant extends Constant {
+public final class LongConstant extends Constant {
     private final long _value;
 
     /** Creates an instance for the specified long value. */

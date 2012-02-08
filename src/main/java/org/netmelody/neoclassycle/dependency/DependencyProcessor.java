@@ -32,7 +32,7 @@ import org.netmelody.neoclassycle.graph.AtomicVertex;
  *
  * @author Franz-Josef Elmer
  */
-public class DependencyProcessor {
+public final class DependencyProcessor {
     private final Statement[] _statements;
     private int _index;
 

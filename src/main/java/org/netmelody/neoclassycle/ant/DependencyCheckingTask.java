@@ -106,7 +106,7 @@ import org.netmelody.neoclassycle.util.Text;
  *
  * @author Franz-Josef Elmer
  */
-public class DependencyCheckingTask extends ClassycleTask {
+public final class DependencyCheckingTask extends ClassycleTask {
     private File _definitionFile;
     private String _dependencyDefinition;
     private String _resultRenderer;

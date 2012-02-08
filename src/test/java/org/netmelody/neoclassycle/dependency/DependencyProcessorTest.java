@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Franz-Josef Elmer
  */
-public class DependencyProcessorTest {
+public final class DependencyProcessorTest {
     private static final String DIDOF = ' ' + DependencyDefinitionParser.DIRECTLY_INDEPENDENT_OF_KEY_WORD + ' ';
     private static final String CHECK = DependencyDefinitionParser.CHECK_KEY_WORD + ' ';
     private static final String OK = DependencyResult.OK + '\n';

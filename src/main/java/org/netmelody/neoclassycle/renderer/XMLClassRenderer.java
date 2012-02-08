@@ -32,7 +32,7 @@ import org.netmelody.neoclassycle.graph.AtomicVertex;
  *
  * @author Franz-Josef Elmer
  */
-public class XMLClassRenderer extends XMLAtomicVertexRenderer {
+public final class XMLClassRenderer extends XMLAtomicVertexRenderer {
     @Override
     protected String getElement() {
         return "class";

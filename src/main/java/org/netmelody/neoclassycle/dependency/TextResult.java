@@ -29,7 +29,7 @@ package org.netmelody.neoclassycle.dependency;
  *
  * @author Franz-Josef Elmer
  */
-public class TextResult implements Result {
+public final class TextResult implements Result {
     private final String _text;
     private final boolean _ok;
 

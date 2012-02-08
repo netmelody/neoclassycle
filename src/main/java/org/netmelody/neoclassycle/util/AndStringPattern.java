@@ -29,7 +29,7 @@ package org.netmelody.neoclassycle.util;
  *
  * @author Franz-Josef Elmer
  */
-public class AndStringPattern extends StringPatternSequence {
+public final class AndStringPattern extends StringPatternSequence {
     /**
      * Creates instance with specified patterns.
      */

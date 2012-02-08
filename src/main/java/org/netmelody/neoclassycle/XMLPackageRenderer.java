@@ -35,7 +35,7 @@ import org.netmelody.neoclassycle.renderer.XMLAtomicVertexRenderer;
  *
  * @author Franz-Josef Elmer
  */
-public class XMLPackageRenderer extends XMLAtomicVertexRenderer {
+public final class XMLPackageRenderer extends XMLAtomicVertexRenderer {
     @Override
     protected String getElement() {
         return "package";

@@ -7,7 +7,7 @@ import org.junit.Test;
  *
  * @author Franz-Josef Elmer
  */
-public class LongestWalkProcessorTest extends GraphTestCase {
+public final class LongestWalkProcessorTest extends GraphTestCase {
 
     @Override
     protected void process(final StrongComponentProcessor processor, final AtomicVertex[] graph) {

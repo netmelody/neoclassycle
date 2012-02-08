@@ -38,7 +38,7 @@ import org.netmelody.neoclassycle.graph.StrongComponentAnalyser;
 import org.netmelody.neoclassycle.graph.Vertex;
 import org.netmelody.neoclassycle.util.StringPattern;
 
-public class CheckCyclesStatement implements Statement {
+public final class CheckCyclesStatement implements Statement {
     private final StringPattern _set;
     private final int _maximumSize;
     private final boolean _packageCycles;

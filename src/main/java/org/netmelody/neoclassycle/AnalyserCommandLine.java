@@ -30,7 +30,7 @@ package org.netmelody.neoclassycle;
  *
  * @author Franz-Josef Elmer
  */
-public class AnalyserCommandLine extends CommandLine {
+public final class AnalyserCommandLine extends CommandLine {
     private static final String XML_FILE = "-xmlFile=";
     private static final String CSV_FILE = "-csvFile=";
     private static final String TITLE = "-title=";

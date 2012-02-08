@@ -33,7 +33,7 @@ import org.netmelody.neoclassycle.util.StringPattern;
 /**
  * @author Franz-Josef Elmer
  */
-public class PatternVertexCondition implements VertexCondition {
+public final class PatternVertexCondition implements VertexCondition {
     private final StringPattern _pattern;
 
     public PatternVertexCondition(final StringPattern pattern) {

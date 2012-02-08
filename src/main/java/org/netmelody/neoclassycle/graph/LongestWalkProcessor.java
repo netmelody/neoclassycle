@@ -33,7 +33,7 @@ import java.util.Comparator;
  *
  * @author Franz-Josef Elmer
  */
-public class LongestWalkProcessor extends GraphProcessor {
+public final class LongestWalkProcessor extends GraphProcessor {
     /** Does nothing. */
     @Override
     protected void initializeProcessing(final Vertex[] graph) {

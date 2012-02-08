@@ -29,7 +29,7 @@ package org.netmelody.neoclassycle.classfile;
  *
  * @author Franz-Josef Elmer
  */
-public class NameAndTypeConstant extends Constant {
+public final class NameAndTypeConstant extends Constant {
     private final int _nameIndex;
     private final int _descriptorIndex;
 

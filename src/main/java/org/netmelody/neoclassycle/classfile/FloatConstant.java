@@ -29,7 +29,7 @@ package org.netmelody.neoclassycle.classfile;
  *
  * @author Franz-Josef Elmer
  */
-public class FloatConstant extends Constant {
+public final class FloatConstant extends Constant {
     private final float _value;
 
     /** Creates an instance for the specified float value. */

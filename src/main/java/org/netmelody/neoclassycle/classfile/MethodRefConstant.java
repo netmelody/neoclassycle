@@ -29,7 +29,7 @@ package org.netmelody.neoclassycle.classfile;
  *
  * @author Franz-Josef Elmer
  */
-public class MethodRefConstant extends RefConstant {
+public final class MethodRefConstant extends RefConstant {
     public MethodRefConstant(final Constant[] pool, final int classIndex, final int nameAndTypeIndex) {
         super(pool, classIndex, nameAndTypeIndex);
     }

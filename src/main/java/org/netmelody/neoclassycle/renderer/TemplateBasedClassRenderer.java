@@ -84,7 +84,7 @@ import org.netmelody.neoclassycle.graph.StrongComponent;
  *
  * @author Franz-Josef Elmer
  */
-public class TemplateBasedClassRenderer implements AtomicVertexRenderer {
+public final class TemplateBasedClassRenderer implements AtomicVertexRenderer {
     private final MessageFormat _format;
 
     /** Creates an instance for the specified template. */

@@ -29,7 +29,7 @@ package org.netmelody.neoclassycle.classfile;
  *
  * @author Franz-Josef Elmer
  */
-public class DoubleConstant extends Constant {
+public final class DoubleConstant extends Constant {
     private final double _value;
 
     /** Creates an instance for the specified double value. */

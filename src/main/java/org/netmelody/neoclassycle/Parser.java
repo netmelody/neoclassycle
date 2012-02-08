@@ -52,7 +52,7 @@ import org.netmelody.neoclassycle.util.TrueStringPattern;
  *
  * @author Franz-Josef Elmer
  */
-public class Parser {
+public final class Parser {
     private static final int ACC_INTERFACE = 0x200, ACC_ABSTRACT = 0x400;
     private static final String[] ZIP_FILE_TYPES = new String[] { ".zip", ".jar", ".war", ".ear" };
 

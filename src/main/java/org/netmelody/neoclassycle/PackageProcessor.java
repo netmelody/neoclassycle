@@ -39,13 +39,13 @@ import org.netmelody.neoclassycle.graph.Vertex;
  *
  * @author Franz-Josef Elmer
  */
-public class PackageProcessor extends GraphProcessor {
+public final class PackageProcessor extends GraphProcessor {
     private static final class Arc {
         final AtomicVertex tail;
         final AtomicVertex head;
         final boolean internalHeadClass;
 
-        Arc(final AtomicVertex tail, final AtomicVertex head, final boolean internalHeadClass) {
+        private Arc(final AtomicVertex tail, final AtomicVertex head, final boolean internalHeadClass) {
             this.tail = tail;
             this.head = head;
             this.internalHeadClass = internalHeadClass;

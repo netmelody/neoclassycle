@@ -34,7 +34,7 @@ import java.io.IOException;
  *
  * @author Franz-Josef Elmer
  */
-public class ConstantPoolPrinter {
+public final class ConstantPoolPrinter {
     /**
      * Reads a class file and prints the constant pool onto <tt>System.out</tt>.
      *

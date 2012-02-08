@@ -29,7 +29,7 @@ package org.netmelody.neoclassycle.classfile;
  *
  * @author Franz-Josef Elmer
  */
-public class StringConstant extends Constant {
+public final class StringConstant extends Constant {
     private final int _stringIndex;
 
     /**

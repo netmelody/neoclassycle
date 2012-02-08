@@ -29,7 +29,7 @@ package org.netmelody.neoclassycle.util;
  *
  * @author Franz-Josef Elmer
  */
-public class TrueStringPattern implements StringPattern {
+public final class TrueStringPattern implements StringPattern {
     /** Returns <code>true</code> independent of the argument. */
     @Override
     public boolean matches(final String string) {

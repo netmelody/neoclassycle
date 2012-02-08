@@ -34,7 +34,7 @@ import java.io.IOException;
  *
  * @author Franz-Josef Elmer
  */
-public class Text {
+public final class Text {
     private static final String ESCAPE_CHARACTERS = "<>&\"'";
     private static final String[] ESCAPE_SEQUENCES = new String[] { "&lt;", "&gt;", "&amp;", "&quot;", "&apos;" };
 

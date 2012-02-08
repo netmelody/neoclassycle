@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * @author Franz-Josef Elmer
  */
-public class PackageAttributes extends NameAndSourceAttributes {
+public final class PackageAttributes extends NameAndSourceAttributes {
     private final List<String> _classes = new ArrayList<String>();
 
     public PackageAttributes(final String name) {

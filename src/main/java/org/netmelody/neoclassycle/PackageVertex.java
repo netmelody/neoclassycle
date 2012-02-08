@@ -29,7 +29,7 @@ import org.netmelody.neoclassycle.graph.AtomicVertex;
 /**
  * @author Franz-Josef Elmer
  */
-public class PackageVertex extends AtomicVertex {
+public final class PackageVertex extends AtomicVertex {
     public PackageVertex(final String name) {
         super(new PackageAttributes(name));
     }

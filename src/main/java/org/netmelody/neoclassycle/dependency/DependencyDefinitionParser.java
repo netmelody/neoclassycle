@@ -42,7 +42,7 @@ import org.netmelody.neoclassycle.util.WildCardPattern;
  *
  * @author Franz-Josef Elmer
  */
-public class DependencyDefinitionParser {
+public final class DependencyDefinitionParser {
     public static final String INDEPENDENT_OF_KEY_WORD = "independentOf";
     public static final String EXCLUDING_KEY_WORD = "excluding";
     public static final String DIRECTLY_INDEPENDENT_OF_KEY_WORD = "directlyIndependentOf";

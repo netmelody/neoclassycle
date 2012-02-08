@@ -9,7 +9,7 @@ import org.netmelody.neoclassycle.graph.AtomicVertex;
 
 import static org.junit.Assert.assertEquals;
 
-public class GraphBuilderTest {
+public final class GraphBuilderTest {
 
     @Test
     public void testTwoClassesWithSameNameButDifferentSources() {

@@ -29,7 +29,7 @@ package org.netmelody.neoclassycle.classfile;
  *
  * @author Franz-Josef Elmer
  */
-public class UTF8Constant extends Constant {
+public final class UTF8Constant extends Constant {
     private final String _string;
 
     /**

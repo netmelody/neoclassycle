@@ -5,7 +5,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class AtomicVertexTest {
+public final class AtomicVertexTest {
 
     @Test
     public void testGraphVertexProperty() {

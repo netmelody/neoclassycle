@@ -32,7 +32,7 @@ import java.util.Map;
  *
  * @author Franz-Josef Elmer
  */
-public class StrongComponentAnalyser {
+public final class StrongComponentAnalyser {
     private final AtomicVertex[] _graph;
     private StrongComponent[] _components;
     private HashMap<AtomicVertex, Integer> _layerMap;

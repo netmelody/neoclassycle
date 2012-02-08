@@ -30,7 +30,7 @@ package org.netmelody.neoclassycle.classfile;
  *
  * @author Franz-Josef Elmer
  */
-public class ClassConstant extends Constant {
+public final class ClassConstant extends Constant {
     private final int _nameIndex;
 
     /**

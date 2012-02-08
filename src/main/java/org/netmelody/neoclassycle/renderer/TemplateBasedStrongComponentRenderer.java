@@ -34,7 +34,7 @@ import org.netmelody.neoclassycle.graph.StrongComponent;
  *
  * @author Franz-Josef Elmer
  */
-public class TemplateBasedStrongComponentRenderer extends AbstractStrongComponentRenderer {
+public final class TemplateBasedStrongComponentRenderer extends AbstractStrongComponentRenderer {
     private final MessageFormat _format;
     private final int _minimumNumber;
 

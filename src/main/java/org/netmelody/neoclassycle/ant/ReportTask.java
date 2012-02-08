@@ -100,7 +100,7 @@ import org.netmelody.neoclassycle.Analyser;
  * @author Boris Gruschko
  * @author Franz-Josef Elmer
  */
-public class ReportTask extends ClassycleTask {
+public final class ReportTask extends ClassycleTask {
     public static final String TYPE_RAW = "raw", TYPE_CSV = "csv", TYPE_XML = "xml";
     private static final HashSet<String> TYPES = new HashSet<String>();
 

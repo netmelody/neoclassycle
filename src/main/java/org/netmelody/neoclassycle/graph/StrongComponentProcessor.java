@@ -36,7 +36,7 @@ import java.util.Vector;
  *
  * @author Franz-Josef Elmer
  */
-public class StrongComponentProcessor extends GraphProcessor {
+public final class StrongComponentProcessor extends GraphProcessor {
     private final boolean _calculateAttributes;
     private int _counter;
     private final Stack<Vertex> _vertexStack = new Stack<Vertex>();

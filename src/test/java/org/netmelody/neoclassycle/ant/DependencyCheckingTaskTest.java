@@ -23,7 +23,7 @@ import static org.junit.Assert.fail;
 /**
  * @author Franz-Josef Elmer
  */
-public class DependencyCheckingTaskTest extends ClassycleTaskTestCase {
+public final class DependencyCheckingTaskTest extends ClassycleTaskTestCase {
     @Before
     public void setUp() throws Exception {
         configureProject("dependencyCheckingTaskTestBuild.xml");
