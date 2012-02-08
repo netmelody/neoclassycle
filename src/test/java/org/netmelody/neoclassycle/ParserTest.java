@@ -175,15 +175,15 @@ public final class ParserTest {
         // check that size of merged vertices is the sum of vertices sizes
         AtomicVertex vertex = createVertex(INNER_CLASS_EXAMPLE, new TrueStringPattern(), false);
         final int size1 = ((ClassAttributes) vertex.getAttributes()).getSize();
-        Vertex innerClass = null;
+        int size2 = -1;
         for (int i = 0; i < vertex.getNumberOfOutgoingArcs(); i++) {
-            innerClass = vertex.getHeadVertex(i);
+            Vertex innerClass = vertex.getHeadVertex(i);
             final String name = ((ClassAttributes) innerClass.getAttributes()).getName();
             if (name.startsWith(CLASS_NAME)) {
+                size2 = ((ClassAttributes) innerClass.getAttributes()).getSize();
                 break;
             }
         }
-        final int size2 = ((ClassAttributes) innerClass.getAttributes()).getSize();
         vertex = createVertex(INNER_CLASS_EXAMPLE, new TrueStringPattern(), true);
         final int size = ((ClassAttributes) vertex.getAttributes()).getSize();
         assertEquals(size1 + size2, size);

@@ -100,11 +100,11 @@ public class DependencyProcessorTest {
                 CHECK + "h.*" + DIDOF + "[a]" + DF + "\n  h.A\n    -> a.A\n" });
     }
 
-    private void check(final String description, final String[] expectedResults) {
+    private static void check(final String description, final String[] expectedResults) {
         check(description, expectedResults, expectedResults);
     }
 
-    private void check(final String description, final String[] expectedResults1, final String[] expectedResults2) {
+    private static void check(final String description, final String[] expectedResults1, final String[] expectedResults2) {
         final AtomicVertex[] graph = createGraph();
         final ResultRenderer renderer = new DefaultResultRenderer();
         final DependencyProcessor processor = new DependencyProcessor(description, null, renderer);
@@ -120,7 +120,7 @@ public class DependencyProcessorTest {
         }
     }
 
-    private AtomicVertex[] createGraph() {
+    private static AtomicVertex[] createGraph() {
         return createGraph(new String[] { "a.A", "a.B", "b.A", "c.A", "e.A", "e.B", "f.A", "h.A", "i.A", }, new int[][] { { 1 }, // 0:
                                                                                                                                  // a.A
                 { 0 }, // 1: a.B
@@ -135,7 +135,7 @@ public class DependencyProcessorTest {
 
     }
 
-    private AtomicVertex[] createGraph(final String[] nodes, final int[][] nodeLinks) {
+    private static AtomicVertex[] createGraph(final String[] nodes, final int[][] nodeLinks) {
         final AtomicVertex[] result = new AtomicVertex[nodes.length];
         for (int i = 0; i < result.length; i++) {
             result[i] = new AtomicVertex(new MockAttributes(nodes[i]));

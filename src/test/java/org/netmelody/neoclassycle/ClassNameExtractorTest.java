@@ -45,7 +45,7 @@ public class ClassNameExtractorTest {
                 "<T::Ljava/util/Set<Ljava/lang/Boolean;>;>" + "Ljava/lang/Object;Ljava/util/Collection" + "<Ljava/lang/Short;>;");
     }
 
-    private void parseAndCheck(final String expectedList, final String constant) {
+    private static void parseAndCheck(final String expectedList, final String constant) {
         final Set<String> names = new ClassNameExtractor(new UTF8Constant(null, constant)).extract();
         assertEquals(expectedList, names.toString());
     }

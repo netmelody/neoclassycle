@@ -49,7 +49,7 @@ public abstract class GraphTestCase {
         processor.deepSearchFirst(graph);
     }
 
-    private String createFingerPrint(final StrongComponent component) {
+    private static String createFingerPrint(final StrongComponent component) {
         final int[] vertices = new int[component.getNumberOfVertices()];
         for (int i = 0; i < vertices.length; i++) {
             vertices[i] = Integer.parseInt(((MockAttributes) component.getVertex(i).getAttributes()).toString());

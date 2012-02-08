@@ -93,7 +93,7 @@ public class DependencyDefinitionParserTest {
 
     }
 
-    private void assertContains(final String expectedMessageFragment, final Throwable throwable) {
+    private static void assertContains(final String expectedMessageFragment, final Throwable throwable) {
 
         final String message = throwable.getMessage();
         assertTrue("<" + message + "> does not contain <" + message + ">", message.indexOf(expectedMessageFragment) >= 0);
@@ -249,7 +249,7 @@ public class DependencyDefinitionParserTest {
 
         @Override
         public Result getDescriptionOfCurrentPreferences() {
-            return new MockResult(list.toString());
+            return new MockResult();
         }
 
         @Override
@@ -264,9 +264,6 @@ public class DependencyDefinitionParserTest {
     }
 
     private static class MockResult implements Result {
-        public MockResult(final String value) {
-        }
-
         @Override
         public boolean isOk() {
             return true;

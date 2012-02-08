@@ -38,7 +38,7 @@ public class AnalyserCommandLineTest {
         assertEquals("bla", commandLine.getTitle());
     }
 
-    private void checkNoOptions(final AnalyserCommandLine commandLine) {
+    private static void checkNoOptions(final AnalyserCommandLine commandLine) {
         assertFalse(commandLine.isRaw());
         assertFalse(commandLine.isStrong());
         assertFalse(commandLine.isPackagesOnly());
@@ -99,7 +99,7 @@ public class AnalyserCommandLineTest {
         checkPattern(pattern, false, new String[] { "foola", "bla" });
     }
 
-    private void checkPattern(final StringPattern pattern, final boolean expectedMatchResult, final String[] examples) {
+    private static void checkPattern(final StringPattern pattern, final boolean expectedMatchResult, final String[] examples) {
         for (final String example : examples) {
             assertTrue(example + " match " + expectedMatchResult, pattern.matches(example) == expectedMatchResult);
         }

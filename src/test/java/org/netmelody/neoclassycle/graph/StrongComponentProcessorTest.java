@@ -111,7 +111,7 @@ public class StrongComponentProcessorTest extends GraphTestCase {
         checkAttributes(new int[] { 1, 1, 1, 1, 1, 1, 1, 2, 2, 3 }, new int[] { 0, 0, 1, 2, 0, 0, 1, 3, 2, 3 }, components);
     }
 
-    private void checkAttributes(final int[] expectedMaximumFragmentSizes, final int[] expectedEccentricities, final StrongComponent[] components) {
+    private static void checkAttributes(final int[] expectedMaximumFragmentSizes, final int[] expectedEccentricities, final StrongComponent[] components) {
         for (final StrongComponent component : components) {
             final GraphAttributes attributes = (GraphAttributes) component.getAttributes();
             for (int j = 0, n = component.getNumberOfVertices(); j < n; j++) {

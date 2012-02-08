@@ -79,7 +79,7 @@ public class GraphBuilderTest {
         assertEquals(ClassAttributes.ABSTRACT_CLASS, attributes.getType());
     }
 
-    private UnresolvedNode[] createNodes(final String description) {
+    private static UnresolvedNode[] createNodes(final String description) {
         final List<UnresolvedNode> nodes = new ArrayList<UnresolvedNode>();
         final StringTokenizer tokenizer = new StringTokenizer(description, ";");
         while (tokenizer.hasMoreTokens()) {
@@ -88,7 +88,7 @@ public class GraphBuilderTest {
         return nodes.toArray(new UnresolvedNode[nodes.size()]);
     }
 
-    private UnresolvedNode createNode(final String description) {
+    private static UnresolvedNode createNode(final String description) {
         final UnresolvedNode node = new UnresolvedNode();
         final int indexOfArrow = description.indexOf("->");
 

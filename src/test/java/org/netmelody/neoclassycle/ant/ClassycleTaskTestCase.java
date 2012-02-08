@@ -51,9 +51,11 @@ public abstract class ClassycleTaskTestCase {
 
     protected void checkLine(final Reader reader, final String expectedLine, int lineNumber) throws IOException {
         final BufferedReader br = new BufferedReader(reader);
+
+        int lineNo = lineNumber;
         String line = null;
-        while ((line = br.readLine()) != null && --lineNumber > 0)
-            ;
+        while ((line = br.readLine()) != null && --lineNo > 0) { }
+        
         assertEquals(expectedLine, line);
     }
 

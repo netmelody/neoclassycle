@@ -128,11 +128,11 @@ public class PathsFinderTest {
         check("a d f g", "c e", "a d g c e", "a > b e, b > c, d > c, f > d, g > b e h, h > i, i > e", true, true);
     }
 
-    private void check(final String startVertices, final String endVertices, final String pathVertices, final String graphDescription, final boolean shortestOnly) {
+    private static void check(final String startVertices, final String endVertices, final String pathVertices, final String graphDescription, final boolean shortestOnly) {
         check(startVertices, endVertices, pathVertices, graphDescription, shortestOnly, false);
     }
 
-    private void check(final String startVertices, final String endVertices, final String pathVertices, final String graphDescription, final boolean shortestOnly,
+    private static void check(final String startVertices, final String endVertices, final String pathVertices, final String graphDescription, final boolean shortestOnly,
             final boolean directPathsOnly) {
         REPOSITORY.clear();
         final MockVertexCondition startCondition = new MockVertexCondition(createVertices(startVertices));
@@ -156,7 +156,7 @@ public class PathsFinderTest {
         }
     }
 
-    private MockVertex[] createVertices(final String vertexList) {
+    private static MockVertex[] createVertices(final String vertexList) {
         final StringTokenizer tokenizer = new StringTokenizer(vertexList);
         final MockVertex[] result = new MockVertex[tokenizer.countTokens()];
         for (int i = 0; i < result.length; i++) {
@@ -165,7 +165,7 @@ public class PathsFinderTest {
         return result;
     }
 
-    private void createLinks(final String linkDescription) {
+    private static void createLinks(final String linkDescription) {
         StringTokenizer tokenizer = new StringTokenizer(linkDescription, ">");
         final Vertex startVertex = getVertex(tokenizer.nextToken().trim());
         tokenizer = new StringTokenizer(tokenizer.nextToken().trim());
