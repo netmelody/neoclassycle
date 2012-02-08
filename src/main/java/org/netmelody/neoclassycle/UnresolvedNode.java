@@ -35,7 +35,7 @@ import org.netmelody.neoclassycle.util.StringPattern;
  *
  * @author Franz-Josef Elmer
  */
-class UnresolvedNode implements Comparable<UnresolvedNode> {
+final class UnresolvedNode implements Comparable<UnresolvedNode> {
     private ClassAttributes _attributes;
     private final List<String> _nodes = new ArrayList<String>();
 

@@ -31,7 +31,7 @@ import java.util.Map;
 
 import org.netmelody.neoclassycle.graph.AtomicVertex;
 
-class GraphBuilder {
+final class GraphBuilder {
     /**
      * Creates a graph from the bunch of unresolved nodes.
      *

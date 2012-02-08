@@ -31,7 +31,7 @@ import org.netmelody.neoclassycle.util.StringPattern;
 /**
  * @author Franz-Josef Elmer
  */
-class LayerDefinitionRepository {
+final class LayerDefinitionRepository {
     private final HashMap<String, StringPattern[]> _nameToLayerMap = new HashMap<String, StringPattern[]>();
     private final HashMap<StringPattern[], String> _layerToNameMap = new HashMap<StringPattern[], String>();
 

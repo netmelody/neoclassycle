@@ -33,7 +33,7 @@ import java.util.Set;
 
 import org.netmelody.neoclassycle.classfile.UTF8Constant;
 
-class ClassNameExtractor {
+final class ClassNameExtractor {
     /** Returns <tt>true</tt> if <tt>className</tt> is a valid class name. */
     static boolean isValid(final String className) {
         boolean valid = true;
