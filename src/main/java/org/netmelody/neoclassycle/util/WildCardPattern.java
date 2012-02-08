@@ -121,21 +121,23 @@ public class WildCardPattern implements StringPattern {
     }
 
     private boolean matches(final String string, int indexInString, final int indexInConstantParts) {
+        int pos = indexInString;
         boolean result = true;
         if (indexInConstantParts < _constantParts.length) {
             final String constantPart = _constantParts[indexInConstantParts];
             do {
-                final int index = string.indexOf(constantPart, indexInString);
-                if (index < 0 || (indexInString == 0 && !_startsWithAnything && index > 0)) {
+                final int index = string.indexOf(constantPart, pos);
+                if (index < 0 || (pos == 0 && !_startsWithAnything && index > 0)) {
                     result = false;
                     break;
                 }
-                result = matches(string, index + constantPart.length(), indexInConstantParts + 1);
+                pos = index + constantPart.length();
+                result = matches(string, pos, indexInConstantParts + 1);
             }
             while (result == false);
         }
         else {
-            result = result && (_endsWithAnything || indexInString == string.length());
+            result = result && (_endsWithAnything || pos == string.length());
         }
         return result;
     }
