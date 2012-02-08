@@ -1,5 +1,5 @@
 <project name="ReportTaskTest" default="testRaw" basedir=".">
-  <taskdef name="classycleReport" classname="classycle.ant.ReportTask"/>
+  <taskdef name="classycleReport" classname="org.netmelody.neoclassycle.ant.ReportTask"/>
 
   <target name="testRaw">
     <classycleReport reportType="raw" reportFile="reportTaskTest.txt">

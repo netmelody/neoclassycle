@@ -88,7 +88,7 @@
             <fileset dir="${basedir}" includes="LICENSE.txt README.html"/>
 
             <manifest>
-                <attribute name="Main-Class" value="classycle.Analyser"/>
+                <attribute name="Main-Class" value="org.netmelody.neoclassycle.Analyser"/>
                 <attribute name="Built-By" value="${user.name}"/>
                 <attribute name="Implementation-Vendor" value="netmelody.org"/>
                 <attribute name="Implementation-Title" value="${ant.project.name}"/>
@@ -131,7 +131,7 @@
             <formatter type="plain"/>
             <batchtest fork="yes" todir="${test-report.dir}">
                 <zipfileset src="${build.dir}/${ant.project.name}-tests-${version.label}.jar">
-                    <include name="**/classycle/**/*Test.class"/>
+                    <include name="**/neoclassycle/**/*Test.class"/>
                 </zipfileset>
             </batchtest>
         </junit>
@@ -139,7 +139,7 @@
 
     <target name="apidoc" description="generate API doc">
         <mkdir dir="${build.dir}/api-doc"/>
-        <javadoc packagenames="classycle.*"
+        <javadoc packagenames="org.netmelody.neoclassycle.*"
                  sourcedir="src/main/java"
                  defaultexcludes="yes"
                  private="false"

@@ -1,11 +1,11 @@
 <project name="DependencyCheckingTaskTest" default="testEmbeddedDefinitions"  basedir=".">
   <taskdef name="classycleDependencyCheck" 
-           classname="classycle.ant.DependencyCheckingTask"/>
+           classname="org.netmelody.neoclassycle.ant.DependencyCheckingTask"/>
 
   <property name="package" value="example"/>
 
   <target name="testEmbeddedDefinitions" >
-    <classycleDependencyCheck resultRenderer="classycle.dependency.XMLResultRenderer">
+    <classycleDependencyCheck resultRenderer="org.netmelody.neoclassycle.dependency.XMLResultRenderer">
       <fileset dir="${classes.dir}/example">
         <include name="**/*.class"/>
       </fileset>
@@ -51,7 +51,7 @@
 
   <target name="testCheckCyclesMergedInnerClassesFailureOn">
     <classycleDependencyCheck mergeInnerClasses="true" 
-                  resultRenderer="classycle.dependency.XMLResultRenderer"
+                  resultRenderer="org.netmelody.neoclassycle.dependency.XMLResultRenderer"
     	            reportFile="dependency-checking-result.xml"
   							  failOnUnwantedDependencies="true">
       <fileset dir="${classes.dir}/example">
