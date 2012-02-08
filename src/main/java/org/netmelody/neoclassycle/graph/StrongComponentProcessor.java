@@ -162,12 +162,10 @@ public class StrongComponentProcessor extends GraphProcessor {
      *             if <tt>vertex</tt> is not an instance of {@link AtomicVertex}
      *             .
      */
-    private AtomicVertex castAsAtomicVertex(final Vertex vertex) {
+    private static AtomicVertex castAsAtomicVertex(final Vertex vertex) {
         if (vertex instanceof AtomicVertex) {
             return (AtomicVertex) vertex;
         }
-        else {
-            throw new IllegalArgumentException(vertex + " is not an instance of AtomicVertex");
-        }
+        throw new IllegalArgumentException(vertex + " is not an instance of AtomicVertex");
     }
 } // class

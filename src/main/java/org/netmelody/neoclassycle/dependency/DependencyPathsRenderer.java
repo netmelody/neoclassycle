@@ -114,7 +114,7 @@ public class DependencyPathsRenderer {
         renderer.decreaseIndentation();
     }
 
-    private String getNameOf(final Vertex vertex) {
+    private static String getNameOf(final Vertex vertex) {
         return ((NameAttributes) vertex.getAttributes()).getName();
     }
 }

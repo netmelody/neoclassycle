@@ -153,7 +153,7 @@ public class Vertex implements Comparable<Vertex> {
     @Override
     public int compareTo(final Vertex object) {
         int result = 1;
-        if (object instanceof Vertex && _attributes != null) {
+        if (_attributes != null) {
             result = _attributes.compareTo(object._attributes);
         }
         return result;

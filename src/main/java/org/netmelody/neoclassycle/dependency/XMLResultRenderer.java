@@ -116,8 +116,7 @@ public class XMLResultRenderer extends ResultRenderer {
     }
 
     @Override
-    public void considerPreference(final Preference preference) {
-    }
+    public void considerPreference(final Preference preference) { }
 
     @Override
     public Result getDescriptionOfCurrentPreferences() {
@@ -148,7 +147,7 @@ public class XMLResultRenderer extends ResultRenderer {
         }
     }
 
-    private void addTo(final XMLBuilder builder, final CyclesResult result) {
+    private static void addTo(final XMLBuilder builder, final CyclesResult result) {
         builder.begin("cycles");
         builder.attribute(ATTRIBUTE_STATEMENT, result.getStatement());
         builder.attribute("vertex-type", result.isPackageCycle() ? "package" : "class");
@@ -217,7 +216,7 @@ public class XMLResultRenderer extends ResultRenderer {
         }
     }
 
-    private void addTo(final XMLBuilder builder, final TextResult result) {
+    private static void addTo(final XMLBuilder builder, final TextResult result) {
         if (result.isOk() == false || result.toString().trim().length() > 0) {
             builder.begin(result.isOk() ? "info" : "checking-error");
             builder.text(result.toString());

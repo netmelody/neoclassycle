@@ -73,14 +73,13 @@ public class DependencyCheckerCommandLine extends CommandLine {
     private void handleDependenciesOption(String option) {
         if (option.startsWith("@")) {
             try {
-                option = Text.readTextFile(new File(option.substring(1)));
+                _dependencyDefinition = Text.readTextFile(new File(option.substring(1)));
             }
             catch (final IOException e) {
                 System.err.println("Error in reading dependencies description file: " + e);
-                option = "";
+                _dependencyDefinition = "";
             }
         }
-        _dependencyDefinition = option;
         if (_dependencyDefinition.length() == 0) {
             _valid = false;
         }

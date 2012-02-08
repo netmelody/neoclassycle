@@ -109,8 +109,8 @@ public class Parser {
                 analyseClassFile(file, classFile, unresolvedNodes, reflectionPattern);
                 final File[] files = file.listFiles(new FileFilter() {
                     @Override
-                    public boolean accept(final File file) {
-                        return isZipFile(file);
+                    public boolean accept(final File candidateFile) {
+                        return isZipFile(candidateFile);
                     }
                 });
                 for (final File file2 : files) {
@@ -180,10 +180,12 @@ public class Parser {
             result = Parser.createNode(stream, source, (int) file.length(), reflectionPattern);
         }
         finally {
-            try {
-                stream.close();
-            }
-            catch (final IOException e) {
+            if (stream != null) {
+                try {
+                    stream.close();
+                }
+                catch (final IOException e) {
+                }
             }
         }
         return result;

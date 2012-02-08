@@ -106,7 +106,7 @@ public class PackageProcessor extends GraphProcessor {
         return result;
     }
 
-    private boolean isVertexFromGraph(final Vertex vertex) {
+    private static boolean isVertexFromGraph(final Vertex vertex) {
         return vertex instanceof AtomicVertex && ((AtomicVertex) vertex).isGraphVertex();
     }
 

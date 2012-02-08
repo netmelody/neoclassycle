@@ -61,10 +61,12 @@ public class ConstantPoolPrinter {
             System.out.println(e);
         }
         finally {
-            try {
-                stream.close();
-            }
-            catch (final IOException e) {
+            if (stream != null) {
+                try {
+                    stream.close();
+                }
+                catch (final IOException e) {
+                }
             }
         }
     }

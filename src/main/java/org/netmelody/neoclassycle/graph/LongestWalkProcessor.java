@@ -110,12 +110,10 @@ public class LongestWalkProcessor extends GraphProcessor {
      *             if <tt>vertex</tt> is not an instance of
      *             {@link StrongComponent}.
      */
-    private StrongComponent castAsStrongComponent(final Vertex vertex) {
+    private static StrongComponent castAsStrongComponent(final Vertex vertex) {
         if (vertex instanceof StrongComponent) {
             return (StrongComponent) vertex;
         }
-        else {
-            throw new IllegalArgumentException(vertex + " is not an instance of StrongComponent");
-        }
+        throw new IllegalArgumentException(vertex + " is not an instance of StrongComponent");
     }
 } // class

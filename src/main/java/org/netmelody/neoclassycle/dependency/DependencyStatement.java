@@ -82,7 +82,7 @@ public class DependencyStatement implements Statement {
         _finalCondition = new VertexUnionCondition(_finalConditions);
     }
 
-    private VertexCondition[] createVertexConditions(final StringPattern[] patterns) {
+    private static VertexCondition[] createVertexConditions(final StringPattern[] patterns) {
         final VertexCondition[] fromSets = new VertexCondition[patterns.length];
         for (int i = 0; i < fromSets.length; i++) {
             fromSets[i] = new PatternVertexCondition(patterns[i]);

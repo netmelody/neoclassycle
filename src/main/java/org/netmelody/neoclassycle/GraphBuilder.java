@@ -99,7 +99,7 @@ class GraphBuilder {
         if (mergeInnerClasses) {
             final int index = name.indexOf('$');
             if (index >= 0) {
-                name = name.substring(0, index);
+                return name.substring(0, index);
             }
         }
         return name;

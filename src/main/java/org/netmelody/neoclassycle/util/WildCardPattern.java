@@ -130,8 +130,7 @@ public class WildCardPattern implements StringPattern {
                     result = false;
                     break;
                 }
-                indexInString = index + constantPart.length();
-                result = matches(string, indexInString, indexInConstantParts + 1);
+                result = matches(string, index + constantPart.length(), indexInConstantParts + 1);
             }
             while (result == false);
         }

@@ -202,13 +202,13 @@ public class DependencyDefinitionParser {
         _setDefinitions.put(setName, definition);
     }
 
-    private void checkForEqualCharacter(final String[] tokens, final int lineNumber, final int index) {
+    private static void checkForEqualCharacter(final String[] tokens, final int lineNumber, final int index) {
         if (tokens.length < index + 1 || !tokens[index].equals("=")) {
             throwException("'=' missing.", lineNumber, index);
         }
     }
 
-    private StringPattern createOrSequence(final StringPattern[] patterns) {
+    private static StringPattern createOrSequence(final StringPattern[] patterns) {
         final OrStringPattern result = new OrStringPattern();
         for (final StringPattern pattern : patterns) {
             result.appendPattern(pattern);
@@ -365,7 +365,7 @@ public class DependencyDefinitionParser {
         return result;
     }
 
-    private boolean isAKeyWord(final String token, final String[] keyWords) {
+    private static boolean isAKeyWord(final String token, final String[] keyWords) {
         boolean result = false;
         for (final String keyWord : keyWords) {
             if (keyWord.equals(token)) {
@@ -376,7 +376,7 @@ public class DependencyDefinitionParser {
         return result;
     }
 
-    private void throwException(final String message, final int lineNumber, final int tokenIndex) {
+    private static void throwException(final String message, final int lineNumber, final int tokenIndex) {
         final StringBuffer buffer = new StringBuffer("Error in line ");
         buffer.append(lineNumber);
         if (tokenIndex >= 0) {

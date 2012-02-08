@@ -59,13 +59,13 @@ public class CheckCyclesStatement implements Statement {
                 filteredGraph.add(element);
             }
         }
-        graph = filteredGraph.toArray(new AtomicVertex[0]);
+        AtomicVertex[] graph2 = filteredGraph.toArray(new AtomicVertex[0]);
         if (_packageCycles) {
             final PackageProcessor processor = new PackageProcessor();
-            processor.deepSearchFirst(graph);
-            graph = processor.getGraph();
+            processor.deepSearchFirst(graph2);
+            graph2 = processor.getGraph();
         }
-        final StrongComponentAnalyser analyser = new StrongComponentAnalyser(graph);
+        final StrongComponentAnalyser analyser = new StrongComponentAnalyser(graph2);
         final Vertex[] condensedGraph = analyser.getCondensedGraph();
         final CyclesResult result = new CyclesResult(createStatement(), _packageCycles);
         for (final Vertex element : condensedGraph) {
