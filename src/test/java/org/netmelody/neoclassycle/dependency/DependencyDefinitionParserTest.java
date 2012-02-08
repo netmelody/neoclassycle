@@ -20,7 +20,7 @@ import static org.junit.Assert.fail;
  */
 public class DependencyDefinitionParserTest {
 
-    private Hashtable<String, String> _defaultProps;
+    private Hashtable<Object, Object> _defaultProps;
 
     @Test
     public void testShowStatements() {
@@ -169,7 +169,7 @@ public class DependencyDefinitionParserTest {
     }
 
     private DependencyDefinitionParser createParser(String definition) {
-        _defaultProps = new Hashtable<String, String>();
+        _defaultProps = new Hashtable<Object, Object>();
         _defaultProps.put("package", "java");
         _defaultProps.put("awt", "java.awt.*");
         DependencyProperties properties = new DependencyProperties(_defaultProps);
