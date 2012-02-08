@@ -464,7 +464,7 @@ public class Analyser {
         writer.close();
     }
 
-    private void render(final AtomicVertex[] graph, final StrongComponent[] cycles, final Map<AtomicVertex, Integer> layerMap, final AtomicVertexRenderer renderer, final PrintWriter writer) {
+    private static  void render(final AtomicVertex[] graph, final StrongComponent[] cycles, final Map<AtomicVertex, Integer> layerMap, final AtomicVertexRenderer renderer, final PrintWriter writer) {
         final List<StrongComponent> list = getTrueCycles(cycles);
         for (final AtomicVertex vertex : graph) {
             final Integer layerIndex = layerMap.get(vertex);
@@ -472,7 +472,7 @@ public class Analyser {
         }
     }
 
-    private List<StrongComponent> getTrueCycles(final StrongComponent[] cycles) {
+    private static  List<StrongComponent> getTrueCycles(final StrongComponent[] cycles) {
         final List<StrongComponent> list = new ArrayList<StrongComponent>();
         if (cycles != null) {
             for (final StrongComponent cycle : cycles) {
@@ -484,7 +484,7 @@ public class Analyser {
         return list;
     }
 
-    private StrongComponent getCycleFor(final AtomicVertex vertex, final List<StrongComponent> cycles) {
+    private static StrongComponent getCycleFor(final AtomicVertex vertex, final List<StrongComponent> cycles) {
         for (int i = 0, n = cycles.size(); i < n; i++) {
             final StrongComponent cycle = cycles.get(i);
             for (int j = 0, m = cycle.getNumberOfVertices(); j < m; j++) {
