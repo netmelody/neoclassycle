@@ -1,13 +1,14 @@
 package org.netmelody.neoclassycle.graph;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.HashSet;
 
 import org.netmelody.neoclassycle.ClassAttributes;
 
-import junit.framework.TestCase;
-
-public abstract class GraphTestCase extends TestCase {
+public abstract class GraphTestCase {
   public static class MockAttributes extends ClassAttributes {
     public MockAttributes(String name) {
       super(name, "", ClassAttributes.CLASS, 42);
@@ -23,10 +24,6 @@ public abstract class GraphTestCase extends TestCase {
   }
 
   protected AtomicVertex _externalVertex = new AtomicVertex(null);
-
-  public GraphTestCase(String s) {
-    super(s);
-  }
 
   protected StrongComponent[] check(String[] expectedStrongComponents, 
                                     int[][] nodeLinks) {

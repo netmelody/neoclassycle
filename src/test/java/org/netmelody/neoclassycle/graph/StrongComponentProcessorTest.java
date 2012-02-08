@@ -1,5 +1,9 @@
 package org.netmelody.neoclassycle.graph;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+
 
 
 /**
@@ -8,14 +12,13 @@ package org.netmelody.neoclassycle.graph;
  * @author Franz-Josef Elmer
  */
 public class StrongComponentProcessorTest extends GraphTestCase {
-  public StrongComponentProcessorTest(String s) {
-    super(s);
-  }
-
+    
+  @Test
   public void testZeroVertexGraph() {
     check(new String[0], new int[0][0]);
   }
 
+  @Test
   public void testOneVertexGraphs() {
     check(new String[] {"0: 0"}, new int[][] {{}});
     check(new String[] {"0: 0"}, new int[][] {{0}});
@@ -25,6 +28,7 @@ public class StrongComponentProcessorTest extends GraphTestCase {
     check(new String[] {"0: 0"}, new int[][] {{-1,0,-1}});
   }
 
+  @Test
   public void testTwoVerticesGraphs() {
     check(new String[] {"0: 0 1"}, new int[][] {{1},{0}});
     check(new String[] {"0: 0 1"}, new int[][] {{1,0},{0,-1}});
@@ -35,6 +39,7 @@ public class StrongComponentProcessorTest extends GraphTestCase {
     check(new String[] {"0: 1","0: 0"}, new int[][] {{0},{0,-1}});
   }
 
+  @Test
   public void testThreeVerticesGraphs() {
     check(new String[] {"0: 0", "0: 1", "0: 2"}, new int[][] {{},{},{-1}});
     check(new String[] {"0: 0", "0: 1", "0: 2"}, new int[][] {{0},{1},{2}});
@@ -47,6 +52,7 @@ public class StrongComponentProcessorTest extends GraphTestCase {
     check(new String[] {"0: 0 1 2"}, new int[][] {{2},{2,0},{1}});
   }
   
+  @Test
   public void testComplexGraphs() {
     check(new String[] {"0: 0 1 2 3", "0: 4 5"},
           new int[][] {{1, 2},              // 0
@@ -84,6 +90,7 @@ public class StrongComponentProcessorTest extends GraphTestCase {
                       });
   }
   
+  @Test
   public void testAttributesOfStrongComponent() {
     StrongComponent[] components
         = check(new String[] {"0: 0 1 2 3 6", "0: 4 5", "0: 7"},

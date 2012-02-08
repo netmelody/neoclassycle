@@ -4,13 +4,16 @@
 package org.netmelody.neoclassycle;
 
 import org.netmelody.neoclassycle.util.StringPattern;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author  Franz-Josef Elmer
  */
-public class AnalyserCommandLineTest extends TestCase
-{
+public class AnalyserCommandLineTest{
+  @Test
   public void testNoOptionsNoClasses()
   {
     AnalyserCommandLine commandLine = new AnalyserCommandLine(new String[0]);
@@ -18,6 +21,7 @@ public class AnalyserCommandLineTest extends TestCase
     assertEquals(0, commandLine.getClassFiles().length);
   }
 
+  @Test
   public void testNoOptions()
   {
     AnalyserCommandLine commandLine 
@@ -48,6 +52,7 @@ public class AnalyserCommandLineTest extends TestCase
     assertTrue(commandLine.isValid());
   }
   
+  @Test
   public void testOptionsNoClasses()
   {
     AnalyserCommandLine commandLine 
@@ -60,6 +65,7 @@ public class AnalyserCommandLineTest extends TestCase
     assertEquals(0, commandLine.getClassFiles().length);
   }
   
+  @Test
   public void testOptionTitle()
   {
     AnalyserCommandLine commandLine 
@@ -70,6 +76,7 @@ public class AnalyserCommandLineTest extends TestCase
     assertEquals("42", commandLine.getTitle());
   }
 
+  @Test
   public void testOptionIncludingClasses()
   {
     AnalyserCommandLine commandLine = new AnalyserCommandLine(
@@ -86,6 +93,7 @@ public class AnalyserCommandLineTest extends TestCase
   }
   
 
+  @Test
   public void testOptionExcludingClasses()
   {
     AnalyserCommandLine commandLine = new AnalyserCommandLine(
@@ -99,6 +107,7 @@ public class AnalyserCommandLineTest extends TestCase
   }
 
 
+  @Test
   public void testOptionIncludingExcludingClasses()
   {
     AnalyserCommandLine commandLine = new AnalyserCommandLine(

@@ -1,12 +1,13 @@
 package org.netmelody.neoclassycle.graph;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-public class AtomicVertexTest extends TestCase {
-  public AtomicVertexTest(String name) {
-    super(name);
-  }
+import org.junit.Test;
 
+public class AtomicVertexTest {
+
+  @Test
   public void testGraphVertexProperty() {
     AtomicVertex vertex = new AtomicVertex(null);
     assertTrue(!vertex.isGraphVertex());
@@ -16,6 +17,7 @@ public class AtomicVertexTest extends TestCase {
     assertTrue(vertex.isGraphVertex());
   }
   
+  @Test
   public void testOrderProperty() {
     AtomicVertex vertex = new AtomicVertex(null);
     assertEquals(0, vertex.getOrder());
@@ -29,6 +31,7 @@ public class AtomicVertexTest extends TestCase {
     assertEquals(-1, vertex.getOrder());
   }    
   
+  @Test
   public void testLowProperty() {
     AtomicVertex vertex = new AtomicVertex(null);
     assertEquals(0, vertex.getLow());

@@ -1,12 +1,14 @@
 package org.netmelody.neoclassycle.graph;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
-public class VertexTest extends TestCase {
-  public VertexTest(String name) {
-    super(name);
-  }
+import org.junit.Test;
 
+public class VertexTest {
+
+  @Test
   public void testAddOutgoingArc() {
     Vertex tail = new Vertex(null);
     Vertex head = new Vertex(null);
@@ -32,6 +34,7 @@ public class VertexTest extends TestCase {
     assertSame(head2, tail.getHeadVertex(1));
   }
 
+  @Test
   public void testAddIncomingArc() {
     Vertex head = new Vertex(null);
     Vertex tail = new Vertex(null);
@@ -57,6 +60,7 @@ public class VertexTest extends TestCase {
     assertSame(tail2, head.getTailVertex(1));
   }
   
+  @Test
   public void testVisit() {
     Vertex vertex = new Vertex(null);
     assertTrue(!vertex.isVisited());

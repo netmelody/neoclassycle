@@ -17,14 +17,17 @@ package org.netmelody.neoclassycle.dependency;
 
 import java.util.Arrays;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.netmelody.neoclassycle.PackageAttributes;
 import org.netmelody.neoclassycle.graph.AtomicVertex;
 import org.netmelody.neoclassycle.graph.StrongComponent;
 import org.netmelody.neoclassycle.util.WildCardPattern;
 
-public class XMLResultRendererTest extends TestCase
-{
+public class XMLResultRendererTest{
+  @Test
   public void testCyclesResultOk()
   {
     CyclesResult result = new CyclesResult("test statement", false);
@@ -34,6 +37,7 @@ public class XMLResultRendererTest extends TestCase
             + "</dependency-checking-results>\n", new XMLResultRenderer().render(result));
   }
   
+  @Test
   public void testCyclesResultWithCycles()
   {
     CyclesResult result = new CyclesResult("test statement", true);
@@ -60,6 +64,7 @@ public class XMLResultRendererTest extends TestCase
             + "</dependency-checking-results>\n", new XMLResultRenderer().render(result));
   }
   
+  @Test
   public void testDependencyResult()
   {
     AtomicVertex a = new AtomicVertex(new PackageAttributes("a"));
@@ -92,6 +97,7 @@ public class XMLResultRendererTest extends TestCase
             + "</dependency-checking-results>\n", new XMLResultRenderer().render(result));
   }
   
+  @Test
   public void testResultContainerAndTextResult()
   {
     ResultContainer c1 = new ResultContainer();

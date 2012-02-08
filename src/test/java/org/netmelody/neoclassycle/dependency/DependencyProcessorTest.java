@@ -3,19 +3,20 @@
  */
 package org.netmelody.neoclassycle.dependency;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 import org.netmelody.neoclassycle.graph.AtomicVertex;
 import org.netmelody.neoclassycle.graph.GraphTestCase.MockAttributes;
 
 /**
  * @author  Franz-Josef Elmer
  */
-public class DependencyProcessorTest extends TestCase
-{
+public class DependencyProcessorTest {
   private static final String DIDOF 
       = ' ' + DependencyDefinitionParser.DIRECTLY_INDEPENDENT_OF_KEY_WORD + ' ';
   private static final String CHECK 
@@ -27,11 +28,7 @@ public class DependencyProcessorTest extends TestCase
   private static final String SHOW_ONLY_ALL 
        = "show onlyShortestPaths allResults\n";
 
-  public DependencyProcessorTest(String s)
-  {
-    super(s);
-  }
-
+  @Test
   public void testCheckSets()
   {
     String s = "[a] = a.*\n"
@@ -44,6 +41,7 @@ public class DependencyProcessorTest extends TestCase
     check(s, new String[] {"", "", "Set bla.bla is empty.\n"});
   }
   
+  @Test
   public void testClassCycleCheck()
   {
     String s = "[a] = a.*\n"
@@ -60,6 +58,7 @@ public class DependencyProcessorTest extends TestCase
     check(s, new String[] {"", result});
   }
   
+  @Test
   public void testPackageCycleCheck()
   {
     String s = "[A] = *.A\n"
@@ -83,6 +82,7 @@ public class DependencyProcessorTest extends TestCase
     check(s, new String[] {"", result1}, new String[] {"", result2});
   }
   
+  @Test
   public void testSimpleDependencyCheck()
   {
     String s = "check b.* independentOf c.*"; 
@@ -95,6 +95,7 @@ public class DependencyProcessorTest extends TestCase
           new String[] {SHOW_ONLY_ALL, s + DF + "\n  f.A\n    -> b.A\n"});
   }
   
+  @Test
   public void testPreferences()
   {
     String s1 = "check b.* independentOf c.*";
@@ -111,6 +112,7 @@ public class DependencyProcessorTest extends TestCase
                         s2 + DF + "\n  f.A\n    -> b.A\n"});
   }
   
+  @Test
   public void testSwitchAllPathsAndBack()
   {
     String s = "check h.* independentOf b.*";
@@ -125,6 +127,7 @@ public class DependencyProcessorTest extends TestCase
                         s + DF + "\n  h.A\n    -> f.A\n      -> b.A\n"});
   }
   
+  @Test
   public void testLayering()
   {
     check(SHOW_ALLRESULTS + "layer bc = b.* c.*\n"

@@ -6,11 +6,14 @@ import java.util.StringTokenizer;
 
 import org.netmelody.neoclassycle.graph.AtomicVertex;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class GraphBuilderTest extends TestCase
-{
+public class GraphBuilderTest{
   
+  @Test
   public void testTwoClassesWithSameNameButDifferentSources()
   {
     UnresolvedNode[] nodes = createNodes("a:s1:A -> b c a; a:s2 -> b d");
@@ -25,6 +28,7 @@ public class GraphBuilderTest extends TestCase
     assertEquals(ClassAttributes.CLASS, attributes.getType());
   }
   
+  @Test
   public void testTwoClassesWithSameNameOneWithSourceOneWithoutSource()
   {
     UnresolvedNode[] nodes = createNodes("a:s1 -> b c a; a: :A -> b d");
@@ -39,6 +43,7 @@ public class GraphBuilderTest extends TestCase
     assertEquals(ClassAttributes.ABSTRACT_CLASS, attributes.getType());
   }
   
+  @Test
   public void testSupressedMergingOfInnerclasses()
   {
     UnresolvedNode[] nodes = createNodes("a:s:A -> b c a$1; a$1:s -> b d");
@@ -63,6 +68,7 @@ public class GraphBuilderTest extends TestCase
     assertEquals("a$1", attributes.getName());
   }
   
+  @Test
   public void testMergingOfInnerclasses()
   {
     UnresolvedNode[] nodes = createNodes("a:s:A -> b c a$1; a$1:s -> b d");

@@ -1,11 +1,13 @@
 package org.netmelody.neoclassycle;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.netmelody.neoclassycle.graph.AtomicVertex;
 import org.netmelody.neoclassycle.graph.Vertex;
 
-public class PackageProcessorTest extends TestCase
-{
+public class PackageProcessorTest{
   private AtomicVertex _a;
   private AtomicVertex _b;
   private AtomicVertex _c;
@@ -13,7 +15,8 @@ public class PackageProcessorTest extends TestCase
   private AtomicVertex _o;
   private AtomicVertex[] _graph;
 
-  protected void setUp() throws Exception
+@Before
+  public void setUp() throws Exception
   {
     
     _a = new AtomicVertex(ClassAttributes.createClass("p.A", "s", 1));
@@ -31,6 +34,7 @@ public class PackageProcessorTest extends TestCase
     _graph = new AtomicVertex[] {_a, _b, _c, _d};
   }
 
+  @Test
   public void testClassBExcluded()
   {
     _b.setDefaultValueOfGraphVertexFlag(false);
@@ -67,6 +71,7 @@ public class PackageProcessorTest extends TestCase
     assertSame(p, q.getHeadVertex(1));
   }
   
+  @Test
   public void testClassDExcluded()
   {
     _d.setDefaultValueOfGraphVertexFlag(false);
@@ -102,6 +107,7 @@ public class PackageProcessorTest extends TestCase
     assertSame(q, p.getHeadVertex(1));
   }
   
+  @Test
   public void testClassBAndCExcluded()
   {
     _b.setDefaultValueOfGraphVertexFlag(false);

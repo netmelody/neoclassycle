@@ -3,34 +3,29 @@
  */
 package org.netmelody.neoclassycle.util;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 /**
  * @author  Franz-Josef Elmer
  */
-public class WildCardPatternTest extends TestCase
-{
+public class WildCardPatternTest{
 
-  /**
-   * Constructor for WildCardPatternTest.
-   * @param arg0
-   */
-  public WildCardPatternTest(String arg0)
-  {
-    super(arg0);
-  }
-  
+  @Test
   public void testOnNull()
   {
     matchNot("", null);
   }
   
+  @Test
   public void testEmptyPattern()
   {
     match("", "");
     matchNot("", "a");
   }
   
+  @Test
   public void testConstantPattern()
   {
     match("a", "a");
@@ -40,6 +35,7 @@ public class WildCardPatternTest extends TestCase
     matchNot("affe", "a");
   }
   
+  @Test
   public void testStar()
   {
     match("*", "");
@@ -48,6 +44,7 @@ public class WildCardPatternTest extends TestCase
     match("*", "*");
   }
   
+  @Test
   public void testStartConstant()
   {
     match("*t", "t");
@@ -63,6 +60,7 @@ public class WildCardPatternTest extends TestCase
     matchNot("*te", "atea");
   }
   
+  @Test
   public void testConstantStar()
   {
     match("t*", "t");
@@ -81,6 +79,7 @@ public class WildCardPatternTest extends TestCase
     matchNot("af*", "kaffee");
   }
   
+  @Test
   public void testStarConstan()
   {
     match("*t*", "t");
@@ -93,6 +92,7 @@ public class WildCardPatternTest extends TestCase
     matchNot("*t*", "affe");
   }
   
+  @Test
   public void testConstantStarConstant()
   {
     match("a*e", "ae");
@@ -114,6 +114,7 @@ public class WildCardPatternTest extends TestCase
     matchNot("a*ea", "in area");
   }
   
+  @Test
   public void testStarConstantStarConstant()
   {
     match("*a*e", "ae");

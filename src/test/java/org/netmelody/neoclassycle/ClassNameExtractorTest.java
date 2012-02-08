@@ -2,12 +2,15 @@ package org.netmelody.neoclassycle;
 
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.netmelody.neoclassycle.classfile.UTF8Constant;
 
-public class ClassNameExtractorTest extends TestCase
-{
+public class ClassNameExtractorTest{
+  @Test
   public void testIsValid()
   {
     assertEquals(true, ClassNameExtractor.isValid("java.lang.String"));
@@ -21,6 +24,7 @@ public class ClassNameExtractorTest extends TestCase
     assertEquals(false, ClassNameExtractor.isValid("a..a"));
   }
   
+  @Test
   public void testParseUTF8Constant()
   {
     parseAndCheck("[]", "(Lb;)");

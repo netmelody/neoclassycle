@@ -3,28 +3,33 @@
  */
 package org.netmelody.neoclassycle.dependency;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 import org.netmelody.neoclassycle.util.StringPattern;
 
 /**
  * @author  Franz-Josef Elmer
  */
-public class DependencyDefinitionParserTest extends TestCase
-{
+public class DependencyDefinitionParserTest {
   
   private Hashtable<String, String> _defaultProps;
 
+  @Test
   public void testShowStatements() 
   {
     check("show a b c", new String[] {"[a, b, c]"});
     check("show a\n show b c", new String[] {"[a]", "[b, c]"});
   }
   
+  @Test
   public void testCheckSetStatements() 
   {
     check("check sets ${package}.lang.*", new String[] {"check set java.lang.*"});
@@ -34,6 +39,7 @@ public class DependencyDefinitionParserTest extends TestCase
                         "check set java.util.*"});
   }
   
+  @Test
   public void testCheckCycleStatements() 
   {
     check("[base] = base.*\n"
@@ -43,6 +49,7 @@ public class DependencyDefinitionParserTest extends TestCase
                           "check absenceOfPackageCycles > 1 in [base]"});
   }
   
+  @Test
   public void testCheckMissSpelledKeywords()
   {
     try
@@ -109,6 +116,7 @@ public class DependencyDefinitionParserTest extends TestCase
                message.indexOf(expectedMessageFragment) >= 0);
   }
   
+  @Test
   public void testDependencyStatements() 
   {
     check("check java.lang.Integer dependentOnlyOn java.lang.Number", 
@@ -145,6 +153,7 @@ public class DependencyDefinitionParserTest extends TestCase
           new String[] {"check [a] independentOf java.awt.*"});
   }
   
+  @Test
   public void testLayeringStatements() 
   {
     check("layer a = java.lang.*\n"
@@ -156,6 +165,7 @@ public class DependencyDefinitionParserTest extends TestCase
           new String[] {"check strictLayeringOf a b"});
   }
   
+  @Test
   public void testSetDefinition() 
   {
     check("[a] = j.*", new String[][] {{"[a]", "j.*"}});
@@ -170,6 +180,7 @@ public class DependencyDefinitionParserTest extends TestCase
           new String[][] {{"[a]", "!(a.b c.d)"}});
   }
   
+  @Test
   public void testSetDefinitions() 
   {
     check("[a] = a.*\n"
@@ -190,6 +201,7 @@ public class DependencyDefinitionParserTest extends TestCase
                          });
   }
   
+  @Test
   public void testLayerDefinitions()
   {
     check("[a] = a.*\n"

@@ -18,7 +18,6 @@ import java.util.List;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-
 import org.netmelody.neoclassycle.graph.AtomicVertex;
 import org.netmelody.neoclassycle.graph.NameAttributes;
 import org.netmelody.neoclassycle.graph.Vertex;
@@ -129,7 +128,7 @@ public final class ParserTest {
           + "double[] d; boolean[][] z; java.awt.color.ICC_ColorSpace cs;}");
   }
 
-  @Test  
+  @Test
   public void testNoReflection() throws IOException
   {
     check(new String[] {"java.lang.Object", "java.lang.String", 

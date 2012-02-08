@@ -1,14 +1,13 @@
 package org.netmelody.neoclassycle.graph;
 
+import org.junit.Test;
+
 /**
  * 
  * 
  * @author Franz-Josef Elmer
  */
 public class LongestWalkProcessorTest extends GraphTestCase {
-  public LongestWalkProcessorTest(String s) {
-    super(s);
-  }
   
   protected void process(StrongComponentProcessor processor, 
                          AtomicVertex[] graph) {
@@ -17,10 +16,12 @@ public class LongestWalkProcessorTest extends GraphTestCase {
                                         processor.getStrongComponents());
   }
   
+  @Test
   public void testOneVertexGraphs() {
     check(new String[] {"0: 0"}, new int[][] {{}});
   }
 
+  @Test
   public void testTwoVerticesGraphs() {
     check(new String[] {"0: 0 1"}, new int[][] {{1},{0}});
     check(new String[] {"0: 0", "0: 1"}, new int[][] {{},{}});
@@ -28,6 +29,7 @@ public class LongestWalkProcessorTest extends GraphTestCase {
     check(new String[] {"1: 1", "0: 0"}, new int[][] {{0},{0}});
   }
 
+  @Test
   public void testThreeVerticesGraphs() {
     check(new String[] {"0: 0", "0: 1", "0: 2"}, new int[][] {{},{},{-1}});
     check(new String[] {"0: 0", "2: 1", "1: 2"}, new int[][] {{0},{2},{0}});
@@ -39,6 +41,7 @@ public class LongestWalkProcessorTest extends GraphTestCase {
     check(new String[] {"0: 0 1 2"}, new int[][] {{2},{0},{1}});
   }
   
+  @Test
   public void testComplexGraphs() {
     check(new String[] {"1: 0 1 2 3", "0: 4 5"},
           new int[][] {{1, 2},              // 0

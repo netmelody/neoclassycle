@@ -3,14 +3,17 @@
  */
 package org.netmelody.neoclassycle.util;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author  Franz-Josef Elmer
  */
-public class TextTest extends TestCase
-{
+public class TextTest{
 
+  @Test
   public void testExcapeForXML()
   {
     assertEquals("&lt;hel&amp;lo&gt;", Text.excapeForXML("<hel&lo>"));

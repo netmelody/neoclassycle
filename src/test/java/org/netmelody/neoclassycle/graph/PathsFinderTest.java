@@ -3,18 +3,22 @@
  */
 package org.netmelody.neoclassycle.graph;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.StringTokenizer;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
 /**
  * @author  Franz-Josef Elmer
  */
-public class PathsFinderTest extends TestCase
-{
+public class PathsFinderTest{
   private static class MockVertexCondition implements VertexCondition
   {
     private final HashSet<Vertex> _vertices = new HashSet<Vertex>();
@@ -89,11 +93,7 @@ public class PathsFinderTest extends TestCase
 
   }
   
-  public PathsFinderTest(String name)
-  {
-    super(name);
-  }
-  
+  @Test
   public void testFindAllPaths()
   {
     check("a b c", "e f", "a d e", "a > b c d h, c > b k, d > e g", false);
@@ -136,6 +136,7 @@ public class PathsFinderTest extends TestCase
     check("a", "e", "a b c d e f", "a > b, b > c f, c > d, d > e, f > e", false);
   }
   
+  @Test
   public void testFindShortestPaths()
   {
     check("a b c", "e f", "a d e", "a > b c d h, c > b k, d > e g", true);
@@ -165,6 +166,7 @@ public class PathsFinderTest extends TestCase
                              + "j > i d", true);
   }
   
+  @Test
   public void testDirectPaths()
   {
     check("a b", "a c", "a", "", false, true);
