@@ -3,15 +3,15 @@
  */
 package org.netmelody.neoclassycle.ant;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.tools.ant.BuildException;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author Franz-Josef Elmer

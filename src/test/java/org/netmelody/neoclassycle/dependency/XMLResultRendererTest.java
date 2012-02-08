@@ -17,14 +17,13 @@ package org.netmelody.neoclassycle.dependency;
 
 import java.util.Arrays;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.netmelody.neoclassycle.PackageAttributes;
 import org.netmelody.neoclassycle.graph.AtomicVertex;
 import org.netmelody.neoclassycle.graph.StrongComponent;
 import org.netmelody.neoclassycle.util.WildCardPattern;
+
+import static org.junit.Assert.assertEquals;
 
 public class XMLResultRendererTest {
     @Test

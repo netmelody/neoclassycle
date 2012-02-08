@@ -33,7 +33,6 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
-
 import org.netmelody.neoclassycle.util.AndStringPattern;
 import org.netmelody.neoclassycle.util.NotStringPattern;
 import org.netmelody.neoclassycle.util.StringPattern;

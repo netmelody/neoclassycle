@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.junit.Test;
 import org.netmelody.neoclassycle.graph.AtomicVertex;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class GraphBuilderTest {
 

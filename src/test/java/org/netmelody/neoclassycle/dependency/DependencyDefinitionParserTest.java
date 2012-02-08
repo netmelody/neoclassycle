@@ -3,10 +3,6 @@
  */
 package org.netmelody.neoclassycle.dependency;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -14,6 +10,10 @@ import java.util.List;
 
 import org.junit.Test;
 import org.netmelody.neoclassycle.util.StringPattern;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author Franz-Josef Elmer

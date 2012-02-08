@@ -1,11 +1,12 @@
 package org.netmelody.neoclassycle;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.netmelody.neoclassycle.graph.AtomicVertex;
 import org.netmelody.neoclassycle.graph.Vertex;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 public class PackageProcessorTest {
     private AtomicVertex _a;

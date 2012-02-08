@@ -2,12 +2,10 @@ package org.netmelody.neoclassycle;
 
 import java.util.Set;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.netmelody.neoclassycle.classfile.UTF8Constant;
+
+import static org.junit.Assert.assertEquals;
 
 public class ClassNameExtractorTest {
     @Test

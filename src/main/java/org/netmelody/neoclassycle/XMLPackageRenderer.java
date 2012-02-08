@@ -24,6 +24,8 @@
  */
 package org.netmelody.neoclassycle;
 
+import org.netmelody.neoclassycle.graph.AtomicVertex;
+import org.netmelody.neoclassycle.graph.NameAttributes;
 import org.netmelody.neoclassycle.renderer.AtomicVertexRenderer;
 import org.netmelody.neoclassycle.renderer.TemplateBasedClassRenderer;
 import org.netmelody.neoclassycle.renderer.XMLAtomicVertexRenderer;

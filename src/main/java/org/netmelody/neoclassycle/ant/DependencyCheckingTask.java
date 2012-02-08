@@ -31,7 +31,6 @@ import java.io.PrintWriter;
 import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
-
 import org.netmelody.neoclassycle.Analyser;
 import org.netmelody.neoclassycle.dependency.DefaultResultRenderer;
 import org.netmelody.neoclassycle.dependency.DependencyChecker;

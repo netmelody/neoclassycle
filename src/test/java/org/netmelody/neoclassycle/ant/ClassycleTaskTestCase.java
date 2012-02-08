@@ -3,8 +3,6 @@
  */
 package org.netmelody.neoclassycle.ant;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,6 +14,8 @@ import java.io.Reader;
 import org.apache.tools.ant.BuildFileTest;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Franz-Josef Elmer

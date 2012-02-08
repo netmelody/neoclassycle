@@ -3,11 +3,13 @@
  */
 package org.netmelody.neoclassycle;
 
-import org.netmelody.neoclassycle.util.StringPattern;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import org.netmelody.neoclassycle.util.StringPattern;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Franz-Josef Elmer

@@ -1,12 +1,12 @@
 package org.netmelody.neoclassycle.graph;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Arrays;
 import java.util.HashSet;
 
 import org.netmelody.neoclassycle.ClassAttributes;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public abstract class GraphTestCase {
     public static class MockAttributes extends ClassAttributes {

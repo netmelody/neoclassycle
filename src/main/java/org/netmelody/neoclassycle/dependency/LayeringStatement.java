@@ -24,9 +24,10 @@
  */
 package org.netmelody.neoclassycle.dependency;
 
-import static org.netmelody.neoclassycle.dependency.DependencyDefinitionParser.DIRECTLY_INDEPENDENT_OF_KEY_WORD;
 import org.netmelody.neoclassycle.graph.AtomicVertex;
 import org.netmelody.neoclassycle.util.StringPattern;
+
+import static org.netmelody.neoclassycle.dependency.DependencyDefinitionParser.DIRECTLY_INDEPENDENT_OF_KEY_WORD;
 
 /**
  * @author Franz-Josef Elmer

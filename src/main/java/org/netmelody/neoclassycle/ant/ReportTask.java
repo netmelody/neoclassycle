@@ -29,7 +29,6 @@ import java.io.PrintWriter;
 import java.util.HashSet;
 
 import org.apache.tools.ant.BuildException;
-
 import org.netmelody.neoclassycle.Analyser;
 
 /**
