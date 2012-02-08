@@ -39,9 +39,9 @@ import java.util.Vector;
 public class StrongComponentProcessor extends GraphProcessor {
     private final boolean _calculateAttributes;
     private int _counter;
-    private Stack _vertexStack = new Stack();
-    private Vector _strongComponents = new Vector();
-    private Hashtable _vertexToComponents = new Hashtable();
+    private Stack<Vertex> _vertexStack = new Stack<Vertex>();
+    private Vector<StrongComponent> _strongComponents = new Vector<StrongComponent>();
+    private Hashtable<Vertex, StrongComponent> _vertexToComponents = new Hashtable<Vertex, StrongComponent>();
     private StrongComponent[] _graph;
 
     /**
@@ -134,7 +134,7 @@ public class StrongComponentProcessor extends GraphProcessor {
             }
         }
 
-        Enumeration keys = _vertexToComponents.keys();
+        Enumeration<Vertex> keys = _vertexToComponents.keys();
         while (keys.hasMoreElements()) {
             AtomicVertex vertex = (AtomicVertex) keys.nextElement();
             StrongComponent tail = (StrongComponent) _vertexToComponents.get(vertex);

@@ -43,9 +43,9 @@ import java.util.Vector;
  * 
  * @author Franz-Josef Elmer
  */
-public class Vertex implements Comparable {
-    private final Vector _heads = new Vector();
-    private final Vector _tails = new Vector();
+public class Vertex implements Comparable<Vertex> {
+    private final Vector<Vertex> _heads = new Vector<Vertex>();
+    private final Vector<Vertex> _tails = new Vector<Vertex>();
     private final Attributes _attributes;
     private boolean _visited;
 
@@ -149,7 +149,7 @@ public class Vertex implements Comparable {
         return new String(result);
     }
 
-    public int compareTo(Object object) {
+    public int compareTo(Vertex object) {
         int result = 1;
         if (object instanceof Vertex && _attributes != null) {
             result = _attributes.compareTo(((Vertex) object)._attributes);

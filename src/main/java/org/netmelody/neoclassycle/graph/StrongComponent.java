@@ -39,11 +39,11 @@ public class StrongComponent extends Vertex {
         private int _girth;
         private int _radius;
         private int _diameter;
-        private ArrayList _centerVertices = new ArrayList();
+        private ArrayList<Vertex> _centerVertices = new ArrayList<Vertex>();
         private int[] _eccentricities;
         private int[] _maximumFragmentSizes;
         private int _bestFragmentSize;
-        private ArrayList _bestFragmenters = new ArrayList();
+        private ArrayList<Vertex> _bestFragmenters = new ArrayList<Vertex>();
 
         public GeometryAttributes() {
         }
@@ -113,10 +113,10 @@ public class StrongComponent extends Vertex {
             }
         }
 
-        public int compareTo(Object object) {
+        public int compareTo(Attributes object) {
             int result = 1;
             if (object instanceof GeometryAttributes && _bestFragmenters.size() > 0) {
-                ArrayList list = ((GeometryAttributes) object)._bestFragmenters;
+                ArrayList<Vertex> list = ((GeometryAttributes) object)._bestFragmenters;
                 if (list.size() > 0) {
                     Attributes attributes = ((Vertex) _bestFragmenters.get(0)).getAttributes();
                     Attributes objectAttributes = ((Vertex) list.get(0)).getAttributes();
@@ -128,7 +128,7 @@ public class StrongComponent extends Vertex {
 
     }
 
-    private final Vector _vertices = new Vector();
+    private final Vector<Vertex> _vertices = new Vector<Vertex>();
     private boolean _active;
     private int _longestWalk;
 
@@ -164,7 +164,7 @@ public class StrongComponent extends Vertex {
      * .
      */
     public void calculateAttributes() {
-        HashMap indexMap = calculateIndexMap();
+        HashMap<Vertex, Integer> indexMap = calculateIndexMap();
         int[][] distances = calculateDistances(indexMap);
 
         // Calculate girth and eccentricity
@@ -196,7 +196,7 @@ public class StrongComponent extends Vertex {
 
     }
 
-    private int[][] calculateDistances(HashMap indexMap) {
+    private int[][] calculateDistances(HashMap<Vertex, Integer> indexMap) {
         // Calculate the adjacency matrix
         int n = getNumberOfVertices();
         int[][] distances = new int[n][n];
@@ -228,15 +228,15 @@ public class StrongComponent extends Vertex {
         return distances;
     }
 
-    private HashMap calculateIndexMap() {
-        HashMap result = new HashMap();
+    private HashMap<Vertex, Integer> calculateIndexMap() {
+        HashMap<Vertex, Integer> result = new HashMap<Vertex, Integer>();
         for (int i = 0, n = getNumberOfVertices(); i < n; i++) {
             result.put(getVertex(i), new Integer(i));
         }
         return result;
     }
 
-    private int[] calculateMaximumFragmentSizes(HashMap indexMap) {
+    private int[] calculateMaximumFragmentSizes(HashMap<Vertex, Integer> indexMap) {
         // clone graph defining this strong component
         AtomicVertex[] graph = new AtomicVertex[getNumberOfVertices()];
         for (int i = 0; i < graph.length; i++) {

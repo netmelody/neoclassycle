@@ -47,7 +47,7 @@ class GraphBuilder {
      */
     static AtomicVertex[] createGraph(UnresolvedNode[] unresolvedNodes, boolean mergeInnerClasses) {
         Arrays.sort(unresolvedNodes);
-        Map vertices = createVertices(unresolvedNodes, mergeInnerClasses);
+        Map<String, AtomicVertex> vertices = createVertices(unresolvedNodes, mergeInnerClasses);
         AtomicVertex[] result = (AtomicVertex[]) vertices.values().toArray(new AtomicVertex[0]);
 
         // Add arces to vertices
@@ -55,7 +55,7 @@ class GraphBuilder {
             UnresolvedNode node = unresolvedNodes[i];
             String name = normalize(node.getAttributes().getName(), mergeInnerClasses);
             AtomicVertex vertex = (AtomicVertex) vertices.get(name);
-            for (Iterator iterator = node.linkIterator(); iterator.hasNext();) {
+            for (Iterator<String> iterator = node.linkIterator(); iterator.hasNext();) {
                 name = normalize((String) iterator.next(), mergeInnerClasses);
                 AtomicVertex head = (AtomicVertex) vertices.get(name);
                 if (head == null) {
@@ -71,8 +71,8 @@ class GraphBuilder {
         return result;
     }
 
-    private static Map createVertices(UnresolvedNode[] unresolvedNodes, boolean mergeInnerClasses) {
-        Map vertices = new HashMap();
+    private static Map<String, AtomicVertex> createVertices(UnresolvedNode[] unresolvedNodes, boolean mergeInnerClasses) {
+        Map<String, AtomicVertex> vertices = new HashMap<String, AtomicVertex>();
         for (int i = 0; i < unresolvedNodes.length; i++) {
             ClassAttributes attributes = unresolvedNodes[i].getAttributes();
             String type = attributes.getType();

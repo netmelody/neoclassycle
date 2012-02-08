@@ -35,9 +35,9 @@ import org.netmelody.neoclassycle.util.StringPattern;
  * 
  * @author Franz-Josef Elmer
  */
-class UnresolvedNode implements Comparable {
+class UnresolvedNode implements Comparable<UnresolvedNode> {
     private ClassAttributes _attributes;
-    private List _nodes = new ArrayList();
+    private List<String> _nodes = new ArrayList<String>();
 
     void setAttributes(ClassAttributes attributes) {
         _attributes = attributes;
@@ -51,8 +51,8 @@ class UnresolvedNode implements Comparable {
         _nodes.add(node);
     }
 
-    Iterator linkIterator() {
-        return new Iterator() {
+    Iterator<String> linkIterator() {
+        return new Iterator<String>() {
             private int _index;
 
             public void remove() {
@@ -63,13 +63,13 @@ class UnresolvedNode implements Comparable {
                 return _index < _nodes.size();
             }
 
-            public Object next() {
+            public String next() {
                 return hasNext() ? _nodes.get(_index++) : null;
             }
         };
     }
 
-    public int compareTo(Object obj) {
+    public int compareTo(UnresolvedNode obj) {
         return getAttributes().getName().compareTo(((UnresolvedNode) obj).getAttributes().getName());
     }
 

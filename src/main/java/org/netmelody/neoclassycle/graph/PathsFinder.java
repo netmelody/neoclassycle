@@ -95,8 +95,8 @@ public class PathsFinder {
      */
     public AtomicVertex[] findPaths(AtomicVertex[] graph) {
         prepareGraph(graph);
-        HashSet pathVertices = new HashSet();
-        HashSet currentPath = new HashSet();
+        HashSet<Vertex> pathVertices = new HashSet<Vertex>();
+        HashSet<Vertex> currentPath = new HashSet<Vertex>();
         for (int i = 0; i < graph.length; i++) {
             AtomicVertex vertex = graph[i];
             if (_startSetCondition.isFulfilled(vertex)) {
@@ -116,7 +116,7 @@ public class PathsFinder {
         return (AtomicVertex[]) pathVertices.toArray(new AtomicVertex[pathVertices.size()]);
     }
 
-    private void findDirectPaths(AtomicVertex vertex, HashSet pathVertices) {
+    private void findDirectPaths(AtomicVertex vertex, HashSet<Vertex> pathVertices) {
         if (_finalSetCondition.isFulfilled(vertex)) {
             pathVertices.add(vertex);
         }
@@ -149,7 +149,7 @@ public class PathsFinder {
         }
     }
 
-    private int calculateShortestPath(AtomicVertex vertex, HashSet currentPath) {
+    private int calculateShortestPath(AtomicVertex vertex, HashSet<Vertex> currentPath) {
         currentPath.add(vertex);
         int shortestPath = Integer.MAX_VALUE;
         for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) {
@@ -177,7 +177,7 @@ public class PathsFinder {
         }
     }
 
-    private void followPaths(AtomicVertex vertex, HashSet pathVertices) {
+    private void followPaths(AtomicVertex vertex, HashSet<Vertex> pathVertices) {
         pathVertices.add(vertex);
         int shortestPathLength = vertex.getOrder() - 1;
         for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) {
