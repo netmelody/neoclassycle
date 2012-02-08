@@ -27,13 +27,15 @@ package org.netmelody.neoclassycle.util;
 /**
  * Interface for string pattern matching.
  * 
- * @author  Franz-Josef Elmer
+ * @author Franz-Josef Elmer
  */
 public interface StringPattern
 {
-  /**
-   * Returns <tt>true</tt> if the specified string matches the pattern.
-   * @param string String to be matched. Can be <tt>null</tt>.
-   */
-  public boolean matches(String string);
+    /**
+     * Returns <tt>true</tt> if the specified string matches the pattern.
+     * 
+     * @param string
+     *            String to be matched. Can be <tt>null</tt>.
+     */
+    public boolean matches(String string);
 }

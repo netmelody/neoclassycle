@@ -27,23 +27,23 @@ package org.netmelody.neoclassycle.dependency;
 /**
  * Renderer for dependency checks.
  * 
- * @author  Franz-Josef Elmer
+ * @author Franz-Josef Elmer
  */
 public abstract class ResultRenderer
 {
-  protected boolean _shortestPaths = true;
-  
-  public boolean onlyShortestPaths() 
-  {
-    return _shortestPaths;
-  }
+    protected boolean _shortestPaths = true;
 
-  public abstract PreferenceFactory getPreferenceFactory();
-  
-  public abstract void considerPreference(Preference preference);
-  
-  public abstract Result getDescriptionOfCurrentPreferences();
-  
-  public abstract String render(Result result);
-  
+    public boolean onlyShortestPaths()
+    {
+        return _shortestPaths;
+    }
+
+    public abstract PreferenceFactory getPreferenceFactory();
+
+    public abstract void considerPreference(Preference preference);
+
+    public abstract Result getDescriptionOfCurrentPreferences();
+
+    public abstract String render(Result result);
+
 }

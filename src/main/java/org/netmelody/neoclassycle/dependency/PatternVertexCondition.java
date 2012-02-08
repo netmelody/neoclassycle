@@ -31,33 +31,33 @@ import org.netmelody.neoclassycle.graph.VertexCondition;
 import org.netmelody.neoclassycle.util.StringPattern;
 
 /**
- * @author  Franz-Josef Elmer
+ * @author Franz-Josef Elmer
  */
 public class PatternVertexCondition implements VertexCondition
 {
-  private final StringPattern _pattern;
-  
-  public PatternVertexCondition(StringPattern pattern)
-  {
-    _pattern = pattern;
-  }
+    private final StringPattern _pattern;
 
-  public boolean isFulfilled(Vertex vertex)
-  {
-    boolean result = false;
-    if (vertex != null)
+    public PatternVertexCondition(StringPattern pattern)
     {
-      Attributes attributes = vertex.getAttributes();
-      if (attributes instanceof NameAttributes)
-      {
-        result = _pattern.matches(((NameAttributes) attributes).getName());
-      }
+        _pattern = pattern;
     }
-    return result;
-  }
-  
-  public String toString()
-  {
-    return _pattern.toString();
-  }
+
+    public boolean isFulfilled(Vertex vertex)
+    {
+        boolean result = false;
+        if (vertex != null)
+        {
+            Attributes attributes = vertex.getAttributes();
+            if (attributes instanceof NameAttributes)
+            {
+                result = _pattern.matches(((NameAttributes) attributes).getName());
+            }
+        }
+        return result;
+    }
+
+    public String toString()
+    {
+        return _pattern.toString();
+    }
 }

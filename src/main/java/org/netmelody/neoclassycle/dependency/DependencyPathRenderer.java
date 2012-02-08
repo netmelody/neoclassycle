@@ -17,9 +17,9 @@ package org.netmelody.neoclassycle.dependency;
 
 interface DependencyPathRenderer
 {
-  void increaseIndentation();
-  
-  void add(String nodeName);
-  
-  void decreaseIndentation();
+    void increaseIndentation();
+
+    void add(String nodeName);
+
+    void decreaseIndentation();
 }

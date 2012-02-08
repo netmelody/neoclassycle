@@ -30,21 +30,21 @@ package org.netmelody.neoclassycle.classfile;
  * @author Franz-Josef Elmer
  */
 public class DoubleConstant extends Constant {
-  private final double _value;
+    private final double _value;
 
-  /** Creates an instance for the specified double value. */
-  public DoubleConstant(Constant[] pool, double value) {
-    super(pool);
-    _value = value;
-  }
+    /** Creates an instance for the specified double value. */
+    public DoubleConstant(Constant[] pool, double value) {
+        super(pool);
+        _value = value;
+    }
 
-  /** Returns the wrapped double value. */
-  public double getValue() {
-    return _value;
-  }
+    /** Returns the wrapped double value. */
+    public double getValue() {
+        return _value;
+    }
 
-  /** Returns the constant type and the double value. */
-  public String toString() {
-    return "CONSTANT_Double: " + _value;
-  }
-} //class
+    /** Returns the constant type and the double value. */
+    public String toString() {
+        return "CONSTANT_Double: " + _value;
+    }
+} // class

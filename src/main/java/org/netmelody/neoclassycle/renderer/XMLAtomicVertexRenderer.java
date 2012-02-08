@@ -31,48 +31,48 @@ import org.netmelody.neoclassycle.graph.NameAttributes;
 import org.netmelody.neoclassycle.graph.StrongComponent;
 
 /**
- * XML renderer of an {@link AtomicVertex} with 
- * {@link NameAttributes}.
+ * XML renderer of an {@link AtomicVertex} with {@link NameAttributes}.
  * 
  * @author Franz-Josef Elmer
  */
-public abstract class XMLAtomicVertexRenderer implements AtomicVertexRenderer 
+public abstract class XMLAtomicVertexRenderer implements AtomicVertexRenderer
 {
-  /**
-   * Renderes the specified vertex. It is assumed that the vertex attributes
-   * are of the type {@link org.netmelody.neoclassycle.ClassAttributes}.
-   * @return the rendered vertex.
-   */
-  public String render(AtomicVertex vertex, StrongComponent cycle, 
-                       int layerIndex) 
-  {
-    StringBuffer result = new StringBuffer();
-    result.append(getVertexRenderer().render(vertex, cycle, layerIndex));
-    MessageFormat format = new MessageFormat("      <" + getRefElement() 
-                                   + " name=\"{0}\"" + " type=\"{1}\"/>\n");
-    String[] values = new String[2];
-    for (int i = 0, n = vertex.getNumberOfIncomingArcs(); i < n; i++) 
+    /**
+     * Renderes the specified vertex. It is assumed that the vertex attributes
+     * are of the type {@link org.netmelody.neoclassycle.ClassAttributes}.
+     * 
+     * @return the rendered vertex.
+     */
+    public String render(AtomicVertex vertex, StrongComponent cycle,
+            int layerIndex)
     {
-      values[0] = ((NameAttributes) vertex.getTailVertex(i).getAttributes())
-                  .getName();
-      values[1] = "usedBy";
-      format.format(values, result, null);
+        StringBuffer result = new StringBuffer();
+        result.append(getVertexRenderer().render(vertex, cycle, layerIndex));
+        MessageFormat format = new MessageFormat("      <" + getRefElement()
+                + " name=\"{0}\"" + " type=\"{1}\"/>\n");
+        String[] values = new String[2];
+        for (int i = 0, n = vertex.getNumberOfIncomingArcs(); i < n; i++)
+        {
+            values[0] = ((NameAttributes) vertex.getTailVertex(i).getAttributes())
+                    .getName();
+            values[1] = "usedBy";
+            format.format(values, result, null);
+        }
+        for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++)
+        {
+            values[0] = ((NameAttributes) vertex.getHeadVertex(i).getAttributes())
+                    .getName();
+            values[1] = ((AtomicVertex) vertex.getHeadVertex(i)).isGraphVertex()
+                    ? "usesInternal" : "usesExternal";
+            format.format(values, result, null);
+        }
+        result.append("    </").append(getElement()).append(">\n");
+        return new String(result);
     }
-    for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) 
-    {
-      values[0] = ((NameAttributes) vertex.getHeadVertex(i).getAttributes())
-                  .getName();
-      values[1] = ((AtomicVertex) vertex.getHeadVertex(i)).isGraphVertex()
-                                            ? "usesInternal" : "usesExternal";
-      format.format(values, result, null);
-    }
-    result.append("    </").append(getElement()).append(">\n");
-    return new String(result);
-  }
-  
-  protected abstract AtomicVertexRenderer getVertexRenderer();
-  
-  protected abstract String getElement();
-  
-  protected abstract String getRefElement();
-} //class
+
+    protected abstract AtomicVertexRenderer getVertexRenderer();
+
+    protected abstract String getElement();
+
+    protected abstract String getRefElement();
+} // class

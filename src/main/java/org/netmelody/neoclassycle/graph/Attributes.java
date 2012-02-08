@@ -25,12 +25,11 @@
 package org.netmelody.neoclassycle.graph;
 
 /**
- *  Interface of any general set of attributes a {@link Vertex} may
- *  have. These attributes are neither used or modified by any parsing or
- *  searching process.
- *
- *  @author Franz-Josef Elmer
+ * Interface of any general set of attributes a {@link Vertex} may have. These
+ * attributes are neither used or modified by any parsing or searching process.
+ * 
+ * @author Franz-Josef Elmer
  */
-public interface Attributes extends Comparable 
+public interface Attributes extends Comparable
 {
-} //interface
+} // interface

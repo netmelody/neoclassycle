@@ -30,13 +30,13 @@ package org.netmelody.neoclassycle.classfile;
  * @author Franz-Josef Elmer
  */
 public class MethodRefConstant extends RefConstant {
-  public MethodRefConstant(Constant[] pool, int classIndex,
-                          int nameAndTypeIndex) {
-    super(pool, classIndex, nameAndTypeIndex);
-  }
+    public MethodRefConstant(Constant[] pool, int classIndex,
+            int nameAndTypeIndex) {
+        super(pool, classIndex, nameAndTypeIndex);
+    }
 
-  /** Returns constant type, class name, method name, and descriptor. */
-  public String toString() {
-    return toString("CONSTANT_MethodRef");
-  }
-} //class
+    /** Returns constant type, class name, method name, and descriptor. */
+    public String toString() {
+        return toString("CONSTANT_MethodRef");
+    }
+} // class

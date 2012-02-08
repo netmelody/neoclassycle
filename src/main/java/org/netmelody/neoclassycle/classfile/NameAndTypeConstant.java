@@ -30,44 +30,48 @@ package org.netmelody.neoclassycle.classfile;
  * @author Franz-Josef Elmer
  */
 public class NameAndTypeConstant extends Constant {
-  private final int _nameIndex;
-  private final int _descriptorIndex;
+    private final int _nameIndex;
+    private final int _descriptorIndex;
 
-  /**
-   * Creates an instance for the specified name and type or method descriptor.
-   * @param pool Constant pool. Needed to resolve references.
-   * @param nameIndex Index of the name in the pool.
-   * @param descriptorIndex Index of the type or method descriptor in the pool.
-   */
-  public NameAndTypeConstant(Constant[] pool, int nameIndex, 
-                             int descriptorIndex) {
-    super(pool);
-    _nameIndex = nameIndex;
-    _descriptorIndex = descriptorIndex;
-  }
-
-  /** Returns the name. */
-  public String getName() {
-    String result = null;
-    Constant c = getConstant(_nameIndex);
-    if (c instanceof UTF8Constant) {
-      result = ((UTF8Constant) c).getString();
+    /**
+     * Creates an instance for the specified name and type or method descriptor.
+     * 
+     * @param pool
+     *            Constant pool. Needed to resolve references.
+     * @param nameIndex
+     *            Index of the name in the pool.
+     * @param descriptorIndex
+     *            Index of the type or method descriptor in the pool.
+     */
+    public NameAndTypeConstant(Constant[] pool, int nameIndex,
+            int descriptorIndex) {
+        super(pool);
+        _nameIndex = nameIndex;
+        _descriptorIndex = descriptorIndex;
     }
-    return result;
-  }
 
-  /** Returns the type or method descriptor. */
-  public String getDescriptor() {
-    String result = null;
-    Constant c = getConstant(_descriptorIndex);
-    if (c instanceof UTF8Constant) {
-      result = ((UTF8Constant) c).getString();
+    /** Returns the name. */
+    public String getName() {
+        String result = null;
+        Constant c = getConstant(_nameIndex);
+        if (c instanceof UTF8Constant) {
+            result = ((UTF8Constant) c).getString();
+        }
+        return result;
     }
-    return result;
-  }
 
-  /** Returns constant type, name, and descriptor. */
-  public String toString() {
-    return "CONSTANT_NameAndType: " + getName() + ", " + getDescriptor();
-  }
-} //class
+    /** Returns the type or method descriptor. */
+    public String getDescriptor() {
+        String result = null;
+        Constant c = getConstant(_descriptorIndex);
+        if (c instanceof UTF8Constant) {
+            result = ((UTF8Constant) c).getString();
+        }
+        return result;
+    }
+
+    /** Returns constant type, name, and descriptor. */
+    public String toString() {
+        return "CONSTANT_NameAndType: " + getName() + ", " + getDescriptor();
+    }
+} // class

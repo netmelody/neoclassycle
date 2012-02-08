@@ -40,72 +40,72 @@ import org.netmelody.neoclassycle.util.StringPattern;
 
 public class CheckCyclesStatement implements Statement
 {
-  private final StringPattern _set;
-  private final int _maximumSize;
-  private final boolean _packageCycles;
-  private final SetDefinitionRepository _repository;
-  
-  public CheckCyclesStatement(StringPattern set, int size, boolean cycles, 
-                              SetDefinitionRepository repository)
-  {
-    _set = set;
-    _maximumSize = size;
-    _packageCycles = cycles;
-    _repository = repository;
-  }
+    private final StringPattern _set;
+    private final int _maximumSize;
+    private final boolean _packageCycles;
+    private final SetDefinitionRepository _repository;
 
-  public Result execute(AtomicVertex[] graph)
-  {
-    List filteredGraph = new ArrayList();
-    for (int i = 0; i < graph.length; i++)
+    public CheckCyclesStatement(StringPattern set, int size, boolean cycles,
+            SetDefinitionRepository repository)
     {
-      if (_set.matches(((NameAttributes) graph[i].getAttributes()).getName()))
-      {
-        filteredGraph.add(graph[i]);
-      }
+        _set = set;
+        _maximumSize = size;
+        _packageCycles = cycles;
+        _repository = repository;
     }
-    graph = (AtomicVertex[]) filteredGraph.toArray(new AtomicVertex[0]);
-    if (_packageCycles)
-    {
-      PackageProcessor processor = new PackageProcessor();
-      processor.deepSearchFirst(graph);
-      graph = processor.getGraph();
-    }
-    StrongComponentAnalyser analyser = new StrongComponentAnalyser(graph);
-    Vertex[] condensedGraph = analyser.getCondensedGraph();
-    CyclesResult result = new CyclesResult(createStatement(), _packageCycles);
-    for (int i = 0; i < condensedGraph.length; i++)
-    {
-      StrongComponent strongComponent = (StrongComponent) condensedGraph[i];
-      if (strongComponent.getNumberOfVertices() > _maximumSize)
-      {
-        result.addCycle(strongComponent);
-      }
-    }
-    return result;
-  }
 
-  public String toString()
-  {
-    return createStatement();
-  }
-  
-  private String createStatement()
-  {
-    StringBuffer buffer = new StringBuffer();
-    buffer.append(DependencyDefinitionParser.CHECK_KEY_WORD).append(' ');
-    if (_packageCycles)
+    public Result execute(AtomicVertex[] graph)
     {
-      buffer.append(DependencyDefinitionParser.PACKAGE_CYCLES_KEY_WORD);
-    } else
-    {
-      buffer.append(DependencyDefinitionParser.CLASS_CYCLES_KEY_WORD);
+        List filteredGraph = new ArrayList();
+        for (int i = 0; i < graph.length; i++)
+        {
+            if (_set.matches(((NameAttributes) graph[i].getAttributes()).getName()))
+            {
+                filteredGraph.add(graph[i]);
+            }
+        }
+        graph = (AtomicVertex[]) filteredGraph.toArray(new AtomicVertex[0]);
+        if (_packageCycles)
+        {
+            PackageProcessor processor = new PackageProcessor();
+            processor.deepSearchFirst(graph);
+            graph = processor.getGraph();
+        }
+        StrongComponentAnalyser analyser = new StrongComponentAnalyser(graph);
+        Vertex[] condensedGraph = analyser.getCondensedGraph();
+        CyclesResult result = new CyclesResult(createStatement(), _packageCycles);
+        for (int i = 0; i < condensedGraph.length; i++)
+        {
+            StrongComponent strongComponent = (StrongComponent) condensedGraph[i];
+            if (strongComponent.getNumberOfVertices() > _maximumSize)
+            {
+                result.addCycle(strongComponent);
+            }
+        }
+        return result;
     }
-    buffer.append(" > ").append(_maximumSize).append(' ');
-    buffer.append(DependencyDefinitionParser.IN_KEY_WORD).append(' ');
-    buffer.append(_repository.toString(_set));
-    return new String(buffer);
-  }
 
-  
+    public String toString()
+    {
+        return createStatement();
+    }
+
+    private String createStatement()
+    {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(DependencyDefinitionParser.CHECK_KEY_WORD).append(' ');
+        if (_packageCycles)
+        {
+            buffer.append(DependencyDefinitionParser.PACKAGE_CYCLES_KEY_WORD);
+        }
+        else
+        {
+            buffer.append(DependencyDefinitionParser.CLASS_CYCLES_KEY_WORD);
+        }
+        buffer.append(" > ").append(_maximumSize).append(' ');
+        buffer.append(DependencyDefinitionParser.IN_KEY_WORD).append(' ');
+        buffer.append(_repository.toString(_set));
+        return new String(buffer);
+    }
+
 }

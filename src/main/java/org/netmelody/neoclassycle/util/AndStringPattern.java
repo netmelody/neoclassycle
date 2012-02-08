@@ -27,38 +27,38 @@ package org.netmelody.neoclassycle.util;
 /**
  * Logical AND Operation on a sequence of {@link StringPattern StringPatterns}.
  * 
- * @author  Franz-Josef Elmer
+ * @author Franz-Josef Elmer
  */
 public class AndStringPattern extends StringPatternSequence
 {
-  /**
-   * Creates instance with specified patterns.
-   */
-  public AndStringPattern(StringPattern... pattern)
-  {
-    super(pattern);
-  }
-  
-  /**
-   * Return <code>false</code> if a pattern in the sequence returns 
-   * <code>false</code>. Otherwise <code>true</code> is returned.
-   */
-  public boolean matches(String string)
-  {
-    boolean result = true;
-    for (int i = 0, n = _patterns.size(); i < n; i++)
+    /**
+     * Creates instance with specified patterns.
+     */
+    public AndStringPattern(StringPattern... pattern)
     {
-      if (!((StringPattern) _patterns.get(i)).matches(string))
-      {
-        result = false;
-        break;
-      }
+        super(pattern);
     }
-    return result;
-  }
 
-  protected String getOperatorSymbol()
-  {
-    return " & ";
-  }
+    /**
+     * Return <code>false</code> if a pattern in the sequence returns
+     * <code>false</code>. Otherwise <code>true</code> is returned.
+     */
+    public boolean matches(String string)
+    {
+        boolean result = true;
+        for (int i = 0, n = _patterns.size(); i < n; i++)
+        {
+            if (!((StringPattern) _patterns.get(i)).matches(string))
+            {
+                result = false;
+                break;
+            }
+        }
+        return result;
+    }
+
+    protected String getOperatorSymbol()
+    {
+        return " & ";
+    }
 }

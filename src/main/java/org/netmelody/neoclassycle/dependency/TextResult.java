@@ -27,40 +27,40 @@ package org.netmelody.neoclassycle.dependency;
 /**
  * Result as a text.
  * 
- * @author  Franz-Josef Elmer
+ * @author Franz-Josef Elmer
  */
 public class TextResult implements Result
 {
-  private final String _text;
-  private final boolean _ok;
-  
-  /**
-   * Creates an instance with specified text which is ok.
-   */
-  public TextResult(String text)
-  {
-    this(text, true);
-  }
+    private final String _text;
+    private final boolean _ok;
 
-  /**
-   * Creates an instance with specified text and specified OK flag.
-   */
-  public TextResult(String text, boolean ok)
-  {
-    _text = text;
-    _ok = ok;
-  }
+    /**
+     * Creates an instance with specified text which is ok.
+     */
+    public TextResult(String text)
+    {
+        this(text, true);
+    }
 
-  public boolean isOk()
-  {
-    return _ok;
-  }
+    /**
+     * Creates an instance with specified text and specified OK flag.
+     */
+    public TextResult(String text, boolean ok)
+    {
+        _text = text;
+        _ok = ok;
+    }
 
-  /**
-   * Returns the text specified in the constructor.
-   */
-  public String toString()
-  {
-    return _text;
-  }
+    public boolean isOk()
+    {
+        return _ok;
+    }
+
+    /**
+     * Returns the text specified in the constructor.
+     */
+    public String toString()
+    {
+        return _text;
+    }
 }

@@ -32,17 +32,20 @@ import org.netmelody.neoclassycle.graph.StrongComponent;
  * 
  * @author Franz-Josef Elmer
  */
-public interface AtomicVertexRenderer 
+public interface AtomicVertexRenderer
 {
-  /** 
-   * Renders an {@link AtomicVertex}.
-   * @param vertex Vertex to be rendered.
-   * @param cycle Cycle to which <code>vertex</code> belongs. Will be
-   *        <code>null</code> if it does not belong to a cycle (i.e.
-   *        a strong component with more than one element). 
-   * @param layerIndex Index of the layer to which <code>vertex</code>
-   *        belongs.
-   */
-  public String render(AtomicVertex vertex, StrongComponent cycle, 
-                       int layerIndex);
+    /**
+     * Renders an {@link AtomicVertex}.
+     * 
+     * @param vertex
+     *            Vertex to be rendered.
+     * @param cycle
+     *            Cycle to which <code>vertex</code> belongs. Will be
+     *            <code>null</code> if it does not belong to a cycle (i.e. a
+     *            strong component with more than one element).
+     * @param layerIndex
+     *            Index of the layer to which <code>vertex</code> belongs.
+     */
+    public String render(AtomicVertex vertex, StrongComponent cycle,
+            int layerIndex);
 }

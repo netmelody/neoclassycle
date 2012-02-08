@@ -24,124 +24,145 @@
  */
 package org.netmelody.neoclassycle;
 
-
 /**
  * Immutable class holding the attributes of a class vertex. They are
- * <ul><li>fully-qualified class name
- *     <li>type (interface, abstract, concrete, unknown)
- *     <li>flag <tt>innerClass</tt>
- *     <li>size of the class file
+ * <ul>
+ * <li>fully-qualified class name
+ * <li>type (interface, abstract, concrete, unknown)
+ * <li>flag <tt>innerClass</tt>
+ * <li>size of the class file
  * </ul>
  * 
  * @author Franz-Josef Elmer
  */
 public class ClassAttributes extends NameAndSourceAttributes {
-  /** Type constant. */
-  public static final String INTERFACE = "interface",
-                      ABSTRACT_CLASS = "abstract class",
-                      CLASS = "class",
-                      UNKNOWN = "unknown external class";
+    /** Type constant. */
+    public static final String INTERFACE = "interface",
+            ABSTRACT_CLASS = "abstract class",
+            CLASS = "class",
+            UNKNOWN = "unknown external class";
 
-  private final String _type;
-  private final boolean _innerClass;
-  private final int _size;
+    private final String _type;
+    private final boolean _innerClass;
+    private final int _size;
 
-  /**
-   * Creates an instance based on the specified name, type, and size.
-   * The innerclass flag will be set if the name contains a '$' character.
-   * @param name Fully-qualified class name.
-   * @param source Optional source of the class file. Can be <code>null</code>.
-   * @param type Type.
-   * @param size Size.
-   */
-  public ClassAttributes(String name, String source, String type, int size) {
-    super(name);
-    if (source != null)
-    {
-      addSource(source);
+    /**
+     * Creates an instance based on the specified name, type, and size. The
+     * innerclass flag will be set if the name contains a '$' character.
+     * 
+     * @param name
+     *            Fully-qualified class name.
+     * @param source
+     *            Optional source of the class file. Can be <code>null</code>.
+     * @param type
+     *            Type.
+     * @param size
+     *            Size.
+     */
+    public ClassAttributes(String name, String source, String type, int size) {
+        super(name);
+        if (source != null)
+        {
+            addSource(source);
+        }
+        _type = type;
+        _innerClass = name != null && name.indexOf('$') > 0;
+        _size = size;
     }
-    _type = type;
-    _innerClass = name != null && name.indexOf('$') > 0;
-    _size = size;
-  }
-  
-  /**
-   * Creates an instance of the type {@link #INTERFACE}.
-   * @param name Fully-qualified class name.
-   * @param source Optional source of the class file. Can be <code>null</code>.
-   * @param size Size of the class file.
-   * @return a new instance.
-   */
-  public static ClassAttributes createInterface(String name, String source, 
-                                                int size) {
-    return new ClassAttributes(name, source, INTERFACE, size);
-  }
 
-  /**
-   * Creates an instance of the type {@link #ABSTRACT_CLASS}.
-   * @param name Fully-qualified class name.
-   * @param source Optional source of the class file. Can be <code>null</code>.
-   * @param size Size of the class file.
-   * @return a new instance.
-   */
-  public static ClassAttributes createAbstractClass(String name, String source, 
-                                                    int size) {
-    return new ClassAttributes(name, source, ABSTRACT_CLASS, size);
-  }
-
-  /**
-   * Creates an instance of the type {@link #CLASS}.
-   * @param name Fully-qualified class name.
-   * @param source Optional source of the class file. Can be <code>null</code>.
-   * @param size Size of the class file.
-   * @return a new instance.
-   */
-  public static ClassAttributes createClass(String name, String source, 
-                                            int size) {
-    return new ClassAttributes(name, source, CLASS, size);
-  }
-
-  /**
-   * Creates an instance of the type {@link #UNKNOWN}.
-   * @param name Fully-qualified class name.
-   * @param size Size of the class file.
-   * @return a new instance.
-   */
-  public static ClassAttributes createUnknownClass(String name, int size) {
-    return new ClassAttributes(name, null, UNKNOWN, size);
-  }
-
-  /** 
-   * Returns the class type. 
-   * @return either {@link #INTERFACE}, {@link #ABSTRACT_CLASS}, 
-   *         {@link #CLASS}, or {@link #UNKNOWN}.
-   */ 
-  public String getType() {
-    return _type;
-  }
-
-  /** Returns <tt>true</tt> in the case of an inner class. */
-  public boolean isInnerClass() {
-    return _innerClass;
-  }
-
-  /** Returns the size of the class file in bytes. */
-  public int getSize() {
-    return _size;
-  }
-  
-  /** Returns the attributes as a string for pretty printing. */
-  public String toString() {
-    StringBuffer buffer = new StringBuffer(_innerClass ? "inner " : "");
-    buffer.append(_type).append(' ').append(getName());
-    if (_size > 0) {
-      buffer.append(" (").append(_size).append(" bytes)");
+    /**
+     * Creates an instance of the type {@link #INTERFACE}.
+     * 
+     * @param name
+     *            Fully-qualified class name.
+     * @param source
+     *            Optional source of the class file. Can be <code>null</code>.
+     * @param size
+     *            Size of the class file.
+     * @return a new instance.
+     */
+    public static ClassAttributes createInterface(String name, String source,
+            int size) {
+        return new ClassAttributes(name, source, INTERFACE, size);
     }
-    String sources = getSources();
-    if (sources.length() > 0)
-    {
-      buffer.append(" sources: ").append(sources);
+
+    /**
+     * Creates an instance of the type {@link #ABSTRACT_CLASS}.
+     * 
+     * @param name
+     *            Fully-qualified class name.
+     * @param source
+     *            Optional source of the class file. Can be <code>null</code>.
+     * @param size
+     *            Size of the class file.
+     * @return a new instance.
+     */
+    public static ClassAttributes createAbstractClass(String name, String source,
+            int size) {
+        return new ClassAttributes(name, source, ABSTRACT_CLASS, size);
     }
-    return new String(buffer);
-  }
-} //class
+
+    /**
+     * Creates an instance of the type {@link #CLASS}.
+     * 
+     * @param name
+     *            Fully-qualified class name.
+     * @param source
+     *            Optional source of the class file. Can be <code>null</code>.
+     * @param size
+     *            Size of the class file.
+     * @return a new instance.
+     */
+    public static ClassAttributes createClass(String name, String source,
+            int size) {
+        return new ClassAttributes(name, source, CLASS, size);
+    }
+
+    /**
+     * Creates an instance of the type {@link #UNKNOWN}.
+     * 
+     * @param name
+     *            Fully-qualified class name.
+     * @param size
+     *            Size of the class file.
+     * @return a new instance.
+     */
+    public static ClassAttributes createUnknownClass(String name, int size) {
+        return new ClassAttributes(name, null, UNKNOWN, size);
+    }
+
+    /**
+     * Returns the class type.
+     * 
+     * @return either {@link #INTERFACE}, {@link #ABSTRACT_CLASS},
+     *         {@link #CLASS}, or {@link #UNKNOWN}.
+     */
+    public String getType() {
+        return _type;
+    }
+
+    /** Returns <tt>true</tt> in the case of an inner class. */
+    public boolean isInnerClass() {
+        return _innerClass;
+    }
+
+    /** Returns the size of the class file in bytes. */
+    public int getSize() {
+        return _size;
+    }
+
+    /** Returns the attributes as a string for pretty printing. */
+    public String toString() {
+        StringBuffer buffer = new StringBuffer(_innerClass ? "inner " : "");
+        buffer.append(_type).append(' ').append(getName());
+        if (_size > 0) {
+            buffer.append(" (").append(_size).append(" bytes)");
+        }
+        String sources = getSources();
+        if (sources.length() > 0)
+        {
+            buffer.append(" sources: ").append(sources);
+        }
+        return new String(buffer);
+    }
+} // class

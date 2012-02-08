@@ -30,25 +30,28 @@ package org.netmelody.neoclassycle.classfile;
  * @author Franz-Josef Elmer
  */
 public class UTF8Constant extends Constant {
-  private final String _string;
+    private final String _string;
 
-  /**
-   * Creates an instance for the specified string.
-   * @param pool Constant pool.
-   * @param string wrapped string.
-   */
-  public UTF8Constant(Constant[] pool, String string) {
-    super(pool);
-    _string = string;
-  }
+    /**
+     * Creates an instance for the specified string.
+     * 
+     * @param pool
+     *            Constant pool.
+     * @param string
+     *            wrapped string.
+     */
+    public UTF8Constant(Constant[] pool, String string) {
+        super(pool);
+        _string = string;
+    }
 
-  /** Returns the wrapped string. */
-  public String getString() {
-    return _string;
-  }
+    /** Returns the wrapped string. */
+    public String getString() {
+        return _string;
+    }
 
-  /** Returns the constant type and the wrapped string. */
-  public String toString() {
-    return "CONSTANT_Utf8: " + _string;
-  }
-} //class
+    /** Returns the constant type and the wrapped string. */
+    public String toString() {
+        return "CONSTANT_Utf8: " + _string;
+    }
+} // class

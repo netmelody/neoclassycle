@@ -30,65 +30,66 @@ import java.util.Map;
 /**
  * Analyser of a directed graph for finding its strong components.
  * 
- * @author  Franz-Josef Elmer
+ * @author Franz-Josef Elmer
  */
 public class StrongComponentAnalyser
 {
-  private final AtomicVertex[] _graph;
-  private StrongComponent[] _components;
-  private HashMap _layerMap;
-  
-  /**
-   * Creates an instance for the specified graph.
-   */
-  public StrongComponentAnalyser(AtomicVertex[] graph)
-  {
-    _graph = graph;
-    //Arrays.sort(_graph, null);
-  }
-  
-  /** Returns the original graph. That is, the argument of the constructor. */
-  public AtomicVertex[] getGraph()
-  {
-    return _graph;
-  }
+    private final AtomicVertex[] _graph;
+    private StrongComponent[] _components;
+    private HashMap _layerMap;
 
-  /** Returns the graph of strong components. */  
-  public StrongComponent[] getCondensedGraph()
-  {
-    if (_components == null)
+    /**
+     * Creates an instance for the specified graph.
+     */
+    public StrongComponentAnalyser(AtomicVertex[] graph)
     {
-      StrongComponentProcessor processor = new StrongComponentProcessor(true);
-      processor.deepSearchFirst(_graph);
-      _components = processor.getStrongComponents();
+        _graph = graph;
+        // Arrays.sort(_graph, null);
     }
-    return _components;
-  }
-  
-  /**
-   * Returns the maping of the nodes of the original graph onto a layer index
-   * (i.e.&nbsp;length of the longest path of the condensed graph). 
-   * @return a map where the keys are instances of {@link AtomicVertex}
-   *         and the values are instances of <tt>Integer</tt>.
-   */
-  public Map getLayerMap() 
-  {
-    if (_layerMap == null)
+
+    /** Returns the original graph. That is, the argument of the constructor. */
+    public AtomicVertex[] getGraph()
     {
-      StrongComponent[] components = getCondensedGraph();
-      new LongestWalkProcessor().deepSearchFirst(components);
-      _layerMap = new HashMap();
-      for (int i = 0; i < components.length; i++) 
-      {
-        StrongComponent component = components[i];
-        Integer layer = new Integer(component.getLongestWalk());
-        for (int j = 0, n = component.getNumberOfVertices(); j < n; j++) 
+        return _graph;
+    }
+
+    /** Returns the graph of strong components. */
+    public StrongComponent[] getCondensedGraph()
+    {
+        if (_components == null)
         {
-          _layerMap.put(component.getVertex(j), layer);
+            StrongComponentProcessor processor = new StrongComponentProcessor(true);
+            processor.deepSearchFirst(_graph);
+            _components = processor.getStrongComponents();
         }
-      }
+        return _components;
     }
-    return _layerMap;
-  }
+
+    /**
+     * Returns the maping of the nodes of the original graph onto a layer index
+     * (i.e.&nbsp;length of the longest path of the condensed graph).
+     * 
+     * @return a map where the keys are instances of {@link AtomicVertex} and
+     *         the values are instances of <tt>Integer</tt>.
+     */
+    public Map getLayerMap()
+    {
+        if (_layerMap == null)
+        {
+            StrongComponent[] components = getCondensedGraph();
+            new LongestWalkProcessor().deepSearchFirst(components);
+            _layerMap = new HashMap();
+            for (int i = 0; i < components.length; i++)
+            {
+                StrongComponent component = components[i];
+                Integer layer = new Integer(component.getLongestWalk());
+                for (int j = 0, n = component.getNumberOfVertices(); j < n; j++)
+                {
+                    _layerMap.put(component.getVertex(j), layer);
+                }
+            }
+        }
+        return _layerMap;
+    }
 
 }

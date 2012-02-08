@@ -2,5 +2,5 @@ package example;
 
 public class A
 {
-  String s = "hello";
+    String s = "hello";
 }

@@ -25,32 +25,32 @@
 package org.netmelody.neoclassycle.graph;
 
 /**
- * @author  Franz-Josef Elmer
+ * @author Franz-Josef Elmer
  */
 public abstract class NameAttributes implements Attributes
 {
-  private final String _name;
-  
-  public NameAttributes(String name)
-  {
-    _name = name;
-  }
-  
-  /** Returns the name. */
-  public String getName() {
-    return _name;
-  }
+    private final String _name;
 
-  public int compareTo(Object object)
-  {
-    int result = -1;
-    if (object instanceof NameAttributes && _name != null)
+    public NameAttributes(String name)
     {
-      result = _name.compareTo(((NameAttributes) object).getName());
+        _name = name;
     }
-    return result;
-  }
-  
-  public abstract int getSize();
+
+    /** Returns the name. */
+    public String getName() {
+        return _name;
+    }
+
+    public int compareTo(Object object)
+    {
+        int result = -1;
+        if (object instanceof NameAttributes && _name != null)
+        {
+            result = _name.compareTo(((NameAttributes) object).getName());
+        }
+        return result;
+    }
+
+    public abstract int getSize();
 
 }

@@ -29,37 +29,40 @@ import java.text.MessageFormat;
 import org.netmelody.neoclassycle.graph.StrongComponent;
 
 /**
- * Renderer of a {@link StrongComponent}. The renderer is based on a 
- * <tt>java.text.MessageFormat</tt> template. 
+ * Renderer of a {@link StrongComponent}. The renderer is based on a
+ * <tt>java.text.MessageFormat</tt> template.
  * 
  * @author Franz-Josef Elmer
  */
 public class TemplateBasedStrongComponentRenderer
-                                      extends AbstractStrongComponentRenderer {
-  private final MessageFormat _format;
-  private final int _minimumNumber;
+        extends AbstractStrongComponentRenderer {
+    private final MessageFormat _format;
+    private final int _minimumNumber;
 
-  /** 
-   * Creates an instance for the specified template. 
-   * @param template The template.
-   * @param minimumSize Minimum number of vertices the {@link StrongComponent}
-   *        should have to be rendered.
-   */
-  public TemplateBasedStrongComponentRenderer(String template,
-                                              int minimumNumber) {
-    _format = new MessageFormat(template);
-    _minimumNumber = minimumNumber;
-  }
-
-  public String render(StrongComponent component) {
-    String result = "";
-    if (component.getNumberOfVertices() >= _minimumNumber) {
-      String[] values = new String[3];
-      values[0] = createName(component);
-      values[1] = Integer.toString(component.getNumberOfVertices());
-      values[2] = Integer.toString(component.getLongestWalk());
-      result = _format.format(values);
+    /**
+     * Creates an instance for the specified template.
+     * 
+     * @param template
+     *            The template.
+     * @param minimumSize
+     *            Minimum number of vertices the {@link StrongComponent} should
+     *            have to be rendered.
+     */
+    public TemplateBasedStrongComponentRenderer(String template,
+            int minimumNumber) {
+        _format = new MessageFormat(template);
+        _minimumNumber = minimumNumber;
     }
-    return result;
-  }
-} //class
+
+    public String render(StrongComponent component) {
+        String result = "";
+        if (component.getNumberOfVertices() >= _minimumNumber) {
+            String[] values = new String[3];
+            values[0] = createName(component);
+            values[1] = Integer.toString(component.getNumberOfVertices());
+            values[2] = Integer.toString(component.getLongestWalk());
+            result = _format.format(values);
+        }
+        return result;
+    }
+} // class

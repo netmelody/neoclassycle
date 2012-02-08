@@ -31,50 +31,50 @@ import java.util.List;
 /**
  * Sequence of {@link StringPattern StringPatterns}.
  * 
- * @author  Franz-Josef Elmer
+ * @author Franz-Josef Elmer
  */
 public abstract class StringPatternSequence implements StringPattern
 {
-  protected final List<StringPattern> _patterns = new ArrayList<StringPattern>();
-  
-  protected StringPatternSequence(StringPattern[] pattern)
-  {
-    _patterns.addAll(Arrays.asList(pattern));
-  }
-  
-  /**
-   * Appends the specified pattern.
-   */
-  public void appendPattern(StringPattern pattern)
-  {
-    _patterns.add(pattern);
-  }
-  
-  public String toString()
-  {
-    StringBuffer buffer = new StringBuffer();
-    int size = _patterns.size();
-    String operatorSymbol = getOperatorSymbol();
-    boolean bracketsNeeded = size > 1 && operatorSymbol.equals(" & ");
-    if (bracketsNeeded)
+    protected final List<StringPattern> _patterns = new ArrayList<StringPattern>();
+
+    protected StringPatternSequence(StringPattern[] pattern)
     {
-      buffer.append('(');
+        _patterns.addAll(Arrays.asList(pattern));
     }
-    for (int i = 0; i < size; i++)
+
+    /**
+     * Appends the specified pattern.
+     */
+    public void appendPattern(StringPattern pattern)
     {
-      if (i != 0)
-      {
-        buffer.append(operatorSymbol);
-      }
-      buffer.append(_patterns.get(i));
+        _patterns.add(pattern);
     }
-    return new String(bracketsNeeded ? buffer.append(')') : buffer);
-  }
-  
-  /**
-   * Returns the operator symbol for pretty printing. Needed by
-   * <code>toString()</code>.
-   */
-  protected abstract String getOperatorSymbol();
+
+    public String toString()
+    {
+        StringBuffer buffer = new StringBuffer();
+        int size = _patterns.size();
+        String operatorSymbol = getOperatorSymbol();
+        boolean bracketsNeeded = size > 1 && operatorSymbol.equals(" & ");
+        if (bracketsNeeded)
+        {
+            buffer.append('(');
+        }
+        for (int i = 0; i < size; i++)
+        {
+            if (i != 0)
+            {
+                buffer.append(operatorSymbol);
+            }
+            buffer.append(_patterns.get(i));
+        }
+        return new String(bracketsNeeded ? buffer.append(')') : buffer);
+    }
+
+    /**
+     * Returns the operator symbol for pretty printing. Needed by
+     * <code>toString()</code>.
+     */
+    protected abstract String getOperatorSymbol();
 
 }

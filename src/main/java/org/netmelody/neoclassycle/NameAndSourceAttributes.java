@@ -33,56 +33,56 @@ import org.netmelody.neoclassycle.graph.NameAttributes;
 
 /**
  * Abstract super class of {@link Attributes} with a name and a set of sources.
- *
- * @author  Franz-Josef Elmer
+ * 
+ * @author Franz-Josef Elmer
  */
 public abstract class NameAndSourceAttributes extends NameAttributes
 {
-  private final Set _sources = new TreeSet();
+    private final Set _sources = new TreeSet();
 
-  /**
-   * Creates an instance for the specified name. Initially there are no
-   * sources.
-   */
-  public NameAndSourceAttributes(String name)
-  {
-    super(name);
-  }
-
-  /**
-   * Adds the specified source.
-   */
-  protected void addSource(String source)
-  {
-    _sources.add(source);
-  }
-
-  /**
-   * Adds the source of the specified attributes.
-   */
-  protected void addSourcesOf(NameAndSourceAttributes attributes)
-  {
-    _sources.addAll(attributes._sources);
-  }
-
-  /**
-   * Returns a comma separated list of sources.
-   */
-  public String getSources()
-  {
-    StringBuffer buffer = new StringBuffer();
-    for (Iterator iterator = _sources.iterator(); iterator.hasNext();)
+    /**
+     * Creates an instance for the specified name. Initially there are no
+     * sources.
+     */
+    public NameAndSourceAttributes(String name)
     {
-      String source = (String) iterator.next();
-      if (source.length() > 0)
-      {
-        if (buffer.length() > 0)
-        {
-          buffer.append(", ");
-        }
-        buffer.append(source);
-      }
+        super(name);
     }
-    return buffer.toString();
-  }
+
+    /**
+     * Adds the specified source.
+     */
+    protected void addSource(String source)
+    {
+        _sources.add(source);
+    }
+
+    /**
+     * Adds the source of the specified attributes.
+     */
+    protected void addSourcesOf(NameAndSourceAttributes attributes)
+    {
+        _sources.addAll(attributes._sources);
+    }
+
+    /**
+     * Returns a comma separated list of sources.
+     */
+    public String getSources()
+    {
+        StringBuffer buffer = new StringBuffer();
+        for (Iterator iterator = _sources.iterator(); iterator.hasNext();)
+        {
+            String source = (String) iterator.next();
+            if (source.length() > 0)
+            {
+                if (buffer.length() > 0)
+                {
+                    buffer.append(", ");
+                }
+                buffer.append(source);
+            }
+        }
+        return buffer.toString();
+    }
 }

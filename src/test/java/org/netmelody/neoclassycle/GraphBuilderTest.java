@@ -11,113 +11,113 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class GraphBuilderTest{
-  
-  @Test
-  public void testTwoClassesWithSameNameButDifferentSources()
-  {
-    UnresolvedNode[] nodes = createNodes("a:s1:A -> b c a; a:s2 -> b d");
-    
-    AtomicVertex[] graph = GraphBuilder.createGraph(nodes, false);
-    
-    assertEquals(1, graph.length);
-    ClassAttributes attributes = (ClassAttributes) graph[0].getAttributes();
-    assertEquals("a", attributes.getName());
-    assertEquals("s1, s2", attributes.getSources()); 
-    assertEquals(2, attributes.getSize()); 
-    assertEquals(ClassAttributes.CLASS, attributes.getType());
-  }
-  
-  @Test
-  public void testTwoClassesWithSameNameOneWithSourceOneWithoutSource()
-  {
-    UnresolvedNode[] nodes = createNodes("a:s1 -> b c a; a: :A -> b d");
-    
-    AtomicVertex[] graph = GraphBuilder.createGraph(nodes, false);
-    
-    assertEquals(1, graph.length);
-    ClassAttributes attributes = (ClassAttributes) graph[0].getAttributes();
-    assertEquals("a", attributes.getName());
-    assertEquals("s1", attributes.getSources()); 
-    assertEquals(2, attributes.getSize()); 
-    assertEquals(ClassAttributes.ABSTRACT_CLASS, attributes.getType());
-  }
-  
-  @Test
-  public void testSupressedMergingOfInnerclasses()
-  {
-    UnresolvedNode[] nodes = createNodes("a:s:A -> b c a$1; a$1:s -> b d");
-    
-    AtomicVertex[] graph = GraphBuilder.createGraph(nodes, false);
-    
-    assertEquals(2, graph.length);
-    AtomicVertex node1 = graph[0];
-    AtomicVertex node2 = graph[1];
-    if (!"a".equals(((ClassAttributes)node1.getAttributes()).getName())) {
-        node1 = graph[1];
-        node2 = graph[0];
-    }
-    
-    assertEquals(3, node1.getNumberOfOutgoingArcs());
-    assertEquals(0, node1.getNumberOfIncomingArcs());
-    ClassAttributes attributes = (ClassAttributes) node1.getAttributes();
-    assertEquals("a", attributes.getName());
-    assertEquals(2, node2.getNumberOfOutgoingArcs());
-    assertEquals(1, node2.getNumberOfIncomingArcs());
-    attributes = (ClassAttributes) node2.getAttributes();
-    assertEquals("a$1", attributes.getName());
-  }
-  
-  @Test
-  public void testMergingOfInnerclasses()
-  {
-    UnresolvedNode[] nodes = createNodes("a:s:A -> b c a$1; a$1:s -> b d");
-    
-    AtomicVertex[] graph = GraphBuilder.createGraph(nodes, true);
-    
-    assertEquals(1, graph.length);
-    AtomicVertex node = graph[0];
-    assertEquals(3, node.getNumberOfOutgoingArcs());
-    assertEquals(0, node.getNumberOfIncomingArcs());
-    ClassAttributes attributes = (ClassAttributes) node.getAttributes();
-    assertEquals("a", attributes.getName());
-    assertEquals(4, attributes.getSize());
-    assertEquals(ClassAttributes.ABSTRACT_CLASS, attributes.getType());
-  }
-  
-  private UnresolvedNode[] createNodes(String description)
-  {
-    List<UnresolvedNode> nodes = new ArrayList<UnresolvedNode>();
-    StringTokenizer tokenizer = new StringTokenizer(description, ";");
-    while (tokenizer.hasMoreTokens())
+public class GraphBuilderTest {
+
+    @Test
+    public void testTwoClassesWithSameNameButDifferentSources()
     {
-      nodes.add(createNode(tokenizer.nextToken().trim()));
+        UnresolvedNode[] nodes = createNodes("a:s1:A -> b c a; a:s2 -> b d");
+
+        AtomicVertex[] graph = GraphBuilder.createGraph(nodes, false);
+
+        assertEquals(1, graph.length);
+        ClassAttributes attributes = (ClassAttributes) graph[0].getAttributes();
+        assertEquals("a", attributes.getName());
+        assertEquals("s1, s2", attributes.getSources());
+        assertEquals(2, attributes.getSize());
+        assertEquals(ClassAttributes.CLASS, attributes.getType());
     }
-    return (UnresolvedNode[]) nodes.toArray(new UnresolvedNode[nodes.size()]);
-  }
-  
-  private UnresolvedNode createNode(String description)
-  {
-    UnresolvedNode node = new UnresolvedNode();
-    int indexOfArrow = description.indexOf("->");
-    
-    String links = description.substring(indexOfArrow + 2).trim();
-    StringTokenizer tokenizer = new StringTokenizer(links);
-    while (tokenizer.hasMoreTokens())
+
+    @Test
+    public void testTwoClassesWithSameNameOneWithSourceOneWithoutSource()
     {
-      node.addLinkTo(tokenizer.nextToken());
+        UnresolvedNode[] nodes = createNodes("a:s1 -> b c a; a: :A -> b d");
+
+        AtomicVertex[] graph = GraphBuilder.createGraph(nodes, false);
+
+        assertEquals(1, graph.length);
+        ClassAttributes attributes = (ClassAttributes) graph[0].getAttributes();
+        assertEquals("a", attributes.getName());
+        assertEquals("s1", attributes.getSources());
+        assertEquals(2, attributes.getSize());
+        assertEquals(ClassAttributes.ABSTRACT_CLASS, attributes.getType());
     }
-    String attributes = description.substring(0, indexOfArrow).trim();
-    tokenizer = new StringTokenizer(attributes, ":");
-    String name = tokenizer.nextToken();
-    String source = tokenizer.nextToken().trim();
-    if (source.length() == 0)
+
+    @Test
+    public void testSupressedMergingOfInnerclasses()
     {
-      source = null;
+        UnresolvedNode[] nodes = createNodes("a:s:A -> b c a$1; a$1:s -> b d");
+
+        AtomicVertex[] graph = GraphBuilder.createGraph(nodes, false);
+
+        assertEquals(2, graph.length);
+        AtomicVertex node1 = graph[0];
+        AtomicVertex node2 = graph[1];
+        if (!"a".equals(((ClassAttributes) node1.getAttributes()).getName())) {
+            node1 = graph[1];
+            node2 = graph[0];
+        }
+
+        assertEquals(3, node1.getNumberOfOutgoingArcs());
+        assertEquals(0, node1.getNumberOfIncomingArcs());
+        ClassAttributes attributes = (ClassAttributes) node1.getAttributes();
+        assertEquals("a", attributes.getName());
+        assertEquals(2, node2.getNumberOfOutgoingArcs());
+        assertEquals(1, node2.getNumberOfIncomingArcs());
+        attributes = (ClassAttributes) node2.getAttributes();
+        assertEquals("a$1", attributes.getName());
     }
-    boolean a = tokenizer.hasMoreTokens() && "A".equals(tokenizer.nextToken());
-    String type = a ? ClassAttributes.ABSTRACT_CLASS : ClassAttributes.CLASS;
-    node.setAttributes(new ClassAttributes(name, source, type, name.length()));
-    return node;
-  }
+
+    @Test
+    public void testMergingOfInnerclasses()
+    {
+        UnresolvedNode[] nodes = createNodes("a:s:A -> b c a$1; a$1:s -> b d");
+
+        AtomicVertex[] graph = GraphBuilder.createGraph(nodes, true);
+
+        assertEquals(1, graph.length);
+        AtomicVertex node = graph[0];
+        assertEquals(3, node.getNumberOfOutgoingArcs());
+        assertEquals(0, node.getNumberOfIncomingArcs());
+        ClassAttributes attributes = (ClassAttributes) node.getAttributes();
+        assertEquals("a", attributes.getName());
+        assertEquals(4, attributes.getSize());
+        assertEquals(ClassAttributes.ABSTRACT_CLASS, attributes.getType());
+    }
+
+    private UnresolvedNode[] createNodes(String description)
+    {
+        List<UnresolvedNode> nodes = new ArrayList<UnresolvedNode>();
+        StringTokenizer tokenizer = new StringTokenizer(description, ";");
+        while (tokenizer.hasMoreTokens())
+        {
+            nodes.add(createNode(tokenizer.nextToken().trim()));
+        }
+        return (UnresolvedNode[]) nodes.toArray(new UnresolvedNode[nodes.size()]);
+    }
+
+    private UnresolvedNode createNode(String description)
+    {
+        UnresolvedNode node = new UnresolvedNode();
+        int indexOfArrow = description.indexOf("->");
+
+        String links = description.substring(indexOfArrow + 2).trim();
+        StringTokenizer tokenizer = new StringTokenizer(links);
+        while (tokenizer.hasMoreTokens())
+        {
+            node.addLinkTo(tokenizer.nextToken());
+        }
+        String attributes = description.substring(0, indexOfArrow).trim();
+        tokenizer = new StringTokenizer(attributes, ":");
+        String name = tokenizer.nextToken();
+        String source = tokenizer.nextToken().trim();
+        if (source.length() == 0)
+        {
+            source = null;
+        }
+        boolean a = tokenizer.hasMoreTokens() && "A".equals(tokenizer.nextToken());
+        String type = a ? ClassAttributes.ABSTRACT_CLASS : ClassAttributes.CLASS;
+        node.setAttributes(new ClassAttributes(name, source, type, name.length()));
+        return node;
+    }
 }

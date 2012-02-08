@@ -29,42 +29,42 @@ import java.util.HashMap;
 import org.netmelody.neoclassycle.util.StringPattern;
 
 /**
- * @author  Franz-Josef Elmer
+ * @author Franz-Josef Elmer
  */
 class SetDefinitionRepository
 {
-  private final HashMap _nameToPatternMap = new HashMap();
-  private final HashMap _patternToNameMap = new HashMap();
-  
-  public int getNumberOfDefinitions() 
-  {
-    return _nameToPatternMap.size();
-  }
-  
-  public void put(String name, StringPattern pattern)
-  {
-    _nameToPatternMap.put(name, pattern);
-    _patternToNameMap.put(pattern, name);
-  }
-  
-  public StringPattern getPattern(String name)
-  {
-    return (StringPattern) _nameToPatternMap.get(name);
-  }
-  
-  public boolean contains(String name)
-  {
-    return _nameToPatternMap.containsKey(name);
-  }
-  
-  public String getName(StringPattern pattern)
-  {
-    return (String) _patternToNameMap.get(pattern);
-  }
-  
-  public String toString(StringPattern pattern) 
-  {
-    String name = getName(pattern);
-    return name == null ? pattern.toString() : name;
-  }
+    private final HashMap _nameToPatternMap = new HashMap();
+    private final HashMap _patternToNameMap = new HashMap();
+
+    public int getNumberOfDefinitions()
+    {
+        return _nameToPatternMap.size();
+    }
+
+    public void put(String name, StringPattern pattern)
+    {
+        _nameToPatternMap.put(name, pattern);
+        _patternToNameMap.put(pattern, name);
+    }
+
+    public StringPattern getPattern(String name)
+    {
+        return (StringPattern) _nameToPatternMap.get(name);
+    }
+
+    public boolean contains(String name)
+    {
+        return _nameToPatternMap.containsKey(name);
+    }
+
+    public String getName(StringPattern pattern)
+    {
+        return (String) _patternToNameMap.get(pattern);
+    }
+
+    public String toString(StringPattern pattern)
+    {
+        String name = getName(pattern);
+        return name == null ? pattern.toString() : name;
+    }
 }

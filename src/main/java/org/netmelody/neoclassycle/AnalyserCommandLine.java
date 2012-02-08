@@ -24,8 +24,6 @@
  */
 package org.netmelody.neoclassycle;
 
-
-
 /**
  * Process command line arguments and options for the main application
  * {@link Analyser}.
@@ -34,125 +32,136 @@ package org.netmelody.neoclassycle;
  */
 public class AnalyserCommandLine extends CommandLine
 {
-  private static final String XML_FILE = "-xmlFile=";
-  private static final String CSV_FILE = "-csvFile=";
-  private static final String TITLE = "-title=";
-  private boolean _packagesOnly;
-  private boolean _raw;
-  private boolean _cycles;
-  private boolean _strong;
-  private String _title;
-  private String _xmlFile;
-  private String _csvFile;
-  public AnalyserCommandLine(String[] args) 
-  {
-    super(args);
-    if (_title == null && _classFiles.length > 0) 
+    private static final String XML_FILE = "-xmlFile=";
+    private static final String CSV_FILE = "-csvFile=";
+    private static final String TITLE = "-title=";
+    private boolean _packagesOnly;
+    private boolean _raw;
+    private boolean _cycles;
+    private boolean _strong;
+    private String _title;
+    private String _xmlFile;
+    private String _csvFile;
+
+    public AnalyserCommandLine(String[] args)
     {
-      _title = _classFiles[0];
+        super(args);
+        if (_title == null && _classFiles.length > 0)
+        {
+            _title = _classFiles[0];
+        }
     }
-  }
-  
-  protected void handleOption(String argument)
-  {
-    if (argument.equals("-raw")) 
+
+    protected void handleOption(String argument)
     {
-      _raw = true;
-    } else if (argument.equals("-packagesOnly")) 
-    {
-      _packagesOnly = true;
-    } else if (argument.equals("-cycles")) 
-    {
-      _cycles = true;
-    } else if (argument.equals("-strong")) 
-    {
-      _strong = true;
-    } else if (argument.startsWith(TITLE)) 
-    {
-      _title = argument.substring(TITLE.length());
-      if (_title.length() == 0) 
-      {
-        _valid = false;
-      }
-    } else if (argument.startsWith(XML_FILE)) 
-    {
-      _xmlFile = argument.substring(XML_FILE.length());
-      if (_xmlFile.length() == 0) 
-      {
-        _valid = false;
-      }
-    } else if (argument.startsWith(CSV_FILE)) 
-    {
-      _csvFile = argument.substring(CSV_FILE.length());
-      if (_csvFile.length() == 0) 
-      {
-        _valid = false;
-      }
-    } else
-    {
-      super.handleOption(argument);
+        if (argument.equals("-raw"))
+        {
+            _raw = true;
+        }
+        else if (argument.equals("-packagesOnly"))
+        {
+            _packagesOnly = true;
+        }
+        else if (argument.equals("-cycles"))
+        {
+            _cycles = true;
+        }
+        else if (argument.equals("-strong"))
+        {
+            _strong = true;
+        }
+        else if (argument.startsWith(TITLE))
+        {
+            _title = argument.substring(TITLE.length());
+            if (_title.length() == 0)
+            {
+                _valid = false;
+            }
+        }
+        else if (argument.startsWith(XML_FILE))
+        {
+            _xmlFile = argument.substring(XML_FILE.length());
+            if (_xmlFile.length() == 0)
+            {
+                _valid = false;
+            }
+        }
+        else if (argument.startsWith(CSV_FILE))
+        {
+            _csvFile = argument.substring(CSV_FILE.length());
+            if (_csvFile.length() == 0)
+            {
+                _valid = false;
+            }
+        }
+        else
+        {
+            super.handleOption(argument);
+        }
     }
-  }
 
-  /** Returns the usage of correct command line arguments and options. */
-  public String getUsage() 
-  {
-    return "[-raw] [-packagesOnly] [-cycles|-strong] "
-        + "[" + XML_FILE + "<file>] [" + CSV_FILE + "<file>] "
-        + "[" + TITLE + "<title>] " + super.getUsage();
-  }
-  
-  /** Returns <tt>true</tt> if the option <tt>-cycles</tt> has been set. */
-  public boolean isCycles() 
-  {
-    return _cycles;
-  }
+    /** Returns the usage of correct command line arguments and options. */
+    public String getUsage()
+    {
+        return "[-raw] [-packagesOnly] [-cycles|-strong] "
+                + "[" + XML_FILE + "<file>] [" + CSV_FILE + "<file>] "
+                + "[" + TITLE + "<title>] " + super.getUsage();
+    }
 
-  /** Returns <tt>true</tt> if the option <tt>-package</tt> has been set. */
-  public boolean isPackagesOnly() 
-  {
-    return _packagesOnly;
-  }
+    /** Returns <tt>true</tt> if the option <tt>-cycles</tt> has been set. */
+    public boolean isCycles()
+    {
+        return _cycles;
+    }
 
-  /** Returns <tt>true</tt> if the option <tt>-raw</tt> has been set. */
-  public boolean isRaw() 
-  {
-    return _raw;
-  }
+    /** Returns <tt>true</tt> if the option <tt>-package</tt> has been set. */
+    public boolean isPackagesOnly()
+    {
+        return _packagesOnly;
+    }
 
-  /** Returns <tt>true</tt> if the option <tt>-strong</tt> has been set. */
-  public boolean isStrong() 
-  {
-    return _strong;
-  }
+    /** Returns <tt>true</tt> if the option <tt>-raw</tt> has been set. */
+    public boolean isRaw()
+    {
+        return _raw;
+    }
 
-  /**
-   * Returns the name of the CSV file as defined by the option 
-   * <tt>-csvFile</tt>.
-   * @return <tt>null</tt> if undefined.
-   */
-  public String getCsvFile() 
-  {
-    return _csvFile;
-  }
+    /** Returns <tt>true</tt> if the option <tt>-strong</tt> has been set. */
+    public boolean isStrong()
+    {
+        return _strong;
+    }
 
-  /**
-   * Returns the title by the option <tt>-title</tt>.
-   * If undefined {@link #getClassFiles()}<tt>[0]</tt> will be used.
-   * @return String
-   */
-  public String getTitle() 
-  {
-    return _title;
-  }
+    /**
+     * Returns the name of the CSV file as defined by the option
+     * <tt>-csvFile</tt>.
+     * 
+     * @return <tt>null</tt> if undefined.
+     */
+    public String getCsvFile()
+    {
+        return _csvFile;
+    }
 
-  /**
-   * Returns the name of the XML file as defined by the option 
-   * <tt>-xmlFile</tt>.
-   * @return <tt>null</tt> if undefined.
-   */
-  public String getXmlFile() 
-  {
-    return _xmlFile;
-  }
+    /**
+     * Returns the title by the option <tt>-title</tt>. If undefined
+     * {@link #getClassFiles()}<tt>[0]</tt> will be used.
+     * 
+     * @return String
+     */
+    public String getTitle()
+    {
+        return _title;
+    }
+
+    /**
+     * Returns the name of the XML file as defined by the option
+     * <tt>-xmlFile</tt>.
+     * 
+     * @return <tt>null</tt> if undefined.
+     */
+    public String getXmlFile()
+    {
+        return _xmlFile;
+    }
 }

@@ -29,30 +29,30 @@ import java.util.Arrays;
 import org.netmelody.neoclassycle.graph.AtomicVertex;
 
 /**
- * @author  Franz-Josef Elmer
+ * @author Franz-Josef Elmer
  */
 public class ShowStatement implements Statement
 {
-  private final ResultRenderer _renderer;
-  private final Preference[] _preferences;
-  
-  public ShowStatement(ResultRenderer renderer, Preference[] preferences)
-  {
-    _renderer = renderer;
-    _preferences = preferences;
-  }
+    private final ResultRenderer _renderer;
+    private final Preference[] _preferences;
 
-  public Result execute(AtomicVertex[] graph)
-  {
-    for (int i = 0; i < _preferences.length; i++)
+    public ShowStatement(ResultRenderer renderer, Preference[] preferences)
     {
-      _renderer.considerPreference(_preferences[i]);
+        _renderer = renderer;
+        _preferences = preferences;
     }
-    return _renderer.getDescriptionOfCurrentPreferences();
-  }
 
-  public String toString()
-  {
-    return Arrays.asList(_preferences).toString();
-  }
+    public Result execute(AtomicVertex[] graph)
+    {
+        for (int i = 0; i < _preferences.length; i++)
+        {
+            _renderer.considerPreference(_preferences[i]);
+        }
+        return _renderer.getDescriptionOfCurrentPreferences();
+    }
+
+    public String toString()
+    {
+        return Arrays.asList(_preferences).toString();
+    }
 }

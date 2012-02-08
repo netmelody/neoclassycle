@@ -32,60 +32,60 @@ import org.netmelody.neoclassycle.util.StringPattern;
 
 /**
  * Class representing a node without resolved links.
- *   
- * @author  Franz-Josef Elmer
+ * 
+ * @author Franz-Josef Elmer
  */
-class UnresolvedNode implements Comparable 
+class UnresolvedNode implements Comparable
 {
-  private ClassAttributes _attributes;
-  private List _nodes = new ArrayList();
+    private ClassAttributes _attributes;
+    private List _nodes = new ArrayList();
 
-  void setAttributes(ClassAttributes attributes)
-  {
-    _attributes = attributes;
-  }
+    void setAttributes(ClassAttributes attributes)
+    {
+        _attributes = attributes;
+    }
 
-  ClassAttributes getAttributes()
-  {
-    return _attributes;
-  }
-  
-  void addLinkTo(String node)
-  {
-    _nodes.add(node);
-  }
-  
-  Iterator linkIterator()
-  {
-    return new Iterator()
-      {
-        private int _index;
-        
-        public void remove()
-        {
-          throw new UnsupportedOperationException();
-        }
-    
-        public boolean hasNext()
-        {
-          return _index < _nodes.size();
-        }
-        
-        public Object next()
-        {
-          return hasNext() ? _nodes.get(_index++) : null;
-        }
-      };
-  }
+    ClassAttributes getAttributes()
+    {
+        return _attributes;
+    }
 
-  public int compareTo(Object obj) 
-  {
-    return getAttributes().getName().compareTo(
-              ((UnresolvedNode) obj).getAttributes().getName());
-  }
-  
-  public boolean isMatchedBy(StringPattern pattern)
-  {
-    return pattern.matches(getAttributes().getName());
-  }
+    void addLinkTo(String node)
+    {
+        _nodes.add(node);
+    }
+
+    Iterator linkIterator()
+    {
+        return new Iterator()
+        {
+            private int _index;
+
+            public void remove()
+            {
+                throw new UnsupportedOperationException();
+            }
+
+            public boolean hasNext()
+            {
+                return _index < _nodes.size();
+            }
+
+            public Object next()
+            {
+                return hasNext() ? _nodes.get(_index++) : null;
+            }
+        };
+    }
+
+    public int compareTo(Object obj)
+    {
+        return getAttributes().getName().compareTo(
+                ((UnresolvedNode) obj).getAttributes().getName());
+    }
+
+    public boolean isMatchedBy(StringPattern pattern)
+    {
+        return pattern.matches(getAttributes().getName());
+    }
 }

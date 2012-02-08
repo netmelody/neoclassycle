@@ -28,35 +28,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author  Franz-Josef Elmer
+ * @author Franz-Josef Elmer
  */
 public class PackageAttributes extends NameAndSourceAttributes
 {
-  private final List _classes = new ArrayList();
-  
-  public PackageAttributes(String name)
-  {
-    super(name);
-  }
-  
-  public int getSize()
-  {
-    return _classes.size();
-  }
-  
-  public String[] getClasses()
-  {
-    return (String[]) _classes.toArray(new String[_classes.size()]);
-  }
-  
-  public void addClass(ClassAttributes classAttributes)
-  {
-    String className = classAttributes.getName();
-    if (_classes.contains(className) == false)
+    private final List _classes = new ArrayList();
+
+    public PackageAttributes(String name)
     {
-      _classes.add(className);
-    } 
-    addSourcesOf(classAttributes);
-  }
+        super(name);
+    }
+
+    public int getSize()
+    {
+        return _classes.size();
+    }
+
+    public String[] getClasses()
+    {
+        return (String[]) _classes.toArray(new String[_classes.size()]);
+    }
+
+    public void addClass(ClassAttributes classAttributes)
+    {
+        String className = classAttributes.getName();
+        if (_classes.contains(className) == false)
+        {
+            _classes.add(className);
+        }
+        addSourcesOf(classAttributes);
+    }
 
 }

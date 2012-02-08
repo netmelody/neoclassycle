@@ -31,35 +31,35 @@ import java.util.HashMap;
 import java.util.Map;
 
 final class DependencyProperties {
-  private final Map _defaultProperties;
-  private final Map _properties = new HashMap();
-  
-  DependencyProperties()
-  {
-    this(new HashMap());
-  }
+    private final Map _defaultProperties;
+    private final Map _properties = new HashMap();
 
-  DependencyProperties(Map defaultProperties)
-  {
-    _defaultProperties = defaultProperties;
-  }
-  
-  String getProperty(String name)
-  {
-    String result = (String) _properties.get(name);
-    if (result == null) 
+    DependencyProperties()
     {
-      Object value = _defaultProperties.get(name);
-      if (value instanceof String)
-      {
-        result = (String) value;
-      }
+        this(new HashMap());
     }
-    return result;
-  }
-  
-  void setProperty(String name, String value)
-  {
-    _properties.put(name, value);
-  }
+
+    DependencyProperties(Map defaultProperties)
+    {
+        _defaultProperties = defaultProperties;
+    }
+
+    String getProperty(String name)
+    {
+        String result = (String) _properties.get(name);
+        if (result == null)
+        {
+            Object value = _defaultProperties.get(name);
+            if (value instanceof String)
+            {
+                result = (String) value;
+            }
+        }
+        return result;
+    }
+
+    void setProperty(String name, String value)
+    {
+        _properties.put(name, value);
+    }
 }

@@ -9,14 +9,14 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * @author  Franz-Josef Elmer
+ * @author Franz-Josef Elmer
  */
-public class TextTest{
+public class TextTest {
 
-  @Test
-  public void testExcapeForXML()
-  {
-    assertEquals("&lt;hel&amp;lo&gt;", Text.excapeForXML("<hel&lo>"));
-  }
+    @Test
+    public void testExcapeForXML()
+    {
+        assertEquals("&lt;hel&amp;lo&gt;", Text.excapeForXML("<hel&lo>"));
+    }
 
 }

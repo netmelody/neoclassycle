@@ -33,46 +33,47 @@ import org.netmelody.neoclassycle.util.StringPattern;
 
 public class CheckSetStatement implements Statement
 {
-  private final StringPattern _set;
-  private final SetDefinitionRepository _repository;
+    private final StringPattern _set;
+    private final SetDefinitionRepository _repository;
 
-  public CheckSetStatement(StringPattern set, 
-                           SetDefinitionRepository repository)
-  {
-    _set = set;
-    _repository = repository;
-  }
-
-  public Result execute(AtomicVertex[] graph)
-  {
-    int size = 0;
-    for (int i = 0; i < graph.length; i++)
+    public CheckSetStatement(StringPattern set,
+            SetDefinitionRepository repository)
     {
-      if (_set.matches(((NameAttributes) graph[i].getAttributes()).getName()))
-      {
-        size++;
-      }
+        _set = set;
+        _repository = repository;
     }
-    StringBuffer buffer = new StringBuffer("Set ");
-    buffer.append(_repository.toString(_set));
-    if (size == 0)
+
+    public Result execute(AtomicVertex[] graph)
     {
-      buffer.append(" is empty.");
-    } else if (size == 1)
-    {
-      buffer.append(" has one class.");
-    } else
-    {
-      buffer.append(" has ").append(size).append(" classes.");
+        int size = 0;
+        for (int i = 0; i < graph.length; i++)
+        {
+            if (_set.matches(((NameAttributes) graph[i].getAttributes()).getName()))
+            {
+                size++;
+            }
+        }
+        StringBuffer buffer = new StringBuffer("Set ");
+        buffer.append(_repository.toString(_set));
+        if (size == 0)
+        {
+            buffer.append(" is empty.");
+        }
+        else if (size == 1)
+        {
+            buffer.append(" has one class.");
+        }
+        else
+        {
+            buffer.append(" has ").append(size).append(" classes.");
+        }
+        return new TextResult(new String(buffer.append('\n')), size > 0);
     }
-    return new TextResult(new String(buffer.append('\n')), size > 0);
-  }
 
-  public String toString()
-  {
-    return DependencyDefinitionParser.CHECK_KEY_WORD + " set " 
-           + _repository.toString(_set);
-  }
+    public String toString()
+    {
+        return DependencyDefinitionParser.CHECK_KEY_WORD + " set "
+                + _repository.toString(_set);
+    }
 
-  
 }

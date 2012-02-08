@@ -25,65 +25,64 @@
 package org.netmelody.neoclassycle.graph;
 
 /**
- * Attributes of a graph. The following properties
- * can be accessed with this interface:
- * <dl><dt>Girth:</dt><dd>The length of the shortest cycle.</dd>
- *     <dt>Eccentricities:</dt>
- *     <dd>The eccentricity for each vertex of the graph. The eccentricity of
- *         a vertex is the largest <em>distance</em> to other vertices of the 
- *         graph. The distance between vertex A and B is defined as the
- *         shortest path from A to B. The distance is infinite if there is
- *         no path from A to B.
- *     <dt>Diameter:</dt><dd>The largest eccentricity.</dd> 
- *     <dt>Radius:</dt><dd>The smallest eccentricity.</dd>
- *     <dt>Center:</dt>
- *     <dd>The set of vertices of the graph with the smallest eccentricities.
- *     </dd>
- *     <dt>Maximum fragment sizes:</dt>
- *     <dd>The maximum fragment sizes for each vertex of the graph. The
- *         maximum fragment size of a vertex is defined as the size of the 
- *         largest strong component of the graph after the vertex has been
- *         removed. 
- *     </dd>
- *     <dt>Best fragment size:</dt>
- *     <dd>The smallest maximum fragment size.</dd>
- *     <dt>Best fragmenters:</dt>
- *     <dd>The set of vertices of the graph with smallest maximum fragment size.
- *     </dd>
+ * Attributes of a graph. The following properties can be accessed with this
+ * interface:
+ * <dl>
+ * <dt>Girth:</dt>
+ * <dd>The length of the shortest cycle.</dd>
+ * <dt>Eccentricities:</dt>
+ * <dd>The eccentricity for each vertex of the graph. The eccentricity of a
+ * vertex is the largest <em>distance</em> to other vertices of the graph. The
+ * distance between vertex A and B is defined as the shortest path from A to B.
+ * The distance is infinite if there is no path from A to B.
+ * <dt>Diameter:</dt>
+ * <dd>The largest eccentricity.</dd>
+ * <dt>Radius:</dt>
+ * <dd>The smallest eccentricity.</dd>
+ * <dt>Center:</dt>
+ * <dd>The set of vertices of the graph with the smallest eccentricities.</dd>
+ * <dt>Maximum fragment sizes:</dt>
+ * <dd>The maximum fragment sizes for each vertex of the graph. The maximum
+ * fragment size of a vertex is defined as the size of the largest strong
+ * component of the graph after the vertex has been removed.</dd>
+ * <dt>Best fragment size:</dt>
+ * <dd>The smallest maximum fragment size.</dd>
+ * <dt>Best fragmenters:</dt>
+ * <dd>The set of vertices of the graph with smallest maximum fragment size.</dd>
  * </dl>
  * 
  * @author Franz-Josef Elmer
  */
 public interface GraphAttributes extends Attributes {
-  /** Returns the girth. */
-  public int getGirth();
-  
-  /** Returns the radius. */
-  public int getRadius();
-  
-  /** Returns the diameter. */
-  public int getDiameter();
-  
-  /** Returns the vertices of the center. */
-  public Vertex[] getCenterVertices();
-  
-  /** 
-   * Returns the eccentricies of all vertices of a {@link StrongComponent}. 
-   */
-  public int[] getEccentricities();
-  
-  /**
-   * Returns the maximum fragment sizes of all vertices of 
-   * a {@link StrongComponent}.
-   */ 
-  public int[] getMaximumFragmentSizes();
-  
-  /** Returns the best fragment size. */
-  public int getBestFragmentSize();
-  
-  /**
-   * Returns those vertices of a {@link StrongComponent} where the maximum
-   * fragment size is equal to the best fragment size.
-   */ 
-  public Vertex[] getBestFragmenters();
-} //interface
+    /** Returns the girth. */
+    public int getGirth();
+
+    /** Returns the radius. */
+    public int getRadius();
+
+    /** Returns the diameter. */
+    public int getDiameter();
+
+    /** Returns the vertices of the center. */
+    public Vertex[] getCenterVertices();
+
+    /**
+     * Returns the eccentricies of all vertices of a {@link StrongComponent}.
+     */
+    public int[] getEccentricities();
+
+    /**
+     * Returns the maximum fragment sizes of all vertices of a
+     * {@link StrongComponent}.
+     */
+    public int[] getMaximumFragmentSizes();
+
+    /** Returns the best fragment size. */
+    public int getBestFragmentSize();
+
+    /**
+     * Returns those vertices of a {@link StrongComponent} where the maximum
+     * fragment size is equal to the best fragment size.
+     */
+    public Vertex[] getBestFragmenters();
+} // interface

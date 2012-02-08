@@ -30,21 +30,21 @@ package org.netmelody.neoclassycle.classfile;
  * @author Franz-Josef Elmer
  */
 public class FloatConstant extends Constant {
-  private final float _value;
+    private final float _value;
 
-  /** Creates an instance for the specified float value. */
-  public FloatConstant(Constant[] pool, float value) {
-    super(pool);
-    _value = value;
-  }
+    /** Creates an instance for the specified float value. */
+    public FloatConstant(Constant[] pool, float value) {
+        super(pool);
+        _value = value;
+    }
 
-  /** Returns the wrapped float value. */
-  public float getValue() {
-    return _value;
-  }
+    /** Returns the wrapped float value. */
+    public float getValue() {
+        return _value;
+    }
 
-  /** Returns the constant type and the float value. */
-  public String toString() {
-    return "CONSTANT_Float: " + _value;
-  }
-} //class
+    /** Returns the constant type and the float value. */
+    public String toString() {
+        return "CONSTANT_Float: " + _value;
+    }
+} // class

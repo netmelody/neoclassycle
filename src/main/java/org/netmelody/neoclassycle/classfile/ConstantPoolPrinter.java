@@ -35,39 +35,44 @@ import java.io.IOException;
  * @author Franz-Josef Elmer
  */
 public class ConstantPoolPrinter {
-  /** 
-   * Reads a class file and prints the constant pool onto <tt>System.out</tt>.
-   * @param args File name of the class file in <tt>args[0]</tt> 
-   */
-  public static void main(String[] args) {
-    if (args.length == 0) {
-      System.out.println(
-        "Usage: java org.netmelody.neoclassycle.classfile.ConstantPoolPrinter <class files>");
+    /**
+     * Reads a class file and prints the constant pool onto <tt>System.out</tt>.
+     * 
+     * @param args
+     *            File name of the class file in <tt>args[0]</tt>
+     */
+    public static void main(String[] args) {
+        if (args.length == 0) {
+            System.out.println(
+                    "Usage: java org.netmelody.neoclassycle.classfile.ConstantPoolPrinter <class files>");
+        }
+        for (int i = 0; i < args.length; i++) {
+            investigate(args[i]);
+        }
     }
-    for (int i = 0; i < args.length; i++) {
-      investigate(args[i]);
-    }
-  }
 
-  private static void investigate(String fileName) {
-    DataInputStream stream = null;
-    try {
-      stream = new DataInputStream(new FileInputStream(fileName));
-      Constant[] pool = Constant.extractConstantPool(stream);
-      printConstantPool(pool);
-    } catch (IOException e) {
-      System.out.println(e);
-    } finally {
-      try {
-        stream.close();
-      } catch (IOException e) {
-      }
+    private static void investigate(String fileName) {
+        DataInputStream stream = null;
+        try {
+            stream = new DataInputStream(new FileInputStream(fileName));
+            Constant[] pool = Constant.extractConstantPool(stream);
+            printConstantPool(pool);
+        }
+        catch (IOException e) {
+            System.out.println(e);
+        }
+        finally {
+            try {
+                stream.close();
+            }
+            catch (IOException e) {
+            }
+        }
     }
-  }
 
-  private static void printConstantPool(Constant[] pool) {
-    for (int i = 0; i < pool.length; i++) {
-      System.out.println(i + ": " + pool[i]);
+    private static void printConstantPool(Constant[] pool) {
+        for (int i = 0; i < pool.length; i++) {
+            System.out.println(i + ": " + pool[i]);
+        }
     }
-  }
-} //class
+} // class

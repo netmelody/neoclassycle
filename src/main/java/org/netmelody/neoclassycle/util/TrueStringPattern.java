@@ -27,18 +27,18 @@ package org.netmelody.neoclassycle.util;
 /**
  * String pattern which return <tt>true</tt> in any case.
  * 
- * @author  Franz-Josef Elmer
+ * @author Franz-Josef Elmer
  */
 public class TrueStringPattern implements StringPattern
 {
-  /** Returns <code>true</code> independent of the argument. */
-  public boolean matches(String string)
-  {
-    return true;
-  }
+    /** Returns <code>true</code> independent of the argument. */
+    public boolean matches(String string)
+    {
+        return true;
+    }
 
-  public String toString()
-  {
-    return "true";
-  }
+    public String toString()
+    {
+        return "true";
+    }
 }

@@ -32,6 +32,6 @@ import org.netmelody.neoclassycle.graph.StrongComponent;
  * @author Franz-Josef Elmer
  */
 public interface StrongComponentRenderer {
-  /** Renderes the specified {@link StrongComponent}. */
-  public String render(StrongComponent component);
-} //interface
+    /** Renderes the specified {@link StrongComponent}. */
+    public String render(StrongComponent component);
+} // interface

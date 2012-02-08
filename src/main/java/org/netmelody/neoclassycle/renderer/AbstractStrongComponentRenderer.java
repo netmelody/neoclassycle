@@ -36,46 +36,48 @@ import org.netmelody.neoclassycle.graph.Vertex;
  * @author Franz-Josef Elmer
  */
 public abstract class AbstractStrongComponentRenderer
-                                    implements StrongComponentRenderer {
-  /**
-   * Creates an appropriated name for the specified {@link StrongComponent}.
-   * Usually, the name is the fully-qualified class name of the first vertex in
-   * <tt>component</tt> extended by "et al." if <tt>component</tt> contains
-   * more than one vertex. If <tt>component</tt> contains
-   * only a class and its inner classes the name is the fully-qualified
-   * class name of the outer class extended by "and inner classes".
-   */
-  public static String createName(StrongComponent component) {
-    GraphAttributes ga = (GraphAttributes) component.getAttributes();
-    Vertex fragmenter = ga.getBestFragmenters()[0];
-    String result = ((NameAttributes) fragmenter.getAttributes()).getName();
-    //String result = component.getVertex(0).getAttributes().toString();
-    if (component.getNumberOfVertices() > 1) {
-      AtomicVertex vertex = component.getVertex(0);
-      NameAttributes attributes = (NameAttributes) vertex.getAttributes();
-      String outerClass = attributes.getName();
-      int index = outerClass.indexOf('$');
-      if (index > 0) {
-        outerClass = outerClass.substring(0, index);
-      }
-      boolean isInnerClass = true;
-      for (int i = 0, n = component.getNumberOfVertices(); i < n; i++) {
-        attributes = (NameAttributes) component.getVertex(i).getAttributes();
-        if (attributes.getName().equals(outerClass)) {
-          vertex = component.getVertex(i);
-        } else if (!attributes.getName().startsWith(outerClass)
-            || attributes.getName().charAt(outerClass.length()) != '$') {
-          isInnerClass = false;
-          break;
+        implements StrongComponentRenderer {
+    /**
+     * Creates an appropriated name for the specified {@link StrongComponent}.
+     * Usually, the name is the fully-qualified class name of the first vertex
+     * in <tt>component</tt> extended by "et al." if <tt>component</tt> contains
+     * more than one vertex. If <tt>component</tt> contains only a class and its
+     * inner classes the name is the fully-qualified class name of the outer
+     * class extended by "and inner classes".
+     */
+    public static String createName(StrongComponent component) {
+        GraphAttributes ga = (GraphAttributes) component.getAttributes();
+        Vertex fragmenter = ga.getBestFragmenters()[0];
+        String result = ((NameAttributes) fragmenter.getAttributes()).getName();
+        // String result = component.getVertex(0).getAttributes().toString();
+        if (component.getNumberOfVertices() > 1) {
+            AtomicVertex vertex = component.getVertex(0);
+            NameAttributes attributes = (NameAttributes) vertex.getAttributes();
+            String outerClass = attributes.getName();
+            int index = outerClass.indexOf('$');
+            if (index > 0) {
+                outerClass = outerClass.substring(0, index);
+            }
+            boolean isInnerClass = true;
+            for (int i = 0, n = component.getNumberOfVertices(); i < n; i++) {
+                attributes = (NameAttributes) component.getVertex(i).getAttributes();
+                if (attributes.getName().equals(outerClass)) {
+                    vertex = component.getVertex(i);
+                }
+                else if (!attributes.getName().startsWith(outerClass)
+                        || attributes.getName().charAt(outerClass.length()) != '$') {
+                    isInnerClass = false;
+                    break;
+                }
+            }
+            attributes = (NameAttributes) vertex.getAttributes();
+            if (isInnerClass) {
+                result = attributes.getName() + " and inner classes";
+            }
+            else {
+                result += " et al.";
+            }
         }
-      }
-      attributes = (NameAttributes) vertex.getAttributes();
-      if (isInnerClass) {
-        result = attributes.getName() + " and inner classes";
-      } else {
-        result += " et al.";
-      }
+        return result;
     }
-    return result;
-  }
-} //class
+} // class

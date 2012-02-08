@@ -26,71 +26,79 @@ package org.netmelody.neoclassycle.dependency;
 
 import java.util.HashMap;
 
-
 /**
- * Factory of {@link Preference Preferences} known by the 
+ * Factory of {@link Preference Preferences} known by the
  * {@link DefaultResultRenderer}.
  * 
  * <table border="1" cellspacing="0" cellpadding="5">
- *   <tr><th>Preference Key</th><th>Description</th></tr>
- *   <tr><td><tt>onlyShortestPaths</tt></td>
- *       <td>Only the shortest paths are reported in the case of
- *           unwanted dependencies.</td>
- *   </tr>
- *   <tr><td><tt>allPaths</tt></td>
- *       <td>All paths are reported in the case of
- *           unwanted dependencies.</td>
- *   </tr>
- *   <tr><td><tt>onlyFailures</tt></td>
- *       <td>Only results are reported which are not ok.</td>
- *   </tr>
- *   <tr><td><tt>allResults</tt></td>
- *       <td>All results are reported.</td>
- *   </tr>
+ * <tr>
+ * <th>Preference Key</th>
+ * <th>Description</th>
+ * </tr>
+ * <tr>
+ * <td><tt>onlyShortestPaths</tt></td>
+ * <td>Only the shortest paths are reported in the case of unwanted
+ * dependencies.</td>
+ * </tr>
+ * <tr>
+ * <td><tt>allPaths</tt></td>
+ * <td>All paths are reported in the case of unwanted dependencies.</td>
+ * </tr>
+ * <tr>
+ * <td><tt>onlyFailures</tt></td>
+ * <td>Only results are reported which are not ok.</td>
+ * </tr>
+ * <tr>
+ * <td><tt>allResults</tt></td>
+ * <td>All results are reported.</td>
+ * </tr>
  * </table>
- * @author  Franz-Josef Elmer
+ * 
+ * @author Franz-Josef Elmer
  */
 public class DefaultPreferenceFactory implements PreferenceFactory
 {
-  public static final Preference ONLY_SHORTEST_PATHS 
-                  = new DefaultPreference("onlyShortestPaths");
-  public static final Preference ALL_PATHS = new DefaultPreference("allPaths");
-  public static final Preference ALL_RESULTS 
-                  = new DefaultPreference("allResults");
-  public static final Preference ONLY_FAILURES 
-                  = new DefaultPreference("onlyFailures");
-  
-  private static class DefaultPreference implements Preference
-  {
-    private static final HashMap REPOSITORY = new HashMap();
-    public static Preference getPreference(String key)
-    {
-      return (Preference) REPOSITORY.get(key);
-    }
-    private final String _key; 
-    protected DefaultPreference(String key)
-    {
-      _key = key;
-      if (REPOSITORY.containsKey(key))
-      {
-        throw new IllegalArgumentException(
-                    "There exists already an instance for '" + key + "'.");
-      }
-      REPOSITORY.put(key, this);
-    }
-    public final String getKey()
-    {
-      return _key;
-    }
-    public String toString()
-    {
-      return getKey();
-    }
-  }
+    public static final Preference ONLY_SHORTEST_PATHS = new DefaultPreference("onlyShortestPaths");
+    public static final Preference ALL_PATHS = new DefaultPreference("allPaths");
+    public static final Preference ALL_RESULTS = new DefaultPreference("allResults");
+    public static final Preference ONLY_FAILURES = new DefaultPreference("onlyFailures");
 
-  public Preference get(String key)
-  {
-    return DefaultPreference.getPreference(key);
-  }
+    private static class DefaultPreference implements Preference
+    {
+        private static final HashMap REPOSITORY = new HashMap();
+
+        public static Preference getPreference(String key)
+        {
+            return (Preference) REPOSITORY.get(key);
+        }
+
+        private final String _key;
+
+        protected DefaultPreference(String key)
+        {
+            _key = key;
+            if (REPOSITORY.containsKey(key))
+            {
+                throw new IllegalArgumentException(
+                        "There exists already an instance for '" + key + "'.");
+            }
+            REPOSITORY.put(key, this);
+        }
+
+        public final String getKey()
+        {
+            return _key;
+        }
+
+        public String toString()
+        {
+            return getKey();
+        }
+    }
+
+    public Preference get(String key)
+    {
+        return DefaultPreference.getPreference(key);
+    }
 
 }

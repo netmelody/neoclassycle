@@ -31,58 +31,65 @@ import java.io.IOException;
 
 /**
  * Collection of useful static method concerning string manipulation.
- *  
- * @author  Franz-Josef Elmer
+ * 
+ * @author Franz-Josef Elmer
  */
 public class Text
 {
-  private static final String ESCAPE_CHARACTERS = "<>&\"'";
-  private static final String[] ESCAPE_SEQUENCES = new String[] {
-          "&lt;", "&gt;", "&amp;", "&quot;", "&apos;"};
-  private Text() {}
-  
-  /**
-   * Escapes special XML characters in the specified text.
-   * @param text Text to be escaped. Must be not <tt>null</tt>.
-   * @return copy of the text where the special XML characters has been
-   *         replaced by the escape sequences.
-   */
-  public static String excapeForXML(String text)
-  {
-    StringBuffer buffer = new StringBuffer();
-    for (int i = 0, n = text.length(); i < n; i++)
-    {
-      char c = text.charAt(i);
-      int index = ESCAPE_CHARACTERS.indexOf(c);
-      if (index < 0)
-      {
-        buffer.append(c);
-      } else
-      {
-        buffer.append(ESCAPE_SEQUENCES[index]);
-      }
-    }
-    return new String(buffer);
-  }
+    private static final String ESCAPE_CHARACTERS = "<>&\"'";
+    private static final String[] ESCAPE_SEQUENCES = new String[] {
+            "&lt;", "&gt;", "&amp;", "&quot;", "&apos;" };
 
-  /**
-   * Reads multi-line text from the specified file.
-   * @param file Text file.
-   * @return read text file with standard Java newline characters.
-   * @throws IOException if some reading error occurs.
-   */
-  public static String readTextFile(File file) throws IOException
-  {
-    StringBuffer buffer = new StringBuffer();
-    BufferedReader reader 
-        = new BufferedReader(new FileReader(file));
-    String line;
-    while ((line = reader.readLine()) != null)
-    {
-      buffer.append(line).append('\n');
+    private Text() {
     }
-    String result = new String(buffer);
-    return result;
-  }
+
+    /**
+     * Escapes special XML characters in the specified text.
+     * 
+     * @param text
+     *            Text to be escaped. Must be not <tt>null</tt>.
+     * @return copy of the text where the special XML characters has been
+     *         replaced by the escape sequences.
+     */
+    public static String excapeForXML(String text)
+    {
+        StringBuffer buffer = new StringBuffer();
+        for (int i = 0, n = text.length(); i < n; i++)
+        {
+            char c = text.charAt(i);
+            int index = ESCAPE_CHARACTERS.indexOf(c);
+            if (index < 0)
+            {
+                buffer.append(c);
+            }
+            else
+            {
+                buffer.append(ESCAPE_SEQUENCES[index]);
+            }
+        }
+        return new String(buffer);
+    }
+
+    /**
+     * Reads multi-line text from the specified file.
+     * 
+     * @param file
+     *            Text file.
+     * @return read text file with standard Java newline characters.
+     * @throws IOException
+     *             if some reading error occurs.
+     */
+    public static String readTextFile(File file) throws IOException
+    {
+        StringBuffer buffer = new StringBuffer();
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        String line;
+        while ((line = reader.readLine()) != null)
+        {
+            buffer.append(line).append('\n');
+        }
+        String result = new String(buffer);
+        return result;
+    }
 
 }

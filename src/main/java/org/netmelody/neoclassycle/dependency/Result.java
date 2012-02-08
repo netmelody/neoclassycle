@@ -27,12 +27,12 @@ package org.netmelody.neoclassycle.dependency;
 /**
  * Common interface of all result checking statements.
  * 
- * @author  Franz-Josef Elmer
+ * @author Franz-Josef Elmer
  */
 public interface Result
 {
-  /**
-   * Returns <code>true</code> if the checking result is positive. 
-   */
-  public boolean isOk();
+    /**
+     * Returns <code>true</code> if the checking result is positive.
+     */
+    public boolean isOk();
 }

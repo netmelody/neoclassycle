@@ -33,91 +33,92 @@ import org.netmelody.neoclassycle.graph.AtomicVertex;
 
 class GraphBuilder
 {
-  /**
-   *  Creates a graph from the bunch of unresolved nodes.
-   *  @param unresolvedNodes All nodes with unresolved references.
-   *  @param mergeInnerClasses Merge inner class nodes with their outer class 
-   *         if <code>true</code>.
-   *  @return an array of length <tt>unresolvedNodes.size()</tt> with all
-   *          unresolved nodes transformed into <tt>Node</tt> objects
-   *          with appropriated links. External nodes are created and linked
-   *          but not added to the result array.
-   */
-  static AtomicVertex[] createGraph(UnresolvedNode[] unresolvedNodes, 
-                                    boolean mergeInnerClasses) 
-  {
-    Arrays.sort(unresolvedNodes);
-    Map vertices = createVertices(unresolvedNodes, mergeInnerClasses);
-    AtomicVertex[] result 
-        = (AtomicVertex[]) vertices.values().toArray(new AtomicVertex[0]);
-    
-    // Add arces to vertices
-    for (int i = 0; i < unresolvedNodes.length; i++)
+    /**
+     * Creates a graph from the bunch of unresolved nodes.
+     * 
+     * @param unresolvedNodes
+     *            All nodes with unresolved references.
+     * @param mergeInnerClasses
+     *            Merge inner class nodes with their outer class if
+     *            <code>true</code>.
+     * @return an array of length <tt>unresolvedNodes.size()</tt> with all
+     *         unresolved nodes transformed into <tt>Node</tt> objects with
+     *         appropriated links. External nodes are created and linked but not
+     *         added to the result array.
+     */
+    static AtomicVertex[] createGraph(UnresolvedNode[] unresolvedNodes,
+            boolean mergeInnerClasses)
     {
-      UnresolvedNode node = unresolvedNodes[i];
-      String name = normalize(node.getAttributes().getName(), mergeInnerClasses);
-      AtomicVertex vertex = (AtomicVertex) vertices.get(name);
-      for (Iterator iterator = node.linkIterator(); iterator.hasNext();)
-      {
-        name = normalize((String) iterator.next(), mergeInnerClasses);
-        AtomicVertex head = (AtomicVertex) vertices.get(name);
-        if (head == null) 
-        {
-          head = new AtomicVertex(ClassAttributes.createUnknownClass(name, 0));
-          vertices.put(name, head);
-        }
-        if (vertex != head)
-        {
-          vertex.addOutgoingArcTo(head);
-        }
-      }
-    }
-    
-    return result;
-  }
+        Arrays.sort(unresolvedNodes);
+        Map vertices = createVertices(unresolvedNodes, mergeInnerClasses);
+        AtomicVertex[] result = (AtomicVertex[]) vertices.values().toArray(new AtomicVertex[0]);
 
-  private static Map createVertices(UnresolvedNode[] unresolvedNodes, 
-                                    boolean mergeInnerClasses)
-  {
-    Map vertices = new HashMap();
-    for (int i = 0; i < unresolvedNodes.length; i++)
-    {
-      ClassAttributes attributes = unresolvedNodes[i].getAttributes();
-      String type = attributes.getType();
-      String originalName = attributes.getName();
-      int size = attributes.getSize();
-      String name = normalize(originalName, mergeInnerClasses);
-      AtomicVertex vertex = (AtomicVertex) vertices.get(name);
-      if (vertex != null)
-      {
-        ClassAttributes vertexAttributes 
-                              = (ClassAttributes) vertex.getAttributes();
-        size += vertexAttributes.getSize();
-        if (name.equals(originalName) == false)
+        // Add arces to vertices
+        for (int i = 0; i < unresolvedNodes.length; i++)
         {
-          type = vertexAttributes.getType();
+            UnresolvedNode node = unresolvedNodes[i];
+            String name = normalize(node.getAttributes().getName(), mergeInnerClasses);
+            AtomicVertex vertex = (AtomicVertex) vertices.get(name);
+            for (Iterator iterator = node.linkIterator(); iterator.hasNext();)
+            {
+                name = normalize((String) iterator.next(), mergeInnerClasses);
+                AtomicVertex head = (AtomicVertex) vertices.get(name);
+                if (head == null)
+                {
+                    head = new AtomicVertex(ClassAttributes.createUnknownClass(name, 0));
+                    vertices.put(name, head);
+                }
+                if (vertex != head)
+                {
+                    vertex.addOutgoingArcTo(head);
+                }
+            }
         }
-        attributes.addSourcesOf(vertexAttributes);
-      }
-      ClassAttributes newAttributes = new ClassAttributes(name, null, type, size);
-      newAttributes.addSourcesOf(attributes);
-      vertex = new AtomicVertex(newAttributes);
-      vertices.put(name, vertex);
-    }
-    return vertices;
-  }
 
-  private static String normalize(String name, boolean mergeInnerClasses)
-  {
-    if (mergeInnerClasses)
-    {
-      int index = name.indexOf('$');
-      if (index >= 0)
-      {
-        name = name.substring(0, index);
-      }
+        return result;
     }
-    return name;
-  }
+
+    private static Map createVertices(UnresolvedNode[] unresolvedNodes,
+            boolean mergeInnerClasses)
+    {
+        Map vertices = new HashMap();
+        for (int i = 0; i < unresolvedNodes.length; i++)
+        {
+            ClassAttributes attributes = unresolvedNodes[i].getAttributes();
+            String type = attributes.getType();
+            String originalName = attributes.getName();
+            int size = attributes.getSize();
+            String name = normalize(originalName, mergeInnerClasses);
+            AtomicVertex vertex = (AtomicVertex) vertices.get(name);
+            if (vertex != null)
+            {
+                ClassAttributes vertexAttributes = (ClassAttributes) vertex.getAttributes();
+                size += vertexAttributes.getSize();
+                if (name.equals(originalName) == false)
+                {
+                    type = vertexAttributes.getType();
+                }
+                attributes.addSourcesOf(vertexAttributes);
+            }
+            ClassAttributes newAttributes = new ClassAttributes(name, null, type, size);
+            newAttributes.addSourcesOf(attributes);
+            vertex = new AtomicVertex(newAttributes);
+            vertices.put(name, vertex);
+        }
+        return vertices;
+    }
+
+    private static String normalize(String name, boolean mergeInnerClasses)
+    {
+        if (mergeInnerClasses)
+        {
+            int index = name.indexOf('$');
+            if (index >= 0)
+            {
+                name = name.substring(0, index);
+            }
+        }
+        return name;
+    }
 
 }

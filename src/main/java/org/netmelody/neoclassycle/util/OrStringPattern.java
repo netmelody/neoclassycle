@@ -24,42 +24,41 @@
  */
 package org.netmelody.neoclassycle.util;
 
-
 /**
  * Logical OR Operation on a sequence of {@link StringPattern StringPatterns}.
  * 
- * @author  Franz-Josef Elmer
+ * @author Franz-Josef Elmer
  */
 public class OrStringPattern extends StringPatternSequence
 {
-  /**
-   * Creates instance with specified patterns.
-   */
-  public OrStringPattern(StringPattern... pattern)
-  {
-    super(pattern);
-  }
-
-  /**
-   * Return <code>true</code> if a pattern in the sequence returns 
-   * <code>true</code>. Otherwise <code>false</code> is returned.
-   */
-  public boolean matches(String string)
-  {
-    boolean result = false;
-    for (int i = 0, n = _patterns.size(); i < n; i++)
+    /**
+     * Creates instance with specified patterns.
+     */
+    public OrStringPattern(StringPattern... pattern)
     {
-      if (((StringPattern) _patterns.get(i)).matches(string))
-      {
-        result = true;
-        break;
-      }
+        super(pattern);
     }
-    return result;
-  }
 
-  protected String getOperatorSymbol()
-  {
-    return " ";
-  }
+    /**
+     * Return <code>true</code> if a pattern in the sequence returns
+     * <code>true</code>. Otherwise <code>false</code> is returned.
+     */
+    public boolean matches(String string)
+    {
+        boolean result = false;
+        for (int i = 0, n = _patterns.size(); i < n; i++)
+        {
+            if (((StringPattern) _patterns.get(i)).matches(string))
+            {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+
+    protected String getOperatorSymbol()
+    {
+        return " ";
+    }
 }

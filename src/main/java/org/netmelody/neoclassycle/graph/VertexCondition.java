@@ -24,20 +24,20 @@
  */
 package org.netmelody.neoclassycle.graph;
 
-
 /**
- * Interface of classes which determine whether a {@link Vertex}
- * fulfills a condition or not.
+ * Interface of classes which determine whether a {@link Vertex} fulfills a
+ * condition or not.
  * 
- * @author  Franz-Josef Elmer
+ * @author Franz-Josef Elmer
  */
 public interface VertexCondition
 {
-  /**
-   * Returns <code>true</code> if the specified vertex fulfills the
-   * condition.
-   * @param vertex The vertex to be checked. Can be <code>null</code>.
-   * @return <code>false</code> if <code>vertex == null</code>.
-   */
-  public boolean isFulfilled(Vertex vertex);
+    /**
+     * Returns <code>true</code> if the specified vertex fulfills the condition.
+     * 
+     * @param vertex
+     *            The vertex to be checked. Can be <code>null</code>.
+     * @return <code>false</code> if <code>vertex == null</code>.
+     */
+    public boolean isFulfilled(Vertex vertex);
 }

@@ -30,30 +30,33 @@ package org.netmelody.neoclassycle.classfile;
  * @author Franz-Josef Elmer
  */
 public class StringConstant extends Constant {
-  private final int _stringIndex;
+    private final int _stringIndex;
 
-  /**
-   * Creates an instance for the specfied index.
-   * @param pool Constant pool. Needed for resolving the reference.
-   * @param stringIndex Index of an {@link UTF8Constant}.
-   */
-  public StringConstant(Constant[] pool, int stringIndex) {
-    super(pool);
-    _stringIndex = stringIndex;
-  }
-
-  /** Returns the string value. */
-  public String getString() {
-    String result = null;
-    Constant c = getConstant(_stringIndex);
-    if (c instanceof UTF8Constant) {
-      result = ((UTF8Constant) c).getString();
+    /**
+     * Creates an instance for the specfied index.
+     * 
+     * @param pool
+     *            Constant pool. Needed for resolving the reference.
+     * @param stringIndex
+     *            Index of an {@link UTF8Constant}.
+     */
+    public StringConstant(Constant[] pool, int stringIndex) {
+        super(pool);
+        _stringIndex = stringIndex;
     }
-    return result;
-  }
 
-  /** Returns the constant type and the string value. */
-  public String toString() {
-    return "CONSTANT_String: " + getString();
-  }
-} //class
+    /** Returns the string value. */
+    public String getString() {
+        String result = null;
+        Constant c = getConstant(_stringIndex);
+        if (c instanceof UTF8Constant) {
+            result = ((UTF8Constant) c).getString();
+        }
+        return result;
+    }
+
+    /** Returns the constant type and the string value. */
+    public String toString() {
+        return "CONSTANT_String: " + getString();
+    }
+} // class

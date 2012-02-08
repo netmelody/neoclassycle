@@ -30,21 +30,21 @@ package org.netmelody.neoclassycle.classfile;
  * @author Franz-Josef Elmer
  */
 public class LongConstant extends Constant {
-  private final long _value;
+    private final long _value;
 
-  /** Creates an instance for the specified long value. */
-  public LongConstant(Constant[] pool, long value) {
-    super(pool);
-    _value = value;
-  }
+    /** Creates an instance for the specified long value. */
+    public LongConstant(Constant[] pool, long value) {
+        super(pool);
+        _value = value;
+    }
 
-  /** Returns the wrapped long value. */
-  public long getValue() {
-    return _value;
-  }
+    /** Returns the wrapped long value. */
+    public long getValue() {
+        return _value;
+    }
 
-  /** Returns the constant type and the long value. */
-  public String toString() {
-    return "CONSTANT_Long: " + _value;
-  }
-} //class
+    /** Returns the constant type and the long value. */
+    public String toString() {
+        return "CONSTANT_Long: " + _value;
+    }
+} // class

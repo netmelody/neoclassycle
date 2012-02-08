@@ -25,49 +25,52 @@
 package org.netmelody.neoclassycle.classfile;
 
 /**
- * Class constant. Refers to an instance of {@link UTF8Constant} which
- * holds the fully qualifies class name.
+ * Class constant. Refers to an instance of {@link UTF8Constant} which holds the
+ * fully qualifies class name.
  * 
  * @author Franz-Josef Elmer
  */
 public class ClassConstant extends Constant {
-  private final int _nameIndex;
+    private final int _nameIndex;
 
-  /**
-   * Creates an instance for the specified index refering an
-   * {@link UTF8Constant}.
-   * @param pool Pool of all {@link Constant Constants}.
-   * @param nameIndex Index into <tt>pool</tt>.
-   */
-  public ClassConstant(Constant[] pool, int nameIndex) {
-    super(pool);
-    _nameIndex = nameIndex;
-  }
-
-  
-  /**
-   * Returns the fully-qualified class name. In the case of an object array
-   * only the class name of the object is returned.
-   * @return fully-qualified class name in standard notation with '.'.
-   */
-  public String getName() {
-    String result = null;
-    Constant c = getConstant(_nameIndex);
-    if (c instanceof UTF8Constant) {
-      result = ((UTF8Constant) c).getString().replace('/', '.');
-      if (result.startsWith("[")) {
-        // An array class: Extract class name
-        int index = result.indexOf('L');
-        if (index > 0) {
-          result = result.substring(index + 1, result.length() - 1);
-        }
-      }
+    /**
+     * Creates an instance for the specified index refering an
+     * {@link UTF8Constant}.
+     * 
+     * @param pool
+     *            Pool of all {@link Constant Constants}.
+     * @param nameIndex
+     *            Index into <tt>pool</tt>.
+     */
+    public ClassConstant(Constant[] pool, int nameIndex) {
+        super(pool);
+        _nameIndex = nameIndex;
     }
-    return result;
-  }
 
-  /** Returns the constant type and the class name. */
-  public String toString() {
-    return "CONSTANT_Class: " + getName();
-  }
-} //class
+    /**
+     * Returns the fully-qualified class name. In the case of an object array
+     * only the class name of the object is returned.
+     * 
+     * @return fully-qualified class name in standard notation with '.'.
+     */
+    public String getName() {
+        String result = null;
+        Constant c = getConstant(_nameIndex);
+        if (c instanceof UTF8Constant) {
+            result = ((UTF8Constant) c).getString().replace('/', '.');
+            if (result.startsWith("[")) {
+                // An array class: Extract class name
+                int index = result.indexOf('L');
+                if (index > 0) {
+                    result = result.substring(index + 1, result.length() - 1);
+                }
+            }
+        }
+        return result;
+    }
+
+    /** Returns the constant type and the class name. */
+    public String toString() {
+        return "CONSTANT_Class: " + getName();
+    }
+} // class

@@ -28,79 +28,90 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 /**
- * Calculates for each vertex the longest walk. This processor assumes
- * that the graph has no cycles.
+ * Calculates for each vertex the longest walk. This processor assumes that the
+ * graph has no cycles.
  * 
  * @author Franz-Josef Elmer
  */
 public class LongestWalkProcessor extends GraphProcessor {
-  /** Does nothing. */
-  protected void initializeProcessing(Vertex[] graph) {}
-
-  /** 
-   * Resets the specified vertex. 
-   * @throws IllegalArgumentException if <tt>vertex</tt> is not an instance
-   *         of {@link StrongComponent}.
-   */
-  protected void processBefore(Vertex vertex) {
-    StrongComponent component = castAsStrongComponent(vertex);
-    component.setActive(true);
-    component.setLongestWalk(0);
-  }
-
-  /** 
-   * Processes arc from <tt>tail</tt> to <tt>head</tt>. 
-   * Calculates the longest walk of <tt>tail</tt>.
-   * @throws IllegalArgumentException if both vertices are not instances
-   *         of {@link StrongComponent} or if <tt>head</tt> is visited and
-   *         active which indicates a cycle in the graph. 
-   */
-  protected void processArc(Vertex tail, Vertex head) {
-    StrongComponent t = castAsStrongComponent(tail);
-    StrongComponent h = castAsStrongComponent(head);
-    if (!h.isVisited()) {
-      process(h);
-    } else if (h.isActive()) {
-      // Oops! should never be happen if the graph has been created
-      // with StrongComponentProcessor
-      throw new IllegalArgumentException(h + " is not a strong component.");
+    /** Does nothing. */
+    protected void initializeProcessing(Vertex[] graph) {
     }
-    t.setLongestWalk(Math.max(t.getLongestWalk(), 1 + h.getLongestWalk()));
-  }
 
-  /** 
-   * Deactivate the specified vertex.
-   * @throws IllegalArgumentException if <tt>vertex</tt> is not an instance
-   *         of {@link StrongComponent}.
-   */ 
-  protected void processAfter(Vertex vertex) {
-    castAsStrongComponent(vertex).setActive(false);
-  }
-
-  /**
-   * Finishes processing by sorting the result in accordance with the 
-   * walk length.
-   */
-  protected void finishProcessing(Vertex[] graph) {
-    Arrays.sort(graph, new Comparator() {
-                          public int compare(Object obj1, Object obj2) {
-                            return ((StrongComponent) obj1).getLongestWalk()
-                                   - ((StrongComponent) obj2).getLongestWalk();
-                          }
-                        });
-  }
-
-  /**
-   *  Casts the specified vertex as a {@link StrongComponent}.
-   *  @throws IllegalArgumentException if <tt>vertex</tt> is not an instance
-   *          of {@link StrongComponent}.
-   */
-  private StrongComponent castAsStrongComponent(Vertex vertex) {
-    if (vertex instanceof StrongComponent) {
-      return (StrongComponent) vertex;
-    } else {
-      throw new IllegalArgumentException(
-        vertex + " is not an instance of StrongComponent");
+    /**
+     * Resets the specified vertex.
+     * 
+     * @throws IllegalArgumentException
+     *             if <tt>vertex</tt> is not an instance of
+     *             {@link StrongComponent}.
+     */
+    protected void processBefore(Vertex vertex) {
+        StrongComponent component = castAsStrongComponent(vertex);
+        component.setActive(true);
+        component.setLongestWalk(0);
     }
-  }
-} //class
+
+    /**
+     * Processes arc from <tt>tail</tt> to <tt>head</tt>. Calculates the longest
+     * walk of <tt>tail</tt>.
+     * 
+     * @throws IllegalArgumentException
+     *             if both vertices are not instances of {@link StrongComponent}
+     *             or if <tt>head</tt> is visited and active which indicates a
+     *             cycle in the graph.
+     */
+    protected void processArc(Vertex tail, Vertex head) {
+        StrongComponent t = castAsStrongComponent(tail);
+        StrongComponent h = castAsStrongComponent(head);
+        if (!h.isVisited()) {
+            process(h);
+        }
+        else if (h.isActive()) {
+            // Oops! should never be happen if the graph has been created
+            // with StrongComponentProcessor
+            throw new IllegalArgumentException(h + " is not a strong component.");
+        }
+        t.setLongestWalk(Math.max(t.getLongestWalk(), 1 + h.getLongestWalk()));
+    }
+
+    /**
+     * Deactivate the specified vertex.
+     * 
+     * @throws IllegalArgumentException
+     *             if <tt>vertex</tt> is not an instance of
+     *             {@link StrongComponent}.
+     */
+    protected void processAfter(Vertex vertex) {
+        castAsStrongComponent(vertex).setActive(false);
+    }
+
+    /**
+     * Finishes processing by sorting the result in accordance with the walk
+     * length.
+     */
+    protected void finishProcessing(Vertex[] graph) {
+        Arrays.sort(graph, new Comparator() {
+            public int compare(Object obj1, Object obj2) {
+                return ((StrongComponent) obj1).getLongestWalk()
+                        - ((StrongComponent) obj2).getLongestWalk();
+            }
+        });
+    }
+
+    /**
+     * Casts the specified vertex as a {@link StrongComponent}.
+     * 
+     * @throws IllegalArgumentException
+     *             if <tt>vertex</tt> is not an instance of
+     *             {@link StrongComponent}.
+     */
+    private StrongComponent castAsStrongComponent(Vertex vertex) {
+        if (vertex instanceof StrongComponent) {
+            return (StrongComponent) vertex;
+        }
+        else {
+            throw new IllegalArgumentException(
+                    vertex + " is not an instance of StrongComponent");
+        }
+    }
+} // class

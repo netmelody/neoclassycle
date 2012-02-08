@@ -29,44 +29,45 @@ import org.netmelody.neoclassycle.graph.AtomicVertex;
 import org.netmelody.neoclassycle.graph.StrongComponent;
 
 /**
- * Plain text renderer of an {@link AtomicVertex} with 
- * {@link ClassAttributes}.
+ * Plain text renderer of an {@link AtomicVertex} with {@link ClassAttributes}.
  * 
  * @author Franz-Josef Elmer
  */
-public class PlainClassRenderer implements AtomicVertexRenderer 
+public class PlainClassRenderer implements AtomicVertexRenderer
 {
-  /**
-   * Renderes the specified vertex. It is assumed that the vertex attributes
-   * are of the type {@link org.netmelody.neoclassycle.ClassAttributes}.
-   * @param vertex Vertex to be rendered.
-   * @return the rendered vertex.
-   */
-  public String render(AtomicVertex vertex, StrongComponent cycle, 
-                       int layerIndex) 
-  {
-    if (vertex.getAttributes() instanceof ClassAttributes) 
+    /**
+     * Renderes the specified vertex. It is assumed that the vertex attributes
+     * are of the type {@link org.netmelody.neoclassycle.ClassAttributes}.
+     * 
+     * @param vertex
+     *            Vertex to be rendered.
+     * @return the rendered vertex.
+     */
+    public String render(AtomicVertex vertex, StrongComponent cycle,
+            int layerIndex)
     {
-      int usesInternal = 0;
-      int usesExternal = 0;
-      for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) 
-      {
-        if (((AtomicVertex) vertex.getHeadVertex(i)).isGraphVertex()) 
+        if (vertex.getAttributes() instanceof ClassAttributes)
         {
-          usesInternal++;
-        } else 
-        {
-          usesExternal++;
+            int usesInternal = 0;
+            int usesExternal = 0;
+            for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++)
+            {
+                if (((AtomicVertex) vertex.getHeadVertex(i)).isGraphVertex())
+                {
+                    usesInternal++;
+                }
+                else
+                {
+                    usesExternal++;
+                }
+            }
+            StringBuffer result = new StringBuffer(vertex.getAttributes().toString());
+            result.append(": Used by ").append(vertex.getNumberOfIncomingArcs())
+                    .append(" classes. Uses ").append(usesInternal).append('/')
+                    .append(usesExternal).append(" internal/external classes");
+            return new String(result);
         }
-      }
-      StringBuffer result 
-          = new StringBuffer(vertex.getAttributes().toString());
-      result.append(": Used by ").append(vertex.getNumberOfIncomingArcs())
-            .append(" classes. Uses ").append(usesInternal).append('/')
-            .append(usesExternal).append(" internal/external classes");
-      return new String(result);
-    } 
-    throw new IllegalArgumentException(
-                  "Missing class attributes in vertex " + vertex);
-  }
-} //class
+        throw new IllegalArgumentException(
+                "Missing class attributes in vertex " + vertex);
+    }
+} // class

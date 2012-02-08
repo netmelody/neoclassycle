@@ -24,30 +24,28 @@
  */
 package org.netmelody.neoclassycle.renderer;
 
-
 /**
- * XML renderer of an {@link AtomicVertex} with 
- * {@link ClassAttributes}.
+ * XML renderer of an {@link AtomicVertex} with {@link ClassAttributes}.
  * 
  * @author Franz-Josef Elmer
  */
-public class XMLClassRenderer extends XMLAtomicVertexRenderer 
+public class XMLClassRenderer extends XMLAtomicVertexRenderer
 {
-  protected String getElement()
-  {
-    return "class";
-  }
+    protected String getElement()
+    {
+        return "class";
+    }
 
-  protected String getRefElement()
-  {
-    return "classRef";
-  }
+    protected String getRefElement()
+    {
+        return "classRef";
+    }
 
-  protected AtomicVertexRenderer getVertexRenderer()
-  {
-    return new TemplateBasedClassRenderer("    <" + getElement()
-            + " name=\"{0}\" sources=\"{9}\" type=\"{1}\" innerClass=\"{3}\""
-            + " size=\"{2}\" usedBy=\"{4}\" usesInternal=\"{5}\""
-            + " usesExternal=\"{6}\" layer=\"{7}\" cycle=\"{8}\">\n");
-  }
-} //class
+    protected AtomicVertexRenderer getVertexRenderer()
+    {
+        return new TemplateBasedClassRenderer("    <" + getElement()
+                + " name=\"{0}\" sources=\"{9}\" type=\"{1}\" innerClass=\"{3}\""
+                + " size=\"{2}\" usedBy=\"{4}\" usesInternal=\"{5}\""
+                + " usesExternal=\"{6}\" layer=\"{7}\" cycle=\"{8}\">\n");
+    }
+} // class

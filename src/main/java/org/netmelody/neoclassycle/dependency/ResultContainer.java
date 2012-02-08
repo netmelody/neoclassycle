@@ -30,58 +30,59 @@ import java.util.List;
 /**
  * Container of {@link Result} instances.
  * 
- * @author  Franz-Josef Elmer
+ * @author Franz-Josef Elmer
  */
 public class ResultContainer implements Result
 {
-  private final List<Result> _list = new ArrayList<Result>();
-  
-  /**
-   * Adds a result.
-   */
-  public void add(Result result) 
-  {
-    _list.add(result);
-  }
+    private final List<Result> _list = new ArrayList<Result>();
 
-  /**
-   * Returns the number of added results.
-   */
-  public int getNumberOfResults()
-  {
-    return _list.size();
-  }
-
-  /**
-   * Returns the result with specified index.
-   */
-  public Result getResult(int index)
-  {
-    return _list.get(index);
-  }
-
-  /**
-   * Returns <code>true</code> if all added {@link Result} instances returned <code>true</code>.
-   */
-  public boolean isOk()
-  {
-    for (int i = 0, n = _list.size(); i < n; i++)
+    /**
+     * Adds a result.
+     */
+    public void add(Result result)
     {
-      if (getResult(i).isOk() == false)
-      {
-        return false;
-      }
+        _list.add(result);
     }
-    return true;
-  }
-  
-  public String toString()
-  {
-    StringBuffer buffer = new StringBuffer();
-    for (int i = 0, n = getNumberOfResults(); i < n; i++)
+
+    /**
+     * Returns the number of added results.
+     */
+    public int getNumberOfResults()
     {
-      buffer.append(getResult(i));
+        return _list.size();
     }
-    return new String(buffer);
-  }
+
+    /**
+     * Returns the result with specified index.
+     */
+    public Result getResult(int index)
+    {
+        return _list.get(index);
+    }
+
+    /**
+     * Returns <code>true</code> if all added {@link Result} instances returned
+     * <code>true</code>.
+     */
+    public boolean isOk()
+    {
+        for (int i = 0, n = _list.size(); i < n; i++)
+        {
+            if (getResult(i).isOk() == false)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public String toString()
+    {
+        StringBuffer buffer = new StringBuffer();
+        for (int i = 0, n = getNumberOfResults(); i < n; i++)
+        {
+            buffer.append(getResult(i));
+        }
+        return new String(buffer);
+    }
 }
