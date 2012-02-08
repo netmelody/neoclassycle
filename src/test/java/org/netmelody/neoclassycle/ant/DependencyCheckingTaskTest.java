@@ -3,12 +3,6 @@
  */
 package org.netmelody.neoclassycle.ant;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
@@ -19,6 +13,12 @@ import org.apache.tools.ant.BuildException;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author Franz-Josef Elmer

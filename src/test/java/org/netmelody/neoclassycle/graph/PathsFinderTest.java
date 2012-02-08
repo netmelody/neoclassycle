@@ -62,8 +62,6 @@ public class PathsFinderTest {
 
     private static class MockVertex extends AtomicVertex
     {
-        public int countReset;
-        public int countVisit;
         public final String name;
 
         public MockVertex(String name)
@@ -75,13 +73,11 @@ public class PathsFinderTest {
 
         public void reset()
         {
-            countReset++;
             super.reset();
         }
 
         public void visit()
         {
-            countVisit++;
             super.visit();
         }
 
