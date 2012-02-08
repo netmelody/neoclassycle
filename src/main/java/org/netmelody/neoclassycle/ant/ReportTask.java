@@ -126,6 +126,7 @@ public class ReportTask extends ClassycleTask {
         _title = title;
     }
 
+    @Override
     public void execute() throws BuildException {
         super.execute();
 

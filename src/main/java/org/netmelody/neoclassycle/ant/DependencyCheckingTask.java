@@ -128,6 +128,7 @@ public class DependencyCheckingTask extends ClassycleTask {
         _dependencyDefinition = text.trim();
     }
 
+    @Override
     public void execute() throws BuildException {
         super.execute();
 
@@ -168,7 +169,6 @@ public class DependencyCheckingTask extends ClassycleTask {
 
     private String getDependencyDefinitions() throws IOException, BuildException {
         String result = _dependencyDefinition;
-        ;
         if (_definitionFile != null) {
             result = Text.readTextFile(_definitionFile);
         }

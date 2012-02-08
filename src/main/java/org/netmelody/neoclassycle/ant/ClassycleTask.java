@@ -77,6 +77,7 @@ public abstract class ClassycleTask extends Task {
         _fileSets.add(set);
     }
 
+    @Override
     public void execute() throws BuildException {
         super.execute();
 
@@ -89,7 +90,7 @@ public abstract class ClassycleTask extends Task {
         ArrayList<String> fileNames = new ArrayList<String>();
         String fileSeparator = System.getProperty("file.separator");
         for (Iterator<FileSet> i = _fileSets.iterator(); i.hasNext();) {
-            FileSet set = (FileSet) i.next();
+            FileSet set = i.next();
             DirectoryScanner scanner = set.getDirectoryScanner(getProject());
             String path = scanner.getBasedir().getAbsolutePath();
             String[] localFiles = scanner.getIncludedFiles();
@@ -98,7 +99,7 @@ public abstract class ClassycleTask extends Task {
             }
         }
         String[] classFiles = new String[fileNames.size()];
-        return (String[]) fileNames.toArray(classFiles);
+        return fileNames.toArray(classFiles);
     }
 
     protected StringPattern getPattern() {
