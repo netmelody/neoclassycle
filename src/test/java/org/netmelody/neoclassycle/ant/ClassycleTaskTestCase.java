@@ -28,14 +28,14 @@ public abstract class ClassycleTaskTestCase {
     public final BuildFileTest antTestcase = new BuildFileTest() {
     };
 
-    protected void checkNumberOfLines(int expectedNumberOfLines, String fileName) throws Exception {
-        File file = new File(folder.getRoot(), fileName);
-        FileReader reader = new FileReader(file);
+    protected void checkNumberOfLines(final int expectedNumberOfLines, final String fileName) throws Exception {
+        final File file = new File(folder.getRoot(), fileName);
+        final FileReader reader = new FileReader(file);
         checkNumberOfLines(reader, expectedNumberOfLines);
     }
 
-    protected void checkNumberOfLines(Reader reader, int expectedNumberOfLines) throws IOException {
-        BufferedReader br = new BufferedReader(reader);
+    protected void checkNumberOfLines(final Reader reader, final int expectedNumberOfLines) throws IOException {
+        final BufferedReader br = new BufferedReader(reader);
         int numberOfLines = 0;
         while (br.readLine() != null) {
             numberOfLines++;
@@ -43,24 +43,24 @@ public abstract class ClassycleTaskTestCase {
         assertEquals("Number of lines", expectedNumberOfLines, numberOfLines);
     }
 
-    protected void checkLine(String expectedLine, int lineNumber, String fileName) throws Exception {
-        File file = new File(folder.getRoot(), fileName);
-        FileReader reader = new FileReader(file);
+    protected void checkLine(final String expectedLine, final int lineNumber, final String fileName) throws Exception {
+        final File file = new File(folder.getRoot(), fileName);
+        final FileReader reader = new FileReader(file);
         checkLine(reader, expectedLine, lineNumber);
     }
 
-    protected void checkLine(Reader reader, String expectedLine, int lineNumber) throws IOException {
-        BufferedReader br = new BufferedReader(reader);
+    protected void checkLine(final Reader reader, final String expectedLine, int lineNumber) throws IOException {
+        final BufferedReader br = new BufferedReader(reader);
         String line = null;
         while ((line = br.readLine()) != null && --lineNumber > 0)
             ;
         assertEquals(expectedLine, line);
     }
 
-    protected String readFile(String fileName) throws Exception {
-        File file = new File(folder.getRoot(), fileName);
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-        StringBuilder builder = new StringBuilder();
+    protected String readFile(final String fileName) throws Exception {
+        final File file = new File(folder.getRoot(), fileName);
+        final BufferedReader reader = new BufferedReader(new FileReader(file));
+        final StringBuilder builder = new StringBuilder();
         String line;
         while ((line = reader.readLine()) != null) {
             builder.append(line).append('\n');
@@ -69,7 +69,7 @@ public abstract class ClassycleTaskTestCase {
 
     }
 
-    protected void configureProject(String resourceName) {
+    protected void configureProject(final String resourceName) {
         final File file = copyResource(resourceName);
 
         folder.newFolder("example/p").mkdirs();
@@ -84,17 +84,17 @@ public abstract class ClassycleTaskTestCase {
             System.setProperty("classes.dir", folder.getRoot().getAbsolutePath());
             antTestcase.configureProject(file.getAbsolutePath());
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             throw new IllegalStateException(e);
         }
     }
 
-    public File copyResource(String resourceName) {
+    public File copyResource(final String resourceName) {
         final File file = new File(folder.getRoot(), resourceName);
         final InputStream in = ClassycleTaskTestCase.class.getResourceAsStream("/" + resourceName);
         try {
             final FileOutputStream out = new FileOutputStream(file);
-            byte[] buffer = new byte[1024];
+            final byte[] buffer = new byte[1024];
             int len = in.read(buffer);
             while (len != -1) {
                 out.write(buffer, 0, len);
@@ -103,13 +103,13 @@ public abstract class ClassycleTaskTestCase {
             out.close();
             in.close();
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             throw new IllegalStateException(e);
         }
         return file;
     }
 
-    protected void executeTarget(String targetName) {
+    protected void executeTarget(final String targetName) {
         antTestcase.executeTarget(targetName);
     }
 

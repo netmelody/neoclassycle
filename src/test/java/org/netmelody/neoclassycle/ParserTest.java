@@ -37,14 +37,14 @@ public final class ParserTest {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
-    private static int compile(String file) {
+    private static int compile(final String file) {
         try {
             final Class<?> compilerClass = Class.forName("com.sun.tools.javac.Main", true, compilerClassLoader());
             final Object compiler = compilerClass.newInstance();
             final Method compileMethod = compilerClass.getMethod("compile", String[].class);
             return (Integer) compileMethod.invoke(compiler, ((Object) new String[] { file, "-target", "1.5" }));
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             throw new IllegalStateException(e);
         }
     }
@@ -55,44 +55,43 @@ public final class ParserTest {
             urls.add(new File(System.getenv("JAVA_HOME") + File.separator + "lib" + File.separator + "tools.jar").toURI().toURL());
             return new URLClassLoader(urls.toArray(new URL[urls.size()]));
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             throw new IllegalStateException(e);
         }
     }
 
-    private AtomicVertex createVertex(String code, StringPattern reflectionPattern, boolean mergeInnerClasses) throws IOException {
+    private AtomicVertex createVertex(final String code, final StringPattern reflectionPattern, final boolean mergeInnerClasses) throws IOException {
         final File sourceFile = new File(folder.getRoot(), CLASS_NAME + ".java");
-        Writer writer = new FileWriter(sourceFile);
+        final Writer writer = new FileWriter(sourceFile);
         writer.write(code);
         writer.close();
         assertEquals("Exit code", 0, compile(sourceFile.getAbsolutePath()));
-        AtomicVertex[] vertices = Parser.readClassFiles(new String[] { folder.getRoot().getAbsolutePath() }, new TrueStringPattern(),
+        final AtomicVertex[] vertices = Parser.readClassFiles(new String[] { folder.getRoot().getAbsolutePath() }, new TrueStringPattern(),
                 reflectionPattern, mergeInnerClasses);
-        for (int i = 0; i < vertices.length; i++) {
-            NameAttributes attributes = (NameAttributes) vertices[i].getAttributes();
+        for (final AtomicVertex vertex : vertices) {
+            final NameAttributes attributes = (NameAttributes) vertex.getAttributes();
             if (attributes.getName().equals(CLASS_NAME)) {
-                AtomicVertex vertex = vertices[i];
                 return vertex;
             }
         }
         throw new IOException("Test class not found: " + Arrays.asList(vertices));
     }
 
-    private void check(String[] expectedClasses, String javaCode) throws IOException {
+    private void check(final String[] expectedClasses, final String javaCode) throws IOException {
         check(expectedClasses, javaCode, null, false);
     }
 
-    private void check(String[] expectedClasses, String javaCode, StringPattern reflectionPattern, boolean mergeInnerClasses)
+    private void check(final String[] expectedClasses, final String javaCode, final StringPattern reflectionPattern, final boolean mergeInnerClasses)
             throws IOException {
-        AtomicVertex vertex = createVertex(javaCode, reflectionPattern, mergeInnerClasses);
+        final AtomicVertex vertex = createVertex(javaCode, reflectionPattern, mergeInnerClasses);
         assertEquals(folder.getRoot().getAbsolutePath(), ((ClassAttributes) vertex.getAttributes()).getSources());
-        HashSet<String> classSet = new HashSet<String>();
-        for (int i = 0; i < expectedClasses.length; i++) {
-            classSet.add(expectedClasses[i]);
+        final HashSet<String> classSet = new HashSet<String>();
+        for (final String expectedClasse : expectedClasses) {
+            classSet.add(expectedClasse);
         }
         for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) {
-            Vertex v = vertex.getHeadVertex(i);
-            String name = ((ClassAttributes) v.getAttributes()).getName();
+            final Vertex v = vertex.getHeadVertex(i);
+            final String name = ((ClassAttributes) v.getAttributes()).getName();
             assertTrue(name + " not expected", classSet.contains(name));
             classSet.remove(name);
         }
@@ -175,18 +174,18 @@ public final class ParserTest {
 
         // check that size of merged vertices is the sum of vertices sizes
         AtomicVertex vertex = createVertex(INNER_CLASS_EXAMPLE, new TrueStringPattern(), false);
-        int size1 = ((ClassAttributes) vertex.getAttributes()).getSize();
+        final int size1 = ((ClassAttributes) vertex.getAttributes()).getSize();
         Vertex innerClass = null;
         for (int i = 0; i < vertex.getNumberOfOutgoingArcs(); i++) {
             innerClass = vertex.getHeadVertex(i);
-            String name = ((ClassAttributes) innerClass.getAttributes()).getName();
+            final String name = ((ClassAttributes) innerClass.getAttributes()).getName();
             if (name.startsWith(CLASS_NAME)) {
                 break;
             }
         }
-        int size2 = ((ClassAttributes) innerClass.getAttributes()).getSize();
+        final int size2 = ((ClassAttributes) innerClass.getAttributes()).getSize();
         vertex = createVertex(INNER_CLASS_EXAMPLE, new TrueStringPattern(), true);
-        int size = ((ClassAttributes) vertex.getAttributes()).getSize();
+        final int size = ((ClassAttributes) vertex.getAttributes()).getSize();
         assertEquals(size1 + size2, size);
     }
 

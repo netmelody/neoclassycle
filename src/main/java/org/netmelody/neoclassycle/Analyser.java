@@ -1,26 +1,26 @@
 /*
  * Copyright (c) 2003-2008, Franz-Josef Elmer, All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without 
+ * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
- * - Redistributions of source code must retain the above copyright notice, 
+ *
+ * - Redistributions of source code must retain the above copyright notice,
  *   this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright notice, 
- *   this list of conditions and the following disclaimer in the documentation 
+ * - Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
  *   and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED 
- * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.netmelody.neoclassycle;
 
@@ -51,7 +51,7 @@ import org.netmelody.neoclassycle.util.TrueStringPattern;
 /**
  * Main class of the Classycle tool. Runs on the command line and produces a
  * report.
- * 
+ *
  * @author Franz-Josef Elmer
  */
 public class Analyser {
@@ -68,18 +68,18 @@ public class Analyser {
 
     /**
      * Creates an instance for the specified files or folders.
-     * 
+     *
      * @param classFiles
      *            Absolute or relative file names.
      */
-    public Analyser(String[] classFiles) {
+    public Analyser(final String[] classFiles) {
         this(classFiles, new TrueStringPattern(), null, false);
     }
 
     /**
      * Creates an instance for the specified files or folders which are filtered
      * by the specified {@link StringPattern} object.
-     * 
+     *
      * @param classFiles
      *            Absolute or relative file names.
      * @param pattern
@@ -94,7 +94,7 @@ public class Analyser {
      * @param mergeInnerClasses
      *            If <code>true</code> merge inner classes with its outer class
      */
-    public Analyser(String[] classFiles, StringPattern pattern, StringPattern reflectionPattern, boolean mergeInnerClasses) {
+    public Analyser(final String[] classFiles, final StringPattern pattern, final StringPattern reflectionPattern, final boolean mergeInnerClasses) {
         _classFiles = classFiles;
         _pattern = pattern;
         _reflectionPattern = reflectionPattern;
@@ -103,14 +103,14 @@ public class Analyser {
 
     /**
      * Parses the class files and creates the class graph.
-     * 
+     *
      * @return the duration of this operation in milliseconds.
      * @throws IOException
      *             if a problem occured during reading
      */
     public long createClassGraph() throws IOException {
-        long time = System.currentTimeMillis();
-        AtomicVertex[] classGraph = Parser.readClassFiles(_classFiles, _pattern, _reflectionPattern, _mergeInnerClasses);
+        final long time = System.currentTimeMillis();
+        final AtomicVertex[] classGraph = Parser.readClassFiles(_classFiles, _pattern, _reflectionPattern, _mergeInnerClasses);
         _classAnalyser = new StrongComponentAnalyser(classGraph);
         return System.currentTimeMillis() - time;
     }
@@ -124,7 +124,7 @@ public class Analyser {
             try {
                 createClassGraph();
             }
-            catch (IOException e) {
+            catch (final IOException e) {
                 throw new RuntimeException(e.toString());
             }
         }
@@ -135,13 +135,12 @@ public class Analyser {
      * Counts the number of external classes.
      */
     public int getNumberOfExternalClasses() {
-        AtomicVertex[] graph = getClassGraph();
-        HashSet<String> usedClasses = new HashSet<String>();
+        final AtomicVertex[] graph = getClassGraph();
+        final HashSet<String> usedClasses = new HashSet<String>();
         int result = 0;
-        for (int i = 0; i < graph.length; i++) {
-            AtomicVertex vertex = graph[i];
+        for (final AtomicVertex vertex : graph) {
             for (int j = 0, n = vertex.getNumberOfOutgoingArcs(); j < n; j++) {
-                ClassAttributes attributes = (ClassAttributes) vertex.getHeadVertex(j).getAttributes();
+                final ClassAttributes attributes = (ClassAttributes) vertex.getHeadVertex(j).getAttributes();
                 if (attributes.getType() == ClassAttributes.UNKNOWN) {
                     if (!usedClasses.contains(attributes.getName())) {
                         result++;
@@ -155,14 +154,14 @@ public class Analyser {
 
     /**
      * Condenses the class graph to an acyclic graph of its strong components.
-     * 
+     *
      * @return the duration of this operation in milliseconds.
      * @throws IllegalStateException
      *             if this method is called before {@link #createClassGraph()}.
      */
     public long condenseClassGraph() {
         checkClassGraph("condenseClassGraph()");
-        long time = System.currentTimeMillis();
+        final long time = System.currentTimeMillis();
         _classAnalyser.getCondensedGraph();
         return System.currentTimeMillis() - time;
     }
@@ -170,7 +169,7 @@ public class Analyser {
     /**
      * Returns the condensed the class graph, i.e.&nbsp;the acyclic graph of its
      * strong components.
-     * 
+     *
      * @throws IllegalStateException
      *             if this method is called before {@link #createClassGraph()}.
      */
@@ -183,14 +182,14 @@ public class Analyser {
      * Calculates the for each class its layer index. The layer index of a class
      * is the length of the longest path in the acyclic graph of strong
      * components starting at the strong component to which the class belongs.
-     * 
+     *
      * @return the duration of this operation in milliseconds.
      * @throws IllegalStateException
      *             if this method is called before {@link #createClassGraph()}.
      */
     public long calculateClassLayerMap() {
         checkClassGraph("calculateClassLayerMap()");
-        long time = System.currentTimeMillis();
+        final long time = System.currentTimeMillis();
         _classAnalyser.getLayerMap();
         return System.currentTimeMillis() - time;
     }
@@ -199,7 +198,7 @@ public class Analyser {
      * Calculates the for each class its layer index and returns a <tt>Map</tt>
      * where the classes are the keys (type {@link AtomicVertex}) and the layer
      * indices are the values (type <tt>Integer</tt>).
-     * 
+     *
      * @throws IllegalStateException
      *             if this method is called before {@link #createClassGraph()}.
      */
@@ -210,15 +209,15 @@ public class Analyser {
 
     /**
      * Creates the package graph from the class graph.
-     * 
+     *
      * @return the duration of this operation in milliseconds.
      * @throws IllegalStateException
      *             if this method is called before {@link #createClassGraph()}.
      */
     public long createPackageGraph() {
         checkClassGraph("createPackageGraph()");
-        long time = System.currentTimeMillis();
-        PackageProcessor processor = new PackageProcessor();
+        final long time = System.currentTimeMillis();
+        final PackageProcessor processor = new PackageProcessor();
         processor.deepSearchFirst(_classAnalyser.getGraph());
         _packageAnalyser = new StrongComponentAnalyser(processor.getGraph());
         return System.currentTimeMillis() - time;
@@ -237,14 +236,14 @@ public class Analyser {
      * <li>uses external classes (number of external classes used by this class)
      * <li>layer index
      * </ol>
-     * 
+     *
      * @param writer
      *            Output stream.
      */
-    public void printCSV(PrintWriter writer) {
-        StrongComponent[] cycles = getCondensedClassGraph();
-        AtomicVertex[] graph = getClassGraph();
-        Map<AtomicVertex, Integer> map = getClassLayerMap();
+    public void printCSV(final PrintWriter writer) {
+        final StrongComponent[] cycles = getCondensedClassGraph();
+        final AtomicVertex[] graph = getClassGraph();
+        final Map<AtomicVertex, Integer> map = getClassLayerMap();
         writer.println("class name,type,inner class,size,used by," + "uses internal classes,uses external classes,"
                 + "layer index,cycle,source");
         render(graph, cycles, map, new TemplateBasedClassRenderer(CSV_TEMPLATE), writer);
@@ -254,14 +253,13 @@ public class Analyser {
     /**
      * Prints for each class a raw output into the specified writer. This output
      * includes all classes used by the class.
-     * 
+     *
      * @param writer
      *            Output stream.
      */
-    public void printRaw(PrintWriter writer) {
-        AtomicVertex[] graph = getClassGraph();
-        for (int i = 0; i < graph.length; i++) {
-            AtomicVertex vertex = graph[i];
+    public void printRaw(final PrintWriter writer) {
+        final AtomicVertex[] graph = getClassGraph();
+        for (final AtomicVertex vertex : graph) {
             writer.println(vertex.getAttributes());
             for (int j = 0, n = vertex.getNumberOfOutgoingArcs(); j < n; j++) {
                 writer.println("    " + vertex.getHeadVertex(j).getAttributes());
@@ -275,7 +273,7 @@ public class Analyser {
      * specified writer. The strong component must have at least
      * <tt>minSize</tt> classes in order to be printed out. This output includes
      * all classes of the strong component.
-     * 
+     *
      * @param writer
      *            Output stream.
      * @param minSize
@@ -283,12 +281,11 @@ public class Analyser {
      * @throws IllegalStateException
      *             if this method is called before {@link #createClassGraph()}.
      */
-    public void printComponents(PrintWriter writer, int minSize) {
+    public void printComponents(final PrintWriter writer, final int minSize) {
         checkClassGraph("printComponents()");
-        StrongComponent[] components = getCondensedClassGraph();
-        StrongComponentRenderer renderer = new PlainStrongComponentRenderer();
-        for (int i = 0; i < components.length; i++) {
-            StrongComponent component = components[i];
+        final StrongComponent[] components = getCondensedClassGraph();
+        final StrongComponentRenderer renderer = new PlainStrongComponentRenderer();
+        for (final StrongComponent component : components) {
             if (component.getNumberOfVertices() >= minSize) {
                 writer.println(renderer.render(component));
             }
@@ -296,7 +293,7 @@ public class Analyser {
         writer.close();
     }
 
-    private void checkClassGraph(String method) {
+    private void checkClassGraph(final String method) {
         if (_classAnalyser == null) {
             throw new IllegalStateException(method + " should be invoked after createClassGraph().");
         }
@@ -304,7 +301,7 @@ public class Analyser {
 
     /**
      * Returns the package graph created the class graph.
-     * 
+     *
      * @throws IllegalStateException
      *             if this method is called before {@link #createClassGraph()}.
      */
@@ -317,7 +314,7 @@ public class Analyser {
 
     /**
      * Condenses the package graph to an acyclic graph of its strong components.
-     * 
+     *
      * @return the duration of this operation in milliseconds.
      * @throws IllegalStateException
      *             if this method is called before {@link #createPackageGraph()}
@@ -325,7 +322,7 @@ public class Analyser {
      */
     public long condensePackageGraph() {
         checkPackageGraph("condensePackageGraph()");
-        long time = System.currentTimeMillis();
+        final long time = System.currentTimeMillis();
         _packageAnalyser.getCondensedGraph();
         return System.currentTimeMillis() - time;
     }
@@ -333,7 +330,7 @@ public class Analyser {
     /**
      * Returns the condensed package graph, i.e.&nbsp;the acyclic graph of its
      * strong components.
-     * 
+     *
      * @return the duration of this operation in milliseconds.
      * @throws IllegalStateException
      *             if this method is called before {@link #createPackageGraph()}
@@ -348,7 +345,7 @@ public class Analyser {
      * Calculates the for each package its layer index. The layer index of a
      * package is the length of the longest path in the acyclic graph of strong
      * components starting at the strong component to which the package belongs.
-     * 
+     *
      * @return the duration of this operation in milliseconds.
      * @throws IllegalStateException
      *             if this method is called before {@link #createPackageGraph()}
@@ -356,7 +353,7 @@ public class Analyser {
      */
     public long calculatePackageLayerMap() {
         checkPackageGraph("calculatePackageLayerMap()");
-        long time = System.currentTimeMillis();
+        final long time = System.currentTimeMillis();
         _packageAnalyser.getLayerMap();
         return System.currentTimeMillis() - time;
     }
@@ -365,7 +362,7 @@ public class Analyser {
      * Calculates the for each package its layer index and returns a
      * <tt>Map</tt> where the packages are the keys (type {@link AtomicVertex})
      * and the layer indices are the values (type <tt>Integer</tt>).
-     * 
+     *
      * @throws IllegalStateException
      *             if this method is called before {@link #createPackageGraph()}
      *             .
@@ -379,11 +376,11 @@ public class Analyser {
      * Reads and analyses class files. Does only package analysis if
      * <tt>packagesOnly == true</tt>. Reports progress of analysis on
      * <tt>System.out</tt>.
-     * 
+     *
      * @throws IOException
      *             in case of reading problems.
      */
-    public void readAndAnalyse(boolean packagesOnly) throws IOException {
+    public void readAndAnalyse(final boolean packagesOnly) throws IOException {
         System.out.println("============= Classycle V" + VERSION + " =============");
         System.out.println("========== by Franz-Josef Elmer ==========");
         System.out.print("read class files and create class graph ... ");
@@ -416,7 +413,7 @@ public class Analyser {
 
     /**
      * Prints an XML report into the specified writer.
-     * 
+     *
      * @param title
      *            Title of the report.
      * @param packagesOnly
@@ -427,7 +424,7 @@ public class Analyser {
      *             if this method is called before {@link #createPackageGraph()}
      *             .
      */
-    public void printXML(String title, boolean packagesOnly, PrintWriter writer) {
+    public void printXML(final String title, final boolean packagesOnly, final PrintWriter writer) {
         checkPackageGraph("printXML()");
         writer.println("<?xml version='1.0' encoding='UTF-8'?>");
         writer.println("<?xml-stylesheet type='text/xsl' " + "href='reportXMLtoHTML.xsl'?>");
@@ -437,29 +434,29 @@ public class Analyser {
         writer.print(DATE_FORMAT.format(new Date()));
         writer.println("'>");
         if (!packagesOnly) {
-            StrongComponent[] components = getCondensedClassGraph();
+            final StrongComponent[] components = getCondensedClassGraph();
             writer.println("  <cycles>");
-            StrongComponentRenderer sRenderer = new XMLStrongComponentRenderer(2);
-            for (int i = 0; i < components.length; i++) {
-                writer.print(sRenderer.render(components[i]));
+            final StrongComponentRenderer sRenderer = new XMLStrongComponentRenderer(2);
+            for (final StrongComponent component : components) {
+                writer.print(sRenderer.render(component));
             }
             writer.println("  </cycles>");
             writer.println("  <classes numberOfExternalClasses=\"" + getNumberOfExternalClasses() + "\">");
-            AtomicVertex[] graph = getClassGraph();
-            Map<AtomicVertex, Integer> layerMap = getClassLayerMap();
+            final AtomicVertex[] graph = getClassGraph();
+            final Map<AtomicVertex, Integer> layerMap = getClassLayerMap();
             render(graph, components, layerMap, new XMLClassRenderer(), writer);
             writer.println("  </classes>");
         }
-        StrongComponent[] components = getCondensedPackageGraph();
+        final StrongComponent[] components = getCondensedPackageGraph();
         writer.println("  <packageCycles>");
-        StrongComponentRenderer sRenderer = new XMLPackageStrongComponentRenderer(2);
-        for (int i = 0; i < components.length; i++) {
-            writer.print(sRenderer.render(components[i]));
+        final StrongComponentRenderer sRenderer = new XMLPackageStrongComponentRenderer(2);
+        for (final StrongComponent component : components) {
+            writer.print(sRenderer.render(component));
         }
         writer.println("  </packageCycles>");
         writer.println("  <packages>");
-        AtomicVertex[] graph = getPackageGraph();
-        Map<AtomicVertex, Integer> layerMap = getPackageLayerMap();
+        final AtomicVertex[] graph = getPackageGraph();
+        final Map<AtomicVertex, Integer> layerMap = getPackageLayerMap();
         render(graph, components, layerMap, new XMLPackageRenderer(), writer);
         writer.println("  </packages>");
 
@@ -467,30 +464,29 @@ public class Analyser {
         writer.close();
     }
 
-    private void render(AtomicVertex[] graph, StrongComponent[] cycles, Map<AtomicVertex, Integer> layerMap, AtomicVertexRenderer renderer, PrintWriter writer) {
-        List<StrongComponent> list = getTrueCycles(cycles);
-        for (int i = 0; i < graph.length; i++) {
-            AtomicVertex vertex = graph[i];
-            Integer layerIndex = (Integer) layerMap.get(vertex);
+    private void render(final AtomicVertex[] graph, final StrongComponent[] cycles, final Map<AtomicVertex, Integer> layerMap, final AtomicVertexRenderer renderer, final PrintWriter writer) {
+        final List<StrongComponent> list = getTrueCycles(cycles);
+        for (final AtomicVertex vertex : graph) {
+            final Integer layerIndex = layerMap.get(vertex);
             writer.print(renderer.render(vertex, getCycleFor(vertex, list), layerIndex == null ? -1 : layerIndex.intValue()));
         }
     }
 
-    private List<StrongComponent> getTrueCycles(StrongComponent[] cycles) {
-        List<StrongComponent> list = new ArrayList<StrongComponent>();
+    private List<StrongComponent> getTrueCycles(final StrongComponent[] cycles) {
+        final List<StrongComponent> list = new ArrayList<StrongComponent>();
         if (cycles != null) {
-            for (int i = 0; i < cycles.length; i++) {
-                if (cycles[i].getNumberOfVertices() > 1) {
-                    list.add(cycles[i]);
+            for (final StrongComponent cycle : cycles) {
+                if (cycle.getNumberOfVertices() > 1) {
+                    list.add(cycle);
                 }
             }
         }
         return list;
     }
 
-    private StrongComponent getCycleFor(AtomicVertex vertex, List<StrongComponent> cycles) {
+    private StrongComponent getCycleFor(final AtomicVertex vertex, final List<StrongComponent> cycles) {
         for (int i = 0, n = cycles.size(); i < n; i++) {
-            StrongComponent cycle = (StrongComponent) cycles.get(i);
+            final StrongComponent cycle = cycles.get(i);
             for (int j = 0, m = cycle.getNumberOfVertices(); j < m; j++) {
                 if (cycle.getVertex(j) == vertex) {
                     return cycle;
@@ -500,7 +496,7 @@ public class Analyser {
         return null;
     }
 
-    private void checkPackageGraph(String method) {
+    private void checkPackageGraph(final String method) {
         if (_packageAnalyser == null) {
             throw new IllegalStateException(method + " should be invoked after createPackageGraph().");
         }
@@ -509,19 +505,19 @@ public class Analyser {
     /**
      * Main method of the Analyser. Prints on the console its usage if some
      * invalid command line argument occurs or is missed.
-     * 
+     *
      * @param args
      *            command line arguments.
      * @throws Exception
      */
-    public static void main(String[] args) throws Exception {
-        AnalyserCommandLine commandLine = new AnalyserCommandLine(args);
+    public static void main(final String[] args) throws Exception {
+        final AnalyserCommandLine commandLine = new AnalyserCommandLine(args);
         if (!commandLine.isValid()) {
             System.out.println("Usage: java -jar classycle.jar " + commandLine.getUsage());
             System.exit(0);
         }
 
-        Analyser analyser = new Analyser(commandLine.getClassFiles(), commandLine.getPattern(), commandLine.getReflectionPattern(),
+        final Analyser analyser = new Analyser(commandLine.getClassFiles(), commandLine.getPattern(), commandLine.getReflectionPattern(),
                 commandLine.isMergeInnerClasses());
         analyser.readAndAnalyse(commandLine.isPackagesOnly());
 

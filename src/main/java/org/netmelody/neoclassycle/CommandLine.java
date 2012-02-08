@@ -1,26 +1,26 @@
 /*
  * Copyright (c) 2003-2008, Franz-Josef Elmer, All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without 
+ * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
- * - Redistributions of source code must retain the above copyright notice, 
+ *
+ * - Redistributions of source code must retain the above copyright notice,
  *   this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright notice, 
- *   this list of conditions and the following disclaimer in the documentation 
+ * - Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
  *   and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED 
- * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.netmelody.neoclassycle;
 
@@ -46,7 +46,7 @@ public abstract class CommandLine {
     protected StringPattern _reflectionPattern;
     protected String[] _classFiles;
 
-    public CommandLine(String[] args) {
+    public CommandLine(final String[] args) {
         int index = 0;
         for (; index < args.length && args[index].charAt(0) == '-'; index++) {
             handleOption(args[index]);
@@ -58,21 +58,21 @@ public abstract class CommandLine {
         }
     }
 
-    protected void handleOption(String argument) {
+    protected void handleOption(final String argument) {
         if (argument.startsWith(MERGE_INNER_CLASSES)) {
             _mergeInnerClasses = true;
         }
         else if (argument.startsWith(INCLUDING_CLASSES)) {
-            String patterns = argument.substring(INCLUDING_CLASSES.length());
+            final String patterns = argument.substring(INCLUDING_CLASSES.length());
             _pattern.appendPattern(WildCardPattern.createFromsPatterns(patterns, ","));
         }
         else if (argument.startsWith(EXCLUDING_CLASSES)) {
-            String patterns = argument.substring(EXCLUDING_CLASSES.length());
-            StringPattern p = WildCardPattern.createFromsPatterns(patterns, ",");
+            final String patterns = argument.substring(EXCLUDING_CLASSES.length());
+            final StringPattern p = WildCardPattern.createFromsPatterns(patterns, ",");
             _pattern.appendPattern(new NotStringPattern(p));
         }
         else if (argument.startsWith(REFLECTION_PATTERN)) {
-            String patterns = argument.substring(REFLECTION_PATTERN.length());
+            final String patterns = argument.substring(REFLECTION_PATTERN.length());
             if (patterns.length() == 0) {
                 _reflectionPattern = new TrueStringPattern();
             }

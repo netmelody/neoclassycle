@@ -1,26 +1,26 @@
 /*
  * Copyright (c) 2003-2008, Franz-Josef Elmer, All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without 
+ * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
- * - Redistributions of source code must retain the above copyright notice, 
+ *
+ * - Redistributions of source code must retain the above copyright notice,
  *   this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright notice, 
- *   this list of conditions and the following disclaimer in the documentation 
+ * - Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
  *   and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED 
- * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /*
  * Created on 24.09.2006
@@ -35,11 +35,11 @@ import org.netmelody.neoclassycle.classfile.UTF8Constant;
 
 class ClassNameExtractor {
     /** Returns <tt>true</tt> if <tt>className</tt> is a valid class name. */
-    static boolean isValid(String className) {
+    static boolean isValid(final String className) {
         boolean valid = true;
         boolean firstCharacter = true;
         for (int i = 0, n = className.length(); valid && i < n; i++) {
-            char c = className.charAt(i);
+            final char c = className.charAt(i);
             if (firstCharacter) {
                 firstCharacter = false;
                 valid = Character.isJavaIdentifierStart(c);
@@ -60,17 +60,17 @@ class ClassNameExtractor {
 
     private int _index;
     private int _endIndex;
-    private Set<String> _classNames = new LinkedHashSet<String>();
+    private final Set<String> _classNames = new LinkedHashSet<String>();
     private boolean _valid = true;
 
-    ClassNameExtractor(UTF8Constant constant) {
+    ClassNameExtractor(final UTF8Constant constant) {
         _constant = constant.getString();
         _endIndex = _constant.length();
     }
 
     Set<String> extract() {
         if (getCurrentCharacter() == '<') {
-            int ddIndex = _constant.indexOf("::", _index);
+            final int ddIndex = _constant.indexOf("::", _index);
             if (ddIndex > 0) {
                 _index = ddIndex + 2;
                 parseTypes(false);
@@ -86,7 +86,7 @@ class ClassNameExtractor {
             }
         }
         if (getCurrentCharacter() == '(') {
-            int endIndex = _constant.indexOf(')', _index);
+            final int endIndex = _constant.indexOf(')', _index);
             if (endIndex > 0) {
                 _index++;
                 _endIndex = endIndex;
@@ -99,7 +99,7 @@ class ClassNameExtractor {
             }
         }
         if (_valid) {
-            int numberOfTypes = parseTypes(false);
+            final int numberOfTypes = parseTypes(false);
             if (numberOfTypes == 0) {
                 setInvalid();
             }
@@ -107,7 +107,7 @@ class ClassNameExtractor {
         return _valid ? _classNames : Collections.<String> emptySet();
     }
 
-    private int parseTypes(boolean generics) {
+    private int parseTypes(final boolean generics) {
         int numberOfTypes = 0;
         while (_valid && endOfTypes() == false) {
             parseType(generics);
@@ -128,9 +128,9 @@ class ClassNameExtractor {
         return _index >= _endIndex || _constant.charAt(_index) == '>';
     }
 
-    private void parseType(boolean generics) {
+    private void parseType(final boolean generics) {
         if (generics) {
-            char currentCharacter = getCurrentCharacter();
+            final char currentCharacter = getCurrentCharacter();
             if (currentCharacter == '+') {
                 _index++;
             }
@@ -147,13 +147,13 @@ class ClassNameExtractor {
             setInvalid();
         }
         else {
-            char c = getCurrentCharacter();
+            final char c = getCurrentCharacter();
             _index++;
             if (c == 'L') {
                 parseComplexType();
             }
             else if (c == 'T') {
-                int index = _constant.indexOf(';', _index);
+                final int index = _constant.indexOf(';', _index);
                 if (index < 0) {
                     setInvalid();
                 }
@@ -168,8 +168,8 @@ class ClassNameExtractor {
     }
 
     private void parseComplexType() {
-        int typeIndex = _constant.indexOf('<', _index);
-        int endIndex = _constant.indexOf(';', _index);
+        final int typeIndex = _constant.indexOf('<', _index);
+        final int endIndex = _constant.indexOf(';', _index);
         if (typeIndex >= 0 && typeIndex < endIndex) {
             extractClassName(typeIndex);
             parseTypes(true);
@@ -183,7 +183,7 @@ class ClassNameExtractor {
         }
     }
 
-    private void extractClassName(int endIndex) {
+    private void extractClassName(final int endIndex) {
         String className = _constant.substring(_index, endIndex);
         className = className.replace('/', '.');
         _classNames.add(className);

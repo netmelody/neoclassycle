@@ -87,7 +87,7 @@ public class ReportTaskTest extends ClassycleTaskTestCase {
     public void testXMLPackagesOnly() throws Exception {
         executeTarget("testXMLPackagesOnly");
         checkNumberOfLines(34, "reportTaskTest.xml");
-        String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        final String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         checkLine("<classycle title='&lt;hel&amp;lo&gt;' date='" + date + "'>", 3, "reportTaskTest.xml");
     }
 
@@ -97,7 +97,7 @@ public class ReportTaskTest extends ClassycleTaskTestCase {
             executeTarget("testInvalidReportType");
             fail("BuildException expected");
         }
-        catch (BuildException e) {
+        catch (final BuildException e) {
             assertTrue(e.getMessage().indexOf("foo") >= 0);
         }
     }
@@ -108,7 +108,7 @@ public class ReportTaskTest extends ClassycleTaskTestCase {
             executeTarget("testMissingReportFile");
             fail("BuildException expected");
         }
-        catch (BuildException e) {
+        catch (final BuildException e) {
             assertTrue(e.getMessage().indexOf("'reportFile'") >= 0);
         }
     }
@@ -119,7 +119,7 @@ public class ReportTaskTest extends ClassycleTaskTestCase {
             executeTarget("testMissingFileSet");
             fail("BuildException expected");
         }
-        catch (BuildException e) {
+        catch (final BuildException e) {
             assertTrue(e.getMessage().indexOf("file set") >= 0);
         }
     }

@@ -1,26 +1,26 @@
 /*
  * Copyright (c) 2003-2011, Franz-Josef Elmer, All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without 
+ * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
- * - Redistributions of source code must retain the above copyright notice, 
+ *
+ * - Redistributions of source code must retain the above copyright notice,
  *   this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright notice, 
- *   this list of conditions and the following disclaimer in the documentation 
+ * - Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
  *   and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED 
- * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.netmelody.neoclassycle.ant;
 
@@ -103,7 +103,7 @@ import org.netmelody.neoclassycle.util.Text;
  * <td valign="top">No. By default {@link DefaultResultRenderer} is used.</td>
  * </tr>
  * </table>
- * 
+ *
  * @author Franz-Josef Elmer
  */
 public class DependencyCheckingTask extends ClassycleTask {
@@ -112,19 +112,19 @@ public class DependencyCheckingTask extends ClassycleTask {
     private String _resultRenderer;
     private boolean _failOnUnwantedDependencies;
 
-    public void setFailOnUnwantedDependencies(boolean failOnUnwantedDependencies) {
+    public void setFailOnUnwantedDependencies(final boolean failOnUnwantedDependencies) {
         _failOnUnwantedDependencies = failOnUnwantedDependencies;
     }
 
-    public void setDefinitionFile(File definitionFile) {
+    public void setDefinitionFile(final File definitionFile) {
         _definitionFile = definitionFile;
     }
 
-    public void setResultRenderer(String resultRenderer) {
+    public void setResultRenderer(final String resultRenderer) {
         _resultRenderer = resultRenderer;
     }
 
-    public void addText(String text) {
+    public void addText(final String text) {
         _dependencyDefinition = text.trim();
     }
 
@@ -135,18 +135,18 @@ public class DependencyCheckingTask extends ClassycleTask {
         boolean ok = false;
         PrintWriter printWriter = null;
         try {
-            Analyser analyser = new Analyser(getClassFileNames(), getPattern(), getReflectionPattern(), isMergeInnerClasses());
-            Map<Object, Object> properties = _definitionFile == null ? getProject().getProperties() : System.getProperties();
-            DependencyChecker dependencyChecker = new DependencyChecker(analyser, getDependencyDefinitions(), properties, getRenderer());
+            final Analyser analyser = new Analyser(getClassFileNames(), getPattern(), getReflectionPattern(), isMergeInnerClasses());
+            final Map<Object, Object> properties = _definitionFile == null ? getProject().getProperties() : System.getProperties();
+            final DependencyChecker dependencyChecker = new DependencyChecker(analyser, getDependencyDefinitions(), properties, getRenderer());
             printWriter = _reportFile == null ? new PrintWriter(System.out) : new PrintWriter(new FileWriter(_reportFile));
             ok = dependencyChecker.check(printWriter);
             printWriter.flush();
             printWriter.close();
         }
-        catch (BuildException e) {
+        catch (final BuildException e) {
             throw e;
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             throw new BuildException(e);
         }
         finally {

@@ -10,8 +10,8 @@ public class VertexTest {
 
     @Test
     public void testAddOutgoingArc() {
-        Vertex tail = new Vertex(null);
-        Vertex head = new Vertex(null);
+        final Vertex tail = new Vertex(null);
+        final Vertex head = new Vertex(null);
 
         tail.addOutgoingArcTo(head);
         assertEquals(0, tail.getNumberOfIncomingArcs());
@@ -26,7 +26,7 @@ public class VertexTest {
         assertEquals(1, tail.getNumberOfOutgoingArcs());
 
         // add second arc
-        Vertex head2 = new Vertex(null);
+        final Vertex head2 = new Vertex(null);
         tail.addOutgoingArcTo(head2);
         assertEquals(0, tail.getNumberOfIncomingArcs());
         assertEquals(2, tail.getNumberOfOutgoingArcs());
@@ -36,8 +36,8 @@ public class VertexTest {
 
     @Test
     public void testAddIncomingArc() {
-        Vertex head = new Vertex(null);
-        Vertex tail = new Vertex(null);
+        final Vertex head = new Vertex(null);
+        final Vertex tail = new Vertex(null);
 
         head.addIncomingArcTo(tail);
         assertEquals(0, head.getNumberOfOutgoingArcs());
@@ -52,7 +52,7 @@ public class VertexTest {
         assertEquals(1, head.getNumberOfIncomingArcs());
 
         // add second arc
-        Vertex tail2 = new Vertex(null);
+        final Vertex tail2 = new Vertex(null);
         head.addIncomingArcTo(tail2);
         assertEquals(0, head.getNumberOfOutgoingArcs());
         assertEquals(2, head.getNumberOfIncomingArcs());
@@ -62,7 +62,7 @@ public class VertexTest {
 
     @Test
     public void testVisit() {
-        Vertex vertex = new Vertex(null);
+        final Vertex vertex = new Vertex(null);
         assertTrue(!vertex.isVisited());
         vertex.visit();
         assertTrue(vertex.isVisited());

@@ -1,26 +1,26 @@
 /*
  * Copyright (c) 2003-2008, Franz-Josef Elmer, All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without 
+ * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
- * - Redistributions of source code must retain the above copyright notice, 
+ *
+ * - Redistributions of source code must retain the above copyright notice,
  *   this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright notice, 
- *   this list of conditions and the following disclaimer in the documentation 
+ * - Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
  *   and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED 
- * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.netmelody.neoclassycle.dependency;
 
@@ -43,12 +43,13 @@ public class DependencyStatement implements Statement {
     private static final class VertexUnionCondition implements VertexCondition {
         private final VertexCondition[] _conditions;
 
-        VertexUnionCondition(VertexCondition[] conditions) {
+        VertexUnionCondition(final VertexCondition[] conditions) {
             _conditions = conditions;
         }
 
-        public boolean isFulfilled(Vertex vertex) {
-            for (VertexCondition condition : _conditions) {
+        @Override
+        public boolean isFulfilled(final Vertex vertex) {
+            for (final VertexCondition condition : _conditions) {
                 if (condition.isFulfilled(vertex)) {
                     return true;
                 }
@@ -68,8 +69,8 @@ public class DependencyStatement implements Statement {
     private final SetDefinitionRepository _repository;
     private final ResultRenderer _renderer;
 
-    public DependencyStatement(StringPattern[] startSets, StringPattern[] finalSets, String dependencyType,
-            SetDefinitionRepository repository, ResultRenderer renderer) {
+    public DependencyStatement(final StringPattern[] startSets, final StringPattern[] finalSets, final String dependencyType,
+            final SetDefinitionRepository repository, final ResultRenderer renderer) {
         _startSets = startSets;
         _finalSets = finalSets;
         _dependencyType = dependencyType;
@@ -81,27 +82,28 @@ public class DependencyStatement implements Statement {
         _finalCondition = new VertexUnionCondition(_finalConditions);
     }
 
-    private VertexCondition[] createVertexConditions(StringPattern[] patterns) {
-        VertexCondition[] fromSets = new VertexCondition[patterns.length];
+    private VertexCondition[] createVertexConditions(final StringPattern[] patterns) {
+        final VertexCondition[] fromSets = new VertexCondition[patterns.length];
         for (int i = 0; i < fromSets.length; i++) {
             fromSets[i] = new PatternVertexCondition(patterns[i]);
         }
         return fromSets;
     }
 
-    public Result execute(AtomicVertex[] graph) {
-        ResultContainer result = new ResultContainer();
-        boolean directPathsOnly = DIRECTLY_INDEPENDENT_OF_KEY_WORD.equals(_dependencyType);
-        boolean dependsOnly = DependencyDefinitionParser.DEPENDENT_ONLY_ON_KEY_WORD.equals(_dependencyType);
+    @Override
+    public Result execute(final AtomicVertex[] graph) {
+        final ResultContainer result = new ResultContainer();
+        final boolean directPathsOnly = DIRECTLY_INDEPENDENT_OF_KEY_WORD.equals(_dependencyType);
+        final boolean dependsOnly = DependencyDefinitionParser.DEPENDENT_ONLY_ON_KEY_WORD.equals(_dependencyType);
         for (int i = 0; i < _startConditions.length; i++) {
-            VertexCondition startCondition = _startConditions[i];
-            StringPattern startSet = _startSets[i];
+            final VertexCondition startCondition = _startConditions[i];
+            final StringPattern startSet = _startSets[i];
             if (dependsOnly) {
-                Set<AtomicVertex> invalids = new HashSet<AtomicVertex>();
-                for (AtomicVertex vertex : graph) {
+                final Set<AtomicVertex> invalids = new HashSet<AtomicVertex>();
+                for (final AtomicVertex vertex : graph) {
                     if (startCondition.isFulfilled(vertex)) {
                         for (int j = 0, n = vertex.getNumberOfOutgoingArcs(); j < n; j++) {
-                            Vertex headVertex = vertex.getHeadVertex(j);
+                            final Vertex headVertex = vertex.getHeadVertex(j);
                             if (_finalCondition.isFulfilled(headVertex) == false && startCondition.isFulfilled(headVertex) == false) {
                                 invalids.add(vertex);
                                 invalids.add((AtomicVertex) headVertex);
@@ -113,7 +115,7 @@ public class DependencyStatement implements Statement {
             }
             else {
                 for (int j = 0; j < _finalConditions.length; j++) {
-                    PathsFinder finder = new PathsFinder(startCondition, _finalConditions[j], _renderer.onlyShortestPaths(),
+                    final PathsFinder finder = new PathsFinder(startCondition, _finalConditions[j], _renderer.onlyShortestPaths(),
                             directPathsOnly);
                     result.add(new DependencyResult(startSet, _finalSets[j], toString(i, j), finder.findPaths(graph)));
                 }
@@ -122,25 +124,26 @@ public class DependencyStatement implements Statement {
         return result;
     }
 
-    private String toString(int i, int j) {
+    private String toString(final int i, final int j) {
         return toString(_startSets[i], _finalSets[j]);
     }
 
-    private String toString(StringPattern startSet, StringPattern finalSet) {
-        StringBuffer buffer = new StringBuffer(CHECK);
+    private String toString(final StringPattern startSet, final StringPattern finalSet) {
+        final StringBuffer buffer = new StringBuffer(CHECK);
         buffer.append(_repository.toString(startSet)).append(' ').append(_dependencyType).append(' ')
                 .append(_repository.toString(finalSet));
         return new String(buffer);
     }
 
+    @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer(CHECK);
-        for (int i = 0; i < _startSets.length; i++) {
-            buffer.append(_repository.toString(_startSets[i])).append(' ');
+        final StringBuffer buffer = new StringBuffer(CHECK);
+        for (final StringPattern _startSet : _startSets) {
+            buffer.append(_repository.toString(_startSet)).append(' ');
         }
         buffer.append(_dependencyType).append(' ');
-        for (int i = 0; i < _finalSets.length; i++) {
-            buffer.append(_repository.toString(_finalSets[i])).append(' ');
+        for (final StringPattern _finalSet2 : _finalSets) {
+            buffer.append(_repository.toString(_finalSet2)).append(' ');
         }
 
         return new String(buffer.substring(0, buffer.length() - 1));

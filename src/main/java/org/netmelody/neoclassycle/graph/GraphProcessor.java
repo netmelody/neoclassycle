@@ -1,26 +1,26 @@
 /*
  * Copyright (c) 2003-2008, Franz-Josef Elmer, All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without 
+ * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
- * - Redistributions of source code must retain the above copyright notice, 
+ *
+ * - Redistributions of source code must retain the above copyright notice,
  *   this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright notice, 
- *   this list of conditions and the following disclaimer in the documentation 
+ * - Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
  *   and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED 
- * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.netmelody.neoclassycle.graph;
 
@@ -28,7 +28,7 @@ package org.netmelody.neoclassycle.graph;
  * Abstract class for all algorithms based on deep search first. This class is
  * designed in accordance with the Template Method pattern. The basic algorithm
  * (implemented in the method {@link #process}) reads:
- * 
+ *
  * <pre>
  * vertex.visit();
  * processBefore(vertex);
@@ -37,7 +37,7 @@ package org.netmelody.neoclassycle.graph;
  * }
  * processAfter(vertex);
  * </pre>
- * 
+ *
  * The methods {@link #initializeProcessing initializeProcessing()},
  * {@link #processBefore processBefore()}, {@link #processArc processArc()}, and
  * {@link #processAfter processAfter()} have to be implemented by concrete
@@ -48,7 +48,7 @@ package org.netmelody.neoclassycle.graph;
  * graph will be modified or some result objects are created which can be
  * obtained by special methods defined in concrete subclasses. Note, that a
  * <tt>GraphProcessor</tt> is not thread-safe.
- * 
+ *
  * @author Franz-Josef Elmer
  */
 public abstract class GraphProcessor {
@@ -57,14 +57,14 @@ public abstract class GraphProcessor {
      * will be initialized and all vertices of the graph will be reset. Then for
      * all unvisited vertices the method <tt>process(Vertex)</tt> will be
      * invoked. At last, processing will be finished.
-     * 
+     *
      * @param graph
      *            A directed graph.
      */
-    public void deepSearchFirst(Vertex[] graph) {
+    public void deepSearchFirst(final Vertex[] graph) {
         initializeProcessing(graph);
-        for (int i = 0; i < graph.length; i++) {
-            graph[i].reset();
+        for (final Vertex element : graph) {
+            element.reset();
         }
 
         for (int i = 0; i < graph.length; i++) {
@@ -76,7 +76,7 @@ public abstract class GraphProcessor {
     }
 
     /** Processes the specified vertex. */
-    protected void process(Vertex vertex) {
+    protected void process(final Vertex vertex) {
         vertex.visit();
         processBefore(vertex);
         for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) {
@@ -93,7 +93,7 @@ public abstract class GraphProcessor {
 
     /**
      * Processes the specified vertex before its outgoing arcs are processed.
-     * 
+     *
      * @param vertex
      *            Vertex to be processed.
      */
@@ -101,7 +101,7 @@ public abstract class GraphProcessor {
 
     /**
      * Processes the arc specified by tail and head vertices.
-     * 
+     *
      * @param tail
      *            Tail vertex of the arc.
      * @param head
@@ -111,7 +111,7 @@ public abstract class GraphProcessor {
 
     /**
      * Processes the specified vertex after its arcs have been processed.
-     * 
+     *
      * @param vertex
      *            Vertex to be processed.
      */

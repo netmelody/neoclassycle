@@ -1,26 +1,26 @@
 /*
  * Copyright (c) 2003-2011, Franz-Josef Elmer, All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without 
+ * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
- * - Redistributions of source code must retain the above copyright notice, 
+ *
+ * - Redistributions of source code must retain the above copyright notice,
  *   this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright notice, 
- *   this list of conditions and the following disclaimer in the documentation 
+ * - Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
  *   and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED 
- * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.netmelody.neoclassycle.dependency;
 
@@ -33,7 +33,7 @@ import org.netmelody.neoclassycle.graph.AtomicVertex;
 /**
  * Checks a class graph for unwanted dependencies. The dependencies are
  * described by a dependency definition file (<tt>.ddf</tt>).
- * 
+ *
  * @author Franz-Josef Elmer
  */
 public class DependencyChecker {
@@ -46,7 +46,7 @@ public class DependencyChecker {
      * graph. It only parses <tt>dependencyDefinition</tt> as a preprocessing
      * step. The calculation of the graph is done in {@link #check(PrintWriter)}
      * .
-     * 
+     *
      * @param analyser
      *            Analyzer instance.
      * @param dependencyDefinition
@@ -55,21 +55,21 @@ public class DependencyChecker {
      * @param renderer
      *            Output renderer for unwanted dependencies found.
      */
-    public DependencyChecker(Analyser analyser, String dependencyDefinition, Map<Object, Object> properties, ResultRenderer renderer) {
+    public DependencyChecker(final Analyser analyser, final String dependencyDefinition, final Map<Object, Object> properties, final ResultRenderer renderer) {
         _analyser = analyser;
         _renderer = renderer;
-        DependencyProperties dp = new DependencyProperties(properties);
+        final DependencyProperties dp = new DependencyProperties(properties);
         _processor = new DependencyProcessor(dependencyDefinition, dp, renderer);
     }
 
     /**
      * Checks the graph and write unwanted dependencies onto the specified
      * writer.
-     * 
+     *
      * @return <tt>true</tt> if no unwanted dependency has been found.
      */
-    public boolean check(PrintWriter writer) {
-        Result result = check();
+    public boolean check(final PrintWriter writer) {
+        final Result result = check();
         writer.print(_renderer.render(result));
         return result.isOk();
     }
@@ -78,8 +78,8 @@ public class DependencyChecker {
      * Checks the graph.
      */
     public Result check() {
-        AtomicVertex[] graph = _analyser.getClassGraph();
-        ResultContainer result = new ResultContainer();
+        final AtomicVertex[] graph = _analyser.getClassGraph();
+        final ResultContainer result = new ResultContainer();
         while (_processor.hasMoreStatements()) {
             result.add(_processor.executeNextStatement(graph));
         }
@@ -90,19 +90,19 @@ public class DependencyChecker {
      * Runs the DependencyChecker application. Exit 0 if no unwanted dependency
      * found otherwise 1 is returned.
      */
-    public static void main(String[] args) {
-        DependencyCheckerCommandLine commandLine = new DependencyCheckerCommandLine(args);
+    public static void main(final String[] args) {
+        final DependencyCheckerCommandLine commandLine = new DependencyCheckerCommandLine(args);
         if (!commandLine.isValid()) {
             System.out.println("Usage: java -cp classycle.jar " + "classycle.DependencyChecker " + commandLine.getUsage());
             System.exit(1);
         }
 
-        Analyser analyser = new Analyser(commandLine.getClassFiles(), commandLine.getPattern(), commandLine.getReflectionPattern(),
+        final Analyser analyser = new Analyser(commandLine.getClassFiles(), commandLine.getPattern(), commandLine.getReflectionPattern(),
                 commandLine.isMergeInnerClasses());
-        DependencyChecker dependencyChecker = new DependencyChecker(analyser, commandLine.getDependencyDefinition(),
+        final DependencyChecker dependencyChecker = new DependencyChecker(analyser, commandLine.getDependencyDefinition(),
                 System.getProperties(), commandLine.getRenderer());
-        PrintWriter printWriter = new PrintWriter(System.out);
-        boolean ok = dependencyChecker.check(printWriter);
+        final PrintWriter printWriter = new PrintWriter(System.out);
+        final boolean ok = dependencyChecker.check(printWriter);
         printWriter.flush();
         System.exit(ok ? 0 : 1);
     }

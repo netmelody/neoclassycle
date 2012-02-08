@@ -1,26 +1,26 @@
 /*
  * Copyright (c) 2003-2008, Franz-Josef Elmer, All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without 
+ * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
- * - Redistributions of source code must retain the above copyright notice, 
+ *
+ * - Redistributions of source code must retain the above copyright notice,
  *   this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright notice, 
- *   this list of conditions and the following disclaimer in the documentation 
+ * - Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
  *   and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED 
- * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.netmelody.neoclassycle;
 
@@ -32,7 +32,7 @@ package org.netmelody.neoclassycle;
  * <li>flag <tt>innerClass</tt>
  * <li>size of the class file
  * </ul>
- * 
+ *
  * @author Franz-Josef Elmer
  */
 public class ClassAttributes extends NameAndSourceAttributes {
@@ -47,7 +47,7 @@ public class ClassAttributes extends NameAndSourceAttributes {
     /**
      * Creates an instance based on the specified name, type, and size. The
      * innerclass flag will be set if the name contains a '$' character.
-     * 
+     *
      * @param name
      *            Fully-qualified class name.
      * @param source
@@ -57,7 +57,7 @@ public class ClassAttributes extends NameAndSourceAttributes {
      * @param size
      *            Size.
      */
-    public ClassAttributes(String name, String source, String type, int size) {
+    public ClassAttributes(final String name, final String source, final String type, final int size) {
         super(name);
         if (source != null) {
             addSource(source);
@@ -69,7 +69,7 @@ public class ClassAttributes extends NameAndSourceAttributes {
 
     /**
      * Creates an instance of the type {@link #INTERFACE}.
-     * 
+     *
      * @param name
      *            Fully-qualified class name.
      * @param source
@@ -78,13 +78,13 @@ public class ClassAttributes extends NameAndSourceAttributes {
      *            Size of the class file.
      * @return a new instance.
      */
-    public static ClassAttributes createInterface(String name, String source, int size) {
+    public static ClassAttributes createInterface(final String name, final String source, final int size) {
         return new ClassAttributes(name, source, INTERFACE, size);
     }
 
     /**
      * Creates an instance of the type {@link #ABSTRACT_CLASS}.
-     * 
+     *
      * @param name
      *            Fully-qualified class name.
      * @param source
@@ -93,13 +93,13 @@ public class ClassAttributes extends NameAndSourceAttributes {
      *            Size of the class file.
      * @return a new instance.
      */
-    public static ClassAttributes createAbstractClass(String name, String source, int size) {
+    public static ClassAttributes createAbstractClass(final String name, final String source, final int size) {
         return new ClassAttributes(name, source, ABSTRACT_CLASS, size);
     }
 
     /**
      * Creates an instance of the type {@link #CLASS}.
-     * 
+     *
      * @param name
      *            Fully-qualified class name.
      * @param source
@@ -108,26 +108,26 @@ public class ClassAttributes extends NameAndSourceAttributes {
      *            Size of the class file.
      * @return a new instance.
      */
-    public static ClassAttributes createClass(String name, String source, int size) {
+    public static ClassAttributes createClass(final String name, final String source, final int size) {
         return new ClassAttributes(name, source, CLASS, size);
     }
 
     /**
      * Creates an instance of the type {@link #UNKNOWN}.
-     * 
+     *
      * @param name
      *            Fully-qualified class name.
      * @param size
      *            Size of the class file.
      * @return a new instance.
      */
-    public static ClassAttributes createUnknownClass(String name, int size) {
+    public static ClassAttributes createUnknownClass(final String name, final int size) {
         return new ClassAttributes(name, null, UNKNOWN, size);
     }
 
     /**
      * Returns the class type.
-     * 
+     *
      * @return either {@link #INTERFACE}, {@link #ABSTRACT_CLASS},
      *         {@link #CLASS}, or {@link #UNKNOWN}.
      */
@@ -141,18 +141,20 @@ public class ClassAttributes extends NameAndSourceAttributes {
     }
 
     /** Returns the size of the class file in bytes. */
+    @Override
     public int getSize() {
         return _size;
     }
 
     /** Returns the attributes as a string for pretty printing. */
+    @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer(_innerClass ? "inner " : "");
+        final StringBuffer buffer = new StringBuffer(_innerClass ? "inner " : "");
         buffer.append(_type).append(' ').append(getName());
         if (_size > 0) {
             buffer.append(" (").append(_size).append(" bytes)");
         }
-        String sources = getSources();
+        final String sources = getSources();
         if (sources.length() > 0) {
             buffer.append(" sources: ").append(sources);
         }

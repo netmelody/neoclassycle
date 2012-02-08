@@ -1,26 +1,26 @@
 /*
  * Copyright (c) 2003-2011, Franz-Josef Elmer, All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without 
+ * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
- * - Redistributions of source code must retain the above copyright notice, 
+ *
+ * - Redistributions of source code must retain the above copyright notice,
  *   this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright notice, 
- *   this list of conditions and the following disclaimer in the documentation 
+ * - Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
  *   and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED 
- * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.netmelody.neoclassycle.dependency;
 
@@ -29,7 +29,7 @@ import org.netmelody.neoclassycle.util.StringPattern;
 
 /**
  * Result of a dependency check.
- * 
+ *
  * @author Franz-Josef Elmer
  */
 public class DependencyResult implements Result {
@@ -41,7 +41,7 @@ public class DependencyResult implements Result {
     private final AtomicVertex[] _paths;
     private final boolean _ok;
 
-    public DependencyResult(StringPattern startSet, StringPattern finalSet, String statement, AtomicVertex[] paths) {
+    public DependencyResult(final StringPattern startSet, final StringPattern finalSet, final String statement, final AtomicVertex[] paths) {
         _startSet = startSet;
         _finalSet = finalSet;
         _statement = statement;
@@ -52,6 +52,7 @@ public class DependencyResult implements Result {
     /**
      * Returns <code>true</code> if and only if {@link #getPaths()} is empty.
      */
+    @Override
     public boolean isOk() {
         return _ok;
     }
@@ -72,7 +73,7 @@ public class DependencyResult implements Result {
 
     /**
      * Returns the vertices of the paths of unwanted dependencies.
-     * 
+     *
      * @return an empty array if no unwanted dependencies have been found.
      */
     public AtomicVertex[] getPaths() {
@@ -86,13 +87,14 @@ public class DependencyResult implements Result {
         return _startSet;
     }
 
+    @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer(_statement);
+        final StringBuffer buffer = new StringBuffer(_statement);
         if (_ok) {
             buffer.append(OK);
         }
         else {
-            DependencyPathsRenderer renderer = new DependencyPathsRenderer(_paths, _startSet, _finalSet);
+            final DependencyPathsRenderer renderer = new DependencyPathsRenderer(_paths, _startSet, _finalSet);
             buffer.append(DEPENDENCIES_FOUND).append(renderer.renderGraph("  "));
         }
         return new String(buffer.append('\n'));

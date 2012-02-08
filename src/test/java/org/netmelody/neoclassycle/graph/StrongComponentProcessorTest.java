@@ -5,8 +5,8 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 /**
- * 
- * 
+ *
+ *
  * @author Franz-Josef Elmer
  */
 public class StrongComponentProcessorTest extends GraphTestCase {
@@ -111,12 +111,11 @@ public class StrongComponentProcessorTest extends GraphTestCase {
         checkAttributes(new int[] { 1, 1, 1, 1, 1, 1, 1, 2, 2, 3 }, new int[] { 0, 0, 1, 2, 0, 0, 1, 3, 2, 3 }, components);
     }
 
-    private void checkAttributes(int[] expectedMaximumFragmentSizes, int[] expectedEccentricities, StrongComponent[] components) {
-        for (int i = 0; i < components.length; i++) {
-            StrongComponent component = components[i];
-            GraphAttributes attributes = (GraphAttributes) component.getAttributes();
+    private void checkAttributes(final int[] expectedMaximumFragmentSizes, final int[] expectedEccentricities, final StrongComponent[] components) {
+        for (final StrongComponent component : components) {
+            final GraphAttributes attributes = (GraphAttributes) component.getAttributes();
             for (int j = 0, n = component.getNumberOfVertices(); j < n; j++) {
-                int index = Integer.parseInt(component.getVertex(j).getAttributes().toString());
+                final int index = Integer.parseInt(component.getVertex(j).getAttributes().toString());
                 assertEquals("eccentricity of vertex " + index, expectedEccentricities[index], n == 1 ? 0
                         : attributes.getEccentricities()[j]);
                 assertEquals("max fragment size of vertex " + index, expectedMaximumFragmentSizes[index],

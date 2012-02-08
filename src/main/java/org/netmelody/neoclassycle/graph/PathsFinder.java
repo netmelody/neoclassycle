@@ -1,26 +1,26 @@
 /*
  * Copyright (c) 2003-2008, Franz-Josef Elmer, All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without 
+ * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
- * - Redistributions of source code must retain the above copyright notice, 
+ *
+ * - Redistributions of source code must retain the above copyright notice,
  *   this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright notice, 
- *   this list of conditions and the following disclaimer in the documentation 
+ * - Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
  *   and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED 
- * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.netmelody.neoclassycle.graph;
 
@@ -29,7 +29,7 @@ import java.util.HashSet;
 /**
  * Class searching for all (or only the shortest) paths between classes of a
  * start set and classes of a final set.
- * 
+ *
  * @author Franz-Josef Elmer
  */
 public class PathsFinder {
@@ -40,7 +40,7 @@ public class PathsFinder {
 
     /**
      * Creates an instance for the specified vertex conditions.
-     * 
+     *
      * @param startSetCondition
      *            Condition defining the start set.
      * @param finalSetCondition
@@ -48,13 +48,13 @@ public class PathsFinder {
      * @param shortestPathsOnly
      *            if <code>true</code> only the shortest paths are returned.
      */
-    public PathsFinder(VertexCondition startSetCondition, VertexCondition finalSetCondition, boolean shortestPathsOnly) {
+    public PathsFinder(final VertexCondition startSetCondition, final VertexCondition finalSetCondition, final boolean shortestPathsOnly) {
         this(startSetCondition, finalSetCondition, shortestPathsOnly, false);
     }
 
     /**
      * Creates an instance for the specified vertex conditions.
-     * 
+     *
      * @param startSetCondition
      *            Condition defining the start set.
      * @param finalSetCondition
@@ -64,8 +64,8 @@ public class PathsFinder {
      * @param directPathsOnly
      *            if <code>true</code> only paths of length 1 are returned.
      */
-    public PathsFinder(VertexCondition startSetCondition, VertexCondition finalSetCondition, boolean shortestPathsOnly,
-            boolean directPathsOnly) {
+    public PathsFinder(final VertexCondition startSetCondition, final VertexCondition finalSetCondition, final boolean shortestPathsOnly,
+            final boolean directPathsOnly) {
         _startSetCondition = startSetCondition;
         _finalSetCondition = finalSetCondition;
         _shortestPathsOnly = shortestPathsOnly;
@@ -87,25 +87,24 @@ public class PathsFinder {
     /**
      * Finds all paths from the specified start vertices to the vertices
      * fullfilling the specified condition.
-     * 
+     *
      * @param graph
      *            Complete graph.
      * @return All vertices including start and end vertices defining the
      *         subgraph with all paths.
      */
-    public AtomicVertex[] findPaths(AtomicVertex[] graph) {
+    public AtomicVertex[] findPaths(final AtomicVertex[] graph) {
         prepareGraph(graph);
-        HashSet<Vertex> pathVertices = new HashSet<Vertex>();
-        HashSet<Vertex> currentPath = new HashSet<Vertex>();
-        for (int i = 0; i < graph.length; i++) {
-            AtomicVertex vertex = graph[i];
+        final HashSet<Vertex> pathVertices = new HashSet<Vertex>();
+        final HashSet<Vertex> currentPath = new HashSet<Vertex>();
+        for (final AtomicVertex vertex : graph) {
             if (_startSetCondition.isFulfilled(vertex)) {
                 if (_directPathsOnly) {
                     findDirectPaths(vertex, pathVertices);
                 }
                 else {
                     prepareIfFinal(vertex);
-                    int pathLength = calculateShortestPath(vertex, currentPath);
+                    final int pathLength = calculateShortestPath(vertex, currentPath);
                     if (pathLength < Integer.MAX_VALUE) {
                         vertex.setOrder(pathLength);
                         followPaths(vertex, pathVertices);
@@ -113,16 +112,16 @@ public class PathsFinder {
                 }
             }
         }
-        return (AtomicVertex[]) pathVertices.toArray(new AtomicVertex[pathVertices.size()]);
+        return pathVertices.toArray(new AtomicVertex[pathVertices.size()]);
     }
 
-    private void findDirectPaths(AtomicVertex vertex, HashSet<Vertex> pathVertices) {
+    private void findDirectPaths(final AtomicVertex vertex, final HashSet<Vertex> pathVertices) {
         if (_finalSetCondition.isFulfilled(vertex)) {
             pathVertices.add(vertex);
         }
         else {
             for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) {
-                Vertex headVertex = vertex.getHeadVertex(i);
+                final Vertex headVertex = vertex.getHeadVertex(i);
                 if (_finalSetCondition.isFulfilled(headVertex)) {
                     pathVertices.add(vertex);
                     pathVertices.add(headVertex);
@@ -131,9 +130,8 @@ public class PathsFinder {
         }
     }
 
-    private void prepareGraph(AtomicVertex[] graph) {
-        for (int i = 0; i < graph.length; i++) {
-            AtomicVertex vertex = graph[i];
+    private void prepareGraph(final AtomicVertex[] graph) {
+        for (final AtomicVertex vertex : graph) {
             prepareVertex(vertex);
             for (int j = 0, n = vertex.getNumberOfOutgoingArcs(); j < n; j++) {
                 prepareVertex((AtomicVertex) vertex.getHeadVertex(j));
@@ -141,7 +139,7 @@ public class PathsFinder {
         }
     }
 
-    private void prepareVertex(AtomicVertex vertex) {
+    private void prepareVertex(final AtomicVertex vertex) {
         vertex.reset();
         vertex.setOrder(Integer.MAX_VALUE);
         if (_startSetCondition.isFulfilled(vertex)) {
@@ -149,11 +147,11 @@ public class PathsFinder {
         }
     }
 
-    private int calculateShortestPath(AtomicVertex vertex, HashSet<Vertex> currentPath) {
+    private int calculateShortestPath(final AtomicVertex vertex, final HashSet<Vertex> currentPath) {
         currentPath.add(vertex);
         int shortestPath = Integer.MAX_VALUE;
         for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) {
-            AtomicVertex nextVertex = (AtomicVertex) vertex.getHeadVertex(i);
+            final AtomicVertex nextVertex = (AtomicVertex) vertex.getHeadVertex(i);
             prepareIfFinal(nextVertex);
             int pathLength = _startSetCondition.isFulfilled(nextVertex) ? Integer.MAX_VALUE : nextVertex.getOrder();
             if (!currentPath.contains(nextVertex) && !nextVertex.isVisited()) {
@@ -170,19 +168,19 @@ public class PathsFinder {
         return shortestPath;
     }
 
-    private void prepareIfFinal(AtomicVertex vertex) {
+    private void prepareIfFinal(final AtomicVertex vertex) {
         if (_finalSetCondition.isFulfilled(vertex)) {
             vertex.visit();
             vertex.setOrder(0);
         }
     }
 
-    private void followPaths(AtomicVertex vertex, HashSet<Vertex> pathVertices) {
+    private void followPaths(final AtomicVertex vertex, final HashSet<Vertex> pathVertices) {
         pathVertices.add(vertex);
-        int shortestPathLength = vertex.getOrder() - 1;
+        final int shortestPathLength = vertex.getOrder() - 1;
         for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) {
-            AtomicVertex nextVertex = (AtomicVertex) vertex.getHeadVertex(i);
-            int pathLength = nextVertex.getOrder();
+            final AtomicVertex nextVertex = (AtomicVertex) vertex.getHeadVertex(i);
+            final int pathLength = nextVertex.getOrder();
             if (pathLength < Integer.MAX_VALUE && !pathVertices.contains(nextVertex)) {
                 if (!_shortestPathsOnly || pathLength == shortestPathLength) {
                     pathVertices.add(nextVertex);

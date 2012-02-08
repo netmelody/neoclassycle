@@ -29,11 +29,11 @@ public class DependencyCheckingTaskTest extends ClassycleTaskTestCase {
         configureProject("dependencyCheckingTaskTestBuild.xml");
     }
 
-    private void checkNumberOfOutputLines(int number) throws IOException {
+    private void checkNumberOfOutputLines(final int number) throws IOException {
         checkNumberOfLines(new StringReader(getOutput()), number);
     }
 
-    private void checkLine(String expectedLine, int lineNumber) throws IOException {
+    private void checkLine(final String expectedLine, final int lineNumber) throws IOException {
         checkLine(new StringReader(getOutput()), expectedLine, lineNumber);
     }
 
@@ -51,7 +51,7 @@ public class DependencyCheckingTaskTest extends ClassycleTaskTestCase {
             executeTarget("testEmbeddedDefinitionsFailureOn");
             fail("BuildException expected");
         }
-        catch (BuildException e) {
+        catch (final BuildException e) {
             checkNumberOfOutputLines(10);
             checkLine("check [A] independentOf [non-A]\tOK", 2);
             checkLine("check [non-A] independentOf [A]", 3);
@@ -73,7 +73,7 @@ public class DependencyCheckingTaskTest extends ClassycleTaskTestCase {
             antTestcase.executeTarget("testCheckCyclesFailureOn");
             fail("BuildException expected");
         }
-        catch (BuildException e) {
+        catch (final BuildException e) {
             checkNumberOfOutputLines(4);
             assertThat(getOutput(), Matchers.<String> either(
                     equalTo("check absenceOfClassCycles > 1 in example.*\n" + "  example.B and inner classes contains 2 classes:\n"
@@ -131,7 +131,7 @@ public class DependencyCheckingTaskTest extends ClassycleTaskTestCase {
 
     @Test
     public void testFile() throws Exception {
-        Writer writer = new FileWriter(folder.getRoot() + "/test.ddf");
+        final Writer writer = new FileWriter(folder.getRoot() + "/test.ddf");
         writer.write("show allResults\n" + "[A] = *A*\n" + "[non-A] = example.* excluding [A]\n" + "check [A] independentOf [non-A]");
         writer.close();
         executeTarget("testFile");
@@ -145,7 +145,7 @@ public class DependencyCheckingTaskTest extends ClassycleTaskTestCase {
             executeTarget("testNoClasses");
             fail("BuildException expected");
         }
-        catch (BuildException e) {
+        catch (final BuildException e) {
             checkNumberOfOutputLines(0);
         }
     }
@@ -156,7 +156,7 @@ public class DependencyCheckingTaskTest extends ClassycleTaskTestCase {
             executeTarget("testEmpty");
             fail("BuildException expected");
         }
-        catch (BuildException e) {
+        catch (final BuildException e) {
             checkNumberOfOutputLines(0);
             assertEquals("Empty dependency definition.", e.getMessage());
         }

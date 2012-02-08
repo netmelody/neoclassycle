@@ -3,13 +3,14 @@ package org.netmelody.neoclassycle.graph;
 import org.junit.Test;
 
 /**
- * 
- * 
+ *
+ *
  * @author Franz-Josef Elmer
  */
 public class LongestWalkProcessorTest extends GraphTestCase {
 
-    protected void process(StrongComponentProcessor processor, AtomicVertex[] graph) {
+    @Override
+    protected void process(final StrongComponentProcessor processor, final AtomicVertex[] graph) {
         processor.deepSearchFirst(graph);
         new LongestWalkProcessor().deepSearchFirst(processor.getStrongComponents());
     }

@@ -47,7 +47,7 @@ public class DependencyDefinitionParserTest {
             createParser("[set] = b.* exluding *Test");
             fail("IllegalArgumentException expected because of miss-spelled keyword");
         }
-        catch (IllegalArgumentException e) {
+        catch (final IllegalArgumentException e) {
             assertContains("exluding", e);
         }
 
@@ -55,7 +55,7 @@ public class DependencyDefinitionParserTest {
             createParser("check b.* independentof [set]");
             fail("IllegalArgumentException expected because of miss-spelled keyword");
         }
-        catch (IllegalArgumentException e) {
+        catch (final IllegalArgumentException e) {
             assertContains("independentof", e);
         }
 
@@ -63,7 +63,7 @@ public class DependencyDefinitionParserTest {
             createParser("check b.* dependingOn [set]");
             fail("IllegalArgumentException expected because of miss-spelled keyword");
         }
-        catch (IllegalArgumentException e) {
+        catch (final IllegalArgumentException e) {
             assertContains("dependingOn", e);
         }
 
@@ -71,7 +71,7 @@ public class DependencyDefinitionParserTest {
             createParser("check layeringof [set]");
             fail("IllegalArgumentException expected because of miss-spelled keyword");
         }
-        catch (IllegalArgumentException e) {
+        catch (final IllegalArgumentException e) {
             assertContains("layeringof", e);
         }
 
@@ -79,7 +79,7 @@ public class DependencyDefinitionParserTest {
             createParser("layer l = layer");
             fail("IllegalArgumentException expected because of miss-spelled keyword");
         }
-        catch (IllegalArgumentException e) {
+        catch (final IllegalArgumentException e) {
             assertContains("layer", e);
         }
 
@@ -87,15 +87,15 @@ public class DependencyDefinitionParserTest {
             createParser("check sets set1");
             fail("IllegalArgumentException expected because of miss-spelled keyword");
         }
-        catch (IllegalArgumentException e) {
+        catch (final IllegalArgumentException e) {
             assertContains("set1", e);
         }
 
     }
 
-    private void assertContains(String expectedMessageFragment, Throwable throwable) {
+    private void assertContains(final String expectedMessageFragment, final Throwable throwable) {
 
-        String message = throwable.getMessage();
+        final String message = throwable.getMessage();
         assertTrue("<" + message + "> does not contain <" + message + ">", message.indexOf(expectedMessageFragment) >= 0);
     }
 
@@ -153,10 +153,10 @@ public class DependencyDefinitionParserTest {
                 { "a.*", "(a.* & !j.*)" }, { "a.*", "s.*" } });
     }
 
-    private void check(String definition, String[] expectedStatements) {
-        DependencyDefinitionParser parser = createParser(definition);
-        Statement[] statements = parser.getStatements();
-        int len = Math.min(statements.length, expectedStatements.length);
+    private void check(final String definition, final String[] expectedStatements) {
+        final DependencyDefinitionParser parser = createParser(definition);
+        final Statement[] statements = parser.getStatements();
+        final int len = Math.min(statements.length, expectedStatements.length);
         for (int i = 0; i < len; i++) {
             assertEquals("Statement " + (i + 1), expectedStatements[i], statements[i].toString());
         }
@@ -168,35 +168,35 @@ public class DependencyDefinitionParserTest {
         }
     }
 
-    private DependencyDefinitionParser createParser(String definition) {
+    private DependencyDefinitionParser createParser(final String definition) {
         _defaultProps = new Hashtable<Object, Object>();
         _defaultProps.put("package", "java");
         _defaultProps.put("awt", "java.awt.*");
-        DependencyProperties properties = new DependencyProperties(_defaultProps);
-        DependencyDefinitionParser parser = new DependencyDefinitionParser(definition, properties, new MockResultRenderer());
+        final DependencyProperties properties = new DependencyProperties(_defaultProps);
+        final DependencyDefinitionParser parser = new DependencyDefinitionParser(definition, properties, new MockResultRenderer());
         return parser;
     }
 
-    private void check(String definition, String[][] expectedSets) {
-        DependencyDefinitionParser parser = createParser(definition);
-        SetDefinitionRepository definitions = parser._setDefinitions;
-        for (int i = 0; i < expectedSets.length; i++) {
-            String setName = expectedSets[i][0];
-            String expectedSet = expectedSets[i][1];
+    private void check(final String definition, final String[][] expectedSets) {
+        final DependencyDefinitionParser parser = createParser(definition);
+        final SetDefinitionRepository definitions = parser._setDefinitions;
+        for (final String[] expectedSet2 : expectedSets) {
+            final String setName = expectedSet2[0];
+            final String expectedSet = expectedSet2[1];
             assertEquals("Set " + setName, expectedSet, definitions.getPattern(setName) + "");
         }
     }
 
-    private void check(String definition, String[] layerNames, String[][] expectedLayers) {
-        DependencyDefinitionParser parser = createParser(definition);
-        LayerDefinitionRepository definitions = parser._layerDefinitions;
+    private void check(final String definition, final String[] layerNames, final String[][] expectedLayers) {
+        final DependencyDefinitionParser parser = createParser(definition);
+        final LayerDefinitionRepository definitions = parser._layerDefinitions;
         for (int i = 0; i < expectedLayers.length; i++) {
-            StringPattern[] layer = definitions.getLayer(layerNames[i]);
-            int n = Math.min(layer.length, expectedLayers[i].length);
+            final StringPattern[] layer = definitions.getLayer(layerNames[i]);
+            final int n = Math.min(layer.length, expectedLayers[i].length);
             for (int j = 0; j < n; j++) {
                 assertEquals("Layer " + layerNames[i] + " " + j, expectedLayers[i][j], layer[j] + "");
             }
-            int d = expectedLayers[i].length - layer.length;
+            final int d = expectedLayers[i].length - layer.length;
             if (d > 0) {
                 fail(d + " terms missed");
             }
@@ -209,14 +209,16 @@ public class DependencyDefinitionParserTest {
     private static class MockPreference implements Preference {
         String _preference;
 
-        public MockPreference(String preference) {
+        public MockPreference(final String preference) {
             _preference = preference;
         }
 
+        @Override
         public String getKey() {
             return _preference;
         }
 
+        @Override
         public String toString() {
             return _preference;
         }
@@ -225,7 +227,8 @@ public class DependencyDefinitionParserTest {
     private static class MockPreferenceFactory implements PreferenceFactory {
         private final HashMap<String, Preference> _keyToPreferenceMap = new HashMap<String, Preference>();
 
-        public Preference get(String key) {
+        @Override
+        public Preference get(final String key) {
             Preference preference = _keyToPreferenceMap.get(key);
             if (preference == null) {
                 preference = new MockPreference(key);
@@ -237,29 +240,34 @@ public class DependencyDefinitionParserTest {
 
     private static class MockResultRenderer extends ResultRenderer {
         List<Preference> list = new ArrayList<Preference>();
-        private PreferenceFactory _factory = new MockPreferenceFactory();
+        private final PreferenceFactory _factory = new MockPreferenceFactory();
 
-        public void considerPreference(Preference preference) {
+        @Override
+        public void considerPreference(final Preference preference) {
             list.add(preference);
         }
 
+        @Override
         public Result getDescriptionOfCurrentPreferences() {
             return new MockResult(list.toString());
         }
 
+        @Override
         public PreferenceFactory getPreferenceFactory() {
             return _factory;
         }
 
-        public String render(Result result) {
+        @Override
+        public String render(final Result result) {
             return null;
         }
     }
 
     private static class MockResult implements Result {
-        public MockResult(String value) {
+        public MockResult(final String value) {
         }
 
+        @Override
         public boolean isOk() {
             return true;
         }

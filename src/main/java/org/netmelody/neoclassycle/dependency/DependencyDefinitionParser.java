@@ -1,26 +1,26 @@
 /*
  * Copyright (c) 2003-2008, Franz-Josef Elmer, All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without 
+ * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
- * - Redistributions of source code must retain the above copyright notice, 
+ *
+ * - Redistributions of source code must retain the above copyright notice,
  *   this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright notice, 
- *   this list of conditions and the following disclaimer in the documentation 
+ * - Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
  *   and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED 
- * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.netmelody.neoclassycle.dependency;
 
@@ -39,7 +39,7 @@ import org.netmelody.neoclassycle.util.WildCardPattern;
 
 /**
  * Parser for a dependency definition file.
- * 
+ *
  * @author Franz-Josef Elmer
  */
 public class DependencyDefinitionParser {
@@ -69,12 +69,12 @@ public class DependencyDefinitionParser {
     final LayerDefinitionRepository _layerDefinitions = new LayerDefinitionRepository();
     private final ArrayList<Statement> _statements = new ArrayList<Statement>();
 
-    public DependencyDefinitionParser(String dependencyDefinition, DependencyProperties properties, ResultRenderer renderer) {
+    public DependencyDefinitionParser(final String dependencyDefinition, final DependencyProperties properties, final ResultRenderer renderer) {
         _properties = properties;
         _renderer = renderer;
         try {
-            StringBuffer buffer = new StringBuffer();
-            BufferedReader reader = new BufferedReader(new StringReader(dependencyDefinition));
+            final StringBuffer buffer = new StringBuffer();
+            final BufferedReader reader = new BufferedReader(new StringReader(dependencyDefinition));
             String line;
             int lineNumber = 0;
             int lineNumberOfCurrentLogicalLine = 1;
@@ -87,7 +87,7 @@ public class DependencyDefinitionParser {
                         buffer.deleteCharAt(buffer.length() - 1).append(' ');
                     }
                     else {
-                        String logicalLine = replaceProperties(new String(buffer).trim(), lineNumberOfCurrentLogicalLine);
+                        final String logicalLine = replaceProperties(new String(buffer).trim(), lineNumberOfCurrentLogicalLine);
                         if (logicalLine.length() > 0) {
                             parseLine(logicalLine, lineNumberOfCurrentLogicalLine);
                         }
@@ -97,26 +97,26 @@ public class DependencyDefinitionParser {
                 }
             }
         }
-        catch (IOException e) {
+        catch (final IOException e) {
             throw new IllegalArgumentException(e.toString());
         }
     }
 
-    private String replaceProperties(String line, int lineNumber) {
-        StringBuffer buffer = new StringBuffer();
+    private String replaceProperties(final String line, final int lineNumber) {
+        final StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < line.length();) {
-            int index = line.indexOf(PROP_BEGIN, i);
+            final int index = line.indexOf(PROP_BEGIN, i);
             if (index >= 0) {
                 buffer.append(line.substring(i, index));
                 i = line.indexOf(PROP_END, index);
                 if (i < 0) {
                     throwException("Missing '" + PROP_END + "'.", lineNumber, -1);
                 }
-                String name = line.substring(index + PROP_BEGIN.length(), i);
+                final String name = line.substring(index + PROP_BEGIN.length(), i);
                 i += PROP_END.length();
-                String property = _properties.getProperty(name);
+                final String property = _properties.getProperty(name);
                 if (property == null) {
-                    String message = "Undefines property " + line.substring(index, i);
+                    final String message = "Undefines property " + line.substring(index, i);
                     throwException(message, lineNumber, -1);
                 }
                 else {
@@ -132,20 +132,20 @@ public class DependencyDefinitionParser {
     }
 
     public Statement[] getStatements() {
-        return (Statement[]) _statements.toArray(new Statement[0]);
+        return _statements.toArray(new Statement[0]);
     }
 
-    private void parseLine(String line, int lineNumber) {
+    private void parseLine(final String line, final int lineNumber) {
         if (line.startsWith(PROP_DEF_BEGIN)) {
             parsePropertyDefinition(line, lineNumber);
             return;
         }
-        StringTokenizer tokenizer = new StringTokenizer(line);
-        String[] tokens = new String[tokenizer.countTokens()];
+        final StringTokenizer tokenizer = new StringTokenizer(line);
+        final String[] tokens = new String[tokenizer.countTokens()];
         for (int i = 0; i < tokens.length; i++) {
             tokens[i] = tokenizer.nextToken();
         }
-        String firstToken = tokens[0];
+        final String firstToken = tokens[0];
         if (firstToken.startsWith("[")) {
             parseSetDefinition(tokens, lineNumber);
         }
@@ -166,21 +166,21 @@ public class DependencyDefinitionParser {
         }
     }
 
-    private void parsePropertyDefinition(String line, int lineNumber) {
-        int index = line.indexOf(PROP_END);
+    private void parsePropertyDefinition(final String line, final int lineNumber) {
+        final int index = line.indexOf(PROP_END);
         if (index < 0) {
             throwException("Missing '" + PROP_END + "' in property definition.", lineNumber, -1);
         }
-        String name = line.substring(PROP_DEF_BEGIN.length(), index);
-        String def = line.substring(index + PROP_END.length()).trim();
+        final String name = line.substring(PROP_DEF_BEGIN.length(), index);
+        final String def = line.substring(index + PROP_END.length()).trim();
         if (def.startsWith("=") == false) {
             throwException("Missing '=' in propety definition.", lineNumber, -1);
         }
         _properties.setProperty(name, def.substring(1).trim());
     }
 
-    private void parseSetDefinition(String[] tokens, int lineNumber) {
-        String setName = tokens[0];
+    private void parseSetDefinition(final String[] tokens, final int lineNumber) {
+        final String setName = tokens[0];
         if (setName.endsWith("]") == false) {
             throwException("Set name has to end with ']'.", lineNumber, 0);
         }
@@ -188,11 +188,11 @@ public class DependencyDefinitionParser {
             throwException("Set " + setName + " already defined.", lineNumber, 0);
         }
         checkForEqualCharacter(tokens, lineNumber, 1);
-        StringPattern[][] lists = getLists(tokens, lineNumber, EXCLUDING, 2);
+        final StringPattern[][] lists = getLists(tokens, lineNumber, EXCLUDING, 2);
         if (lists[0].length == 0 && lists[1].length == 0) {
             throwException("Missing terms in set definition.", lineNumber, 2);
         }
-        AndStringPattern definition = new AndStringPattern();
+        final AndStringPattern definition = new AndStringPattern();
         if (lists[0].length > 0) {
             definition.appendPattern(createOrSequence(lists[0]));
         }
@@ -202,21 +202,21 @@ public class DependencyDefinitionParser {
         _setDefinitions.put(setName, definition);
     }
 
-    private void checkForEqualCharacter(String[] tokens, int lineNumber, int index) {
+    private void checkForEqualCharacter(final String[] tokens, final int lineNumber, final int index) {
         if (tokens.length < index + 1 || !tokens[index].equals("=")) {
             throwException("'=' missing.", lineNumber, index);
         }
     }
 
-    private StringPattern createOrSequence(StringPattern[] patterns) {
-        OrStringPattern result = new OrStringPattern();
-        for (int i = 0; i < patterns.length; i++) {
-            result.appendPattern(patterns[i]);
+    private StringPattern createOrSequence(final StringPattern[] patterns) {
+        final OrStringPattern result = new OrStringPattern();
+        for (final StringPattern pattern : patterns) {
+            result.appendPattern(pattern);
         }
         return result;
     }
 
-    private StringPattern createPattern(String term, int lineNumber, int tokenIndex) {
+    private StringPattern createPattern(final String term, final int lineNumber, final int tokenIndex) {
         StringPattern pattern = _setDefinitions.getPattern(term);
         if (pattern == null) {
             if (term.startsWith("[") && term.endsWith("]")) {
@@ -231,11 +231,11 @@ public class DependencyDefinitionParser {
         return pattern;
     }
 
-    private void parseLayerDefinition(String[] tokens, int lineNumber) {
+    private void parseLayerDefinition(final String[] tokens, final int lineNumber) {
         if (tokens.length < 2) {
             throwException("Missing layer name.", lineNumber, 1);
         }
-        String layerName = tokens[1];
+        final String layerName = tokens[1];
         if (_layerDefinitions.contains(layerName)) {
             throwException("Layer '" + layerName + "' already defined.", lineNumber, 1);
         }
@@ -243,19 +243,19 @@ public class DependencyDefinitionParser {
         if (tokens.length < 4) {
             throwException("Missing terms in definition of layer '" + layerName + "'.", lineNumber, 3);
         }
-        ArrayList<StringPattern> layer = new ArrayList<StringPattern>();
+        final ArrayList<StringPattern> layer = new ArrayList<StringPattern>();
         for (int i = 3; i < tokens.length; i++) {
             layer.add(createPattern(tokens[i], lineNumber, i));
         }
-        StringPattern[] sets = new StringPattern[layer.size()];
-        _layerDefinitions.put(layerName, (StringPattern[]) layer.toArray(sets));
+        final StringPattern[] sets = new StringPattern[layer.size()];
+        _layerDefinitions.put(layerName, layer.toArray(sets));
     }
 
-    private void parseShowStatement(String[] tokens, int lineNumber) {
+    private void parseShowStatement(final String[] tokens, final int lineNumber) {
         if (tokens.length < 2) {
             throwException("Missing display preference(s).", lineNumber, 1);
         }
-        Preference[] preferences = new Preference[tokens.length - 1];
+        final Preference[] preferences = new Preference[tokens.length - 1];
         for (int i = 0; i < preferences.length; i++) {
             preferences[i] = _renderer.getPreferenceFactory().get(tokens[i + 1]);
             if (preferences[i] == null) {
@@ -265,7 +265,7 @@ public class DependencyDefinitionParser {
         _statements.add(new ShowStatement(_renderer, preferences));
     }
 
-    private void parseCheckStatement(String[] tokens, int lineNumber) {
+    private void parseCheckStatement(final String[] tokens, final int lineNumber) {
         if (tokens.length < 2) {
             throwException("Missing checking statement.", lineNumber, 1);
         }
@@ -283,8 +283,8 @@ public class DependencyDefinitionParser {
         }
     }
 
-    private void createCyclesStatement(String[] tokens, int lineNumber) {
-        boolean packageCycles = tokens[1].equals(PACKAGE_CYCLES_KEY_WORD);
+    private void createCyclesStatement(final String[] tokens, final int lineNumber) {
+        final boolean packageCycles = tokens[1].equals(PACKAGE_CYCLES_KEY_WORD);
         if (tokens.length != 6) {
             throwException("Invalid statement.", lineNumber, tokens.length);
         }
@@ -295,7 +295,7 @@ public class DependencyDefinitionParser {
         try {
             size = Integer.parseInt(tokens[3]);
         }
-        catch (NumberFormatException e) {
+        catch (final NumberFormatException e) {
             throwException("Number expected.", lineNumber, 3);
         }
         if (size < 1) {
@@ -304,35 +304,35 @@ public class DependencyDefinitionParser {
         if (tokens[4].equals(IN_KEY_WORD) == false) {
             throwException("'in' expected.", lineNumber, 4);
         }
-        StringPattern pattern = createPattern(tokens[5], lineNumber, 4);
+        final StringPattern pattern = createPattern(tokens[5], lineNumber, 4);
         _statements.add(new CheckCyclesStatement(pattern, size, packageCycles, _setDefinitions));
     }
 
-    private void createCheckSetStatements(String[] tokens, int lineNumber) {
+    private void createCheckSetStatements(final String[] tokens, final int lineNumber) {
         if (tokens.length < 3) {
             throwException("No sets to check.", lineNumber, 2);
         }
         for (int i = 2; i < tokens.length; i++) {
-            StringPattern pattern = createPattern(tokens[i], lineNumber, i);
+            final StringPattern pattern = createPattern(tokens[i], lineNumber, i);
             _statements.add(new CheckSetStatement(pattern, _setDefinitions));
         }
     }
 
-    private void createLayeringStatement(String[] tokens, int lineNumber) {
-        StringPattern[][] layers = new StringPattern[tokens.length - 2][];
+    private void createLayeringStatement(final String[] tokens, final int lineNumber) {
+        final StringPattern[][] layers = new StringPattern[tokens.length - 2][];
         for (int i = 0; i < layers.length; i++) {
-            String name = tokens[i + 2];
+            final String name = tokens[i + 2];
             layers[i] = _layerDefinitions.getLayer(name);
             if (layers[i] == null) {
                 throwException("Undefined layer '" + name + "'.", lineNumber, i + 2);
             }
         }
-        boolean strict = tokens[1].equals(STRICT_LAYERING_OF_KEY_WORD);
+        final boolean strict = tokens[1].equals(STRICT_LAYERING_OF_KEY_WORD);
         _statements.add(new LayeringStatement(layers, strict, _setDefinitions, _layerDefinitions, _renderer));
     }
 
-    private void createDependencyStatement(String[] tokens, int lineNumber) {
-        StringPattern[][] lists = getLists(tokens, lineNumber, INDEPENDENT, 1);
+    private void createDependencyStatement(final String[] tokens, final int lineNumber) {
+        final StringPattern[][] lists = getLists(tokens, lineNumber, INDEPENDENT, 1);
         if (lists[0].length == 0) {
             throwException("Missing start sets.", lineNumber, 1);
         }
@@ -343,12 +343,12 @@ public class DependencyDefinitionParser {
         _statements.add(new DependencyStatement(lists[0], lists[1], tokens[lists[0].length + 1], _setDefinitions, _renderer));
     }
 
-    private StringPattern[][] getLists(String[] tokens, int lineNumber, String[] keyWords, int startIndex) {
-        ArrayList<StringPattern> startSets = new ArrayList<StringPattern>();
-        ArrayList<StringPattern> endSets = new ArrayList<StringPattern>();
+    private StringPattern[][] getLists(final String[] tokens, final int lineNumber, final String[] keyWords, final int startIndex) {
+        final ArrayList<StringPattern> startSets = new ArrayList<StringPattern>();
+        final ArrayList<StringPattern> endSets = new ArrayList<StringPattern>();
         ArrayList<StringPattern> currentList = startSets;
         for (int i = startIndex; i < tokens.length; i++) {
-            String token = tokens[i];
+            final String token = tokens[i];
             if (isAKeyWord(token, keyWords)) {
                 if (currentList == endSets) {
                     throwException("Invalid appearance of key word '" + token + "'.", lineNumber, i);
@@ -359,16 +359,16 @@ public class DependencyDefinitionParser {
                 currentList.add(createPattern(token, lineNumber, i));
             }
         }
-        StringPattern[][] result = new StringPattern[2][];
-        result[0] = (StringPattern[]) startSets.toArray(new StringPattern[0]);
-        result[1] = (StringPattern[]) endSets.toArray(new StringPattern[0]);
+        final StringPattern[][] result = new StringPattern[2][];
+        result[0] = startSets.toArray(new StringPattern[0]);
+        result[1] = endSets.toArray(new StringPattern[0]);
         return result;
     }
 
-    private boolean isAKeyWord(String token, String[] keyWords) {
+    private boolean isAKeyWord(final String token, final String[] keyWords) {
         boolean result = false;
-        for (int i = 0; i < keyWords.length; i++) {
-            if (keyWords[i].equals(token)) {
+        for (final String keyWord : keyWords) {
+            if (keyWord.equals(token)) {
                 result = true;
                 break;
             }
@@ -376,8 +376,8 @@ public class DependencyDefinitionParser {
         return result;
     }
 
-    private void throwException(String message, int lineNumber, int tokenIndex) {
-        StringBuffer buffer = new StringBuffer("Error in line ");
+    private void throwException(final String message, final int lineNumber, final int tokenIndex) {
+        final StringBuffer buffer = new StringBuffer("Error in line ");
         buffer.append(lineNumber);
         if (tokenIndex >= 0) {
             buffer.append(" token ").append(tokenIndex + 1);

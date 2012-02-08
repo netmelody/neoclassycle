@@ -20,14 +20,14 @@ public class DependencyProcessorTest {
     private static final String DIDOF = ' ' + DependencyDefinitionParser.DIRECTLY_INDEPENDENT_OF_KEY_WORD + ' ';
     private static final String CHECK = DependencyDefinitionParser.CHECK_KEY_WORD + ' ';
     private static final String OK = DependencyResult.OK + '\n';
-    private String DF = DependencyResult.DEPENDENCIES_FOUND;
+    private final String DF = DependencyResult.DEPENDENCIES_FOUND;
     private static final String SHOW_ALLRESULTS = "show allResults\n";
     private static final String SHOW_ALL = "show allPaths allResults\n";
     private static final String SHOW_ONLY_ALL = "show onlyShortestPaths allResults\n";
 
     @Test
     public void testCheckSets() {
-        String s = "[a] = a.*\n" + "check sets [a] b.* bla.bla";
+        final String s = "[a] = a.*\n" + "check sets [a] b.* bla.bla";
         check(SHOW_ALLRESULTS + s, new String[] { SHOW_ONLY_ALL, "Set [a] has 2 classes.\n", "Set b.* has one class.\n",
                 "Set bla.bla is empty.\n" });
         check(s, new String[] { "", "", "Set bla.bla is empty.\n" });
@@ -35,17 +35,17 @@ public class DependencyProcessorTest {
 
     @Test
     public void testClassCycleCheck() {
-        String s = "[a] = a.*\n" + "check absenceOfClassCycles > 1 in b.*\n" + "check absenceOfClassCycles > 1 in [a]";
-        String result = "check absenceOfClassCycles > 1 in [a]\n" + "  a.A et al. contains 2 classes:\n" + "    a.A\n" + "    a.B\n";
+        final String s = "[a] = a.*\n" + "check absenceOfClassCycles > 1 in b.*\n" + "check absenceOfClassCycles > 1 in [a]";
+        final String result = "check absenceOfClassCycles > 1 in [a]\n" + "  a.A et al. contains 2 classes:\n" + "    a.A\n" + "    a.B\n";
         check(SHOW_ALLRESULTS + s, new String[] { SHOW_ONLY_ALL, "check absenceOfClassCycles > 1 in b.*\tOK\n", result });
         check(s, new String[] { "", result });
     }
 
     @Test
     public void testPackageCycleCheck() {
-        String s = "[A] = *.A\n" + "check absenceOfPackageCycles > 1 in *.B\n" + "check absenceOfPackageCycles > 1 in [A]";
-        String result1 = "check absenceOfPackageCycles > 1 in [A]\n" + "  i et al. contains 2 packages:\n" + "    i\n" + "    b\n";
-        String result2 = "check absenceOfPackageCycles > 1 in [A]\n" + "  b et al. contains 2 packages:\n" + "    b\n" + "    i\n";
+        final String s = "[A] = *.A\n" + "check absenceOfPackageCycles > 1 in *.B\n" + "check absenceOfPackageCycles > 1 in [A]";
+        final String result1 = "check absenceOfPackageCycles > 1 in [A]\n" + "  i et al. contains 2 packages:\n" + "    i\n" + "    b\n";
+        final String result2 = "check absenceOfPackageCycles > 1 in [A]\n" + "  b et al. contains 2 packages:\n" + "    b\n" + "    i\n";
         check(SHOW_ALLRESULTS + s, new String[] { SHOW_ONLY_ALL, "check absenceOfPackageCycles > 1 in *.B\tOK\n", result2 }, new String[] {
                 SHOW_ONLY_ALL, "check absenceOfPackageCycles > 1 in *.B\tOK\n", result2 });
         check(s, new String[] { "", result1 }, new String[] { "", result2 });
@@ -61,16 +61,16 @@ public class DependencyProcessorTest {
 
     @Test
     public void testPreferences() {
-        String s1 = "check b.* independentOf c.*";
-        String s2 = "check f.* independentOf b.*";
-        String s = s1 + '\n' + s2 + '\n';
+        final String s1 = "check b.* independentOf c.*";
+        final String s2 = "check f.* independentOf b.*";
+        final String s = s1 + '\n' + s2 + '\n';
         check(s + SHOW_ALLRESULTS + s + "show onlyFailures\n" + s, new String[] { "", s2 + DF + "\n  f.A\n    -> b.A\n", SHOW_ONLY_ALL,
                 s1 + OK, s2 + DF + "\n  f.A\n    -> b.A\n", "", "", s2 + DF + "\n  f.A\n    -> b.A\n" });
     }
 
     @Test
     public void testSwitchAllPathsAndBack() {
-        String s = "check h.* independentOf b.*";
+        final String s = "check h.* independentOf b.*";
         check(SHOW_ALLRESULTS + s + "\nshow allPaths\n" + s + "\nshow onlyShortestPaths\n" + s, new String[] { SHOW_ONLY_ALL,
                 s + DF + "\n  h.A\n    -> f.A\n      -> b.A\n", SHOW_ALL,
                 s + DF + "\n  h.A\n    -> e.A\n      -> e.B\n" + "        -> b.A\n    -> f.A\n      -> b.A\n", SHOW_ONLY_ALL,
@@ -83,7 +83,7 @@ public class DependencyProcessorTest {
                 SHOW_ONLY_ALL,
                 CHECK + "b.*" + DIDOF + "c.*" + OK + CHECK + "c.*" + DIDOF + "b.*" + OK + CHECK + "b.*" + DIDOF + "f.*" + OK + CHECK
                         + "c.*" + DIDOF + "f.*" + OK });
-        String result = CHECK + "[a]" + DIDOF + "b.*" + OK + CHECK + "[a]" + DIDOF + "c.*" + OK + CHECK + "b.*" + DIDOF + "[a]" + OK
+        final String result = CHECK + "[a]" + DIDOF + "b.*" + OK + CHECK + "[a]" + DIDOF + "c.*" + OK + CHECK + "b.*" + DIDOF + "[a]" + OK
                 + CHECK + "b.*" + DIDOF + "c.*" + OK + CHECK + "c.*" + DIDOF + "[a]" + OK + CHECK + "c.*" + DIDOF + "b.*" + OK + CHECK
                 + "[a]" + DIDOF + "e.*" + OK + CHECK + "[a]" + DIDOF + "f.*" + OK + CHECK + "b.*" + DIDOF + "e.*" + OK + CHECK + "b.*"
                 + DIDOF + "f.*" + OK + CHECK + "c.*" + DIDOF + "e.*" + OK + CHECK + "c.*" + DIDOF + "f.*" + OK + CHECK + "[a]" + DIDOF
@@ -100,14 +100,14 @@ public class DependencyProcessorTest {
                 CHECK + "h.*" + DIDOF + "[a]" + DF + "\n  h.A\n    -> a.A\n" });
     }
 
-    private void check(String description, String[] expectedResults) {
+    private void check(final String description, final String[] expectedResults) {
         check(description, expectedResults, expectedResults);
     }
 
-    private void check(String description, String[] expectedResults1, String[] expectedResults2) {
-        AtomicVertex[] graph = createGraph();
-        ResultRenderer renderer = new DefaultResultRenderer();
-        DependencyProcessor processor = new DependencyProcessor(description, null, renderer);
+    private void check(final String description, final String[] expectedResults1, final String[] expectedResults2) {
+        final AtomicVertex[] graph = createGraph();
+        final ResultRenderer renderer = new DefaultResultRenderer();
+        final DependencyProcessor processor = new DependencyProcessor(description, null, renderer);
         final List<String> results = new ArrayList<String>();
         while (processor.hasMoreStatements()) {
             results.add(renderer.render(processor.executeNextStatement(graph)));
@@ -115,7 +115,7 @@ public class DependencyProcessorTest {
         try {
             assertEquals(Arrays.asList(expectedResults1), results);
         }
-        catch (AssertionError e) {
+        catch (final AssertionError e) {
             assertEquals(Arrays.asList(expectedResults2), results);
         }
     }
@@ -135,15 +135,14 @@ public class DependencyProcessorTest {
 
     }
 
-    private AtomicVertex[] createGraph(String[] nodes, int[][] nodeLinks) {
-        AtomicVertex[] result = new AtomicVertex[nodes.length];
+    private AtomicVertex[] createGraph(final String[] nodes, final int[][] nodeLinks) {
+        final AtomicVertex[] result = new AtomicVertex[nodes.length];
         for (int i = 0; i < result.length; i++) {
             result[i] = new AtomicVertex(new MockAttributes(nodes[i]));
         }
         for (int i = 0; i < result.length; i++) {
-            int[] links = nodeLinks[i];
-            for (int j = 0; j < links.length; j++) {
-                int link = links[j];
+            final int[] links = nodeLinks[i];
+            for (final int link : links) {
                 result[i].addOutgoingArcTo(result[link]);
             }
         }

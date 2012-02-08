@@ -131,11 +131,11 @@ public class WildCardPatternTest {
         matchNot("*a*a", "raarar");
     }
 
-    private void match(String pattern, String string) {
+    private void match(final String pattern, final String string) {
         assertTrue("'" + string + "' expected to match '" + pattern + "'", new WildCardPattern(pattern).matches(string));
     }
 
-    private void matchNot(String pattern, String string) {
+    private void matchNot(final String pattern, final String string) {
         assertTrue("'" + string + "' expected not match '" + pattern + "'", !new WildCardPattern(pattern).matches(string));
     }
 }

@@ -37,10 +37,10 @@ public class PackageProcessorTest {
     @Test
     public void testClassBExcluded() {
         _b.setDefaultValueOfGraphVertexFlag(false);
-        PackageProcessor processor = new PackageProcessor();
+        final PackageProcessor processor = new PackageProcessor();
         processor.deepSearchFirst(_graph);
 
-        AtomicVertex[] packageGraph = processor.getGraph();
+        final AtomicVertex[] packageGraph = processor.getGraph();
         assertEquals(2, packageGraph.length);
 
         assertEquals(true, packageGraph[0].isGraphVertex());
@@ -53,15 +53,15 @@ public class PackageProcessorTest {
             q = packageGraph[0];
         }
 
-        PackageAttributes attributesp = (PackageAttributes) p.getAttributes();
+        final PackageAttributes attributesp = (PackageAttributes) p.getAttributes();
         assertEquals("p", attributesp.getName());
         assertEquals("s", attributesp.getSources());
         assertEquals(2, attributesp.getSize());
         assertEquals(1, p.getNumberOfOutgoingArcs());
-        Vertex packageLang = p.getHeadVertex(0);
+        final Vertex packageLang = p.getHeadVertex(0);
         assertEquals("lang", ((PackageAttributes) packageLang.getAttributes()).getName());
 
-        PackageAttributes attributesq = (PackageAttributes) q.getAttributes();
+        final PackageAttributes attributesq = (PackageAttributes) q.getAttributes();
         assertEquals("q", attributesq.getName());
         assertEquals("r, s", attributesq.getSources());
         assertEquals(2, attributesq.getSize());
@@ -73,10 +73,10 @@ public class PackageProcessorTest {
     @Test
     public void testClassDExcluded() {
         _d.setDefaultValueOfGraphVertexFlag(false);
-        PackageProcessor processor = new PackageProcessor();
+        final PackageProcessor processor = new PackageProcessor();
         processor.deepSearchFirst(_graph);
 
-        AtomicVertex[] packageGraph = processor.getGraph();
+        final AtomicVertex[] packageGraph = processor.getGraph();
         assertEquals(2, packageGraph.length);
 
         assertEquals(true, packageGraph[0].isGraphVertex());
@@ -93,7 +93,7 @@ public class PackageProcessorTest {
         assertEquals("q", attributes.getName());
         assertEquals(2, attributes.getSize());
         assertEquals(1, q.getNumberOfOutgoingArcs());
-        Vertex packageLang = q.getHeadVertex(0);
+        final Vertex packageLang = q.getHeadVertex(0);
         assertEquals("lang", ((PackageAttributes) packageLang.getAttributes()).getName());
 
         attributes = (PackageAttributes) p.getAttributes();
@@ -108,22 +108,22 @@ public class PackageProcessorTest {
     public void testClassBAndCExcluded() {
         _b.setDefaultValueOfGraphVertexFlag(false);
         _c.setDefaultValueOfGraphVertexFlag(false);
-        PackageProcessor processor = new PackageProcessor();
+        final PackageProcessor processor = new PackageProcessor();
         processor.deepSearchFirst(_graph);
 
-        AtomicVertex[] packageGraph = processor.getGraph();
+        final AtomicVertex[] packageGraph = processor.getGraph();
         assertEquals(1, packageGraph.length);
 
-        AtomicVertex p = packageGraph[0];
+        final AtomicVertex p = packageGraph[0];
         assertEquals(true, p.isGraphVertex());
-        PackageAttributes attributes = (PackageAttributes) p.getAttributes();
+        final PackageAttributes attributes = (PackageAttributes) p.getAttributes();
         assertEquals("p", attributes.getName());
         assertEquals(2, attributes.getSize());
         assertEquals(2, p.getNumberOfOutgoingArcs());
-        AtomicVertex packageLang = (AtomicVertex) p.getHeadVertex(0);
+        final AtomicVertex packageLang = (AtomicVertex) p.getHeadVertex(0);
         assertEquals("lang", ((PackageAttributes) packageLang.getAttributes()).getName());
         assertEquals(false, packageLang.isGraphVertex());
-        AtomicVertex q = (AtomicVertex) p.getHeadVertex(1);
+        final AtomicVertex q = (AtomicVertex) p.getHeadVertex(1);
         assertEquals("q", ((PackageAttributes) q.getAttributes()).getName());
         assertEquals(false, q.isGraphVertex());
     }

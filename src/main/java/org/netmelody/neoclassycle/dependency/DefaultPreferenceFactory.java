@@ -1,26 +1,26 @@
 /*
  * Copyright (c) 2003-2008, Franz-Josef Elmer, All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without 
+ * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
- * - Redistributions of source code must retain the above copyright notice, 
+ *
+ * - Redistributions of source code must retain the above copyright notice,
  *   this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright notice, 
- *   this list of conditions and the following disclaimer in the documentation 
+ * - Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
  *   and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED 
- * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.netmelody.neoclassycle.dependency;
 
@@ -29,7 +29,7 @@ import java.util.HashMap;
 /**
  * Factory of {@link Preference Preferences} known by the
  * {@link DefaultResultRenderer}.
- * 
+ *
  * <table border="1" cellspacing="0" cellpadding="5">
  * <tr>
  * <th>Preference Key</th>
@@ -53,7 +53,7 @@ import java.util.HashMap;
  * <td>All results are reported.</td>
  * </tr>
  * </table>
- * 
+ *
  * @author Franz-Josef Elmer
  */
 public class DefaultPreferenceFactory implements PreferenceFactory {
@@ -65,13 +65,13 @@ public class DefaultPreferenceFactory implements PreferenceFactory {
     private static class DefaultPreference implements Preference {
         private static final HashMap<String, Preference> REPOSITORY = new HashMap<String, Preference>();
 
-        public static Preference getPreference(String key) {
-            return (Preference) REPOSITORY.get(key);
+        public static Preference getPreference(final String key) {
+            return REPOSITORY.get(key);
         }
 
         private final String _key;
 
-        protected DefaultPreference(String key) {
+        protected DefaultPreference(final String key) {
             _key = key;
             if (REPOSITORY.containsKey(key)) {
                 throw new IllegalArgumentException("There exists already an instance for '" + key + "'.");
@@ -79,16 +79,19 @@ public class DefaultPreferenceFactory implements PreferenceFactory {
             REPOSITORY.put(key, this);
         }
 
+        @Override
         public final String getKey() {
             return _key;
         }
 
+        @Override
         public String toString() {
             return getKey();
         }
     }
 
-    public Preference get(String key) {
+    @Override
+    public Preference get(final String key) {
         return DefaultPreference.getPreference(key);
     }
 

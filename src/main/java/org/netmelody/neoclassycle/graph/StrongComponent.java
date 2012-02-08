@@ -1,26 +1,26 @@
 /*
  * Copyright (c) 2003-2008, Franz-Josef Elmer, All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without 
+ * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
- * - Redistributions of source code must retain the above copyright notice, 
+ *
+ * - Redistributions of source code must retain the above copyright notice,
  *   this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright notice, 
- *   this list of conditions and the following disclaimer in the documentation 
+ * - Redistributions in binary form must reproduce the above copyright notice,
+ *   this list of conditions and the following disclaimer in the documentation
  *   and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED 
- * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
  * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
- * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package org.netmelody.neoclassycle.graph;
 
@@ -31,7 +31,7 @@ import java.util.Vector;
 /**
  * A strong component is a subgraph of a directed graph where every two vertices
  * are mutually reachable.
- * 
+ *
  * @author Franz-Josef Elmer
  */
 public class StrongComponent extends Vertex {
@@ -39,87 +39,96 @@ public class StrongComponent extends Vertex {
         private int _girth;
         private int _radius;
         private int _diameter;
-        private ArrayList<Vertex> _centerVertices = new ArrayList<Vertex>();
+        private final ArrayList<Vertex> _centerVertices = new ArrayList<Vertex>();
         private int[] _eccentricities;
         private int[] _maximumFragmentSizes;
         private int _bestFragmentSize;
-        private ArrayList<Vertex> _bestFragmenters = new ArrayList<Vertex>();
+        private final ArrayList<Vertex> _bestFragmenters = new ArrayList<Vertex>();
 
         public GeometryAttributes() {
         }
 
+        @Override
         public int getGirth() {
             return _girth;
         }
 
-        void setGirth(int girth) {
+        void setGirth(final int girth) {
             _girth = girth;
         }
 
+        @Override
         public int getRadius() {
             return _radius;
         }
 
+        @Override
         public int getDiameter() {
             return _diameter;
         }
 
+        @Override
         public int getBestFragmentSize() {
             return _bestFragmentSize;
         }
 
+        @Override
         public Vertex[] getCenterVertices() {
-            return (Vertex[]) _centerVertices.toArray(new Vertex[_centerVertices.size()]);
+            return _centerVertices.toArray(new Vertex[_centerVertices.size()]);
         }
 
-        void addVertex(Vertex vertex) {
+        void addVertex(final Vertex vertex) {
             _centerVertices.add(vertex);
         }
 
+        @Override
         public Vertex[] getBestFragmenters() {
-            return (Vertex[]) _bestFragmenters.toArray(new Vertex[_bestFragmenters.size()]);
+            return _bestFragmenters.toArray(new Vertex[_bestFragmenters.size()]);
         }
 
-        void addFragmenter(Vertex vertex) {
+        void addFragmenter(final Vertex vertex) {
             _bestFragmenters.add(vertex);
         }
 
+        @Override
         public int[] getEccentricities() {
             return _eccentricities;
         }
 
-        void setEccentricities(int[] eccentricities) {
+        void setEccentricities(final int[] eccentricities) {
             _eccentricities = eccentricities;
 
             // Calculate radius and diameter
             _radius = Integer.MAX_VALUE;
             _diameter = 0;
-            for (int i = 0; i < eccentricities.length; i++) {
-                _radius = Math.min(_radius, eccentricities[i]);
-                _diameter = Math.max(_diameter, eccentricities[i]);
+            for (final int eccentricitie : eccentricities) {
+                _radius = Math.min(_radius, eccentricitie);
+                _diameter = Math.max(_diameter, eccentricitie);
             }
         }
 
+        @Override
         public int[] getMaximumFragmentSizes() {
             return _maximumFragmentSizes;
         }
 
-        void setMaximumFragmentSizes(int[] maximumFragmentSizes) {
+        void setMaximumFragmentSizes(final int[] maximumFragmentSizes) {
             _maximumFragmentSizes = maximumFragmentSizes;
 
             _bestFragmentSize = Integer.MAX_VALUE;
-            for (int i = 0; i < maximumFragmentSizes.length; i++) {
-                _bestFragmentSize = Math.min(_bestFragmentSize, maximumFragmentSizes[i]);
+            for (final int maximumFragmentSize : maximumFragmentSizes) {
+                _bestFragmentSize = Math.min(_bestFragmentSize, maximumFragmentSize);
             }
         }
 
-        public int compareTo(Attributes object) {
+        @Override
+        public int compareTo(final Attributes object) {
             int result = 1;
             if (object instanceof GeometryAttributes && _bestFragmenters.size() > 0) {
-                ArrayList<Vertex> list = ((GeometryAttributes) object)._bestFragmenters;
+                final ArrayList<Vertex> list = ((GeometryAttributes) object)._bestFragmenters;
                 if (list.size() > 0) {
-                    Attributes attributes = ((Vertex) _bestFragmenters.get(0)).getAttributes();
-                    Attributes objectAttributes = ((Vertex) list.get(0)).getAttributes();
+                    final Attributes attributes = _bestFragmenters.get(0).getAttributes();
+                    final Attributes objectAttributes = list.get(0).getAttributes();
                     result = attributes.compareTo(objectAttributes);
                 }
             }
@@ -146,7 +155,7 @@ public class StrongComponent extends Vertex {
     }
 
     /** Returns the vertex of the specified index. */
-    public AtomicVertex getVertex(int index) {
+    public AtomicVertex getVertex(final int index) {
         return (AtomicVertex) _vertices.elementAt(index);
     }
 
@@ -154,7 +163,7 @@ public class StrongComponent extends Vertex {
      * Adds the specified vertex to this strong component. Note, that added
      * vertices are inserted at index 0 of the list of vertices.
      */
-    public void addVertex(AtomicVertex vertex) {
+    public void addVertex(final AtomicVertex vertex) {
         _vertices.insertElementAt(vertex, 0);
     }
 
@@ -164,13 +173,13 @@ public class StrongComponent extends Vertex {
      * .
      */
     public void calculateAttributes() {
-        HashMap<Vertex, Integer> indexMap = calculateIndexMap();
-        int[][] distances = calculateDistances(indexMap);
+        final HashMap<Vertex, Integer> indexMap = calculateIndexMap();
+        final int[][] distances = calculateDistances(indexMap);
 
         // Calculate girth and eccentricity
-        GeometryAttributes attributes = (GeometryAttributes) getAttributes();
+        final GeometryAttributes attributes = (GeometryAttributes) getAttributes();
         int girth = Integer.MAX_VALUE;
-        int[] eccentricities = new int[distances.length];
+        final int[] eccentricities = new int[distances.length];
         for (int i = 0; i < distances.length; i++) {
             girth = Math.min(girth, distances[i][i]);
             eccentricities[i] = 0;
@@ -196,18 +205,18 @@ public class StrongComponent extends Vertex {
 
     }
 
-    private int[][] calculateDistances(HashMap<Vertex, Integer> indexMap) {
+    private int[][] calculateDistances(final HashMap<Vertex, Integer> indexMap) {
         // Calculate the adjacency matrix
-        int n = getNumberOfVertices();
-        int[][] distances = new int[n][n];
+        final int n = getNumberOfVertices();
+        final int[][] distances = new int[n][n];
         for (int i = 0; i < n; i++) {
-            int[] row = distances[i];
-            AtomicVertex vertex = getVertex(i);
+            final int[] row = distances[i];
+            final AtomicVertex vertex = getVertex(i);
             for (int j = 0; j < n; j++) {
                 row[j] = Integer.MAX_VALUE / 2;
             }
             for (int j = 0, m = vertex.getNumberOfOutgoingArcs(); j < m; j++) {
-                Integer index = (Integer) indexMap.get(vertex.getHeadVertex(j));
+                final Integer index = indexMap.get(vertex.getHeadVertex(j));
                 if (index != null) {
                     row[index.intValue()] = 1;
                 }
@@ -229,38 +238,38 @@ public class StrongComponent extends Vertex {
     }
 
     private HashMap<Vertex, Integer> calculateIndexMap() {
-        HashMap<Vertex, Integer> result = new HashMap<Vertex, Integer>();
+        final HashMap<Vertex, Integer> result = new HashMap<Vertex, Integer>();
         for (int i = 0, n = getNumberOfVertices(); i < n; i++) {
             result.put(getVertex(i), new Integer(i));
         }
         return result;
     }
 
-    private int[] calculateMaximumFragmentSizes(HashMap<Vertex, Integer> indexMap) {
+    private int[] calculateMaximumFragmentSizes(final HashMap<Vertex, Integer> indexMap) {
         // clone graph defining this strong component
-        AtomicVertex[] graph = new AtomicVertex[getNumberOfVertices()];
+        final AtomicVertex[] graph = new AtomicVertex[getNumberOfVertices()];
         for (int i = 0; i < graph.length; i++) {
             graph[i] = new AtomicVertex(null);
         }
         for (int i = 0; i < graph.length; i++) {
-            AtomicVertex vertex = getVertex(i);
+            final AtomicVertex vertex = getVertex(i);
             for (int j = 0, n = vertex.getNumberOfOutgoingArcs(); j < n; j++) {
-                Integer index = (Integer) indexMap.get(vertex.getHeadVertex(j));
+                final Integer index = indexMap.get(vertex.getHeadVertex(j));
                 if (index != null) {
                     graph[i].addOutgoingArcTo(graph[index.intValue()]);
                 }
             }
         }
 
-        StrongComponentProcessor processor = new StrongComponentProcessor(false);
-        int[] maximumFragmentSizes = new int[getNumberOfVertices()];
+        final StrongComponentProcessor processor = new StrongComponentProcessor(false);
+        final int[] maximumFragmentSizes = new int[getNumberOfVertices()];
         for (int i = 0; i < maximumFragmentSizes.length; i++) {
             graph[i].setDefaultValueOfGraphVertexFlag(false);
             processor.deepSearchFirst(graph);
-            StrongComponent[] fragments = processor.getStrongComponents();
+            final StrongComponent[] fragments = processor.getStrongComponents();
             maximumFragmentSizes[i] = 0;
-            for (int j = 0; j < fragments.length; j++) {
-                maximumFragmentSizes[i] = Math.max(maximumFragmentSizes[i], fragments[j].getNumberOfVertices());
+            for (final StrongComponent fragment : fragments) {
+                maximumFragmentSizes[i] = Math.max(maximumFragmentSizes[i], fragment.getNumberOfVertices());
             }
             graph[i].setDefaultValueOfGraphVertexFlag(true);
         }
@@ -271,6 +280,7 @@ public class StrongComponent extends Vertex {
      * Reset this component. Calls reset of the superclass. Sets the activity
      * flag to false and the longest walk to -1.
      */
+    @Override
     public void reset() {
         super.reset();
         _active = false;
@@ -281,7 +291,7 @@ public class StrongComponent extends Vertex {
         return _active;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(final boolean active) {
         _active = active;
     }
 
@@ -289,13 +299,14 @@ public class StrongComponent extends Vertex {
         return _longestWalk;
     }
 
-    public void setLongestWalk(int longestWalk) {
+    public void setLongestWalk(final int longestWalk) {
         _longestWalk = longestWalk;
     }
 
+    @Override
     public String toString() {
-        StringBuffer result = new StringBuffer("Strong component with ");
-        int n = getNumberOfVertices();
+        final StringBuffer result = new StringBuffer("Strong component with ");
+        final int n = getNumberOfVertices();
         result.append(n).append(n > 1 ? " vertices." : " vertex.");
         result.append(" Longest walk: ").append(getLongestWalk());
         for (int i = 0; i < n; i++) {
