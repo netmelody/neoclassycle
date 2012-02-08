@@ -40,8 +40,7 @@ import org.netmelody.neoclassycle.renderer.AbstractStrongComponentRenderer;
  * 
  * @author Franz-Josef Elmer
  */
-public class CyclesResult implements Result
-{
+public class CyclesResult implements Result {
     private final List<StrongComponent> _cycles = new ArrayList<StrongComponent>();
     private final String _statement;
     private final boolean _packageCycle;
@@ -53,8 +52,7 @@ public class CyclesResult implements Result
      *            If <code>true/false</code> the check is on package/class
      *            cycles
      */
-    public CyclesResult(String statement, boolean packageCycle)
-    {
+    public CyclesResult(String statement, boolean packageCycle) {
         _statement = statement;
         _packageCycle = packageCycle;
     }
@@ -62,24 +60,21 @@ public class CyclesResult implements Result
     /**
      * Adds the specified cycle.
      */
-    public void addCycle(StrongComponent cycle)
-    {
+    public void addCycle(StrongComponent cycle) {
         _cycles.add(cycle);
     }
 
     /**
      * Returns all added cycles.
      */
-    public List<StrongComponent> getCycles()
-    {
+    public List<StrongComponent> getCycles() {
         return _cycles;
     }
 
     /**
      * Returns the statement.
      */
-    public String getStatement()
-    {
+    public String getStatement() {
         return _statement;
     }
 
@@ -87,16 +82,14 @@ public class CyclesResult implements Result
      * Returns <code>true/false</code> if this result is on package/class
      * cycles.
      */
-    public boolean isPackageCycle()
-    {
+    public boolean isPackageCycle() {
         return _packageCycle;
     }
 
     /**
      * Returns <code>true</code> if no cycles have been added.
      */
-    public boolean isOk()
-    {
+    public boolean isOk() {
         return _cycles.size() == 0;
     }
 
@@ -104,24 +97,19 @@ public class CyclesResult implements Result
      * Returns the result in a human-readable form which is used by the
      * {@link DefaultResultRenderer}.
      */
-    public String toString()
-    {
+    public String toString() {
         StringBuffer buffer = new StringBuffer(_statement);
-        if (isOk())
-        {
+        if (isOk()) {
             buffer.append("\tOK");
         }
-        else
-        {
-            for (StrongComponent component : _cycles)
-            {
+        else {
+            for (StrongComponent component : _cycles) {
                 int numberOfVertices = component.getNumberOfVertices();
                 buffer.append("\n  ");
                 buffer.append(AbstractStrongComponentRenderer.createName(component));
                 buffer.append(" contains ").append(numberOfVertices);
                 buffer.append(' ').append(_packageCycle ? "packages" : "classes").append(':');
-                for (int i = 0; i < numberOfVertices; i++)
-                {
+                for (int i = 0; i < numberOfVertices; i++) {
                     buffer.append("\n    ");
                     AtomicVertex vertex = component.getVertex(i);
                     buffer.append(((NameAttributes) vertex.getAttributes()).getName());

@@ -9,11 +9,9 @@ import org.junit.Test;
  */
 public class LongestWalkProcessorTest extends GraphTestCase {
 
-    protected void process(StrongComponentProcessor processor,
-            AtomicVertex[] graph) {
+    protected void process(StrongComponentProcessor processor, AtomicVertex[] graph) {
         processor.deepSearchFirst(graph);
-        new LongestWalkProcessor().deepSearchFirst(
-                processor.getStrongComponents());
+        new LongestWalkProcessor().deepSearchFirst(processor.getStrongComponents());
     }
 
     @Test
@@ -43,50 +41,45 @@ public class LongestWalkProcessorTest extends GraphTestCase {
 
     @Test
     public void testComplexGraphs() {
-        check(new String[] { "1: 0 1 2 3", "0: 4 5" },
-                new int[][] { { 1, 2 }, // 0
-                        { 0 }, // 1
-                        { 3, -1, -1 }, // 2
-                        { 1, -1, 4 }, // 3
-                        { 5 }, // 4
-                        { 4 }, // 5
+        check(new String[] { "1: 0 1 2 3", "0: 4 5" }, new int[][] { { 1, 2 }, // 0
+                { 0 }, // 1
+                { 3, -1, -1 }, // 2
+                { 1, -1, 4 }, // 3
+                { 5 }, // 4
+                { 4 }, // 5
+        });
+        check(new String[] { "1: 0 1 2 3", "0: 4 5" }, new int[][] { { 1, 2 }, // 0
+                { 0 }, // 1
+                { 3, -1, -1 }, // 2
+                { 1, -1, 4 }, // 3
+                { 5 }, // 4
+                { 4 }, // 5
+        });
+        check(new String[] { "1: 0 1 2 3", "0: 4 5" }, new int[][] { { 1, 2 }, // 0
+                { 0 }, // 1
+                { 3, -1, -1 }, // 2
+                { 4, -1, 1 }, // 3
+                { 5 }, // 4
+                { 4 }, // 5
+        });
+        check(new String[] { "1: 0 1 2 3 6", "0: 4 5", "0: 7" }, new int[][] { { 1 }, // 0
+                { 2 }, // 1
+                { 2, 3, -1, 4 }, // 2
+                { 1, -1, 0, 6 }, // 3
+                { 5 }, // 4
+                { 4 }, // 5
+                { 3, 7 }, // 6
+                { -1 } // 7
                 });
-        check(new String[] { "1: 0 1 2 3", "0: 4 5" },
-                new int[][] { { 1, 2 }, // 0
-                        { 0 }, // 1
-                        { 3, -1, -1 }, // 2
-                        { 1, -1, 4 }, // 3
-                        { 5 }, // 4
-                        { 4 }, // 5
-                });
-        check(new String[] { "1: 0 1 2 3", "0: 4 5" },
-                new int[][] { { 1, 2 }, // 0
-                        { 0 }, // 1
-                        { 3, -1, -1 }, // 2
-                        { 4, -1, 1 }, // 3
-                        { 5 }, // 4
-                        { 4 }, // 5
-                });
-        check(new String[] { "1: 0 1 2 3 6", "0: 4 5", "0: 7" },
-                new int[][] { { 1 }, // 0
-                        { 2 }, // 1
-                        { 2, 3, -1, 4 }, // 2
-                        { 1, -1, 0, 6 }, // 3
-                        { 5 }, // 4
-                        { 4 }, // 5
-                        { 3, 7 }, // 6
-                        { -1 } // 7
-                });
-        check(new String[] { "2: 0", "0: 1", "1: 2 6", "2: 4", "3: 3 7 8", "1: 5" },
-                new int[][] { { 2 }, // 0
-                        { -1 }, // 1
-                        { 1, 6, -1 }, // 2
-                        { 7, -1, 4 }, // 3
-                        { 6 }, // 4
-                        { 1 }, // 5
-                        { 2, -1 }, // 6
-                        { 8, 5, -1 }, // 7
-                        { 3, -1 } // 8
+        check(new String[] { "2: 0", "0: 1", "1: 2 6", "2: 4", "3: 3 7 8", "1: 5" }, new int[][] { { 2 }, // 0
+                { -1 }, // 1
+                { 1, 6, -1 }, // 2
+                { 7, -1, 4 }, // 3
+                { 6 }, // 4
+                { 1 }, // 5
+                { 2, -1 }, // 6
+                { 8, 5, -1 }, // 7
+                { 3, -1 } // 8
                 });
     }
 }

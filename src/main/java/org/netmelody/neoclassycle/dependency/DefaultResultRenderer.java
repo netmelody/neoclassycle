@@ -27,76 +27,58 @@ package org.netmelody.neoclassycle.dependency;
 /**
  * @author Franz-Josef Elmer
  */
-public class DefaultResultRenderer extends ResultRenderer
-{
+public class DefaultResultRenderer extends ResultRenderer {
     private static final String SHOW = DependencyDefinitionParser.SHOW_KEY_WORD + ' ';
     private static final PreferenceFactory FACTORY = new DefaultPreferenceFactory();
-    private static final TextResult ONLY_SHORTEST_PATHS = new TextResult(SHOW
-            + DefaultPreferenceFactory.ONLY_SHORTEST_PATHS.getKey()
+    private static final TextResult ONLY_SHORTEST_PATHS = new TextResult(SHOW + DefaultPreferenceFactory.ONLY_SHORTEST_PATHS.getKey()
             + '\n');
-    private static final TextResult ALL_PATHS = new TextResult(SHOW + DefaultPreferenceFactory.ALL_PATHS.getKey()
-            + '\n');
+    private static final TextResult ALL_PATHS = new TextResult(SHOW + DefaultPreferenceFactory.ALL_PATHS.getKey() + '\n');
 
     private boolean _allResults;
 
-    public PreferenceFactory getPreferenceFactory()
-    {
+    public PreferenceFactory getPreferenceFactory() {
         return FACTORY;
     }
 
-    public void considerPreference(Preference preference)
-    {
-        if (preference == DefaultPreferenceFactory.ONLY_SHORTEST_PATHS)
-        {
+    public void considerPreference(Preference preference) {
+        if (preference == DefaultPreferenceFactory.ONLY_SHORTEST_PATHS) {
             _shortestPaths = true;
         }
-        else if (preference == DefaultPreferenceFactory.ALL_PATHS)
-        {
+        else if (preference == DefaultPreferenceFactory.ALL_PATHS) {
             _shortestPaths = false;
         }
-        else if (preference == DefaultPreferenceFactory.ALL_RESULTS)
-        {
+        else if (preference == DefaultPreferenceFactory.ALL_RESULTS) {
             _allResults = true;
         }
-        else if (preference == DefaultPreferenceFactory.ONLY_FAILURES)
-        {
+        else if (preference == DefaultPreferenceFactory.ONLY_FAILURES) {
             _allResults = false;
         }
     }
 
-    public Result getDescriptionOfCurrentPreferences()
-    {
+    public Result getDescriptionOfCurrentPreferences() {
         StringBuffer buffer = new StringBuffer(SHOW);
-        buffer.append(_shortestPaths
-                ? DefaultPreferenceFactory.ONLY_SHORTEST_PATHS.getKey()
-                : DefaultPreferenceFactory.ALL_PATHS.getKey())
+        buffer.append(_shortestPaths ? DefaultPreferenceFactory.ONLY_SHORTEST_PATHS.getKey() : DefaultPreferenceFactory.ALL_PATHS.getKey())
                 .append(' ')
-                .append(_allResults ? DefaultPreferenceFactory.ALL_RESULTS.getKey()
-                        : DefaultPreferenceFactory.ONLY_FAILURES.getKey())
+                .append(_allResults ? DefaultPreferenceFactory.ALL_RESULTS.getKey() : DefaultPreferenceFactory.ONLY_FAILURES.getKey())
                 .append('\n');
 
         return new TextResult(new String(buffer));
     }
 
-    public String render(Result result)
-    {
+    public String render(Result result) {
         StringBuffer buffer = new StringBuffer();
         render(buffer, result);
         return new String(buffer);
     }
 
-    private void render(StringBuffer buffer, Result result)
-    {
-        if (result instanceof ResultContainer)
-        {
+    private void render(StringBuffer buffer, Result result) {
+        if (result instanceof ResultContainer) {
             ResultContainer results = (ResultContainer) result;
-            for (int i = 0, n = results.getNumberOfResults(); i < n; i++)
-            {
+            for (int i = 0, n = results.getNumberOfResults(); i < n; i++) {
                 render(buffer, results.getResult(i));
             }
         }
-        else if (_allResults || result.isOk() == false)
-        {
+        else if (_allResults || result.isOk() == false) {
             buffer.append(result.toString());
         }
     }

@@ -29,7 +29,6 @@ import org.netmelody.neoclassycle.graph.AtomicVertex;
 /**
  * @author Franz-Josef Elmer
  */
-public interface Statement
-{
+public interface Statement {
     public Result execute(AtomicVertex[] graph);
 }

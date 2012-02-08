@@ -35,64 +35,48 @@ import org.netmelody.neoclassycle.util.StringPattern;
 /**
  * @author Franz-Josef Elmer
  */
-public class DependencyPathsRenderer
-{
+public class DependencyPathsRenderer {
     private static final String INDENT = "  ";
     private final Vertex[] _graph;
     private final VertexCondition _startSetCondition;
     private final VertexCondition _finalSetCondition;
     private final Set<Vertex> _vertices = new HashSet<Vertex>();
 
-    public DependencyPathsRenderer(Vertex[] graph,
-            StringPattern startSetPattern,
-            StringPattern finalSetPattern)
-    {
-        this(graph, new PatternVertexCondition(startSetPattern),
-                new PatternVertexCondition(finalSetPattern));
+    public DependencyPathsRenderer(Vertex[] graph, StringPattern startSetPattern, StringPattern finalSetPattern) {
+        this(graph, new PatternVertexCondition(startSetPattern), new PatternVertexCondition(finalSetPattern));
     }
 
-    public DependencyPathsRenderer(Vertex[] graph,
-            VertexCondition startSetCondition,
-            VertexCondition finalSetCondition)
-    {
+    public DependencyPathsRenderer(Vertex[] graph, VertexCondition startSetCondition, VertexCondition finalSetCondition) {
         _graph = graph;
         _startSetCondition = startSetCondition;
         _finalSetCondition = finalSetCondition;
-        for (int i = 0; i < graph.length; i++)
-        {
+        for (int i = 0; i < graph.length; i++) {
             _vertices.add(graph[i]);
         }
     }
 
-    public String renderGraph(final String lineStart)
-    {
+    public String renderGraph(final String lineStart) {
         final StringBuffer buffer = new StringBuffer();
-        DependencyPathRenderer renderer = new DependencyPathRenderer()
-        {
+        DependencyPathRenderer renderer = new DependencyPathRenderer() {
             String _start = '\n' + lineStart;
             private int _indentation;
 
-            public void increaseIndentation()
-            {
+            public void increaseIndentation() {
                 _indentation++;
             }
 
-            public void add(String nodeName)
-            {
+            public void add(String nodeName) {
                 buffer.append(_start);
-                for (int i = 0; i < _indentation; i++)
-                {
+                for (int i = 0; i < _indentation; i++) {
                     buffer.append(INDENT);
                 }
-                if (_indentation > 0)
-                {
+                if (_indentation > 0) {
                     buffer.append("-> ");
                 }
                 buffer.append(nodeName);
             }
 
-            public void decreaseIndentation()
-            {
+            public void decreaseIndentation() {
                 _indentation--;
             }
 
@@ -102,35 +86,25 @@ public class DependencyPathsRenderer
         return new String(buffer);
     }
 
-    public void renderGraph(DependencyPathRenderer renderer)
-    {
+    public void renderGraph(DependencyPathRenderer renderer) {
         Set<Vertex> visitedVertices = new HashSet<Vertex>();
-        for (int i = 0; i < _graph.length; i++)
-        {
+        for (int i = 0; i < _graph.length; i++) {
             Vertex vertex = _graph[i];
-            if (_startSetCondition.isFulfilled(vertex))
-            {
+            if (_startSetCondition.isFulfilled(vertex)) {
                 renderer.add(getNameOf(vertex));
                 renderPaths(renderer, vertex, visitedVertices);
             }
         }
     }
 
-    private void renderPaths(DependencyPathRenderer renderer, Vertex vertex,
-            Set<Vertex> visitedVertices)
-    {
+    private void renderPaths(DependencyPathRenderer renderer, Vertex vertex, Set<Vertex> visitedVertices) {
         visitedVertices.add(vertex);
         renderer.increaseIndentation();
-        for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++)
-        {
+        for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) {
             Vertex headVertex = vertex.getHeadVertex(i);
-            if (_vertices.contains(headVertex)
-                    && !_startSetCondition.isFulfilled(headVertex))
-            {
+            if (_vertices.contains(headVertex) && !_startSetCondition.isFulfilled(headVertex)) {
                 renderer.add(getNameOf(headVertex));
-                if (!_finalSetCondition.isFulfilled(headVertex)
-                        && !visitedVertices.contains(headVertex))
-                {
+                if (!_finalSetCondition.isFulfilled(headVertex) && !visitedVertices.contains(headVertex)) {
                     renderPaths(renderer, headVertex, visitedVertices);
                 }
             }
@@ -138,8 +112,7 @@ public class DependencyPathsRenderer
         renderer.decreaseIndentation();
     }
 
-    private String getNameOf(Vertex vertex)
-    {
+    private String getNameOf(Vertex vertex) {
         return ((NameAttributes) vertex.getAttributes()).getName();
     }
 }

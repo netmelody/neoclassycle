@@ -43,8 +43,7 @@ public class ConstantPoolPrinter {
      */
     public static void main(String[] args) {
         if (args.length == 0) {
-            System.out.println(
-                    "Usage: java org.netmelody.neoclassycle.classfile.ConstantPoolPrinter <class files>");
+            System.out.println("Usage: java org.netmelody.neoclassycle.classfile.ConstantPoolPrinter <class files>");
         }
         for (int i = 0; i < args.length; i++) {
             investigate(args[i]);

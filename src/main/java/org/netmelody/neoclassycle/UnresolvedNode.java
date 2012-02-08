@@ -35,57 +35,45 @@ import org.netmelody.neoclassycle.util.StringPattern;
  * 
  * @author Franz-Josef Elmer
  */
-class UnresolvedNode implements Comparable
-{
+class UnresolvedNode implements Comparable {
     private ClassAttributes _attributes;
     private List _nodes = new ArrayList();
 
-    void setAttributes(ClassAttributes attributes)
-    {
+    void setAttributes(ClassAttributes attributes) {
         _attributes = attributes;
     }
 
-    ClassAttributes getAttributes()
-    {
+    ClassAttributes getAttributes() {
         return _attributes;
     }
 
-    void addLinkTo(String node)
-    {
+    void addLinkTo(String node) {
         _nodes.add(node);
     }
 
-    Iterator linkIterator()
-    {
-        return new Iterator()
-        {
+    Iterator linkIterator() {
+        return new Iterator() {
             private int _index;
 
-            public void remove()
-            {
+            public void remove() {
                 throw new UnsupportedOperationException();
             }
 
-            public boolean hasNext()
-            {
+            public boolean hasNext() {
                 return _index < _nodes.size();
             }
 
-            public Object next()
-            {
+            public Object next() {
                 return hasNext() ? _nodes.get(_index++) : null;
             }
         };
     }
 
-    public int compareTo(Object obj)
-    {
-        return getAttributes().getName().compareTo(
-                ((UnresolvedNode) obj).getAttributes().getName());
+    public int compareTo(Object obj) {
+        return getAttributes().getName().compareTo(((UnresolvedNode) obj).getAttributes().getName());
     }
 
-    public boolean isMatchedBy(StringPattern pattern)
-    {
+    public boolean isMatchedBy(StringPattern pattern) {
         return pattern.matches(getAttributes().getName());
     }
 }

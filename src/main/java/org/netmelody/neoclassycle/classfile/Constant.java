@@ -35,17 +35,9 @@ import java.io.IOException;
  */
 public abstract class Constant {
     private static final int MAGIC = 0xcafebabe;
-    private static final int CONSTANT_CLASS = 7,
-            CONSTANT_FIELDREF = 9,
-            CONSTANT_METHODREF = 10,
-            CONSTANT_INTERFACE_METHODREF = 11,
-            CONSTANT_STRING = 8,
-            CONSTANT_INTEGER = 3,
-            CONSTANT_FLOAT = 4,
-            CONSTANT_LONG = 5,
-            CONSTANT_DOUBLE = 6,
-            CONSTANT_NAME_AND_TYPE = 12,
-            CONSTANT_UTF8 = 1;
+    private static final int CONSTANT_CLASS = 7, CONSTANT_FIELDREF = 9, CONSTANT_METHODREF = 10, CONSTANT_INTERFACE_METHODREF = 11,
+            CONSTANT_STRING = 8, CONSTANT_INTEGER = 3, CONSTANT_FLOAT = 4, CONSTANT_LONG = 5, CONSTANT_DOUBLE = 6,
+            CONSTANT_NAME_AND_TYPE = 12, CONSTANT_UTF8 = 1;
 
     /**
      * Extracts the constant pool from the specified data stream of a class
@@ -57,8 +49,7 @@ public abstract class Constant {
      * @throws IOException
      *             in case of reading errors or invalid class file.
      */
-    public static Constant[] extractConstantPool(DataInputStream stream)
-            throws IOException {
+    public static Constant[] extractConstantPool(DataInputStream stream) throws IOException {
         Constant[] pool = null;
         if (stream.readInt() == MAGIC) {
             stream.readUnsignedShort();
@@ -73,17 +64,13 @@ public abstract class Constant {
                     c = new ClassConstant(pool, stream.readUnsignedShort());
                     break;
                 case CONSTANT_FIELDREF:
-                    c = new FieldRefConstant(pool, stream.readUnsignedShort(),
-                            stream.readUnsignedShort());
+                    c = new FieldRefConstant(pool, stream.readUnsignedShort(), stream.readUnsignedShort());
                     break;
                 case CONSTANT_METHODREF:
-                    c = new MethodRefConstant(pool, stream.readUnsignedShort(),
-                            stream.readUnsignedShort());
+                    c = new MethodRefConstant(pool, stream.readUnsignedShort(), stream.readUnsignedShort());
                     break;
                 case CONSTANT_INTERFACE_METHODREF:
-                    c = new InterfaceMethodRefConstant(pool,
-                            stream.readUnsignedShort(),
-                            stream.readUnsignedShort());
+                    c = new InterfaceMethodRefConstant(pool, stream.readUnsignedShort(), stream.readUnsignedShort());
                     break;
                 case CONSTANT_STRING:
                     c = new StringConstant(pool, stream.readUnsignedShort());
@@ -103,8 +90,7 @@ public abstract class Constant {
                     skipIndex = true;
                     break;
                 case CONSTANT_NAME_AND_TYPE:
-                    c = new NameAndTypeConstant(pool, stream.readUnsignedShort(),
-                            stream.readUnsignedShort());
+                    c = new NameAndTypeConstant(pool, stream.readUnsignedShort(), stream.readUnsignedShort());
                     break;
                 case CONSTANT_UTF8:
                     c = new UTF8Constant(pool, stream.readUTF());

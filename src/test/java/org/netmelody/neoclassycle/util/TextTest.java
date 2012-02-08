@@ -13,8 +13,7 @@ import static org.junit.Assert.assertEquals;
 public class TextTest {
 
     @Test
-    public void testExcapeForXML()
-    {
+    public void testExcapeForXML() {
         assertEquals("&lt;hel&amp;lo&gt;", Text.excapeForXML("<hel&lo>"));
     }
 

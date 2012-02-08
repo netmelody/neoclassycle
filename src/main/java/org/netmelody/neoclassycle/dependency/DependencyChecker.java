@@ -36,8 +36,7 @@ import org.netmelody.neoclassycle.graph.AtomicVertex;
  * 
  * @author Franz-Josef Elmer
  */
-public class DependencyChecker
-{
+public class DependencyChecker {
     private final Analyser _analyser;
     private final ResultRenderer _renderer;
     private final DependencyProcessor _processor;
@@ -56,10 +55,7 @@ public class DependencyChecker
      * @param renderer
      *            Output renderer for unwanted dependencies found.
      */
-    public DependencyChecker(Analyser analyser,
-            String dependencyDefinition, Map properties,
-            ResultRenderer renderer)
-    {
+    public DependencyChecker(Analyser analyser, String dependencyDefinition, Map properties, ResultRenderer renderer) {
         _analyser = analyser;
         _renderer = renderer;
         DependencyProperties dp = new DependencyProperties(properties);
@@ -72,8 +68,7 @@ public class DependencyChecker
      * 
      * @return <tt>true</tt> if no unwanted dependency has been found.
      */
-    public boolean check(PrintWriter writer)
-    {
+    public boolean check(PrintWriter writer) {
         Result result = check();
         writer.print(_renderer.render(result));
         return result.isOk();
@@ -82,12 +77,10 @@ public class DependencyChecker
     /**
      * Checks the graph.
      */
-    public Result check()
-    {
+    public Result check() {
         AtomicVertex[] graph = _analyser.getClassGraph();
         ResultContainer result = new ResultContainer();
-        while (_processor.hasMoreStatements())
-        {
+        while (_processor.hasMoreStatements()) {
             result.add(_processor.executeNextStatement(graph));
         }
         return result;
@@ -97,24 +90,17 @@ public class DependencyChecker
      * Runs the DependencyChecker application. Exit 0 if no unwanted dependency
      * found otherwise 1 is returned.
      */
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         DependencyCheckerCommandLine commandLine = new DependencyCheckerCommandLine(args);
         if (!commandLine.isValid()) {
-            System.out.println("Usage: java -cp classycle.jar "
-                    + "classycle.DependencyChecker "
-                    + commandLine.getUsage());
+            System.out.println("Usage: java -cp classycle.jar " + "classycle.DependencyChecker " + commandLine.getUsage());
             System.exit(1);
         }
 
-        Analyser analyser = new Analyser(commandLine.getClassFiles(),
-                commandLine.getPattern(),
-                commandLine.getReflectionPattern(),
+        Analyser analyser = new Analyser(commandLine.getClassFiles(), commandLine.getPattern(), commandLine.getReflectionPattern(),
                 commandLine.isMergeInnerClasses());
-        DependencyChecker dependencyChecker = new DependencyChecker(analyser,
-                commandLine.getDependencyDefinition(),
-                System.getProperties(),
-                commandLine.getRenderer());
+        DependencyChecker dependencyChecker = new DependencyChecker(analyser, commandLine.getDependencyDefinition(),
+                System.getProperties(), commandLine.getRenderer());
         PrintWriter printWriter = new PrintWriter(System.out);
         boolean ok = dependencyChecker.check(printWriter);
         printWriter.flush();

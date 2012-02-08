@@ -31,49 +31,38 @@ import org.netmelody.neoclassycle.graph.AtomicVertex;
 import org.netmelody.neoclassycle.graph.NameAttributes;
 import org.netmelody.neoclassycle.util.StringPattern;
 
-public class CheckSetStatement implements Statement
-{
+public class CheckSetStatement implements Statement {
     private final StringPattern _set;
     private final SetDefinitionRepository _repository;
 
-    public CheckSetStatement(StringPattern set,
-            SetDefinitionRepository repository)
-    {
+    public CheckSetStatement(StringPattern set, SetDefinitionRepository repository) {
         _set = set;
         _repository = repository;
     }
 
-    public Result execute(AtomicVertex[] graph)
-    {
+    public Result execute(AtomicVertex[] graph) {
         int size = 0;
-        for (int i = 0; i < graph.length; i++)
-        {
-            if (_set.matches(((NameAttributes) graph[i].getAttributes()).getName()))
-            {
+        for (int i = 0; i < graph.length; i++) {
+            if (_set.matches(((NameAttributes) graph[i].getAttributes()).getName())) {
                 size++;
             }
         }
         StringBuffer buffer = new StringBuffer("Set ");
         buffer.append(_repository.toString(_set));
-        if (size == 0)
-        {
+        if (size == 0) {
             buffer.append(" is empty.");
         }
-        else if (size == 1)
-        {
+        else if (size == 1) {
             buffer.append(" has one class.");
         }
-        else
-        {
+        else {
             buffer.append(" has ").append(size).append(" classes.");
         }
         return new TextResult(new String(buffer.append('\n')), size > 0);
     }
 
-    public String toString()
-    {
-        return DependencyDefinitionParser.CHECK_KEY_WORD + " set "
-                + _repository.toString(_set);
+    public String toString() {
+        return DependencyDefinitionParser.CHECK_KEY_WORD + " set " + _repository.toString(_set);
     }
 
 }

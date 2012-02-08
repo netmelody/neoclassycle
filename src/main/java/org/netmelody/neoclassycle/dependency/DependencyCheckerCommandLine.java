@@ -33,23 +33,18 @@ import org.netmelody.neoclassycle.util.Text;
 /**
  * @author Franz-Josef Elmer
  */
-public class DependencyCheckerCommandLine extends CommandLine
-{
-    private static final String DEPENDENCIES = "-dependencies=",
-            RENDERER = "-renderer=";
+public class DependencyCheckerCommandLine extends CommandLine {
+    private static final String DEPENDENCIES = "-dependencies=", RENDERER = "-renderer=";
 
     private String _dependencyDefinition;
     private ResultRenderer _renderer;
 
-    public DependencyCheckerCommandLine(String[] args)
-    {
+    public DependencyCheckerCommandLine(String[] args) {
         super(args);
     }
 
-    protected void handleOption(String argument)
-    {
-        if (argument.startsWith(DEPENDENCIES))
-        {
+    protected void handleOption(String argument) {
+        if (argument.startsWith(DEPENDENCIES)) {
             handleDependenciesOption(argument.substring(DEPENDENCIES.length()));
         }
         else if (argument.startsWith(RENDERER)) {
@@ -61,60 +56,46 @@ public class DependencyCheckerCommandLine extends CommandLine
     }
 
     /** Returns the usage of correct command line arguments and options. */
-    public String getUsage()
-    {
-        return DEPENDENCIES + "<description>|@<description file> "
-                + "[" + RENDERER + "<fully qualified class name of a ResultRenderer>] "
+    public String getUsage() {
+        return DEPENDENCIES + "<description>|@<description file> " + "[" + RENDERER + "<fully qualified class name of a ResultRenderer>] "
                 + super.getUsage();
     }
 
-    public String getDependencyDefinition()
-    {
+    public String getDependencyDefinition() {
         return _dependencyDefinition;
     }
 
-    public ResultRenderer getRenderer()
-    {
+    public ResultRenderer getRenderer() {
         return _renderer == null ? new DefaultResultRenderer() : _renderer;
     }
 
-    private void handleDependenciesOption(String option)
-    {
-        if (option.startsWith("@"))
-        {
-            try
-            {
+    private void handleDependenciesOption(String option) {
+        if (option.startsWith("@")) {
+            try {
                 option = Text.readTextFile(new File(option.substring(1)));
             }
-            catch (IOException e)
-            {
-                System.err.println("Error in reading dependencies description file: "
-                        + e);
+            catch (IOException e) {
+                System.err.println("Error in reading dependencies description file: " + e);
                 option = "";
             }
         }
         _dependencyDefinition = option;
-        if (_dependencyDefinition.length() == 0)
-        {
+        if (_dependencyDefinition.length() == 0) {
             _valid = false;
         }
     }
 
     private void handleRenderer(String className) {
-        try
-        {
+        try {
             _renderer = (ResultRenderer) Class.forName(className).newInstance();
         }
-        catch (Exception e)
-        {
-            System.err.println("Error in creating ResultRenderer " + className
-                    + ": " + e);
+        catch (Exception e) {
+            System.err.println("Error in creating ResultRenderer " + className + ": " + e);
             _valid = false;
         }
     }
 
-    public boolean isValid()
-    {
+    public boolean isValid() {
         return super.isValid() && _dependencyDefinition != null;
     }
 }

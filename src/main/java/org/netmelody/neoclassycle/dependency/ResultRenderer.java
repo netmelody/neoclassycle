@@ -29,12 +29,10 @@ package org.netmelody.neoclassycle.dependency;
  * 
  * @author Franz-Josef Elmer
  */
-public abstract class ResultRenderer
-{
+public abstract class ResultRenderer {
     protected boolean _shortestPaths = true;
 
-    public boolean onlyShortestPaths()
-    {
+    public boolean onlyShortestPaths() {
         return _shortestPaths;
     }
 

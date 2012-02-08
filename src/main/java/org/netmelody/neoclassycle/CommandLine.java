@@ -34,8 +34,7 @@ import org.netmelody.neoclassycle.util.WildCardPattern;
 /**
  * @author Franz-Josef Elmer
  */
-public abstract class CommandLine
-{
+public abstract class CommandLine {
     private static final String MERGE_INNER_CLASSES = "-mergeInnerClasses";
     private static final String INCLUDING_CLASSES = "-includingClasses=";
     private static final String EXCLUDING_CLASSES = "-excludingClasses=";
@@ -47,51 +46,41 @@ public abstract class CommandLine
     protected StringPattern _reflectionPattern;
     protected String[] _classFiles;
 
-    public CommandLine(String[] args)
-    {
+    public CommandLine(String[] args) {
         int index = 0;
-        for (; index < args.length && args[index].charAt(0) == '-'; index++)
-        {
+        for (; index < args.length && args[index].charAt(0) == '-'; index++) {
             handleOption(args[index]);
         }
         _classFiles = new String[args.length - index];
         System.arraycopy(args, index, _classFiles, 0, _classFiles.length);
-        if (_classFiles.length == 0)
-        {
+        if (_classFiles.length == 0) {
             _valid = false;
         }
     }
 
-    protected void handleOption(String argument)
-    {
-        if (argument.startsWith(MERGE_INNER_CLASSES))
-        {
+    protected void handleOption(String argument) {
+        if (argument.startsWith(MERGE_INNER_CLASSES)) {
             _mergeInnerClasses = true;
         }
-        else if (argument.startsWith(INCLUDING_CLASSES))
-        {
+        else if (argument.startsWith(INCLUDING_CLASSES)) {
             String patterns = argument.substring(INCLUDING_CLASSES.length());
             _pattern.appendPattern(WildCardPattern.createFromsPatterns(patterns, ","));
         }
-        else if (argument.startsWith(EXCLUDING_CLASSES))
-        {
+        else if (argument.startsWith(EXCLUDING_CLASSES)) {
             String patterns = argument.substring(EXCLUDING_CLASSES.length());
             StringPattern p = WildCardPattern.createFromsPatterns(patterns, ",");
             _pattern.appendPattern(new NotStringPattern(p));
         }
-        else if (argument.startsWith(REFLECTION_PATTERN))
-        {
+        else if (argument.startsWith(REFLECTION_PATTERN)) {
             String patterns = argument.substring(REFLECTION_PATTERN.length());
-            if (patterns.length() == 0)
-            {
+            if (patterns.length() == 0) {
                 _reflectionPattern = new TrueStringPattern();
             }
             else {
                 _reflectionPattern = WildCardPattern.createFromsPatterns(patterns, ",");
             }
         }
-        else
-        {
+        else {
             _valid = false;
         }
     }
@@ -100,8 +89,7 @@ public abstract class CommandLine
      * Returns all class file descriptors (i.e., class files, directorys, jar
      * files, or zip files).
      */
-    public String[] getClassFiles()
-    {
+    public String[] getClassFiles() {
         return _classFiles;
     }
 
@@ -112,8 +100,7 @@ public abstract class CommandLine
      * every classes is included which is not excluded. If
      * <tt>-excludingClasses</tt> is missing no class is excluded.
      */
-    public StringPattern getPattern()
-    {
+    public StringPattern getPattern() {
         return _pattern;
     }
 
@@ -121,8 +108,7 @@ public abstract class CommandLine
      * Returns the reflection pattern as extracted from the option
      * <tt>-reflectionPattern</tt>.
      */
-    public StringPattern getReflectionPattern()
-    {
+    public StringPattern getReflectionPattern() {
         return _reflectionPattern;
     }
 
@@ -130,8 +116,7 @@ public abstract class CommandLine
      * Returns <tt>true</tt> if the command line arguments and options are
      * valid.
      */
-    public boolean isValid()
-    {
+    public boolean isValid() {
         return _valid;
     }
 
@@ -139,18 +124,14 @@ public abstract class CommandLine
      * Returns <code>true</code> if the command line option
      * <code>-mergeInnerClasses</code> occured.
      */
-    public boolean isMergeInnerClasses()
-    {
+    public boolean isMergeInnerClasses() {
         return _mergeInnerClasses;
     }
 
     /** Returns the usage of correct command line arguments and options. */
-    public String getUsage()
-    {
-        return "[" + MERGE_INNER_CLASSES + "] "
-                + "[" + INCLUDING_CLASSES + "<pattern1>,<pattern2>,...] "
-                + "[" + EXCLUDING_CLASSES + "<pattern1>,<pattern2>,...] "
-                + "[" + REFLECTION_PATTERN + "<pattern1>,<pattern2>,...] "
+    public String getUsage() {
+        return "[" + MERGE_INNER_CLASSES + "] " + "[" + INCLUDING_CLASSES + "<pattern1>,<pattern2>,...] " + "[" + EXCLUDING_CLASSES
+                + "<pattern1>,<pattern2>,...] " + "[" + REFLECTION_PATTERN + "<pattern1>,<pattern2>,...] "
                 + "<class files, zip/jar/war/ear files, or folders>";
     }
 

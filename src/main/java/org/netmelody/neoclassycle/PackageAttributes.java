@@ -30,30 +30,24 @@ import java.util.List;
 /**
  * @author Franz-Josef Elmer
  */
-public class PackageAttributes extends NameAndSourceAttributes
-{
+public class PackageAttributes extends NameAndSourceAttributes {
     private final List _classes = new ArrayList();
 
-    public PackageAttributes(String name)
-    {
+    public PackageAttributes(String name) {
         super(name);
     }
 
-    public int getSize()
-    {
+    public int getSize() {
         return _classes.size();
     }
 
-    public String[] getClasses()
-    {
+    public String[] getClasses() {
         return (String[]) _classes.toArray(new String[_classes.size()]);
     }
 
-    public void addClass(ClassAttributes classAttributes)
-    {
+    public void addClass(ClassAttributes classAttributes) {
         String className = classAttributes.getName();
-        if (_classes.contains(className) == false)
-        {
+        if (_classes.contains(className) == false) {
             _classes.add(className);
         }
         addSourcesOf(classAttributes);

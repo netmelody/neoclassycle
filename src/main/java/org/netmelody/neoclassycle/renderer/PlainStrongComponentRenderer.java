@@ -31,28 +31,19 @@ import org.netmelody.neoclassycle.graph.StrongComponent;
  * 
  * @author Franz-Josef Elmer
  */
-public class PlainStrongComponentRenderer
-        extends AbstractStrongComponentRenderer
-{
-    public String render(StrongComponent component)
-    {
+public class PlainStrongComponentRenderer extends AbstractStrongComponentRenderer {
+    public String render(StrongComponent component) {
         AtomicVertexRenderer classRenderer = new PlainClassRenderer();
         StringBuffer result = new StringBuffer();
         int n = component.getNumberOfVertices();
-        if (n == 1)
-        {
-            result.append(classRenderer.render(component.getVertex(0), null, 0))
-                    .append(". Layer: ").append(component.getLongestWalk());
+        if (n == 1) {
+            result.append(classRenderer.render(component.getVertex(0), null, 0)).append(". Layer: ").append(component.getLongestWalk());
         }
-        else
-        {
-            result.append("Cycle: ").append(createName(component)).append(" with ")
-                    .append(n).append(" vertices.")
-                    .append(" Layer: ").append(component.getLongestWalk());
-            for (int i = 0; i < n; i++)
-            {
-                result.append("\n    ")
-                        .append(classRenderer.render(component.getVertex(i), null, 0));
+        else {
+            result.append("Cycle: ").append(createName(component)).append(" with ").append(n).append(" vertices.").append(" Layer: ")
+                    .append(component.getLongestWalk());
+            for (int i = 0; i < n; i++) {
+                result.append("\n    ").append(classRenderer.render(component.getVertex(i), null, 0));
             }
         }
         return new String(result);

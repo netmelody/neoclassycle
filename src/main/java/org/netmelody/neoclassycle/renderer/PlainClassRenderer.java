@@ -33,8 +33,7 @@ import org.netmelody.neoclassycle.graph.StrongComponent;
  * 
  * @author Franz-Josef Elmer
  */
-public class PlainClassRenderer implements AtomicVertexRenderer
-{
+public class PlainClassRenderer implements AtomicVertexRenderer {
     /**
      * Renderes the specified vertex. It is assumed that the vertex attributes
      * are of the type {@link org.netmelody.neoclassycle.ClassAttributes}.
@@ -43,31 +42,23 @@ public class PlainClassRenderer implements AtomicVertexRenderer
      *            Vertex to be rendered.
      * @return the rendered vertex.
      */
-    public String render(AtomicVertex vertex, StrongComponent cycle,
-            int layerIndex)
-    {
-        if (vertex.getAttributes() instanceof ClassAttributes)
-        {
+    public String render(AtomicVertex vertex, StrongComponent cycle, int layerIndex) {
+        if (vertex.getAttributes() instanceof ClassAttributes) {
             int usesInternal = 0;
             int usesExternal = 0;
-            for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++)
-            {
-                if (((AtomicVertex) vertex.getHeadVertex(i)).isGraphVertex())
-                {
+            for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) {
+                if (((AtomicVertex) vertex.getHeadVertex(i)).isGraphVertex()) {
                     usesInternal++;
                 }
-                else
-                {
+                else {
                     usesExternal++;
                 }
             }
             StringBuffer result = new StringBuffer(vertex.getAttributes().toString());
-            result.append(": Used by ").append(vertex.getNumberOfIncomingArcs())
-                    .append(" classes. Uses ").append(usesInternal).append('/')
+            result.append(": Used by ").append(vertex.getNumberOfIncomingArcs()).append(" classes. Uses ").append(usesInternal).append('/')
                     .append(usesExternal).append(" internal/external classes");
             return new String(result);
         }
-        throw new IllegalArgumentException(
-                "Missing class attributes in vertex " + vertex);
+        throw new IllegalArgumentException("Missing class attributes in vertex " + vertex);
     }
 } // class

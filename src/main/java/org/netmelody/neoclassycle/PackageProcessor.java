@@ -39,25 +39,20 @@ import org.netmelody.neoclassycle.graph.Vertex;
  * 
  * @author Franz-Josef Elmer
  */
-public class PackageProcessor extends GraphProcessor
-{
-    private static final class Arc
-    {
+public class PackageProcessor extends GraphProcessor {
+    private static final class Arc {
         final AtomicVertex tail;
         final AtomicVertex head;
         final boolean internalHeadClass;
 
-        Arc(AtomicVertex tail, AtomicVertex head, boolean internalHeadClass)
-        {
+        Arc(AtomicVertex tail, AtomicVertex head, boolean internalHeadClass) {
             this.tail = tail;
             this.head = head;
             this.internalHeadClass = internalHeadClass;
         }
 
-        void create()
-        {
-            if (internalHeadClass || head.isGraphVertex() == false)
-            {
+        void create() {
+            if (internalHeadClass || head.isGraphVertex() == false) {
                 tail.addOutgoingArcTo(head);
             }
         }
@@ -72,43 +67,35 @@ public class PackageProcessor extends GraphProcessor
      * 
      * @return can be <tt>null</tt> before processing.
      */
-    public AtomicVertex[] getGraph()
-    {
+    public AtomicVertex[] getGraph() {
         return _packageGraph;
     }
 
-    protected void initializeProcessing(Vertex[] graph)
-    {
+    protected void initializeProcessing(Vertex[] graph) {
         _packageVertices.clear();
     }
 
-    protected void processBefore(Vertex vertex)
-    {
+    protected void processBefore(Vertex vertex) {
     }
 
-    protected void processArc(Vertex tail, Vertex head)
-    {
+    protected void processArc(Vertex tail, Vertex head) {
         PackageVertex tailPackage = getPackageVertex(tail);
         PackageVertex headPackage = getPackageVertex(head);
         boolean internalHeadClass = ((AtomicVertex) head).isGraphVertex();
         _arcs.add(new Arc(tailPackage, headPackage, internalHeadClass));
     }
 
-    private PackageVertex getPackageVertex(Vertex vertex)
-    {
+    private PackageVertex getPackageVertex(Vertex vertex) {
         ClassAttributes classAttributes = (ClassAttributes) vertex.getAttributes();
         String className = (classAttributes).getName();
         int index = className.lastIndexOf('.');
-        String packageName = index < 0 ? "(default package)"
-                : className.substring(0, index);
+        String packageName = index < 0 ? "(default package)" : className.substring(0, index);
         PackageVertex result = (PackageVertex) _packageVertices.get(packageName);
-        if (result == null)
-        {
+        if (result == null) {
             result = new PackageVertex(packageName);
             _packageVertices.put(packageName, result);
         }
-        if (isVertexFromGraph(vertex))
-        {
+        if (isVertexFromGraph(vertex)) {
             // not an external package
             result.reset();
         }
@@ -116,30 +103,23 @@ public class PackageProcessor extends GraphProcessor
         return result;
     }
 
-    private boolean isVertexFromGraph(Vertex vertex)
-    {
-        return vertex instanceof AtomicVertex
-                && ((AtomicVertex) vertex).isGraphVertex();
+    private boolean isVertexFromGraph(Vertex vertex) {
+        return vertex instanceof AtomicVertex && ((AtomicVertex) vertex).isGraphVertex();
     }
 
-    protected void processAfter(Vertex vertex)
-    {
+    protected void processAfter(Vertex vertex) {
     }
 
-    protected void finishProcessing(Vertex[] graph)
-    {
-        for (int i = 0; i < _arcs.size(); i++)
-        {
+    protected void finishProcessing(Vertex[] graph) {
+        for (int i = 0; i < _arcs.size(); i++) {
             ((Arc) _arcs.get(i)).create();
         }
         Iterator vertices = _packageVertices.values().iterator();
         ArrayList list = new ArrayList();
 
-        while (vertices.hasNext())
-        {
+        while (vertices.hasNext()) {
             AtomicVertex vertex = (AtomicVertex) vertices.next();
-            if (vertex.isGraphVertex())
-            {
+            if (vertex.isGraphVertex()) {
                 list.add(vertex);
             }
         }

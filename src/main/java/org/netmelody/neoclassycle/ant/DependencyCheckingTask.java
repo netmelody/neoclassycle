@@ -106,96 +106,70 @@ import org.netmelody.neoclassycle.util.Text;
  * 
  * @author Franz-Josef Elmer
  */
-public class DependencyCheckingTask extends ClassycleTask
-{
+public class DependencyCheckingTask extends ClassycleTask {
     private File _definitionFile;
     private String _dependencyDefinition;
     private String _resultRenderer;
     private boolean _failOnUnwantedDependencies;
 
-    public void setFailOnUnwantedDependencies(boolean failOnUnwantedDependencies)
-    {
+    public void setFailOnUnwantedDependencies(boolean failOnUnwantedDependencies) {
         _failOnUnwantedDependencies = failOnUnwantedDependencies;
     }
 
-    public void setDefinitionFile(File definitionFile)
-    {
+    public void setDefinitionFile(File definitionFile) {
         _definitionFile = definitionFile;
     }
 
-    public void setResultRenderer(String resultRenderer)
-    {
+    public void setResultRenderer(String resultRenderer) {
         _resultRenderer = resultRenderer;
     }
 
-    public void addText(String text)
-    {
+    public void addText(String text) {
         _dependencyDefinition = text.trim();
     }
 
-    public void execute() throws BuildException
-    {
+    public void execute() throws BuildException {
         super.execute();
 
         boolean ok = false;
         PrintWriter printWriter = null;
-        try
-        {
-            Analyser analyser = new Analyser(getClassFileNames(), getPattern(),
-                    getReflectionPattern(),
-                    isMergeInnerClasses());
-            Map properties = _definitionFile == null ? getProject().getProperties()
-                    : System.getProperties();
-            DependencyChecker dependencyChecker = new DependencyChecker(analyser,
-                    getDependencyDefinitions(),
-                    properties,
-                    getRenderer());
-            printWriter = _reportFile == null ? new PrintWriter(System.out)
-                    : new PrintWriter(new FileWriter(_reportFile));
+        try {
+            Analyser analyser = new Analyser(getClassFileNames(), getPattern(), getReflectionPattern(), isMergeInnerClasses());
+            Map properties = _definitionFile == null ? getProject().getProperties() : System.getProperties();
+            DependencyChecker dependencyChecker = new DependencyChecker(analyser, getDependencyDefinitions(), properties, getRenderer());
+            printWriter = _reportFile == null ? new PrintWriter(System.out) : new PrintWriter(new FileWriter(_reportFile));
             ok = dependencyChecker.check(printWriter);
             printWriter.flush();
             printWriter.close();
         }
-        catch (BuildException e)
-        {
+        catch (BuildException e) {
             throw e;
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             throw new BuildException(e);
         }
-        finally
-        {
-            if (printWriter != null)
-            {
+        finally {
+            if (printWriter != null) {
                 printWriter.close();
             }
         }
-        if (_failOnUnwantedDependencies && ok == false)
-        {
-            throw new BuildException(
-                    "Unwanted dependencies found. See output for details.");
+        if (_failOnUnwantedDependencies && ok == false) {
+            throw new BuildException("Unwanted dependencies found. See output for details.");
         }
     }
 
-    private ResultRenderer getRenderer() throws InstantiationException,
-            IllegalAccessException,
-            ClassNotFoundException
-    {
+    private ResultRenderer getRenderer() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
         ResultRenderer renderer = new DefaultResultRenderer();
-        if (_resultRenderer != null)
-        {
+        if (_resultRenderer != null) {
             renderer = (ResultRenderer) Class.forName(_resultRenderer).newInstance();
         }
         return renderer;
     }
 
-    private String getDependencyDefinitions() throws IOException, BuildException
-    {
+    private String getDependencyDefinitions() throws IOException, BuildException {
         String result = _dependencyDefinition;
         ;
-        if (_definitionFile != null)
-        {
+        if (_definitionFile != null) {
             result = Text.readTextFile(_definitionFile);
         }
         if (result.length() == 0) {

@@ -33,29 +33,22 @@ import java.util.Set;
 
 import org.netmelody.neoclassycle.classfile.UTF8Constant;
 
-class ClassNameExtractor
-{
+class ClassNameExtractor {
     /** Returns <tt>true</tt> if <tt>className</tt> is a valid class name. */
-    static boolean isValid(String className)
-    {
+    static boolean isValid(String className) {
         boolean valid = true;
         boolean firstCharacter = true;
-        for (int i = 0, n = className.length(); valid && i < n; i++)
-        {
+        for (int i = 0, n = className.length(); valid && i < n; i++) {
             char c = className.charAt(i);
-            if (firstCharacter)
-            {
+            if (firstCharacter) {
                 firstCharacter = false;
                 valid = Character.isJavaIdentifierStart(c);
             }
-            else
-            {
-                if (c == '.')
-                {
+            else {
+                if (c == '.') {
                     firstCharacter = true;
                 }
-                else
-                {
+                else {
                     valid = Character.isJavaIdentifierPart(c);
                 }
             }
@@ -70,141 +63,111 @@ class ClassNameExtractor
     private Set<String> _classNames = new LinkedHashSet<String>();
     private boolean _valid = true;
 
-    ClassNameExtractor(UTF8Constant constant)
-    {
+    ClassNameExtractor(UTF8Constant constant) {
         _constant = constant.getString();
         _endIndex = _constant.length();
     }
 
-    Set<String> extract()
-    {
-        if (getCurrentCharacter() == '<')
-        {
+    Set<String> extract() {
+        if (getCurrentCharacter() == '<') {
             int ddIndex = _constant.indexOf("::", _index);
-            if (ddIndex > 0)
-            {
+            if (ddIndex > 0) {
                 _index = ddIndex + 2;
                 parseTypes(false);
-                if (getCurrentCharacter() == '>')
-                {
+                if (getCurrentCharacter() == '>') {
                     _index++;
                 }
-                else
-                {
+                else {
                     setInvalid();
                 }
             }
-            else
-            {
+            else {
                 setInvalid();
             }
         }
-        if (getCurrentCharacter() == '(')
-        {
+        if (getCurrentCharacter() == '(') {
             int endIndex = _constant.indexOf(')', _index);
-            if (endIndex > 0)
-            {
+            if (endIndex > 0) {
                 _index++;
                 _endIndex = endIndex;
                 parseTypes(false);
                 _index = endIndex + 1;
                 _endIndex = _constant.length();
             }
-            else
-            {
+            else {
                 setInvalid();
             }
         }
-        if (_valid)
-        {
+        if (_valid) {
             int numberOfTypes = parseTypes(false);
-            if (numberOfTypes == 0)
-            {
+            if (numberOfTypes == 0) {
                 setInvalid();
             }
         }
         return _valid ? _classNames : Collections.<String> emptySet();
     }
 
-    private int parseTypes(boolean generics)
-    {
+    private int parseTypes(boolean generics) {
         int numberOfTypes = 0;
-        while (_valid && endOfTypes() == false)
-        {
+        while (_valid && endOfTypes() == false) {
             parseType(generics);
             numberOfTypes++;
         }
         return numberOfTypes;
     }
 
-    private char getCurrentCharacter()
-    {
+    private char getCurrentCharacter() {
         return _index < _endIndex ? _constant.charAt(_index) : 0;
     }
 
-    private void setInvalid()
-    {
+    private void setInvalid() {
         _valid = false;
     }
 
-    private boolean endOfTypes()
-    {
+    private boolean endOfTypes() {
         return _index >= _endIndex || _constant.charAt(_index) == '>';
     }
 
-    private void parseType(boolean generics)
-    {
-        if (generics)
-        {
+    private void parseType(boolean generics) {
+        if (generics) {
             char currentCharacter = getCurrentCharacter();
-            if (currentCharacter == '+')
-            {
+            if (currentCharacter == '+') {
                 _index++;
             }
-            else if (currentCharacter == '*')
-            {
+            else if (currentCharacter == '*') {
                 _index++;
                 return;
             }
         }
         boolean arrayType = false;
-        for (; getCurrentCharacter() == '['; _index++)
-        {
+        for (; getCurrentCharacter() == '['; _index++) {
             arrayType = true;
         }
-        if (arrayType && endOfTypes())
-        {
+        if (arrayType && endOfTypes()) {
             setInvalid();
         }
-        else
-        {
+        else {
             char c = getCurrentCharacter();
             _index++;
-            if (c == 'L')
-            {
+            if (c == 'L') {
                 parseComplexType();
             }
-            else if (c == 'T')
-            {
+            else if (c == 'T') {
                 int index = _constant.indexOf(';', _index);
-                if (index < 0)
-                {
+                if (index < 0) {
                     setInvalid();
                 }
-                else
-                {
+                else {
                     _index = index + 1;
                 }
             }
-            else if ("BCDFIJSVZ".indexOf(c) < 0)
-            {
+            else if ("BCDFIJSVZ".indexOf(c) < 0) {
                 setInvalid();
             }
         }
     }
 
-    private void parseComplexType()
-    {
+    private void parseComplexType() {
         int typeIndex = _constant.indexOf('<', _index);
         int endIndex = _constant.indexOf(';', _index);
         if (typeIndex >= 0 && typeIndex < endIndex) {
@@ -212,24 +175,20 @@ class ClassNameExtractor
             parseTypes(true);
             _index += 2;
         }
-        else if (endIndex > 0)
-        {
+        else if (endIndex > 0) {
             extractClassName(endIndex);
         }
-        else
-        {
+        else {
             setInvalid();
         }
     }
 
-    private void extractClassName(int endIndex)
-    {
+    private void extractClassName(int endIndex) {
         String className = _constant.substring(_index, endIndex);
         className = className.replace('/', '.');
         _classNames.add(className);
         _index = endIndex + 1;
-        if (isValid(className) == false)
-        {
+        if (isValid(className) == false) {
             setInvalid();
         }
     }

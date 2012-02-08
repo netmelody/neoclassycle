@@ -32,19 +32,15 @@ import static org.netmelody.neoclassycle.dependency.DependencyDefinitionParser.D
 /**
  * @author Franz-Josef Elmer
  */
-public class LayeringStatement implements Statement
-{
+public class LayeringStatement implements Statement {
     private final StringPattern[][] _layers;
     private final boolean _strictLayering;
     private final SetDefinitionRepository _repository;
     private final LayerDefinitionRepository _layerRepository;
     private final ResultRenderer _renderer;
 
-    public LayeringStatement(StringPattern[][] layers, boolean strictLayering,
-            SetDefinitionRepository repository,
-            LayerDefinitionRepository layerRepository,
-            ResultRenderer renderer)
-    {
+    public LayeringStatement(StringPattern[][] layers, boolean strictLayering, SetDefinitionRepository repository,
+            LayerDefinitionRepository layerRepository, ResultRenderer renderer) {
         _layers = layers;
         _repository = repository;
         _layerRepository = layerRepository;
@@ -52,26 +48,19 @@ public class LayeringStatement implements Statement
         _renderer = renderer;
     }
 
-    public Result execute(AtomicVertex[] graph)
-    {
+    public Result execute(AtomicVertex[] graph) {
         ResultContainer result = new ResultContainer();
-        for (int i = 0; i < _layers.length; i++)
-        {
+        for (int i = 0; i < _layers.length; i++) {
             checkIntraLayerDependencies(result, _layers[i], graph);
-            for (int j = i + 1; j < _layers.length; j++)
-            {
-                DependencyStatement s =
-                        new DependencyStatement(_layers[i], _layers[j], DIRECTLY_INDEPENDENT_OF_KEY_WORD,
-                                _repository, _renderer);
+            for (int j = i + 1; j < _layers.length; j++) {
+                DependencyStatement s = new DependencyStatement(_layers[i], _layers[j], DIRECTLY_INDEPENDENT_OF_KEY_WORD, _repository,
+                        _renderer);
                 result.add(s.execute(graph));
             }
-            if (_strictLayering)
-            {
-                for (int j = i - 2; j >= 0; j--)
-                {
-                    DependencyStatement s =
-                            new DependencyStatement(_layers[i], _layers[j], DIRECTLY_INDEPENDENT_OF_KEY_WORD,
-                                    _repository, _renderer);
+            if (_strictLayering) {
+                for (int j = i - 2; j >= 0; j--) {
+                    DependencyStatement s = new DependencyStatement(_layers[i], _layers[j], DIRECTLY_INDEPENDENT_OF_KEY_WORD, _repository,
+                            _renderer);
                     result.add(s.execute(graph));
                 }
             }
@@ -79,30 +68,22 @@ public class LayeringStatement implements Statement
         return result;
     }
 
-    private void checkIntraLayerDependencies(ResultContainer result,
-            StringPattern[] patterns,
-            AtomicVertex[] graph)
-    {
+    private void checkIntraLayerDependencies(ResultContainer result, StringPattern[] patterns, AtomicVertex[] graph) {
         StringPattern[] startSets = new StringPattern[1];
         StringPattern[] endSets = new StringPattern[patterns.length - 1];
-        for (int i = 0; i < patterns.length; i++)
-        {
+        for (int i = 0; i < patterns.length; i++) {
             startSets[0] = patterns[i];
             System.arraycopy(patterns, 0, endSets, 0, i);
             System.arraycopy(patterns, i + 1, endSets, i, patterns.length - i - 1);
-            DependencyStatement s =
-                    new DependencyStatement(startSets, endSets, DIRECTLY_INDEPENDENT_OF_KEY_WORD,
-                            _repository, _renderer);
+            DependencyStatement s = new DependencyStatement(startSets, endSets, DIRECTLY_INDEPENDENT_OF_KEY_WORD, _repository, _renderer);
             result.add(s.execute(graph));
         }
     }
 
-    public String toString()
-    {
+    public String toString() {
         StringBuffer buffer = new StringBuffer("check ");
         buffer.append(_strictLayering ? "strictLayeringOf" : "layeringOf");
-        for (int i = 0; i < _layers.length; i++)
-        {
+        for (int i = 0; i < _layers.length; i++) {
             buffer.append(' ').append(_layerRepository.getName(_layers[i]));
         }
         return new String(buffer);

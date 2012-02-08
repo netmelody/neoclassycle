@@ -35,24 +35,18 @@ import org.netmelody.neoclassycle.renderer.XMLAtomicVertexRenderer;
  * 
  * @author Franz-Josef Elmer
  */
-public class XMLPackageRenderer extends XMLAtomicVertexRenderer
-{
-    protected String getElement()
-    {
+public class XMLPackageRenderer extends XMLAtomicVertexRenderer {
+    protected String getElement() {
         return "package";
     }
 
-    protected String getRefElement()
-    {
+    protected String getRefElement() {
         return "packageRef";
     }
 
-    protected AtomicVertexRenderer getVertexRenderer()
-    {
-        return new TemplateBasedClassRenderer("    <" + getElement()
-                + " name=\"{0}\" sources=\"{9}\"  size=\"{2}\" usedBy=\"{4}\""
-                + " usesInternal=\"{5}\" usesExternal=\"{6}\" layer=\"{7}\""
-                + " cycle=\"{8}\">\n");
+    protected AtomicVertexRenderer getVertexRenderer() {
+        return new TemplateBasedClassRenderer("    <" + getElement() + " name=\"{0}\" sources=\"{9}\"  size=\"{2}\" usedBy=\"{4}\""
+                + " usesInternal=\"{5}\" usesExternal=\"{6}\" layer=\"{7}\"" + " cycle=\"{8}\">\n");
     }
 
 } // class

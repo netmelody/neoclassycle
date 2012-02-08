@@ -32,8 +32,7 @@ import java.util.Map;
  * 
  * @author Franz-Josef Elmer
  */
-public class StrongComponentAnalyser
-{
+public class StrongComponentAnalyser {
     private final AtomicVertex[] _graph;
     private StrongComponent[] _components;
     private HashMap _layerMap;
@@ -41,23 +40,19 @@ public class StrongComponentAnalyser
     /**
      * Creates an instance for the specified graph.
      */
-    public StrongComponentAnalyser(AtomicVertex[] graph)
-    {
+    public StrongComponentAnalyser(AtomicVertex[] graph) {
         _graph = graph;
         // Arrays.sort(_graph, null);
     }
 
     /** Returns the original graph. That is, the argument of the constructor. */
-    public AtomicVertex[] getGraph()
-    {
+    public AtomicVertex[] getGraph() {
         return _graph;
     }
 
     /** Returns the graph of strong components. */
-    public StrongComponent[] getCondensedGraph()
-    {
-        if (_components == null)
-        {
+    public StrongComponent[] getCondensedGraph() {
+        if (_components == null) {
             StrongComponentProcessor processor = new StrongComponentProcessor(true);
             processor.deepSearchFirst(_graph);
             _components = processor.getStrongComponents();
@@ -72,19 +67,15 @@ public class StrongComponentAnalyser
      * @return a map where the keys are instances of {@link AtomicVertex} and
      *         the values are instances of <tt>Integer</tt>.
      */
-    public Map getLayerMap()
-    {
-        if (_layerMap == null)
-        {
+    public Map getLayerMap() {
+        if (_layerMap == null) {
             StrongComponent[] components = getCondensedGraph();
             new LongestWalkProcessor().deepSearchFirst(components);
             _layerMap = new HashMap();
-            for (int i = 0; i < components.length; i++)
-            {
+            for (int i = 0; i < components.length; i++) {
                 StrongComponent component = components[i];
                 Integer layer = new Integer(component.getLongestWalk());
-                for (int j = 0, n = component.getNumberOfVertices(); j < n; j++)
-                {
+                for (int j = 0, n = component.getNumberOfVertices(); j < n; j++) {
                     _layerMap.put(component.getVertex(j), layer);
                 }
             }

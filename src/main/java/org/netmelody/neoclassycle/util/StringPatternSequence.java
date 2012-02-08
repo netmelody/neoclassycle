@@ -33,37 +33,30 @@ import java.util.List;
  * 
  * @author Franz-Josef Elmer
  */
-public abstract class StringPatternSequence implements StringPattern
-{
+public abstract class StringPatternSequence implements StringPattern {
     protected final List<StringPattern> _patterns = new ArrayList<StringPattern>();
 
-    protected StringPatternSequence(StringPattern[] pattern)
-    {
+    protected StringPatternSequence(StringPattern[] pattern) {
         _patterns.addAll(Arrays.asList(pattern));
     }
 
     /**
      * Appends the specified pattern.
      */
-    public void appendPattern(StringPattern pattern)
-    {
+    public void appendPattern(StringPattern pattern) {
         _patterns.add(pattern);
     }
 
-    public String toString()
-    {
+    public String toString() {
         StringBuffer buffer = new StringBuffer();
         int size = _patterns.size();
         String operatorSymbol = getOperatorSymbol();
         boolean bracketsNeeded = size > 1 && operatorSymbol.equals(" & ");
-        if (bracketsNeeded)
-        {
+        if (bracketsNeeded) {
             buffer.append('(');
         }
-        for (int i = 0; i < size; i++)
-        {
-            if (i != 0)
-            {
+        for (int i = 0; i < size; i++) {
+            if (i != 0) {
                 buffer.append(operatorSymbol);
             }
             buffer.append(_patterns.get(i));

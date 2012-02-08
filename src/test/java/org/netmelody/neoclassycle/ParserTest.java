@@ -29,20 +29,15 @@ import static org.junit.Assert.assertTrue;
  * @author Franz-Josef Elmer
  */
 public final class ParserTest {
-    private static final String INNER_CLASS_EXAMPLE = "class Test {"
-            + "interface A { String b();}"
-            + "Integer i;}";
-    private static final String REFLECTION_EXAMPLE = "class Test { "
-            + "  String[] a = {\"java.util.Date\", \"hello\", \"www.w3c.org\"};"
-            + "  Class c = Integer.class;"
-            + "}";
+    private static final String INNER_CLASS_EXAMPLE = "class Test {" + "interface A { String b();}" + "Integer i;}";
+    private static final String REFLECTION_EXAMPLE = "class Test { " + "  String[] a = {\"java.util.Date\", \"hello\", \"www.w3c.org\"};"
+            + "  Class c = Integer.class;" + "}";
     private static final String CLASS_NAME = "Test";
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
-    private static int compile(String file)
-    {
+    private static int compile(String file) {
         try {
             final Class<?> compilerClass = Class.forName("com.sun.tools.javac.Main", true, compilerClassLoader());
             final Object compiler = compilerClass.newInstance();
@@ -65,25 +60,17 @@ public final class ParserTest {
         }
     }
 
-    private AtomicVertex createVertex(String code,
-            StringPattern reflectionPattern,
-            boolean mergeInnerClasses)
-            throws IOException
-    {
+    private AtomicVertex createVertex(String code, StringPattern reflectionPattern, boolean mergeInnerClasses) throws IOException {
         final File sourceFile = new File(folder.getRoot(), CLASS_NAME + ".java");
         Writer writer = new FileWriter(sourceFile);
         writer.write(code);
         writer.close();
         assertEquals("Exit code", 0, compile(sourceFile.getAbsolutePath()));
-        AtomicVertex[] vertices = Parser.readClassFiles(new String[] { folder.getRoot().getAbsolutePath() },
-                new TrueStringPattern(),
-                reflectionPattern,
-                mergeInnerClasses);
-        for (int i = 0; i < vertices.length; i++)
-        {
+        AtomicVertex[] vertices = Parser.readClassFiles(new String[] { folder.getRoot().getAbsolutePath() }, new TrueStringPattern(),
+                reflectionPattern, mergeInnerClasses);
+        for (int i = 0; i < vertices.length; i++) {
             NameAttributes attributes = (NameAttributes) vertices[i].getAttributes();
-            if (attributes.getName().equals(CLASS_NAME))
-            {
+            if (attributes.getName().equals(CLASS_NAME)) {
                 AtomicVertex vertex = vertices[i];
                 return vertex;
             }
@@ -91,18 +78,13 @@ public final class ParserTest {
         throw new IOException("Test class not found: " + Arrays.asList(vertices));
     }
 
-    private void check(String[] expectedClasses, String javaCode)
-            throws IOException
-    {
+    private void check(String[] expectedClasses, String javaCode) throws IOException {
         check(expectedClasses, javaCode, null, false);
     }
 
-    private void check(String[] expectedClasses, String javaCode,
-            StringPattern reflectionPattern,
-            boolean mergeInnerClasses)
+    private void check(String[] expectedClasses, String javaCode, StringPattern reflectionPattern, boolean mergeInnerClasses)
             throws IOException {
-        AtomicVertex vertex = createVertex(javaCode, reflectionPattern,
-                mergeInnerClasses);
+        AtomicVertex vertex = createVertex(javaCode, reflectionPattern, mergeInnerClasses);
         assertEquals(folder.getRoot().getAbsolutePath(), ((ClassAttributes) vertex.getAttributes()).getSources());
         HashSet<String> classSet = new HashSet<String>();
         for (int i = 0; i < expectedClasses.length; i++) {
@@ -114,123 +96,91 @@ public final class ParserTest {
             assertTrue(name + " not expected", classSet.contains(name));
             classSet.remove(name);
         }
-        assertEquals("number of classes (missing: " + classSet + ")",
-                expectedClasses.length,
-                vertex.getNumberOfOutgoingArcs());
+        assertEquals("number of classes (missing: " + classSet + ")", expectedClasses.length, vertex.getNumberOfOutgoingArcs());
     }
 
     @Test
     public void testParseFieldDescriptor() throws IOException {
-        check(new String[] { "java.lang.Object", "java.awt.color.ICC_ColorSpace",
-                "java.lang.String", "java.awt.LayoutManager2",
-                "java.lang.StringBuffer" },
-                "class Test { String[][] a; java.awt.LayoutManager2 b; int i;"
-                        + "StringBuffer[] sb;"
-                        + "double[] d; boolean[][] z; java.awt.color.ICC_ColorSpace cs;}");
+        check(new String[] { "java.lang.Object", "java.awt.color.ICC_ColorSpace", "java.lang.String", "java.awt.LayoutManager2",
+                "java.lang.StringBuffer" }, "class Test { String[][] a; java.awt.LayoutManager2 b; int i;" + "StringBuffer[] sb;"
+                + "double[] d; boolean[][] z; java.awt.color.ICC_ColorSpace cs;}");
     }
 
     @Test
-    public void testNoReflection() throws IOException
-    {
-        check(new String[] { "java.lang.Object", "java.lang.String",
-                "java.lang.Class", "java.lang.Integer" },
-                REFLECTION_EXAMPLE);
+    public void testNoReflection() throws IOException {
+        check(new String[] { "java.lang.Object", "java.lang.String", "java.lang.Class", "java.lang.Integer" }, REFLECTION_EXAMPLE);
     }
 
     @Test
-    public void testReflection() throws IOException
-    {
-        check(new String[] { "java.lang.Object", "java.lang.String",
-                "java.lang.Class", "java.lang.Integer",
-                "java.util.Date",
-                "hello", "www.w3c.org" },
-                REFLECTION_EXAMPLE,
-                new TrueStringPattern(), false);
-        check(new String[] { "java.lang.Object", "java.lang.String",
-                "java.lang.Class", "java.lang.Integer",
-                "java.util.Date" },
-                REFLECTION_EXAMPLE,
-                new WildCardPattern("java.*"), false);
+    public void testReflection() throws IOException {
+        check(new String[] { "java.lang.Object", "java.lang.String", "java.lang.Class", "java.lang.Integer", "java.util.Date", "hello",
+                "www.w3c.org" }, REFLECTION_EXAMPLE, new TrueStringPattern(), false);
+        check(new String[] { "java.lang.Object", "java.lang.String", "java.lang.Class", "java.lang.Integer", "java.util.Date" },
+                REFLECTION_EXAMPLE, new WildCardPattern("java.*"), false);
     }
 
     @Test
     public void testInvalidFieldDescriptors() throws IOException {
-        check(new String[] { "java.lang.Object", "java.lang.String" },
-                "class Test { String[] a = {\"La;a\", \"[Lb;?\", \"L;\", \"L ;\","
-                        + "\"La.;\", \"L.a;\", \"La..b;\", \"L1;\", };}");
+        check(new String[] { "java.lang.Object", "java.lang.String" }, "class Test { String[] a = {\"La;a\", \"[Lb;?\", \"L;\", \"L ;\","
+                + "\"La.;\", \"L.a;\", \"La..b;\", \"L1;\", };}");
     }
 
     @Test
     public void testParseMethodDescriptor() throws IOException {
-        check(new String[] { "java.lang.String", "java.lang.Integer",
-                "java.lang.Double", "java.lang.Boolean",
-                "java.lang.Byte", "java.lang.Object",
-                "java.lang.Long", "java.lang.Short",
-                "java.lang.Exception", "java.lang.Class" },
-                "interface Test { void a(String a); int b(); Integer c();"
-                        + "Exception d(double d, Double d2); int e(Boolean[][] z);"
+        check(new String[] { "java.lang.String", "java.lang.Integer", "java.lang.Double", "java.lang.Boolean", "java.lang.Byte",
+                "java.lang.Object", "java.lang.Long", "java.lang.Short", "java.lang.Exception", "java.lang.Class" },
+                "interface Test { void a(String a); int b(); Integer c();" + "Exception d(double d, Double d2); int e(Boolean[][] z);"
                         + "short f(Byte b, int[][] i); Short g(Long l, Class c);}");
     }
 
     @Test
     public void testInvalidMethodDescriptors() throws IOException {
-        check(new String[] { "java.lang.Object", "java.lang.String" },
-                "class Test { String[] a = {\"(La;\", \"(La1;??\", \"(Lb;)\","
-                        + "\"(Lc;)?\", \"(Ld;)v\", \"(Le;)V?\", \"(Lf;)D?\", \"(Lg;)L1;\","
-                        + "\"(Lh;)Li;?\", \"([)Lj;\", \"(L2;)Lk;\", \"( )Ll;\", \"(d)Lm;\","
-                        + "\"(Ln;[)Lo;\", \"(Lp;L)V\"};}");
+        check(new String[] { "java.lang.Object", "java.lang.String" }, "class Test { String[] a = {\"(La;\", \"(La1;??\", \"(Lb;)\","
+                + "\"(Lc;)?\", \"(Ld;)v\", \"(Le;)V?\", \"(Lf;)D?\", \"(Lg;)L1;\","
+                + "\"(Lh;)Li;?\", \"([)Lj;\", \"(L2;)Lk;\", \"( )Ll;\", \"(d)Lm;\"," + "\"(Ln;[)Lo;\", \"(Lp;L)V\"};}");
     }
 
     @Test
     public void testIndirectReference() throws IOException {
-        check(new String[] { "java.lang.Object", "java.util.Enumeration", "java.lang.System",
-                "java.util.Properties" },
+        check(new String[] { "java.lang.Object", "java.util.Enumeration", "java.lang.System", "java.util.Properties" },
                 "class Test { Object e = System.getProperties().keys();}");
     }
 
     @Test
     public void testConstantsReference() throws IOException {
-        check(new String[] { "java.lang.Object" },
-                "class Test { int e = java.awt.Label.LEFT;}");
+        check(new String[] { "java.lang.Object" }, "class Test { int e = java.awt.Label.LEFT;}");
     }
 
     @Test
     public void testSuperClass() throws IOException {
-        check(new String[] { "java.lang.Runnable", "java.awt.Canvas" },
-                "class Test extends java.awt.Canvas implements Runnable {"
-                        + "public void run() {}}");
+        check(new String[] { "java.lang.Runnable", "java.awt.Canvas" }, "class Test extends java.awt.Canvas implements Runnable {"
+                + "public void run() {}}");
     }
 
     @Test
     public void testCastingElementaryDataTypeArray() throws IOException {
-        check(new String[] { "java.lang.Object" },
-                "class Test { Object a() { return null; } "
-                        + "void b() { byte[][] n = (byte[][]) a();}}");
+        check(new String[] { "java.lang.Object" }, "class Test { Object a() { return null; } "
+                + "void b() { byte[][] n = (byte[][]) a();}}");
     }
 
     @Test
     public void testInnerClasses() throws IOException {
-        check(new String[] { "java.lang.Object", "java.lang.Integer", "Test$A" },
-                INNER_CLASS_EXAMPLE);
+        check(new String[] { "java.lang.Object", "java.lang.Integer", "Test$A" }, INNER_CLASS_EXAMPLE);
     }
 
     @Test
     public void testMergeInnerClasses() throws IOException {
-        check(new String[] { "java.lang.Object", "java.lang.Integer",
-                "java.lang.String" },
-                INNER_CLASS_EXAMPLE, new TrueStringPattern(), true);
+        check(new String[] { "java.lang.Object", "java.lang.Integer", "java.lang.String" }, INNER_CLASS_EXAMPLE, new TrueStringPattern(),
+                true);
 
         // check that size of merged vertices is the sum of vertices sizes
-        AtomicVertex vertex = createVertex(INNER_CLASS_EXAMPLE,
-                new TrueStringPattern(), false);
+        AtomicVertex vertex = createVertex(INNER_CLASS_EXAMPLE, new TrueStringPattern(), false);
         int size1 = ((ClassAttributes) vertex.getAttributes()).getSize();
         Vertex innerClass = null;
-        for (int i = 0; i < vertex.getNumberOfOutgoingArcs(); i++)
-        {
+        for (int i = 0; i < vertex.getNumberOfOutgoingArcs(); i++) {
             innerClass = vertex.getHeadVertex(i);
             String name = ((ClassAttributes) innerClass.getAttributes()).getName();
-            if (name.startsWith(CLASS_NAME))
-            {
+            if (name.startsWith(CLASS_NAME)) {
                 break;
             }
         }

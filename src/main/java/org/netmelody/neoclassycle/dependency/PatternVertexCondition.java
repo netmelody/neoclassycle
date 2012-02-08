@@ -33,31 +33,25 @@ import org.netmelody.neoclassycle.util.StringPattern;
 /**
  * @author Franz-Josef Elmer
  */
-public class PatternVertexCondition implements VertexCondition
-{
+public class PatternVertexCondition implements VertexCondition {
     private final StringPattern _pattern;
 
-    public PatternVertexCondition(StringPattern pattern)
-    {
+    public PatternVertexCondition(StringPattern pattern) {
         _pattern = pattern;
     }
 
-    public boolean isFulfilled(Vertex vertex)
-    {
+    public boolean isFulfilled(Vertex vertex) {
         boolean result = false;
-        if (vertex != null)
-        {
+        if (vertex != null) {
             Attributes attributes = vertex.getAttributes();
-            if (attributes instanceof NameAttributes)
-            {
+            if (attributes instanceof NameAttributes) {
                 result = _pattern.matches(((NameAttributes) attributes).getName());
             }
         }
         return result;
     }
 
-    public String toString()
-    {
+    public String toString() {
         return _pattern.toString();
     }
 }

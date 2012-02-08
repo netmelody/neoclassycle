@@ -39,23 +39,17 @@ import static org.netmelody.neoclassycle.dependency.DependencyDefinitionParser.D
 /**
  * @author Franz-Josef Elmer
  */
-public class DependencyStatement implements Statement
-{
-    private static final class VertexUnionCondition implements VertexCondition
-    {
+public class DependencyStatement implements Statement {
+    private static final class VertexUnionCondition implements VertexCondition {
         private final VertexCondition[] _conditions;
 
-        VertexUnionCondition(VertexCondition[] conditions)
-        {
+        VertexUnionCondition(VertexCondition[] conditions) {
             _conditions = conditions;
         }
 
-        public boolean isFulfilled(Vertex vertex)
-        {
-            for (VertexCondition condition : _conditions)
-            {
-                if (condition.isFulfilled(vertex))
-                {
+        public boolean isFulfilled(Vertex vertex) {
+            for (VertexCondition condition : _conditions) {
+                if (condition.isFulfilled(vertex)) {
                     return true;
                 }
             }
@@ -74,12 +68,8 @@ public class DependencyStatement implements Statement
     private final SetDefinitionRepository _repository;
     private final ResultRenderer _renderer;
 
-    public DependencyStatement(StringPattern[] startSets,
-            StringPattern[] finalSets,
-            String dependencyType,
-            SetDefinitionRepository repository,
-            ResultRenderer renderer)
-    {
+    public DependencyStatement(StringPattern[] startSets, StringPattern[] finalSets, String dependencyType,
+            SetDefinitionRepository repository, ResultRenderer renderer) {
         _startSets = startSets;
         _finalSets = finalSets;
         _dependencyType = dependencyType;
@@ -91,86 +81,65 @@ public class DependencyStatement implements Statement
         _finalCondition = new VertexUnionCondition(_finalConditions);
     }
 
-    private VertexCondition[] createVertexConditions(StringPattern[] patterns)
-    {
+    private VertexCondition[] createVertexConditions(StringPattern[] patterns) {
         VertexCondition[] fromSets = new VertexCondition[patterns.length];
-        for (int i = 0; i < fromSets.length; i++)
-        {
+        for (int i = 0; i < fromSets.length; i++) {
             fromSets[i] = new PatternVertexCondition(patterns[i]);
         }
         return fromSets;
     }
 
-    public Result execute(AtomicVertex[] graph)
-    {
+    public Result execute(AtomicVertex[] graph) {
         ResultContainer result = new ResultContainer();
         boolean directPathsOnly = DIRECTLY_INDEPENDENT_OF_KEY_WORD.equals(_dependencyType);
         boolean dependsOnly = DependencyDefinitionParser.DEPENDENT_ONLY_ON_KEY_WORD.equals(_dependencyType);
-        for (int i = 0; i < _startConditions.length; i++)
-        {
+        for (int i = 0; i < _startConditions.length; i++) {
             VertexCondition startCondition = _startConditions[i];
             StringPattern startSet = _startSets[i];
-            if (dependsOnly)
-            {
+            if (dependsOnly) {
                 Set<AtomicVertex> invalids = new HashSet<AtomicVertex>();
-                for (AtomicVertex vertex : graph)
-                {
-                    if (startCondition.isFulfilled(vertex))
-                    {
-                        for (int j = 0, n = vertex.getNumberOfOutgoingArcs(); j < n; j++)
-                        {
+                for (AtomicVertex vertex : graph) {
+                    if (startCondition.isFulfilled(vertex)) {
+                        for (int j = 0, n = vertex.getNumberOfOutgoingArcs(); j < n; j++) {
                             Vertex headVertex = vertex.getHeadVertex(j);
-                            if (_finalCondition.isFulfilled(headVertex) == false
-                                    && startCondition.isFulfilled(headVertex) == false)
-                            {
+                            if (_finalCondition.isFulfilled(headVertex) == false && startCondition.isFulfilled(headVertex) == false) {
                                 invalids.add(vertex);
                                 invalids.add((AtomicVertex) headVertex);
                             }
                         }
                     }
                 }
-                result.add(new DependencyResult(startSet, _finalSet, toString(startSet, _finalSet),
-                        invalids.toArray(new AtomicVertex[0])));
+                result.add(new DependencyResult(startSet, _finalSet, toString(startSet, _finalSet), invalids.toArray(new AtomicVertex[0])));
             }
-            else
-            {
-                for (int j = 0; j < _finalConditions.length; j++)
-                {
-                    PathsFinder finder =
-                            new PathsFinder(startCondition, _finalConditions[j], _renderer
-                                    .onlyShortestPaths(), directPathsOnly);
-                    result.add(new DependencyResult(startSet, _finalSets[j], toString(i, j), finder
-                            .findPaths(graph)));
+            else {
+                for (int j = 0; j < _finalConditions.length; j++) {
+                    PathsFinder finder = new PathsFinder(startCondition, _finalConditions[j], _renderer.onlyShortestPaths(),
+                            directPathsOnly);
+                    result.add(new DependencyResult(startSet, _finalSets[j], toString(i, j), finder.findPaths(graph)));
                 }
             }
         }
         return result;
     }
 
-    private String toString(int i, int j)
-    {
+    private String toString(int i, int j) {
         return toString(_startSets[i], _finalSets[j]);
     }
 
-    private String toString(StringPattern startSet, StringPattern finalSet)
-    {
+    private String toString(StringPattern startSet, StringPattern finalSet) {
         StringBuffer buffer = new StringBuffer(CHECK);
-        buffer.append(_repository.toString(startSet)).append(' ')
-                .append(_dependencyType).append(' ')
+        buffer.append(_repository.toString(startSet)).append(' ').append(_dependencyType).append(' ')
                 .append(_repository.toString(finalSet));
         return new String(buffer);
     }
 
-    public String toString()
-    {
+    public String toString() {
         StringBuffer buffer = new StringBuffer(CHECK);
-        for (int i = 0; i < _startSets.length; i++)
-        {
+        for (int i = 0; i < _startSets.length; i++) {
             buffer.append(_repository.toString(_startSets[i])).append(' ');
         }
         buffer.append(_dependencyType).append(' ');
-        for (int i = 0; i < _finalSets.length; i++)
-        {
+        for (int i = 0; i < _finalSets.length; i++) {
             buffer.append(_repository.toString(_finalSets[i])).append(' ');
         }
 

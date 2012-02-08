@@ -35,8 +35,7 @@ import org.netmelody.neoclassycle.graph.Vertex;
  * 
  * @author Franz-Josef Elmer
  */
-public abstract class AbstractStrongComponentRenderer
-        implements StrongComponentRenderer {
+public abstract class AbstractStrongComponentRenderer implements StrongComponentRenderer {
     /**
      * Creates an appropriated name for the specified {@link StrongComponent}.
      * Usually, the name is the fully-qualified class name of the first vertex
@@ -64,8 +63,7 @@ public abstract class AbstractStrongComponentRenderer
                 if (attributes.getName().equals(outerClass)) {
                     vertex = component.getVertex(i);
                 }
-                else if (!attributes.getName().startsWith(outerClass)
-                        || attributes.getName().charAt(outerClass.length()) != '$') {
+                else if (!attributes.getName().startsWith(outerClass) || attributes.getName().charAt(outerClass.length()) != '$') {
                     isInnerClass = false;
                     break;
                 }

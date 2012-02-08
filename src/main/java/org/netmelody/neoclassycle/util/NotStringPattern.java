@@ -29,8 +29,7 @@ package org.netmelody.neoclassycle.util;
  * 
  * @author Franz-Josef Elmer
  */
-public class NotStringPattern implements StringPattern
-{
+public class NotStringPattern implements StringPattern {
     private final StringPattern _pattern;
 
     /**
@@ -40,8 +39,7 @@ public class NotStringPattern implements StringPattern
      *            Pattern who's matching result will be negate. Must be not
      *            <tt>null</tt>.
      */
-    public NotStringPattern(StringPattern pattern)
-    {
+    public NotStringPattern(StringPattern pattern) {
         _pattern = pattern;
     }
 
@@ -49,13 +47,11 @@ public class NotStringPattern implements StringPattern
      * Returns <tt>true</tt> if the wrapped {@link StringPattern} returns
      * <tt>false</tt> and vice-versa.
      */
-    public boolean matches(String string)
-    {
+    public boolean matches(String string) {
         return !_pattern.matches(string);
     }
 
-    public String toString()
-    {
+    public String toString() {
         String expression = _pattern.toString();
         boolean bracketsNeeded = expression.startsWith("(") == false && expression.indexOf(' ') > 0;
         return '!' + (bracketsNeeded ? '(' + expression + ')' : expression);

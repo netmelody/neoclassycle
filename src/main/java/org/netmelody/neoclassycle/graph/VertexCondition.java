@@ -30,8 +30,7 @@ package org.netmelody.neoclassycle.graph;
  * 
  * @author Franz-Josef Elmer
  */
-public interface VertexCondition
-{
+public interface VertexCondition {
     /**
      * Returns <code>true</code> if the specified vertex fulfills the condition.
      * 

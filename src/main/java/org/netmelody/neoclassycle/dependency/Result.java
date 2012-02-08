@@ -29,8 +29,7 @@ package org.netmelody.neoclassycle.dependency;
  * 
  * @author Franz-Josef Elmer
  */
-public interface Result
-{
+public interface Result {
     /**
      * Returns <code>true</code> if the checking result is positive.
      */

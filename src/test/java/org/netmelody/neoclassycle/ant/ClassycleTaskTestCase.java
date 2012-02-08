@@ -28,36 +28,28 @@ public abstract class ClassycleTaskTestCase {
     public final BuildFileTest antTestcase = new BuildFileTest() {
     };
 
-    protected void checkNumberOfLines(int expectedNumberOfLines, String fileName)
-            throws Exception
-    {
+    protected void checkNumberOfLines(int expectedNumberOfLines, String fileName) throws Exception {
         File file = new File(folder.getRoot(), fileName);
         FileReader reader = new FileReader(file);
         checkNumberOfLines(reader, expectedNumberOfLines);
     }
 
-    protected void checkNumberOfLines(Reader reader, int expectedNumberOfLines)
-            throws IOException
-    {
+    protected void checkNumberOfLines(Reader reader, int expectedNumberOfLines) throws IOException {
         BufferedReader br = new BufferedReader(reader);
         int numberOfLines = 0;
-        while (br.readLine() != null)
-        {
+        while (br.readLine() != null) {
             numberOfLines++;
         }
         assertEquals("Number of lines", expectedNumberOfLines, numberOfLines);
     }
 
-    protected void checkLine(String expectedLine, int lineNumber, String fileName)
-            throws Exception
-    {
+    protected void checkLine(String expectedLine, int lineNumber, String fileName) throws Exception {
         File file = new File(folder.getRoot(), fileName);
         FileReader reader = new FileReader(file);
         checkLine(reader, expectedLine, lineNumber);
     }
 
-    protected void checkLine(Reader reader, String expectedLine, int lineNumber) throws IOException
-    {
+    protected void checkLine(Reader reader, String expectedLine, int lineNumber) throws IOException {
         BufferedReader br = new BufferedReader(reader);
         String line = null;
         while ((line = br.readLine()) != null && --lineNumber > 0)
@@ -65,14 +57,12 @@ public abstract class ClassycleTaskTestCase {
         assertEquals(expectedLine, line);
     }
 
-    protected String readFile(String fileName) throws Exception
-    {
+    protected String readFile(String fileName) throws Exception {
         File file = new File(folder.getRoot(), fileName);
         BufferedReader reader = new BufferedReader(new FileReader(file));
         StringBuilder builder = new StringBuilder();
         String line;
-        while ((line = reader.readLine()) != null)
-        {
+        while ((line = reader.readLine()) != null) {
             builder.append(line).append('\n');
         }
         return builder.toString();

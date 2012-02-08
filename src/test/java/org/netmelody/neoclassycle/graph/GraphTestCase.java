@@ -14,21 +14,18 @@ public abstract class GraphTestCase {
             super(name, "", ClassAttributes.CLASS, 42);
         }
 
-        public int getSize()
-        {
+        public int getSize() {
             return 0;
         }
 
-        public String toString()
-        {
+        public String toString() {
             return getName();
         }
     }
 
     protected AtomicVertex _externalVertex = new AtomicVertex(null);
 
-    protected StrongComponent[] check(String[] expectedStrongComponents,
-            int[][] nodeLinks) {
+    protected StrongComponent[] check(String[] expectedStrongComponents, int[][] nodeLinks) {
         HashSet<String> expectedFingerPrints = new HashSet<String>();
         for (int i = 0; i < expectedStrongComponents.length; i++) {
             expectedFingerPrints.add(expectedStrongComponents[i]);
@@ -39,25 +36,21 @@ public abstract class GraphTestCase {
         StrongComponent[] components = processor.getStrongComponents();
         for (int i = 0; i < components.length; i++) {
             String fingerPrint = createFingerPrint(components[i]);
-            assertTrue("'" + fingerPrint + "' not expected",
-                    expectedFingerPrints.contains(fingerPrint));
+            assertTrue("'" + fingerPrint + "' not expected", expectedFingerPrints.contains(fingerPrint));
         }
-        assertEquals("number of strong components",
-                expectedStrongComponents.length, components.length);
+        assertEquals("number of strong components", expectedStrongComponents.length, components.length);
 
         return components;
     }
 
-    protected void process(StrongComponentProcessor processor,
-            AtomicVertex[] graph) {
+    protected void process(StrongComponentProcessor processor, AtomicVertex[] graph) {
         processor.deepSearchFirst(graph);
     }
 
     private String createFingerPrint(StrongComponent component) {
         int[] vertices = new int[component.getNumberOfVertices()];
         for (int i = 0; i < vertices.length; i++) {
-            vertices[i] = Integer.parseInt(((MockAttributes) component.getVertex(i)
-                    .getAttributes()).toString());
+            vertices[i] = Integer.parseInt(((MockAttributes) component.getVertex(i).getAttributes()).toString());
         }
         Arrays.sort(vertices);
         StringBuffer result = new StringBuffer();

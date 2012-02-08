@@ -84,13 +84,11 @@ import org.netmelody.neoclassycle.graph.StrongComponent;
  * 
  * @author Franz-Josef Elmer
  */
-public class TemplateBasedClassRenderer implements AtomicVertexRenderer
-{
+public class TemplateBasedClassRenderer implements AtomicVertexRenderer {
     private MessageFormat _format;
 
     /** Creates an instance for the specified template. */
-    public TemplateBasedClassRenderer(String template)
-    {
+    public TemplateBasedClassRenderer(String template) {
         _format = new MessageFormat(template);
     }
 
@@ -102,44 +100,36 @@ public class TemplateBasedClassRenderer implements AtomicVertexRenderer
      *            Vertex to be rendered.
      * @return the rendered vertex.
      */
-    public String render(AtomicVertex vertex, StrongComponent cycle,
-            int layerIndex)
-    {
+    public String render(AtomicVertex vertex, StrongComponent cycle, int layerIndex) {
         String[] values = new String[10];
         NameAndSourceAttributes attributes = (NameAndSourceAttributes) vertex.getAttributes();
         values[0] = attributes.getName();
         values[2] = Integer.toString(attributes.getSize());
         values[9] = attributes.getSources();
-        if (attributes instanceof ClassAttributes)
-        {
+        if (attributes instanceof ClassAttributes) {
             ClassAttributes ca = (ClassAttributes) attributes;
             values[1] = ca.getType();
             values[3] = ca.isInnerClass() ? "true" : "false";
         }
-        else
-        {
+        else {
             values[1] = "";
             values[3] = "";
         }
         values[4] = Integer.toString(vertex.getNumberOfIncomingArcs());
         int usesInternal = 0;
         int usesExternal = 0;
-        for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++)
-        {
-            if (((AtomicVertex) vertex.getHeadVertex(i)).isGraphVertex())
-            {
+        for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) {
+            if (((AtomicVertex) vertex.getHeadVertex(i)).isGraphVertex()) {
                 usesInternal++;
             }
-            else
-            {
+            else {
                 usesExternal++;
             }
         }
         values[5] = Integer.toString(usesInternal);
         values[6] = Integer.toString(usesExternal);
         values[7] = Integer.toString(layerIndex);
-        values[8] = cycle == null ? ""
-                : AbstractStrongComponentRenderer.createName(cycle);
+        values[8] = cycle == null ? "" : AbstractStrongComponentRenderer.createName(cycle);
         return _format.format(values);
     }
 }

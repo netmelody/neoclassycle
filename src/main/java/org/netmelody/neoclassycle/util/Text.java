@@ -34,11 +34,9 @@ import java.io.IOException;
  * 
  * @author Franz-Josef Elmer
  */
-public class Text
-{
+public class Text {
     private static final String ESCAPE_CHARACTERS = "<>&\"'";
-    private static final String[] ESCAPE_SEQUENCES = new String[] {
-            "&lt;", "&gt;", "&amp;", "&quot;", "&apos;" };
+    private static final String[] ESCAPE_SEQUENCES = new String[] { "&lt;", "&gt;", "&amp;", "&quot;", "&apos;" };
 
     private Text() {
     }
@@ -51,19 +49,15 @@ public class Text
      * @return copy of the text where the special XML characters has been
      *         replaced by the escape sequences.
      */
-    public static String excapeForXML(String text)
-    {
+    public static String excapeForXML(String text) {
         StringBuffer buffer = new StringBuffer();
-        for (int i = 0, n = text.length(); i < n; i++)
-        {
+        for (int i = 0, n = text.length(); i < n; i++) {
             char c = text.charAt(i);
             int index = ESCAPE_CHARACTERS.indexOf(c);
-            if (index < 0)
-            {
+            if (index < 0) {
                 buffer.append(c);
             }
-            else
-            {
+            else {
                 buffer.append(ESCAPE_SEQUENCES[index]);
             }
         }
@@ -79,13 +73,11 @@ public class Text
      * @throws IOException
      *             if some reading error occurs.
      */
-    public static String readTextFile(File file) throws IOException
-    {
+    public static String readTextFile(File file) throws IOException {
         StringBuffer buffer = new StringBuffer();
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String line;
-        while ((line = reader.readLine()) != null)
-        {
+        while ((line = reader.readLine()) != null) {
             buffer.append(line).append('\n');
         }
         String result = new String(buffer);

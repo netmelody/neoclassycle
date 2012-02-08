@@ -32,8 +32,7 @@ import org.netmelody.neoclassycle.graph.StrongComponent;
  * 
  * @author Franz-Josef Elmer
  */
-public interface AtomicVertexRenderer
-{
+public interface AtomicVertexRenderer {
     /**
      * Renders an {@link AtomicVertex}.
      * 
@@ -46,6 +45,5 @@ public interface AtomicVertexRenderer
      * @param layerIndex
      *            Index of the layer to which <code>vertex</code> belongs.
      */
-    public String render(AtomicVertex vertex, StrongComponent cycle,
-            int layerIndex);
+    public String render(AtomicVertex vertex, StrongComponent cycle, int layerIndex);
 }

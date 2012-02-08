@@ -34,8 +34,7 @@ import org.netmelody.neoclassycle.graph.StrongComponent;
  * 
  * @author Franz-Josef Elmer
  */
-public class TemplateBasedStrongComponentRenderer
-        extends AbstractStrongComponentRenderer {
+public class TemplateBasedStrongComponentRenderer extends AbstractStrongComponentRenderer {
     private final MessageFormat _format;
     private final int _minimumNumber;
 
@@ -48,8 +47,7 @@ public class TemplateBasedStrongComponentRenderer
      *            Minimum number of vertices the {@link StrongComponent} should
      *            have to be rendered.
      */
-    public TemplateBasedStrongComponentRenderer(String template,
-            int minimumNumber) {
+    public TemplateBasedStrongComponentRenderer(String template, int minimumNumber) {
         _format = new MessageFormat(template);
         _minimumNumber = minimumNumber;
     }

@@ -53,8 +53,7 @@ import org.netmelody.neoclassycle.util.TrueStringPattern;
  * 
  * @author Franz-Josef Elmer
  */
-public class Parser
-{
+public class Parser {
     private static final int ACC_INTERFACE = 0x200, ACC_ABSTRACT = 0x400;
     private static final String[] ZIP_FILE_TYPES = new String[] { ".zip", ".jar", ".war", ".ear" };
 
@@ -67,9 +66,7 @@ public class Parser
      * <tt>readClassFiles(classFiles, new {@link TrueStringPattern}(), 
      * null, false);</tt>
      */
-    public static AtomicVertex[] readClassFiles(String[] classFiles)
-            throws IOException
-    {
+    public static AtomicVertex[] readClassFiles(String[] classFiles) throws IOException {
         return readClassFiles(classFiles, new TrueStringPattern(), null, false);
     }
 
@@ -104,55 +101,38 @@ public class Parser
      *            If <code>true</code> merge inner classes with its outer class
      * @return directed graph.
      */
-    public static AtomicVertex[] readClassFiles(String[] classFiles,
-            StringPattern pattern,
-            StringPattern reflectionPattern,
-            boolean mergeInnerClasses)
-            throws IOException
-    {
+    public static AtomicVertex[] readClassFiles(String[] classFiles, StringPattern pattern, StringPattern reflectionPattern,
+            boolean mergeInnerClasses) throws IOException {
         ArrayList unresolvedNodes = new ArrayList();
-        for (int i = 0; i < classFiles.length; i++)
-        {
+        for (int i = 0; i < classFiles.length; i++) {
             String classFile = classFiles[i];
             File file = new File(classFile);
-            if (file.isDirectory())
-            {
+            if (file.isDirectory()) {
                 analyseClassFile(file, classFile, unresolvedNodes, reflectionPattern);
-                File[] files = file.listFiles(new FileFilter()
-                {
-                    public boolean accept(File file)
-                    {
+                File[] files = file.listFiles(new FileFilter() {
+                    public boolean accept(File file) {
                         return isZipFile(file);
                     }
                 });
-                for (int j = 0; j < files.length; j++)
-                {
+                for (int j = 0; j < files.length; j++) {
                     String source = createSourceName(classFile, files[j].getName());
-                    analyseClassFiles(new ZipFile(files[j].getAbsoluteFile()), source,
-                            unresolvedNodes, reflectionPattern);
+                    analyseClassFiles(new ZipFile(files[j].getAbsoluteFile()), source, unresolvedNodes, reflectionPattern);
                 }
             }
-            else if (file.getName().endsWith(".class"))
-            {
+            else if (file.getName().endsWith(".class")) {
                 analyseClassFile(file, null, unresolvedNodes, reflectionPattern);
             }
-            else if (isZipFile(file))
-            {
-                analyseClassFiles(new ZipFile(file.getAbsoluteFile()), classFile,
-                        unresolvedNodes,
-                        reflectionPattern);
+            else if (isZipFile(file)) {
+                analyseClassFiles(new ZipFile(file.getAbsoluteFile()), classFile, unresolvedNodes, reflectionPattern);
             }
-            else
-            {
+            else {
                 throw new IOException(classFile + " is an invalid file.");
             }
         }
         List filteredNodes = new ArrayList();
-        for (int i = 0, n = unresolvedNodes.size(); i < n; i++)
-        {
+        for (int i = 0, n = unresolvedNodes.size(); i < n; i++) {
             UnresolvedNode node = (UnresolvedNode) unresolvedNodes.get(i);
-            if (node.isMatchedBy(pattern))
-            {
+            if (node.isMatchedBy(pattern)) {
                 filteredNodes.add(node);
             }
         }
@@ -161,20 +141,15 @@ public class Parser
         return GraphBuilder.createGraph(nodes, mergeInnerClasses);
     }
 
-    private static String createSourceName(String classFile, String name)
-    {
-        return classFile + (classFile.endsWith(File.separator) ? name
-                : File.separatorChar + name);
+    private static String createSourceName(String classFile, String name) {
+        return classFile + (classFile.endsWith(File.separator) ? name : File.separatorChar + name);
     }
 
-    private static boolean isZipFile(File file)
-    {
+    private static boolean isZipFile(File file) {
         boolean result = false;
         String name = file.getName();
-        for (int i = 0; i < ZIP_FILE_TYPES.length; i++)
-        {
-            if (name.endsWith(ZIP_FILE_TYPES[i]))
-            {
+        for (int i = 0; i < ZIP_FILE_TYPES.length; i++) {
+            if (name.endsWith(ZIP_FILE_TYPES[i])) {
                 result = true;
                 break;
             }
@@ -182,45 +157,31 @@ public class Parser
         return result;
     }
 
-    private static void analyseClassFile(File file, String source,
-            ArrayList unresolvedNodes,
-            StringPattern reflectionPattern)
-            throws IOException
-    {
-        if (file.isDirectory())
-        {
+    private static void analyseClassFile(File file, String source, ArrayList unresolvedNodes, StringPattern reflectionPattern)
+            throws IOException {
+        if (file.isDirectory()) {
             String[] files = file.list();
-            for (int i = 0; i < files.length; i++)
-            {
+            for (int i = 0; i < files.length; i++) {
                 File child = new File(file, files[i]);
-                if (child.isDirectory() || files[i].endsWith(".class"))
-                {
+                if (child.isDirectory() || files[i].endsWith(".class")) {
                     analyseClassFile(child, source, unresolvedNodes, reflectionPattern);
                 }
             }
         }
-        else
-        {
+        else {
             unresolvedNodes.add(extractNode(file, source, reflectionPattern));
         }
     }
 
-    private static UnresolvedNode extractNode(File file, String source,
-            StringPattern reflectionPattern)
-            throws IOException
-    {
+    private static UnresolvedNode extractNode(File file, String source, StringPattern reflectionPattern) throws IOException {
         InputStream stream = null;
         UnresolvedNode result = null;
-        try
-        {
+        try {
             stream = new FileInputStream(file);
-            result = Parser.createNode(stream, source, (int) file.length(),
-                    reflectionPattern);
+            result = Parser.createNode(stream, source, (int) file.length(), reflectionPattern);
         }
-        finally
-        {
-            try
-            {
+        finally {
+            try {
                 stream.close();
             }
             catch (IOException e) {
@@ -229,21 +190,15 @@ public class Parser
         return result;
     }
 
-    private static void analyseClassFiles(ZipFile zipFile, String source,
-            ArrayList unresolvedNodes,
-            StringPattern reflectionPattern)
-            throws IOException
-    {
+    private static void analyseClassFiles(ZipFile zipFile, String source, ArrayList unresolvedNodes, StringPattern reflectionPattern)
+            throws IOException {
         Enumeration entries = zipFile.entries();
-        while (entries.hasMoreElements())
-        {
+        while (entries.hasMoreElements()) {
             ZipEntry entry = (ZipEntry) entries.nextElement();
-            if (!entry.isDirectory() && entry.getName().endsWith(".class"))
-            {
+            if (!entry.isDirectory() && entry.getName().endsWith(".class")) {
                 InputStream stream = zipFile.getInputStream(entry);
                 int size = (int) entry.getSize();
-                unresolvedNodes.add(Parser.createNode(stream, source, size,
-                        reflectionPattern));
+                unresolvedNodes.add(Parser.createNode(stream, source, size, reflectionPattern));
             }
         }
     }
@@ -265,30 +220,22 @@ public class Parser
      * @return a node with unresolved link of all classes used by the analysed
      *         class.
      */
-    private static UnresolvedNode createNode(InputStream stream, String source,
-            int size,
-            StringPattern reflectionPattern)
-            throws IOException
-    {
+    private static UnresolvedNode createNode(InputStream stream, String source, int size, StringPattern reflectionPattern)
+            throws IOException {
         // Reads constant pool, accessFlags, and class name
         DataInputStream dataStream = new DataInputStream(stream);
         Constant[] pool = Constant.extractConstantPool(dataStream);
         int accessFlags = dataStream.readUnsignedShort();
-        String name =
-                ((ClassConstant) pool[dataStream.readUnsignedShort()]).getName();
+        String name = ((ClassConstant) pool[dataStream.readUnsignedShort()]).getName();
         ClassAttributes attributes = null;
-        if ((accessFlags & ACC_INTERFACE) != 0)
-        {
+        if ((accessFlags & ACC_INTERFACE) != 0) {
             attributes = ClassAttributes.createInterface(name, source, size);
         }
-        else
-        {
-            if ((accessFlags & ACC_ABSTRACT) != 0)
-            {
+        else {
+            if ((accessFlags & ACC_ABSTRACT) != 0) {
                 attributes = ClassAttributes.createAbstractClass(name, source, size);
             }
-            else
-            {
+            else {
                 attributes = ClassAttributes.createClass(name, source, size);
             }
         }
@@ -296,27 +243,20 @@ public class Parser
         // Creates a new node with unresolved references
         UnresolvedNode node = new UnresolvedNode();
         node.setAttributes(attributes);
-        for (int i = 0; i < pool.length; i++)
-        {
+        for (int i = 0; i < pool.length; i++) {
             Constant constant = pool[i];
-            if (constant instanceof ClassConstant)
-            {
+            if (constant instanceof ClassConstant) {
                 ClassConstant cc = (ClassConstant) constant;
-                if (!cc.getName().startsWith(("[")) && !cc.getName().equals(name))
-                {
+                if (!cc.getName().startsWith(("[")) && !cc.getName().equals(name)) {
                     node.addLinkTo(cc.getName());
                 }
             }
-            else if (constant instanceof UTF8Constant)
-            {
+            else if (constant instanceof UTF8Constant) {
                 parseUTF8Constant((UTF8Constant) constant, node, name);
             }
-            else if (reflectionPattern != null
-                    && constant instanceof StringConstant)
-            {
+            else if (reflectionPattern != null && constant instanceof StringConstant) {
                 String str = ((StringConstant) constant).getString();
-                if (ClassNameExtractor.isValid(str) && reflectionPattern.matches(str))
-                {
+                if (ClassNameExtractor.isValid(str) && reflectionPattern.matches(str)) {
                     node.addLinkTo(str);
                 }
             }
@@ -328,15 +268,11 @@ public class Parser
      * Parses an UFT8Constant and picks class names if it has the correct syntax
      * of a field or method descirptor.
      */
-    static void parseUTF8Constant(UTF8Constant constant, UnresolvedNode node,
-            String className)
-    {
+    static void parseUTF8Constant(UTF8Constant constant, UnresolvedNode node, String className) {
         Set classNames = new ClassNameExtractor(constant).extract();
-        for (Iterator iter = classNames.iterator(); iter.hasNext();)
-        {
+        for (Iterator iter = classNames.iterator(); iter.hasNext();) {
             String element = (String) iter.next();
-            if (className.equals(element) == false)
-            {
+            if (className.equals(element) == false) {
                 node.addLinkTo(element);
             }
         }

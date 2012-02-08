@@ -29,15 +29,12 @@ import org.netmelody.neoclassycle.graph.AtomicVertex;
 /**
  * @author Franz-Josef Elmer
  */
-public class PackageVertex extends AtomicVertex
-{
-    public PackageVertex(String name)
-    {
+public class PackageVertex extends AtomicVertex {
+    public PackageVertex(String name) {
         super(new PackageAttributes(name));
     }
 
-    public void addClass(ClassAttributes classAttributes)
-    {
+    public void addClass(ClassAttributes classAttributes) {
         ((PackageAttributes) getAttributes()).addClass(classAttributes);
     }
 }

@@ -29,13 +29,11 @@ package org.netmelody.neoclassycle.util;
  * 
  * @author Franz-Josef Elmer
  */
-public class OrStringPattern extends StringPatternSequence
-{
+public class OrStringPattern extends StringPatternSequence {
     /**
      * Creates instance with specified patterns.
      */
-    public OrStringPattern(StringPattern... pattern)
-    {
+    public OrStringPattern(StringPattern... pattern) {
         super(pattern);
     }
 
@@ -43,13 +41,10 @@ public class OrStringPattern extends StringPatternSequence
      * Return <code>true</code> if a pattern in the sequence returns
      * <code>true</code>. Otherwise <code>false</code> is returned.
      */
-    public boolean matches(String string)
-    {
+    public boolean matches(String string) {
         boolean result = false;
-        for (int i = 0, n = _patterns.size(); i < n; i++)
-        {
-            if (((StringPattern) _patterns.get(i)).matches(string))
-            {
+        for (int i = 0, n = _patterns.size(); i < n; i++) {
+            if (((StringPattern) _patterns.get(i)).matches(string)) {
                 result = true;
                 break;
             }
@@ -57,8 +52,7 @@ public class OrStringPattern extends StringPatternSequence
         return result;
     }
 
-    protected String getOperatorSymbol()
-    {
+    protected String getOperatorSymbol() {
         return " ";
     }
 }

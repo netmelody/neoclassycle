@@ -31,34 +31,28 @@ import org.netmelody.neoclassycle.util.StringPattern;
 /**
  * @author Franz-Josef Elmer
  */
-class LayerDefinitionRepository
-{
+class LayerDefinitionRepository {
     private final HashMap _nameToLayerMap = new HashMap();
     private final HashMap _layerToNameMap = new HashMap();
 
-    public int getNumberOfDefinitions()
-    {
+    public int getNumberOfDefinitions() {
         return _nameToLayerMap.size();
     }
 
-    public void put(String name, StringPattern[] layer)
-    {
+    public void put(String name, StringPattern[] layer) {
         _nameToLayerMap.put(name, layer);
         _layerToNameMap.put(layer, name);
     }
 
-    public StringPattern[] getLayer(String name)
-    {
+    public StringPattern[] getLayer(String name) {
         return (StringPattern[]) _nameToLayerMap.get(name);
     }
 
-    public boolean contains(String name)
-    {
+    public boolean contains(String name) {
         return _nameToLayerMap.containsKey(name);
     }
 
-    public String getName(StringPattern[] layer)
-    {
+    public String getName(StringPattern[] layer) {
         return (String) _layerToNameMap.get(layer);
     }
 

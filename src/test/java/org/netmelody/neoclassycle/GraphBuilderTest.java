@@ -12,8 +12,7 @@ import static org.junit.Assert.assertEquals;
 public class GraphBuilderTest {
 
     @Test
-    public void testTwoClassesWithSameNameButDifferentSources()
-    {
+    public void testTwoClassesWithSameNameButDifferentSources() {
         UnresolvedNode[] nodes = createNodes("a:s1:A -> b c a; a:s2 -> b d");
 
         AtomicVertex[] graph = GraphBuilder.createGraph(nodes, false);
@@ -27,8 +26,7 @@ public class GraphBuilderTest {
     }
 
     @Test
-    public void testTwoClassesWithSameNameOneWithSourceOneWithoutSource()
-    {
+    public void testTwoClassesWithSameNameOneWithSourceOneWithoutSource() {
         UnresolvedNode[] nodes = createNodes("a:s1 -> b c a; a: :A -> b d");
 
         AtomicVertex[] graph = GraphBuilder.createGraph(nodes, false);
@@ -42,8 +40,7 @@ public class GraphBuilderTest {
     }
 
     @Test
-    public void testSupressedMergingOfInnerclasses()
-    {
+    public void testSupressedMergingOfInnerclasses() {
         UnresolvedNode[] nodes = createNodes("a:s:A -> b c a$1; a$1:s -> b d");
 
         AtomicVertex[] graph = GraphBuilder.createGraph(nodes, false);
@@ -67,8 +64,7 @@ public class GraphBuilderTest {
     }
 
     @Test
-    public void testMergingOfInnerclasses()
-    {
+    public void testMergingOfInnerclasses() {
         UnresolvedNode[] nodes = createNodes("a:s:A -> b c a$1; a$1:s -> b d");
 
         AtomicVertex[] graph = GraphBuilder.createGraph(nodes, true);
@@ -83,34 +79,29 @@ public class GraphBuilderTest {
         assertEquals(ClassAttributes.ABSTRACT_CLASS, attributes.getType());
     }
 
-    private UnresolvedNode[] createNodes(String description)
-    {
+    private UnresolvedNode[] createNodes(String description) {
         List<UnresolvedNode> nodes = new ArrayList<UnresolvedNode>();
         StringTokenizer tokenizer = new StringTokenizer(description, ";");
-        while (tokenizer.hasMoreTokens())
-        {
+        while (tokenizer.hasMoreTokens()) {
             nodes.add(createNode(tokenizer.nextToken().trim()));
         }
         return (UnresolvedNode[]) nodes.toArray(new UnresolvedNode[nodes.size()]);
     }
 
-    private UnresolvedNode createNode(String description)
-    {
+    private UnresolvedNode createNode(String description) {
         UnresolvedNode node = new UnresolvedNode();
         int indexOfArrow = description.indexOf("->");
 
         String links = description.substring(indexOfArrow + 2).trim();
         StringTokenizer tokenizer = new StringTokenizer(links);
-        while (tokenizer.hasMoreTokens())
-        {
+        while (tokenizer.hasMoreTokens()) {
             node.addLinkTo(tokenizer.nextToken());
         }
         String attributes = description.substring(0, indexOfArrow).trim();
         tokenizer = new StringTokenizer(attributes, ":");
         String name = tokenizer.nextToken();
         String source = tokenizer.nextToken().trim();
-        if (source.length() == 0)
-        {
+        if (source.length() == 0) {
             source = null;
         }
         boolean a = tokenizer.hasMoreTokens() && "A".equals(tokenizer.nextToken());

@@ -35,35 +35,26 @@ import org.netmelody.neoclassycle.graph.StrongComponent;
  * 
  * @author Franz-Josef Elmer
  */
-public abstract class XMLAtomicVertexRenderer implements AtomicVertexRenderer
-{
+public abstract class XMLAtomicVertexRenderer implements AtomicVertexRenderer {
     /**
      * Renderes the specified vertex. It is assumed that the vertex attributes
      * are of the type {@link org.netmelody.neoclassycle.ClassAttributes}.
      * 
      * @return the rendered vertex.
      */
-    public String render(AtomicVertex vertex, StrongComponent cycle,
-            int layerIndex)
-    {
+    public String render(AtomicVertex vertex, StrongComponent cycle, int layerIndex) {
         StringBuffer result = new StringBuffer();
         result.append(getVertexRenderer().render(vertex, cycle, layerIndex));
-        MessageFormat format = new MessageFormat("      <" + getRefElement()
-                + " name=\"{0}\"" + " type=\"{1}\"/>\n");
+        MessageFormat format = new MessageFormat("      <" + getRefElement() + " name=\"{0}\"" + " type=\"{1}\"/>\n");
         String[] values = new String[2];
-        for (int i = 0, n = vertex.getNumberOfIncomingArcs(); i < n; i++)
-        {
-            values[0] = ((NameAttributes) vertex.getTailVertex(i).getAttributes())
-                    .getName();
+        for (int i = 0, n = vertex.getNumberOfIncomingArcs(); i < n; i++) {
+            values[0] = ((NameAttributes) vertex.getTailVertex(i).getAttributes()).getName();
             values[1] = "usedBy";
             format.format(values, result, null);
         }
-        for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++)
-        {
-            values[0] = ((NameAttributes) vertex.getHeadVertex(i).getAttributes())
-                    .getName();
-            values[1] = ((AtomicVertex) vertex.getHeadVertex(i)).isGraphVertex()
-                    ? "usesInternal" : "usesExternal";
+        for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) {
+            values[0] = ((NameAttributes) vertex.getHeadVertex(i).getAttributes()).getName();
+            values[1] = ((AtomicVertex) vertex.getHeadVertex(i)).isGraphVertex() ? "usesInternal" : "usesExternal";
             format.format(values, result, null);
         }
         result.append("    </").append(getElement()).append(">\n");

@@ -30,8 +30,7 @@ package org.netmelody.neoclassycle;
  * 
  * @author Franz-Josef Elmer
  */
-public class AnalyserCommandLine extends CommandLine
-{
+public class AnalyserCommandLine extends CommandLine {
     private static final String XML_FILE = "-xmlFile=";
     private static final String CSV_FILE = "-csvFile=";
     private static final String TITLE = "-title=";
@@ -43,92 +42,72 @@ public class AnalyserCommandLine extends CommandLine
     private String _xmlFile;
     private String _csvFile;
 
-    public AnalyserCommandLine(String[] args)
-    {
+    public AnalyserCommandLine(String[] args) {
         super(args);
-        if (_title == null && _classFiles.length > 0)
-        {
+        if (_title == null && _classFiles.length > 0) {
             _title = _classFiles[0];
         }
     }
 
-    protected void handleOption(String argument)
-    {
-        if (argument.equals("-raw"))
-        {
+    protected void handleOption(String argument) {
+        if (argument.equals("-raw")) {
             _raw = true;
         }
-        else if (argument.equals("-packagesOnly"))
-        {
+        else if (argument.equals("-packagesOnly")) {
             _packagesOnly = true;
         }
-        else if (argument.equals("-cycles"))
-        {
+        else if (argument.equals("-cycles")) {
             _cycles = true;
         }
-        else if (argument.equals("-strong"))
-        {
+        else if (argument.equals("-strong")) {
             _strong = true;
         }
-        else if (argument.startsWith(TITLE))
-        {
+        else if (argument.startsWith(TITLE)) {
             _title = argument.substring(TITLE.length());
-            if (_title.length() == 0)
-            {
+            if (_title.length() == 0) {
                 _valid = false;
             }
         }
-        else if (argument.startsWith(XML_FILE))
-        {
+        else if (argument.startsWith(XML_FILE)) {
             _xmlFile = argument.substring(XML_FILE.length());
-            if (_xmlFile.length() == 0)
-            {
+            if (_xmlFile.length() == 0) {
                 _valid = false;
             }
         }
-        else if (argument.startsWith(CSV_FILE))
-        {
+        else if (argument.startsWith(CSV_FILE)) {
             _csvFile = argument.substring(CSV_FILE.length());
-            if (_csvFile.length() == 0)
-            {
+            if (_csvFile.length() == 0) {
                 _valid = false;
             }
         }
-        else
-        {
+        else {
             super.handleOption(argument);
         }
     }
 
     /** Returns the usage of correct command line arguments and options. */
-    public String getUsage()
-    {
-        return "[-raw] [-packagesOnly] [-cycles|-strong] "
-                + "[" + XML_FILE + "<file>] [" + CSV_FILE + "<file>] "
-                + "[" + TITLE + "<title>] " + super.getUsage();
+    public String getUsage() {
+        return "[-raw] [-packagesOnly] [-cycles|-strong] " + "[" + XML_FILE + "<file>] [" + CSV_FILE + "<file>] " + "[" + TITLE
+                + "<title>] " + super.getUsage();
     }
 
     /** Returns <tt>true</tt> if the option <tt>-cycles</tt> has been set. */
-    public boolean isCycles()
-    {
+    public boolean isCycles() {
         return _cycles;
     }
 
     /** Returns <tt>true</tt> if the option <tt>-package</tt> has been set. */
-    public boolean isPackagesOnly()
-    {
+    public boolean isPackagesOnly() {
         return _packagesOnly;
     }
 
     /** Returns <tt>true</tt> if the option <tt>-raw</tt> has been set. */
-    public boolean isRaw()
-    {
+    public boolean isRaw() {
         return _raw;
     }
 
     /** Returns <tt>true</tt> if the option <tt>-strong</tt> has been set. */
-    public boolean isStrong()
-    {
+    public boolean isStrong() {
         return _strong;
     }
 
@@ -138,8 +117,7 @@ public class AnalyserCommandLine extends CommandLine
      * 
      * @return <tt>null</tt> if undefined.
      */
-    public String getCsvFile()
-    {
+    public String getCsvFile() {
         return _csvFile;
     }
 
@@ -149,8 +127,7 @@ public class AnalyserCommandLine extends CommandLine
      * 
      * @return String
      */
-    public String getTitle()
-    {
+    public String getTitle() {
         return _title;
     }
 
@@ -160,8 +137,7 @@ public class AnalyserCommandLine extends CommandLine
      * 
      * @return <tt>null</tt> if undefined.
      */
-    public String getXmlFile()
-    {
+    public String getXmlFile() {
         return _xmlFile;
     }
 }

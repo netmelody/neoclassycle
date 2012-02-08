@@ -27,7 +27,6 @@ package org.netmelody.neoclassycle.dependency;
 /**
  * @author Franz-Josef Elmer
  */
-public interface PreferenceFactory
-{
+public interface PreferenceFactory {
     public Preference get(String key);
 }

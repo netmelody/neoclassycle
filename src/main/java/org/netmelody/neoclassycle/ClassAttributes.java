@@ -37,9 +37,7 @@ package org.netmelody.neoclassycle;
  */
 public class ClassAttributes extends NameAndSourceAttributes {
     /** Type constant. */
-    public static final String INTERFACE = "interface",
-            ABSTRACT_CLASS = "abstract class",
-            CLASS = "class",
+    public static final String INTERFACE = "interface", ABSTRACT_CLASS = "abstract class", CLASS = "class",
             UNKNOWN = "unknown external class";
 
     private final String _type;
@@ -61,8 +59,7 @@ public class ClassAttributes extends NameAndSourceAttributes {
      */
     public ClassAttributes(String name, String source, String type, int size) {
         super(name);
-        if (source != null)
-        {
+        if (source != null) {
             addSource(source);
         }
         _type = type;
@@ -81,8 +78,7 @@ public class ClassAttributes extends NameAndSourceAttributes {
      *            Size of the class file.
      * @return a new instance.
      */
-    public static ClassAttributes createInterface(String name, String source,
-            int size) {
+    public static ClassAttributes createInterface(String name, String source, int size) {
         return new ClassAttributes(name, source, INTERFACE, size);
     }
 
@@ -97,8 +93,7 @@ public class ClassAttributes extends NameAndSourceAttributes {
      *            Size of the class file.
      * @return a new instance.
      */
-    public static ClassAttributes createAbstractClass(String name, String source,
-            int size) {
+    public static ClassAttributes createAbstractClass(String name, String source, int size) {
         return new ClassAttributes(name, source, ABSTRACT_CLASS, size);
     }
 
@@ -113,8 +108,7 @@ public class ClassAttributes extends NameAndSourceAttributes {
      *            Size of the class file.
      * @return a new instance.
      */
-    public static ClassAttributes createClass(String name, String source,
-            int size) {
+    public static ClassAttributes createClass(String name, String source, int size) {
         return new ClassAttributes(name, source, CLASS, size);
     }
 
@@ -159,8 +153,7 @@ public class ClassAttributes extends NameAndSourceAttributes {
             buffer.append(" (").append(_size).append(" bytes)");
         }
         String sources = getSources();
-        if (sources.length() > 0)
-        {
+        if (sources.length() > 0) {
             buffer.append(" sources: ").append(sources);
         }
         return new String(buffer);

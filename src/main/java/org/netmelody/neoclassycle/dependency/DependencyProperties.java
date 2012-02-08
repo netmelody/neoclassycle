@@ -34,32 +34,26 @@ final class DependencyProperties {
     private final Map _defaultProperties;
     private final Map _properties = new HashMap();
 
-    DependencyProperties()
-    {
+    DependencyProperties() {
         this(new HashMap());
     }
 
-    DependencyProperties(Map defaultProperties)
-    {
+    DependencyProperties(Map defaultProperties) {
         _defaultProperties = defaultProperties;
     }
 
-    String getProperty(String name)
-    {
+    String getProperty(String name) {
         String result = (String) _properties.get(name);
-        if (result == null)
-        {
+        if (result == null) {
             Object value = _defaultProperties.get(name);
-            if (value instanceof String)
-            {
+            if (value instanceof String) {
                 result = (String) value;
             }
         }
         return result;
     }
 
-    void setProperty(String name, String value)
-    {
+    void setProperty(String name, String value) {
         _properties.put(name, value);
     }
 }

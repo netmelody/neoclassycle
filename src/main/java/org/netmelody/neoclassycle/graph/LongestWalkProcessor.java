@@ -92,8 +92,7 @@ public class LongestWalkProcessor extends GraphProcessor {
     protected void finishProcessing(Vertex[] graph) {
         Arrays.sort(graph, new Comparator() {
             public int compare(Object obj1, Object obj2) {
-                return ((StrongComponent) obj1).getLongestWalk()
-                        - ((StrongComponent) obj2).getLongestWalk();
+                return ((StrongComponent) obj1).getLongestWalk() - ((StrongComponent) obj2).getLongestWalk();
             }
         });
     }
@@ -110,8 +109,7 @@ public class LongestWalkProcessor extends GraphProcessor {
             return (StrongComponent) vertex;
         }
         else {
-            throw new IllegalArgumentException(
-                    vertex + " is not an instance of StrongComponent");
+            throw new IllegalArgumentException(vertex + " is not an instance of StrongComponent");
         }
     }
 } // class

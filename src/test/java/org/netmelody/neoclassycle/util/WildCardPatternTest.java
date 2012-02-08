@@ -132,12 +132,10 @@ public class WildCardPatternTest {
     }
 
     private void match(String pattern, String string) {
-        assertTrue("'" + string + "' expected to match '" + pattern + "'",
-                new WildCardPattern(pattern).matches(string));
+        assertTrue("'" + string + "' expected to match '" + pattern + "'", new WildCardPattern(pattern).matches(string));
     }
 
     private void matchNot(String pattern, String string) {
-        assertTrue("'" + string + "' expected not match '" + pattern + "'",
-                !new WildCardPattern(pattern).matches(string));
+        assertTrue("'" + string + "' expected not match '" + pattern + "'", !new WildCardPattern(pattern).matches(string));
     }
 }

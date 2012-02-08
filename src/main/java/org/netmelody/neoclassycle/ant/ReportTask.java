@@ -100,15 +100,11 @@ import org.netmelody.neoclassycle.Analyser;
  * @author Boris Gruschko
  * @author Franz-Josef Elmer
  */
-public class ReportTask extends ClassycleTask
-{
-    public static final String TYPE_RAW = "raw",
-            TYPE_CSV = "csv",
-            TYPE_XML = "xml";
+public class ReportTask extends ClassycleTask {
+    public static final String TYPE_RAW = "raw", TYPE_CSV = "csv", TYPE_XML = "xml";
     private static final HashSet TYPES = new HashSet();
 
-    static
-    {
+    static {
         TYPES.add(TYPE_RAW);
         TYPES.add(TYPE_CSV);
         TYPES.add(TYPE_XML);
@@ -118,62 +114,47 @@ public class ReportTask extends ClassycleTask
     private String _reportType = TYPE_XML;
     private String _title;
 
-    public void setPackagesOnly(boolean packagesOnly)
-    {
+    public void setPackagesOnly(boolean packagesOnly) {
         _packagesOnly = packagesOnly;
     }
 
-    public void setReportType(String csvFile)
-    {
+    public void setReportType(String csvFile) {
         _reportType = csvFile;
     }
 
-    public void setTitle(String title)
-    {
+    public void setTitle(String title) {
         _title = title;
     }
 
-    public void execute() throws BuildException
-    {
+    public void execute() throws BuildException {
         super.execute();
 
-        if (!TYPES.contains(_reportType))
-        {
-            throw new BuildException("invalid attribute 'reportType': "
-                    + _reportType);
+        if (!TYPES.contains(_reportType)) {
+            throw new BuildException("invalid attribute 'reportType': " + _reportType);
         }
-        if (_reportFile == null)
-        {
+        if (_reportFile == null) {
             throw new BuildException("missing attribute 'reportFile'.");
         }
 
         String[] classFiles = getClassFileNames();
-        if (classFiles.length > 0 && _title == null)
-        {
+        if (classFiles.length > 0 && _title == null) {
             _title = classFiles[0];
         }
-        Analyser analyser = new Analyser(classFiles, getPattern(),
-                getReflectionPattern(),
-                isMergeInnerClasses());
-        try
-        {
+        Analyser analyser = new Analyser(classFiles, getPattern(), getReflectionPattern(), isMergeInnerClasses());
+        try {
             analyser.readAndAnalyse(_packagesOnly);
             PrintWriter writer = new PrintWriter(new FileWriter(_reportFile));
-            if (_reportType.equals(TYPE_XML))
-            {
+            if (_reportType.equals(TYPE_XML)) {
                 analyser.printXML(_title, _packagesOnly, writer);
             }
-            else if (_reportType.equals(TYPE_CSV))
-            {
+            else if (_reportType.equals(TYPE_CSV)) {
                 analyser.printCSV(writer);
             }
-            else if (_reportType.equals(TYPE_RAW))
-            {
+            else if (_reportType.equals(TYPE_RAW)) {
                 analyser.printRaw(writer);
             }
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             throw new BuildException(e);
         }
     }

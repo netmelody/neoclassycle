@@ -53,8 +53,7 @@ import java.util.StringTokenizer;
  * 
  * @author Franz-Josef Elmer
  */
-public class WildCardPattern implements StringPattern
-{
+public class WildCardPattern implements StringPattern {
     private static final String WILD_CARD = "*";
 
     /**
@@ -70,18 +69,13 @@ public class WildCardPattern implements StringPattern
      *            Recognized delimiters.
      * @return
      */
-    public static StringPattern createFromsPatterns(String patterns,
-            String delimiters)
-    {
-        if (delimiters.indexOf(WILD_CARD) >= 0)
-        {
-            throw new IllegalArgumentException("No wild card '" + WILD_CARD
-                    + "' are allowed as delimiters: " + delimiters);
+    public static StringPattern createFromsPatterns(String patterns, String delimiters) {
+        if (delimiters.indexOf(WILD_CARD) >= 0) {
+            throw new IllegalArgumentException("No wild card '" + WILD_CARD + "' are allowed as delimiters: " + delimiters);
         }
         OrStringPattern result = new OrStringPattern();
         StringTokenizer tokenizer = new StringTokenizer(patterns, delimiters);
-        while (tokenizer.hasMoreTokens())
-        {
+        while (tokenizer.hasMoreTokens()) {
             result.appendPattern(new WildCardPattern(tokenizer.nextToken().trim()));
         }
         return result;
@@ -99,15 +93,13 @@ public class WildCardPattern implements StringPattern
      *            Pattern which may contain '*' wildcard characters. Must be not
      *            <tt>null</tt>.
      */
-    public WildCardPattern(String pattern)
-    {
+    public WildCardPattern(String pattern) {
         _pattern = pattern;
         _startsWithAnything = pattern.startsWith(WILD_CARD);
         _endsWithAnything = pattern.endsWith(WILD_CARD);
         StringTokenizer tokenizer = new StringTokenizer(pattern, WILD_CARD);
         _constantParts = new String[tokenizer.countTokens()];
-        for (int i = 0; i < _constantParts.length; i++)
-        {
+        for (int i = 0; i < _constantParts.length; i++) {
             _constantParts[i] = tokenizer.nextToken();
         }
     }
@@ -115,32 +107,24 @@ public class WildCardPattern implements StringPattern
     /**
      * Returns the pattern as delivered to the constructor.
      */
-    public String toString()
-    {
+    public String toString() {
         return _pattern;
     }
 
     /**
      * @return <tt>false</tt> if <tt>string == null</tt>.
      */
-    public boolean matches(String string)
-    {
+    public boolean matches(String string) {
         return string == null ? false : matches(string, 0, 0);
     }
 
-    private boolean matches(String string, int indexInString,
-            int indexInConstantParts)
-    {
+    private boolean matches(String string, int indexInString, int indexInConstantParts) {
         boolean result = true;
-        if (indexInConstantParts < _constantParts.length)
-        {
+        if (indexInConstantParts < _constantParts.length) {
             String constantPart = _constantParts[indexInConstantParts];
-            do
-            {
+            do {
                 int index = string.indexOf(constantPart, indexInString);
-                if (index < 0
-                        || (indexInString == 0 && !_startsWithAnything && index > 0))
-                {
+                if (index < 0 || (indexInString == 0 && !_startsWithAnything && index > 0)) {
                     result = false;
                     break;
                 }
@@ -149,8 +133,7 @@ public class WildCardPattern implements StringPattern
             }
             while (result == false);
         }
-        else
-        {
+        else {
             result = result && (_endsWithAnything || indexInString == string.length());
         }
         return result;

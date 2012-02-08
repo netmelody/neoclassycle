@@ -69,8 +69,7 @@ public class StrongComponent extends Vertex {
         }
 
         public Vertex[] getCenterVertices() {
-            return (Vertex[]) _centerVertices.toArray(
-                    new Vertex[_centerVertices.size()]);
+            return (Vertex[]) _centerVertices.toArray(new Vertex[_centerVertices.size()]);
         }
 
         void addVertex(Vertex vertex) {
@@ -78,8 +77,7 @@ public class StrongComponent extends Vertex {
         }
 
         public Vertex[] getBestFragmenters() {
-            return (Vertex[]) _bestFragmenters.toArray(
-                    new Vertex[_bestFragmenters.size()]);
+            return (Vertex[]) _bestFragmenters.toArray(new Vertex[_bestFragmenters.size()]);
         }
 
         void addFragmenter(Vertex vertex) {
@@ -111,19 +109,15 @@ public class StrongComponent extends Vertex {
 
             _bestFragmentSize = Integer.MAX_VALUE;
             for (int i = 0; i < maximumFragmentSizes.length; i++) {
-                _bestFragmentSize = Math.min(_bestFragmentSize,
-                        maximumFragmentSizes[i]);
+                _bestFragmentSize = Math.min(_bestFragmentSize, maximumFragmentSizes[i]);
             }
         }
 
-        public int compareTo(Object object)
-        {
+        public int compareTo(Object object) {
             int result = 1;
-            if (object instanceof GeometryAttributes && _bestFragmenters.size() > 0)
-            {
+            if (object instanceof GeometryAttributes && _bestFragmenters.size() > 0) {
                 ArrayList list = ((GeometryAttributes) object)._bestFragmenters;
-                if (list.size() > 0)
-                {
+                if (list.size() > 0) {
                     Attributes attributes = ((Vertex) _bestFragmenters.get(0)).getAttributes();
                     Attributes objectAttributes = ((Vertex) list.get(0)).getAttributes();
                     result = attributes.compareTo(objectAttributes);
@@ -188,8 +182,7 @@ public class StrongComponent extends Vertex {
         }
         attributes.setEccentricities(eccentricities);
         attributes.setGirth(girth);
-        attributes.setMaximumFragmentSizes(
-                calculateMaximumFragmentSizes(indexMap));
+        attributes.setMaximumFragmentSizes(calculateMaximumFragmentSizes(indexMap));
 
         // Obtain center vertices and best fragmenters
         for (int i = 0, r = attributes.getRadius(), s = attributes.getBestFragmentSize(); i < distances.length; i++) {
@@ -267,8 +260,7 @@ public class StrongComponent extends Vertex {
             StrongComponent[] fragments = processor.getStrongComponents();
             maximumFragmentSizes[i] = 0;
             for (int j = 0; j < fragments.length; j++) {
-                maximumFragmentSizes[i] = Math.max(maximumFragmentSizes[i],
-                        fragments[j].getNumberOfVertices());
+                maximumFragmentSizes[i] = Math.max(maximumFragmentSizes[i], fragments[j].getNumberOfVertices());
             }
             graph[i].setDefaultValueOfGraphVertexFlag(true);
         }

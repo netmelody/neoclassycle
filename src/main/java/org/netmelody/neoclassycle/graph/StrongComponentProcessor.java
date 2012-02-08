@@ -111,9 +111,7 @@ public class StrongComponentProcessor extends GraphProcessor {
         final AtomicVertex atomicVertex = castAsAtomicVertex(vertex);
         if (atomicVertex.getLow() == atomicVertex.getOrder()) {
             StrongComponent component = new StrongComponent();
-            while (!_vertexStack.isEmpty()
-                    && ((AtomicVertex) _vertexStack.peek()).getOrder()
-                    >= atomicVertex.getOrder()) {
+            while (!_vertexStack.isEmpty() && ((AtomicVertex) _vertexStack.peek()).getOrder() >= atomicVertex.getOrder()) {
                 AtomicVertex vertexOfComponent = (AtomicVertex) _vertexStack.pop();
                 component.addVertex(vertexOfComponent);
                 _vertexToComponents.put(vertexOfComponent, component);
@@ -164,8 +162,7 @@ public class StrongComponentProcessor extends GraphProcessor {
             return (AtomicVertex) vertex;
         }
         else {
-            throw new IllegalArgumentException(
-                    vertex + " is not an instance of AtomicVertex");
+            throw new IllegalArgumentException(vertex + " is not an instance of AtomicVertex");
         }
     }
 } // class

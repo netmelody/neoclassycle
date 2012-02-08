@@ -61,8 +61,7 @@ public abstract class RefConstant extends Constant {
 
     /** Pretty printing. Will be used by <tt>toString</tt> of the subclasses. */
     protected String toString(String constantType) {
-        return constantType + ": Class = " + getClassConstant().getName()
-                + ", Name = " + getNameAndType().getName()
-                + ", Descriptor = " + getNameAndType().getDescriptor();
+        return constantType + ": Class = " + getClassConstant().getName() + ", Name = " + getNameAndType().getName() + ", Descriptor = "
+                + getNameAndType().getDescriptor();
     }
 } // class

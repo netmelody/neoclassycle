@@ -1,6 +1,5 @@
 package example;
 
-public class A
-{
+public class A {
     String s = "hello";
 }

@@ -32,31 +32,27 @@ import java.util.List;
  * 
  * @author Franz-Josef Elmer
  */
-public class ResultContainer implements Result
-{
+public class ResultContainer implements Result {
     private final List<Result> _list = new ArrayList<Result>();
 
     /**
      * Adds a result.
      */
-    public void add(Result result)
-    {
+    public void add(Result result) {
         _list.add(result);
     }
 
     /**
      * Returns the number of added results.
      */
-    public int getNumberOfResults()
-    {
+    public int getNumberOfResults() {
         return _list.size();
     }
 
     /**
      * Returns the result with specified index.
      */
-    public Result getResult(int index)
-    {
+    public Result getResult(int index) {
         return _list.get(index);
     }
 
@@ -64,23 +60,18 @@ public class ResultContainer implements Result
      * Returns <code>true</code> if all added {@link Result} instances returned
      * <code>true</code>.
      */
-    public boolean isOk()
-    {
-        for (int i = 0, n = _list.size(); i < n; i++)
-        {
-            if (getResult(i).isOk() == false)
-            {
+    public boolean isOk() {
+        for (int i = 0, n = _list.size(); i < n; i++) {
+            if (getResult(i).isOk() == false) {
                 return false;
             }
         }
         return true;
     }
 
-    public String toString()
-    {
+    public String toString() {
         StringBuffer buffer = new StringBuffer();
-        for (int i = 0, n = getNumberOfResults(); i < n; i++)
-        {
+        for (int i = 0, n = getNumberOfResults(); i < n; i++) {
             buffer.append(getResult(i));
         }
         return new String(buffer);

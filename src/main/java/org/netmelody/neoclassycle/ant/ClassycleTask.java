@@ -44,8 +44,7 @@ import org.netmelody.neoclassycle.util.WildCardPattern;
  * 
  * @author Franz-Josef Elmer
  */
-public abstract class ClassycleTask extends Task
-{
+public abstract class ClassycleTask extends Task {
     private boolean _mergeInnerClasses;
     private StringPattern _includingClasses = new TrueStringPattern();
     private StringPattern _excludingClasses = new TrueStringPattern();
@@ -53,61 +52,48 @@ public abstract class ClassycleTask extends Task
     private LinkedList _fileSets = new LinkedList();
     protected File _reportFile;
 
-    public void setMergeInnerClasses(boolean mergeInnerClasses)
-    {
+    public void setMergeInnerClasses(boolean mergeInnerClasses) {
         _mergeInnerClasses = mergeInnerClasses;
     }
 
-    public void setIncludingClasses(String patternList)
-    {
+    public void setIncludingClasses(String patternList) {
         _includingClasses = WildCardPattern.createFromsPatterns(patternList, ", ");
     }
 
-    public void setExcludingClasses(String patternList)
-    {
-        _excludingClasses = new NotStringPattern(
-                WildCardPattern.createFromsPatterns(patternList, ", "));
+    public void setExcludingClasses(String patternList) {
+        _excludingClasses = new NotStringPattern(WildCardPattern.createFromsPatterns(patternList, ", "));
     }
 
-    public void setReflectionPattern(String patternList)
-    {
-        if ("".equals(patternList))
-        {
+    public void setReflectionPattern(String patternList) {
+        if ("".equals(patternList)) {
             _reflectionPattern = new TrueStringPattern();
         }
-        else
-        {
+        else {
             _reflectionPattern = WildCardPattern.createFromsPatterns(patternList, ", ");
         }
     }
 
-    public void addConfiguredFileset(FileSet set)
-    {
+    public void addConfiguredFileset(FileSet set) {
         _fileSets.add(set);
     }
 
-    public void execute() throws BuildException
-    {
+    public void execute() throws BuildException {
         super.execute();
 
-        if (_fileSets.size() == 0)
-        {
+        if (_fileSets.size() == 0) {
             throw new BuildException("at least one file set is required");
         }
     }
 
-    protected String[] getClassFileNames()
-    {
+    protected String[] getClassFileNames() {
         ArrayList fileNames = new ArrayList();
         String fileSeparator = System.getProperty("file.separator");
-        for (Iterator i = _fileSets.iterator(); i.hasNext();)
-        {
+        for (Iterator i = _fileSets.iterator(); i.hasNext();) {
             FileSet set = (FileSet) i.next();
             DirectoryScanner scanner = set.getDirectoryScanner(getProject());
             String path = scanner.getBasedir().getAbsolutePath();
             String[] localFiles = scanner.getIncludedFiles();
-            for (int j = 0; j < localFiles.length; j++)
-            {
+            for (int j = 0; j < localFiles.length; j++) {
                 fileNames.add(path + fileSeparator + localFiles[j]);
             }
         }
@@ -115,26 +101,22 @@ public abstract class ClassycleTask extends Task
         return (String[]) fileNames.toArray(classFiles);
     }
 
-    protected StringPattern getPattern()
-    {
+    protected StringPattern getPattern() {
         AndStringPattern pattern = new AndStringPattern();
         pattern.appendPattern(_includingClasses);
         pattern.appendPattern(_excludingClasses);
         return pattern;
     }
 
-    protected StringPattern getReflectionPattern()
-    {
+    protected StringPattern getReflectionPattern() {
         return _reflectionPattern;
     }
 
-    protected boolean isMergeInnerClasses()
-    {
+    protected boolean isMergeInnerClasses() {
         return _mergeInnerClasses;
     }
 
-    public void setReportFile(File xmlFile)
-    {
+    public void setReportFile(File xmlFile) {
         _reportFile = xmlFile;
     }
 

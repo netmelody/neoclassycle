@@ -29,31 +29,24 @@ import org.netmelody.neoclassycle.renderer.XMLStrongComponentRenderer;
 /**
  * @author Franz-Josef Elmer
  */
-public class XMLPackageStrongComponentRenderer
-        extends XMLStrongComponentRenderer
-{
-    public XMLPackageStrongComponentRenderer(int minimumSize)
-    {
+public class XMLPackageStrongComponentRenderer extends XMLStrongComponentRenderer {
+    public XMLPackageStrongComponentRenderer(int minimumSize) {
         super(minimumSize);
     }
 
-    protected String getNodesElementName()
-    {
+    protected String getNodesElementName() {
         return "packages";
     }
 
-    protected String getNodeElementName()
-    {
+    protected String getNodeElementName() {
         return "packageRef";
     }
 
-    protected String getCenterNodesElementName()
-    {
+    protected String getCenterNodesElementName() {
         return "centerPackages";
     }
 
-    protected String getStrongComponentElementName()
-    {
+    protected String getStrongComponentElementName() {
         return "packageCycle";
     }
 

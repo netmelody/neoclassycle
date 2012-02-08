@@ -56,48 +56,39 @@ import java.util.HashMap;
  * 
  * @author Franz-Josef Elmer
  */
-public class DefaultPreferenceFactory implements PreferenceFactory
-{
+public class DefaultPreferenceFactory implements PreferenceFactory {
     public static final Preference ONLY_SHORTEST_PATHS = new DefaultPreference("onlyShortestPaths");
     public static final Preference ALL_PATHS = new DefaultPreference("allPaths");
     public static final Preference ALL_RESULTS = new DefaultPreference("allResults");
     public static final Preference ONLY_FAILURES = new DefaultPreference("onlyFailures");
 
-    private static class DefaultPreference implements Preference
-    {
+    private static class DefaultPreference implements Preference {
         private static final HashMap REPOSITORY = new HashMap();
 
-        public static Preference getPreference(String key)
-        {
+        public static Preference getPreference(String key) {
             return (Preference) REPOSITORY.get(key);
         }
 
         private final String _key;
 
-        protected DefaultPreference(String key)
-        {
+        protected DefaultPreference(String key) {
             _key = key;
-            if (REPOSITORY.containsKey(key))
-            {
-                throw new IllegalArgumentException(
-                        "There exists already an instance for '" + key + "'.");
+            if (REPOSITORY.containsKey(key)) {
+                throw new IllegalArgumentException("There exists already an instance for '" + key + "'.");
             }
             REPOSITORY.put(key, this);
         }
 
-        public final String getKey()
-        {
+        public final String getKey() {
             return _key;
         }
 
-        public String toString()
-        {
+        public String toString() {
             return getKey();
         }
     }
 
-    public Preference get(String key)
-    {
+    public Preference get(String key) {
         return DefaultPreference.getPreference(key);
     }
 

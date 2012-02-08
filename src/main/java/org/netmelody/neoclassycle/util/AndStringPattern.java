@@ -29,13 +29,11 @@ package org.netmelody.neoclassycle.util;
  * 
  * @author Franz-Josef Elmer
  */
-public class AndStringPattern extends StringPatternSequence
-{
+public class AndStringPattern extends StringPatternSequence {
     /**
      * Creates instance with specified patterns.
      */
-    public AndStringPattern(StringPattern... pattern)
-    {
+    public AndStringPattern(StringPattern... pattern) {
         super(pattern);
     }
 
@@ -43,13 +41,10 @@ public class AndStringPattern extends StringPatternSequence
      * Return <code>false</code> if a pattern in the sequence returns
      * <code>false</code>. Otherwise <code>true</code> is returned.
      */
-    public boolean matches(String string)
-    {
+    public boolean matches(String string) {
         boolean result = true;
-        for (int i = 0, n = _patterns.size(); i < n; i++)
-        {
-            if (!((StringPattern) _patterns.get(i)).matches(string))
-            {
+        for (int i = 0, n = _patterns.size(); i < n; i++) {
+            if (!((StringPattern) _patterns.get(i)).matches(string)) {
                 result = false;
                 break;
             }
@@ -57,8 +52,7 @@ public class AndStringPattern extends StringPatternSequence
         return result;
     }
 
-    protected String getOperatorSymbol()
-    {
+    protected String getOperatorSymbol() {
         return " & ";
     }
 }

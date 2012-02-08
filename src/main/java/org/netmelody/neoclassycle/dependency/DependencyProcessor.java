@@ -32,8 +32,7 @@ import org.netmelody.neoclassycle.graph.AtomicVertex;
  * 
  * @author Franz-Josef Elmer
  */
-public class DependencyProcessor
-{
+public class DependencyProcessor {
     private final Statement[] _statements;
     private int _index;
 
@@ -51,13 +50,8 @@ public class DependencyProcessor
      * @throws IllegalArgumentException
      *             if <tt>dependencyDefinition</tt> is invalid.
      */
-    public DependencyProcessor(String dependencyDefinition,
-            DependencyProperties properties,
-            ResultRenderer renderer)
-    {
-        _statements = new DependencyDefinitionParser(dependencyDefinition,
-                properties,
-                renderer).getStatements();
+    public DependencyProcessor(String dependencyDefinition, DependencyProperties properties, ResultRenderer renderer) {
+        _statements = new DependencyDefinitionParser(dependencyDefinition, properties, renderer).getStatements();
     }
 
     /**

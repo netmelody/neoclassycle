@@ -32,8 +32,7 @@ import java.util.HashSet;
  * 
  * @author Franz-Josef Elmer
  */
-public class PathsFinder
-{
+public class PathsFinder {
     private final VertexCondition _startSetCondition;
     private final VertexCondition _finalSetCondition;
     private final boolean _shortestPathsOnly;
@@ -49,10 +48,7 @@ public class PathsFinder
      * @param shortestPathsOnly
      *            if <code>true</code> only the shortest paths are returned.
      */
-    public PathsFinder(VertexCondition startSetCondition,
-            VertexCondition finalSetCondition,
-            boolean shortestPathsOnly)
-    {
+    public PathsFinder(VertexCondition startSetCondition, VertexCondition finalSetCondition, boolean shortestPathsOnly) {
         this(startSetCondition, finalSetCondition, shortestPathsOnly, false);
     }
 
@@ -68,29 +64,23 @@ public class PathsFinder
      * @param directPathsOnly
      *            if <code>true</code> only paths of length 1 are returned.
      */
-    public PathsFinder(VertexCondition startSetCondition,
-            VertexCondition finalSetCondition,
-            boolean shortestPathsOnly,
-            boolean directPathsOnly)
-    {
+    public PathsFinder(VertexCondition startSetCondition, VertexCondition finalSetCondition, boolean shortestPathsOnly,
+            boolean directPathsOnly) {
         _startSetCondition = startSetCondition;
         _finalSetCondition = finalSetCondition;
         _shortestPathsOnly = shortestPathsOnly;
         _directPathsOnly = directPathsOnly;
     }
 
-    public VertexCondition getFinalSetCondition()
-    {
+    public VertexCondition getFinalSetCondition() {
         return _finalSetCondition;
     }
 
-    public boolean isShortestPathsOnly()
-    {
+    public boolean isShortestPathsOnly() {
         return _shortestPathsOnly;
     }
 
-    public VertexCondition getStartSetCondition()
-    {
+    public VertexCondition getStartSetCondition() {
         return _startSetCondition;
     }
 
@@ -103,49 +93,37 @@ public class PathsFinder
      * @return All vertices including start and end vertices defining the
      *         subgraph with all paths.
      */
-    public AtomicVertex[] findPaths(AtomicVertex[] graph)
-    {
+    public AtomicVertex[] findPaths(AtomicVertex[] graph) {
         prepareGraph(graph);
         HashSet pathVertices = new HashSet();
         HashSet currentPath = new HashSet();
-        for (int i = 0; i < graph.length; i++)
-        {
+        for (int i = 0; i < graph.length; i++) {
             AtomicVertex vertex = graph[i];
-            if (_startSetCondition.isFulfilled(vertex))
-            {
-                if (_directPathsOnly)
-                {
+            if (_startSetCondition.isFulfilled(vertex)) {
+                if (_directPathsOnly) {
                     findDirectPaths(vertex, pathVertices);
                 }
-                else
-                {
+                else {
                     prepareIfFinal(vertex);
                     int pathLength = calculateShortestPath(vertex, currentPath);
-                    if (pathLength < Integer.MAX_VALUE)
-                    {
+                    if (pathLength < Integer.MAX_VALUE) {
                         vertex.setOrder(pathLength);
                         followPaths(vertex, pathVertices);
                     }
                 }
             }
         }
-        return (AtomicVertex[]) pathVertices.toArray(
-                new AtomicVertex[pathVertices.size()]);
+        return (AtomicVertex[]) pathVertices.toArray(new AtomicVertex[pathVertices.size()]);
     }
 
-    private void findDirectPaths(AtomicVertex vertex, HashSet pathVertices)
-    {
-        if (_finalSetCondition.isFulfilled(vertex))
-        {
+    private void findDirectPaths(AtomicVertex vertex, HashSet pathVertices) {
+        if (_finalSetCondition.isFulfilled(vertex)) {
             pathVertices.add(vertex);
         }
-        else
-        {
-            for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++)
-            {
+        else {
+            for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) {
                 Vertex headVertex = vertex.getHeadVertex(i);
-                if (_finalSetCondition.isFulfilled(headVertex))
-                {
+                if (_finalSetCondition.isFulfilled(headVertex)) {
                     pathVertices.add(vertex);
                     pathVertices.add(headVertex);
                 }
@@ -153,41 +131,32 @@ public class PathsFinder
         }
     }
 
-    private void prepareGraph(AtomicVertex[] graph)
-    {
-        for (int i = 0; i < graph.length; i++)
-        {
+    private void prepareGraph(AtomicVertex[] graph) {
+        for (int i = 0; i < graph.length; i++) {
             AtomicVertex vertex = graph[i];
             prepareVertex(vertex);
-            for (int j = 0, n = vertex.getNumberOfOutgoingArcs(); j < n; j++)
-            {
+            for (int j = 0, n = vertex.getNumberOfOutgoingArcs(); j < n; j++) {
                 prepareVertex((AtomicVertex) vertex.getHeadVertex(j));
             }
         }
     }
 
-    private void prepareVertex(AtomicVertex vertex)
-    {
+    private void prepareVertex(AtomicVertex vertex) {
         vertex.reset();
         vertex.setOrder(Integer.MAX_VALUE);
-        if (_startSetCondition.isFulfilled(vertex))
-        {
+        if (_startSetCondition.isFulfilled(vertex)) {
             vertex.visit();
         }
     }
 
-    private int calculateShortestPath(AtomicVertex vertex, HashSet currentPath)
-    {
+    private int calculateShortestPath(AtomicVertex vertex, HashSet currentPath) {
         currentPath.add(vertex);
         int shortestPath = Integer.MAX_VALUE;
-        for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++)
-        {
+        for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) {
             AtomicVertex nextVertex = (AtomicVertex) vertex.getHeadVertex(i);
             prepareIfFinal(nextVertex);
-            int pathLength = _startSetCondition.isFulfilled(nextVertex)
-                    ? Integer.MAX_VALUE : nextVertex.getOrder();
-            if (!currentPath.contains(nextVertex) && !nextVertex.isVisited())
-            {
+            int pathLength = _startSetCondition.isFulfilled(nextVertex) ? Integer.MAX_VALUE : nextVertex.getOrder();
+            if (!currentPath.contains(nextVertex) && !nextVertex.isVisited()) {
                 pathLength = calculateShortestPath(nextVertex, currentPath);
                 nextVertex.setOrder(pathLength);
                 nextVertex.visit();
@@ -195,37 +164,29 @@ public class PathsFinder
             shortestPath = Math.min(shortestPath, pathLength);
         }
         currentPath.remove(vertex);
-        if (shortestPath < Integer.MAX_VALUE)
-        {
+        if (shortestPath < Integer.MAX_VALUE) {
             shortestPath++;
         }
         return shortestPath;
     }
 
-    private void prepareIfFinal(AtomicVertex vertex)
-    {
-        if (_finalSetCondition.isFulfilled(vertex))
-        {
+    private void prepareIfFinal(AtomicVertex vertex) {
+        if (_finalSetCondition.isFulfilled(vertex)) {
             vertex.visit();
             vertex.setOrder(0);
         }
     }
 
-    private void followPaths(AtomicVertex vertex, HashSet pathVertices)
-    {
+    private void followPaths(AtomicVertex vertex, HashSet pathVertices) {
         pathVertices.add(vertex);
         int shortestPathLength = vertex.getOrder() - 1;
-        for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++)
-        {
+        for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++) {
             AtomicVertex nextVertex = (AtomicVertex) vertex.getHeadVertex(i);
             int pathLength = nextVertex.getOrder();
-            if (pathLength < Integer.MAX_VALUE && !pathVertices.contains(nextVertex))
-            {
-                if (!_shortestPathsOnly || pathLength == shortestPathLength)
-                {
+            if (pathLength < Integer.MAX_VALUE && !pathVertices.contains(nextVertex)) {
+                if (!_shortestPathsOnly || pathLength == shortestPathLength) {
                     pathVertices.add(nextVertex);
-                    if (pathLength > 0)
-                    {
+                    if (pathLength > 0) {
                         followPaths(nextVertex, pathVertices);
                     }
                 }

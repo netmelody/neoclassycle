@@ -32,8 +32,7 @@ import org.netmelody.neoclassycle.util.StringPattern;
  * 
  * @author Franz-Josef Elmer
  */
-public class DependencyResult implements Result
-{
+public class DependencyResult implements Result {
     static final String OK = "\tOK";
     static final String DEPENDENCIES_FOUND = "\n  Unexpected dependencies found:";
     private final StringPattern _startSet;
@@ -42,9 +41,7 @@ public class DependencyResult implements Result
     private final AtomicVertex[] _paths;
     private final boolean _ok;
 
-    public DependencyResult(StringPattern startSet, StringPattern finalSet,
-            String statement, AtomicVertex[] paths)
-    {
+    public DependencyResult(StringPattern startSet, StringPattern finalSet, String statement, AtomicVertex[] paths) {
         _startSet = startSet;
         _finalSet = finalSet;
         _statement = statement;
@@ -55,24 +52,21 @@ public class DependencyResult implements Result
     /**
      * Returns <code>true</code> if and only if {@link #getPaths()} is empty.
      */
-    public boolean isOk()
-    {
+    public boolean isOk() {
         return _ok;
     }
 
     /**
      * Returns the statement causing this result.
      */
-    public String getStatement()
-    {
+    public String getStatement() {
         return _statement;
     }
 
     /**
      * Returns the pattern describing the final set.
      */
-    public StringPattern getFinalSet()
-    {
+    public StringPattern getFinalSet() {
         return _finalSet;
     }
 
@@ -81,28 +75,23 @@ public class DependencyResult implements Result
      * 
      * @return an empty array if no unwanted dependencies have been found.
      */
-    public AtomicVertex[] getPaths()
-    {
+    public AtomicVertex[] getPaths() {
         return _paths;
     }
 
     /**
      * Returns the pattern describing the start set.
      */
-    public StringPattern getStartSet()
-    {
+    public StringPattern getStartSet() {
         return _startSet;
     }
 
-    public String toString()
-    {
+    public String toString() {
         StringBuffer buffer = new StringBuffer(_statement);
-        if (_ok)
-        {
+        if (_ok) {
             buffer.append(OK);
         }
-        else
-        {
+        else {
             DependencyPathsRenderer renderer = new DependencyPathsRenderer(_paths, _startSet, _finalSet);
             buffer.append(DEPENDENCIES_FOUND).append(renderer.renderGraph("  "));
         }

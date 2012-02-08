@@ -29,8 +29,7 @@ package org.netmelody.neoclassycle.util;
  * 
  * @author Franz-Josef Elmer
  */
-public interface StringPattern
-{
+public interface StringPattern {
     /**
      * Returns <tt>true</tt> if the specified string matches the pattern.
      * 

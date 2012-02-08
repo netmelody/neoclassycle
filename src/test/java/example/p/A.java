@@ -1,6 +1,5 @@
 package example.p;
 
-public interface A
-{
+public interface A {
     public example.A getA();
 }
