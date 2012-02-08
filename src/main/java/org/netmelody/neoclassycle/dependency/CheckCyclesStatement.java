@@ -52,7 +52,7 @@ public class CheckCyclesStatement implements Statement {
     }
 
     public Result execute(AtomicVertex[] graph) {
-        List filteredGraph = new ArrayList();
+        List<AtomicVertex> filteredGraph = new ArrayList<AtomicVertex>();
         for (int i = 0; i < graph.length; i++) {
             if (_set.matches(((NameAttributes) graph[i].getAttributes()).getName())) {
                 filteredGraph.add(graph[i]);

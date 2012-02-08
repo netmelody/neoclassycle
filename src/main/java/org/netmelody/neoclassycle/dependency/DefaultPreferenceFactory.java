@@ -63,7 +63,7 @@ public class DefaultPreferenceFactory implements PreferenceFactory {
     public static final Preference ONLY_FAILURES = new DefaultPreference("onlyFailures");
 
     private static class DefaultPreference implements Preference {
-        private static final HashMap REPOSITORY = new HashMap();
+        private static final HashMap<String, Preference> REPOSITORY = new HashMap<String, Preference>();
 
         public static Preference getPreference(String key) {
             return (Preference) REPOSITORY.get(key);

@@ -180,16 +180,13 @@ public class XMLResultRenderer extends ResultRenderer {
 
     private DependencyPathRenderer createPathRenderer(final XMLBuilder builder) {
         return new DependencyPathRenderer() {
-            private int _level;
             private boolean _openTag;
 
             public void increaseIndentation() {
                 _openTag = false;
-                _level++;
             }
 
             public void decreaseIndentation() {
-                _level--;
                 if (_openTag) {
                     builder.end();
                 }
@@ -205,7 +202,6 @@ public class XMLResultRenderer extends ResultRenderer {
                 builder.attribute("name", nodeName);
                 _openTag = true;
             }
-
         };
     }
 

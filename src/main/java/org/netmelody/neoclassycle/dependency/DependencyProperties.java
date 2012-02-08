@@ -31,14 +31,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 final class DependencyProperties {
-    private final Map _defaultProperties;
-    private final Map _properties = new HashMap();
+    private final Map<Object, Object> _defaultProperties;
+    private final Map<String, String> _properties = new HashMap<String, String>();
 
     DependencyProperties() {
-        this(new HashMap());
+        this(new HashMap<Object, Object>());
     }
 
-    DependencyProperties(Map defaultProperties) {
+    DependencyProperties(Map<Object, Object> defaultProperties) {
         _defaultProperties = defaultProperties;
     }
 

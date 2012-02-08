@@ -102,7 +102,7 @@ import org.netmelody.neoclassycle.Analyser;
  */
 public class ReportTask extends ClassycleTask {
     public static final String TYPE_RAW = "raw", TYPE_CSV = "csv", TYPE_XML = "xml";
-    private static final HashSet TYPES = new HashSet();
+    private static final HashSet<String> TYPES = new HashSet<String>();
 
     static {
         TYPES.add(TYPE_RAW);

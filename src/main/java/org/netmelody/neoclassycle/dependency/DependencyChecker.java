@@ -55,7 +55,7 @@ public class DependencyChecker {
      * @param renderer
      *            Output renderer for unwanted dependencies found.
      */
-    public DependencyChecker(Analyser analyser, String dependencyDefinition, Map properties, ResultRenderer renderer) {
+    public DependencyChecker(Analyser analyser, String dependencyDefinition, Map<Object, Object> properties, ResultRenderer renderer) {
         _analyser = analyser;
         _renderer = renderer;
         DependencyProperties dp = new DependencyProperties(properties);

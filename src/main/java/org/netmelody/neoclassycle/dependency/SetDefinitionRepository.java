@@ -32,8 +32,8 @@ import org.netmelody.neoclassycle.util.StringPattern;
  * @author Franz-Josef Elmer
  */
 class SetDefinitionRepository {
-    private final HashMap _nameToPatternMap = new HashMap();
-    private final HashMap _patternToNameMap = new HashMap();
+    private final HashMap<String, StringPattern> _nameToPatternMap = new HashMap<String, StringPattern>();
+    private final HashMap<StringPattern, String> _patternToNameMap = new HashMap<StringPattern, String>();
 
     public int getNumberOfDefinitions() {
         return _nameToPatternMap.size();

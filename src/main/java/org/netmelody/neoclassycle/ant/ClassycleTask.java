@@ -49,7 +49,7 @@ public abstract class ClassycleTask extends Task {
     private StringPattern _includingClasses = new TrueStringPattern();
     private StringPattern _excludingClasses = new TrueStringPattern();
     private StringPattern _reflectionPattern;
-    private LinkedList _fileSets = new LinkedList();
+    private LinkedList<FileSet> _fileSets = new LinkedList<FileSet>();
     protected File _reportFile;
 
     public void setMergeInnerClasses(boolean mergeInnerClasses) {
@@ -86,9 +86,9 @@ public abstract class ClassycleTask extends Task {
     }
 
     protected String[] getClassFileNames() {
-        ArrayList fileNames = new ArrayList();
+        ArrayList<String> fileNames = new ArrayList<String>();
         String fileSeparator = System.getProperty("file.separator");
-        for (Iterator i = _fileSets.iterator(); i.hasNext();) {
+        for (Iterator<FileSet> i = _fileSets.iterator(); i.hasNext();) {
             FileSet set = (FileSet) i.next();
             DirectoryScanner scanner = set.getDirectoryScanner(getProject());
             String path = scanner.getBasedir().getAbsolutePath();

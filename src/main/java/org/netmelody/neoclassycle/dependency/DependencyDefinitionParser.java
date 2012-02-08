@@ -67,7 +67,7 @@ public class DependencyDefinitionParser {
     private final ResultRenderer _renderer;
     final SetDefinitionRepository _setDefinitions = new SetDefinitionRepository();
     final LayerDefinitionRepository _layerDefinitions = new LayerDefinitionRepository();
-    private final ArrayList _statements = new ArrayList();
+    private final ArrayList<Statement> _statements = new ArrayList<Statement>();
 
     public DependencyDefinitionParser(String dependencyDefinition, DependencyProperties properties, ResultRenderer renderer) {
         _properties = properties;
@@ -243,7 +243,7 @@ public class DependencyDefinitionParser {
         if (tokens.length < 4) {
             throwException("Missing terms in definition of layer '" + layerName + "'.", lineNumber, 3);
         }
-        ArrayList layer = new ArrayList();
+        ArrayList<StringPattern> layer = new ArrayList<StringPattern>();
         for (int i = 3; i < tokens.length; i++) {
             layer.add(createPattern(tokens[i], lineNumber, i));
         }
@@ -340,14 +340,13 @@ public class DependencyDefinitionParser {
             throwException("Missing end sets. Probably one of the following " + "key words are missing: " + Arrays.asList(INDEPENDENT),
                     lineNumber, tokens.length);
         }
-        boolean directPathsOnly = DIRECTLY_INDEPENDENT_OF_KEY_WORD.equals(tokens[lists[0].length + 1]);
         _statements.add(new DependencyStatement(lists[0], lists[1], tokens[lists[0].length + 1], _setDefinitions, _renderer));
     }
 
     private StringPattern[][] getLists(String[] tokens, int lineNumber, String[] keyWords, int startIndex) {
-        ArrayList startSets = new ArrayList();
-        ArrayList endSets = new ArrayList();
-        ArrayList currentList = startSets;
+        ArrayList<StringPattern> startSets = new ArrayList<StringPattern>();
+        ArrayList<StringPattern> endSets = new ArrayList<StringPattern>();
+        ArrayList<StringPattern> currentList = startSets;
         for (int i = startIndex; i < tokens.length; i++) {
             String token = tokens[i];
             if (isAKeyWord(token, keyWords)) {
