@@ -135,7 +135,6 @@ public class DependencyCheckingTask extends ClassycleTask {
         PrintWriter printWriter = null;
         try {
             Analyser analyser = new Analyser(getClassFileNames(), getPattern(), getReflectionPattern(), isMergeInnerClasses());
-            @SuppressWarnings("unchecked")
             Map<Object, Object> properties = _definitionFile == null ? getProject().getProperties() : System.getProperties();
             DependencyChecker dependencyChecker = new DependencyChecker(analyser, getDependencyDefinitions(), properties, getRenderer());
             printWriter = _reportFile == null ? new PrintWriter(System.out) : new PrintWriter(new FileWriter(_reportFile));
