@@ -31,27 +31,6 @@ import org.netmelody.neoclassycle.renderer.XMLStrongComponentRenderer;
  */
 public class XMLPackageStrongComponentRenderer extends XMLStrongComponentRenderer {
     public XMLPackageStrongComponentRenderer(final int minimumSize) {
-        super(minimumSize);
+        super(minimumSize, "packageCycle", "packages", "packageRef", "centerPackages");
     }
-
-    @Override
-    protected String getNodesElementName() {
-        return "packages";
-    }
-
-    @Override
-    protected String getNodeElementName() {
-        return "packageRef";
-    }
-
-    @Override
-    protected String getCenterNodesElementName() {
-        return "centerPackages";
-    }
-
-    @Override
-    protected String getStrongComponentElementName() {
-        return "packageCycle";
-    }
-
 }

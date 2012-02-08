@@ -37,41 +37,13 @@ import org.netmelody.neoclassycle.graph.Vertex;
  * @author Franz-Josef Elmer
  */
 public class XMLStrongComponentRenderer extends AbstractStrongComponentRenderer {
+    
     private final int _minimumSize;
-
-    protected String getStrongComponentElementName() {
-        return "cycle";
-    }
-
-    protected String getNodesElementName() {
-        return "classes";
-    }
-
-    protected String getNodeElementName() {
-        return "classRef";
-    }
-
-    protected String getCenterNodesElementName() {
-        return "centerClasses";
-    }
-
-    protected String getBestFragmentersElementName() {
-        return "bestFragmenters";
-    }
-
-    private MessageFormat getStrongComponentElementTemplate() {
-        return new MessageFormat("    <" + getStrongComponentElementName() + " name=\"{0}\" size=\"{1}\" longestWalk=\"{2}\""
-                + " girth=\"{3}\" radius=\"{4}\" diameter=\"{5}\"" + " bestFragmentSize=\"{6}\">\n");
-    }
-
-    private MessageFormat getNodeElementTemplate() {
-        return new MessageFormat("        <" + getNodeElementName() + " name=\"{0}\"/>\n");
-    }
-
-    private MessageFormat getNodeElementTemplateWithEccentricity() {
-        return new MessageFormat("        <" + getNodeElementName() + " name=\"{0}\" eccentricity=\"{1}\""
-                + " maximumFragmentSize=\"{2}\"/>\n");
-    }
+    private final String strongComponentElementName;
+    private final String nodesElementName;
+    private final String nodeElementName;
+    private final String centerNodesElementName;
+    private final String bestFragmentersElementName;
 
     /**
      * Creates an instance for the specified minimum number vertices.
@@ -81,7 +53,31 @@ public class XMLStrongComponentRenderer extends AbstractStrongComponentRenderer 
      *            have to be rendered.
      */
     public XMLStrongComponentRenderer(final int minimumSize) {
-        _minimumSize = minimumSize;
+        this(minimumSize, "cycle", "classes", "classRef", "centerClasses");
+    }
+    
+    protected XMLStrongComponentRenderer(int minimumSize, String strongComponentElementName, String nodesElementName,
+                                         String nodeElementName, String centerNodesElementName) {
+        this._minimumSize = minimumSize;
+        this.strongComponentElementName = strongComponentElementName;
+        this.nodesElementName = nodesElementName;
+        this.nodeElementName = nodeElementName;
+        this.centerNodesElementName = centerNodesElementName;
+        this.bestFragmentersElementName = "bestFragmenters";
+    }
+
+    private MessageFormat getStrongComponentElementTemplate() {
+        return new MessageFormat("    <" + strongComponentElementName + " name=\"{0}\" size=\"{1}\" longestWalk=\"{2}\""
+                + " girth=\"{3}\" radius=\"{4}\" diameter=\"{5}\"" + " bestFragmentSize=\"{6}\">\n");
+    }
+
+    private MessageFormat getNodeElementTemplate() {
+        return new MessageFormat("        <" + nodeElementName + " name=\"{0}\"/>\n");
+    }
+
+    private MessageFormat getNodeElementTemplateWithEccentricity() {
+        return new MessageFormat("        <" + nodeElementName + " name=\"{0}\" eccentricity=\"{1}\""
+                + " maximumFragmentSize=\"{2}\"/>\n");
     }
 
     @Override
@@ -100,15 +96,15 @@ public class XMLStrongComponentRenderer extends AbstractStrongComponentRenderer 
             getStrongComponentElementTemplate().format(values, result, null);
 
             renderClasses(component, result);
-            renderVertices(attributes.getCenterVertices(), result, getCenterNodesElementName());
-            renderVertices(attributes.getBestFragmenters(), result, getBestFragmentersElementName());
-            result.append("    </").append(getStrongComponentElementName()).append(">\n");
+            renderVertices(attributes.getCenterVertices(), result, centerNodesElementName);
+            renderVertices(attributes.getBestFragmenters(), result, bestFragmentersElementName);
+            result.append("    </").append(strongComponentElementName).append(">\n");
         }
         return new String(result);
     }
 
     private void renderClasses(final StrongComponent component, final StringBuffer result) {
-        result.append("      <").append(getNodesElementName()).append(">\n");
+        result.append("      <").append(nodesElementName).append(">\n");
         final int[] eccentricities = ((GraphAttributes) component.getAttributes()).getEccentricities();
         final int[] maximumFragmentSizes = ((GraphAttributes) component.getAttributes()).getMaximumFragmentSizes();
         final String[] values = new String[3];
@@ -119,7 +115,7 @@ public class XMLStrongComponentRenderer extends AbstractStrongComponentRenderer 
             values[2] = Integer.toString(maximumFragmentSizes[i]);
             template.format(values, result, null);
         }
-        result.append("      </").append(getNodesElementName()).append(">\n");
+        result.append("      </").append(nodesElementName).append(">\n");
     }
 
     private void renderVertices(final Vertex[] vertices, final StringBuffer result, final String tagName) {
