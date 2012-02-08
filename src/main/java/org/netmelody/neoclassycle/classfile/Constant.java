@@ -97,8 +97,7 @@ public abstract class Constant {
                     break;
                 }
                 pool[i] = c;
-                i += skipIndex ? 2 : 1; // double and long constants occupy two
-                                        // entries
+                i += skipIndex ? 2 : 1; // double and long constants occupy two entries
             }
             return pool;
         }
@@ -126,4 +125,4 @@ public abstract class Constant {
     public Constant getConstant(final int index) {
         return _pool[index];
     }
-} // class
+}

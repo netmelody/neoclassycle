@@ -48,4 +48,4 @@ public final class FloatConstant extends Constant {
     public String toString() {
         return "CONSTANT_Float: " + _value;
     }
-} // class
+}

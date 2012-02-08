@@ -70,8 +70,7 @@ public final class LongestWalkProcessor extends GraphProcessor {
             process(h);
         }
         else if (h.isActive()) {
-            // Oops! should never be happen if the graph has been created
-            // with StrongComponentProcessor
+            // Oops! should never be happen if the graph has been created with StrongComponentProcessor
             throw new IllegalArgumentException(h + " is not a strong component.");
         }
         t.setLongestWalk(Math.max(t.getLongestWalk(), 1 + h.getLongestWalk()));
@@ -116,4 +115,4 @@ public final class LongestWalkProcessor extends GraphProcessor {
         }
         throw new IllegalArgumentException(vertex + " is not an instance of StrongComponent");
     }
-} // class
+}

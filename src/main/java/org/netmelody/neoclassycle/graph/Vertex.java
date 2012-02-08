@@ -159,4 +159,4 @@ public class Vertex implements Comparable<Vertex> {
         return result;
     }
 
-} // class
+}

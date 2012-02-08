@@ -48,4 +48,4 @@ public final class DoubleConstant extends Constant {
     public String toString() {
         return "CONSTANT_Double: " + _value;
     }
-} // class
+}

@@ -67,4 +67,4 @@ public abstract class XMLAtomicVertexRenderer implements AtomicVertexRenderer {
     protected abstract String getElement();
 
     protected abstract String getRefElement();
-} // class
+}

@@ -128,4 +128,4 @@ public class XMLStrongComponentRenderer extends AbstractStrongComponentRenderer 
         }
         result.append("      </").append(tagName).append(">\n");
     }
-} // class
+}

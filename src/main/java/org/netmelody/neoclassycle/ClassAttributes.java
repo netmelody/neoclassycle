@@ -160,4 +160,4 @@ public class ClassAttributes extends NameAndSourceAttributes {
         }
         return new String(buffer);
     }
-} // class
+}

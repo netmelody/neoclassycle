@@ -314,4 +314,4 @@ public final class StrongComponent extends Vertex {
         }
         return new String(result);
     }
-} // class
+}

@@ -48,7 +48,6 @@ public abstract class AbstractStrongComponentRenderer implements StrongComponent
         final GraphAttributes ga = (GraphAttributes) component.getAttributes();
         final Vertex fragmenter = ga.getBestFragmenters()[0];
         String result = ((NameAttributes) fragmenter.getAttributes()).getName();
-        // String result = component.getVertex(0).getAttributes().toString();
         if (component.getNumberOfVertices() > 1) {
             AtomicVertex vertex = component.getVertex(0);
             NameAttributes attributes = (NameAttributes) vertex.getAttributes();
@@ -78,4 +77,4 @@ public abstract class AbstractStrongComponentRenderer implements StrongComponent
         }
         return result;
     }
-} // class
+}

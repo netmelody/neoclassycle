@@ -39,4 +39,4 @@ public final class FieldRefConstant extends RefConstant {
     public String toString() {
         return toString("CONSTANT_FieldRef");
     }
-} // class
+}

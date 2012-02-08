@@ -76,4 +76,4 @@ public abstract class GraphTestCase {
         }
         return result;
     }
-} // class
+}

@@ -55,4 +55,4 @@ public final class UTF8Constant extends Constant {
     public String toString() {
         return "CONSTANT_Utf8: " + _string;
     }
-} // class
+}

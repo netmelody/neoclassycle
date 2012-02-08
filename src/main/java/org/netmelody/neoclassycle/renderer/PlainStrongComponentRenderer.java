@@ -49,4 +49,4 @@ public final class PlainStrongComponentRenderer extends AbstractStrongComponentR
         }
         return new String(result);
     }
-} // class
+}

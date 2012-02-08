@@ -168,4 +168,4 @@ public final class StrongComponentProcessor extends GraphProcessor {
         }
         throw new IllegalArgumentException(vertex + " is not an instance of AtomicVertex");
     }
-} // class
+}

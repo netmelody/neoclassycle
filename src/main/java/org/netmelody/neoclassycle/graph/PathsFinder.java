@@ -191,43 +191,4 @@ public final class PathsFinder {
             }
         }
     }
-
-    // private int search(AtomicVertex vertex, HashSet currentPath,
-    // HashSet pathVertices)
-    // {
-    // currentPath.add(vertex);
-    // boolean found = false;
-    // int shortestPath = Integer.MAX_VALUE;
-    // for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++)
-    // {
-    // AtomicVertex nextVertex = (AtomicVertex) vertex.getHeadVertex(i);
-    // int pathLength = nextVertex.getOrder();
-    // if (!nextVertex.isVisited() && !currentPath.contains(nextVertex))
-    // {
-    // pathLength = search(nextVertex, currentPath, pathVertices);
-    // nextVertex.setOrder(pathLength);
-    // nextVertex.visit();
-    // }
-    // shortestPath = Math.min(shortestPath, pathLength);
-    // }
-    // for (int i = 0, n = vertex.getNumberOfOutgoingArcs(); i < n; i++)
-    // {
-    // AtomicVertex nextVertex = (AtomicVertex) vertex.getHeadVertex(i);
-    // int pathLength = nextVertex.getOrder();
-    // if (pathLength < Integer.MAX_VALUE)
-    // {
-    // if (!_shortestPathsOnly || pathLength == shortestPath)
-    // {
-    // pathVertices.add(nextVertex);
-    // }
-    // }
-    // }
-    // currentPath.remove(vertex);
-    // if (shortestPath < Integer.MAX_VALUE)
-    // {
-    // shortestPath++;
-    // }
-    // return shortestPath;
-    // }
-
 }

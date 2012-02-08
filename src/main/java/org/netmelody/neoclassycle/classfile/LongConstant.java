@@ -48,4 +48,4 @@ public final class LongConstant extends Constant {
     public String toString() {
         return "CONSTANT_Long: " + _value;
     }
-} // class
+}

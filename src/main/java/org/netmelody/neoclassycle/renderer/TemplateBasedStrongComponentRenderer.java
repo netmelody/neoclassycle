@@ -64,4 +64,4 @@ public final class TemplateBasedStrongComponentRenderer extends AbstractStrongCo
         }
         return result;
     }
-} // class
+}

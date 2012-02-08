@@ -64,4 +64,4 @@ public abstract class RefConstant extends Constant {
         return constantType + ": Class = " + getClassConstant().getName() + ", Name = " + getNameAndType().getName() + ", Descriptor = "
                 + getNameAndType().getDescriptor();
     }
-} // class
+}

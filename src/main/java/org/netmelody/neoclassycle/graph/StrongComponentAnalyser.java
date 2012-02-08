@@ -42,7 +42,6 @@ public final class StrongComponentAnalyser {
      */
     public StrongComponentAnalyser(final AtomicVertex[] graph) {
         _graph = graph;
-        // Arrays.sort(_graph, null);
     }
 
     /** Returns the original graph. That is, the argument of the constructor. */

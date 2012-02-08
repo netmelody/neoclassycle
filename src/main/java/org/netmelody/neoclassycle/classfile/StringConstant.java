@@ -60,4 +60,4 @@ public final class StringConstant extends Constant {
     public String toString() {
         return "CONSTANT_String: " + getString();
     }
-} // class
+}

@@ -52,4 +52,4 @@ public final class XMLPackageRenderer extends XMLAtomicVertexRenderer {
                 + " usesInternal=\"{5}\" usesExternal=\"{6}\" layer=\"{7}\"" + " cycle=\"{8}\">\n");
     }
 
-} // class
+}

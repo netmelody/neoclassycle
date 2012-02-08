@@ -34,4 +34,4 @@ import org.netmelody.neoclassycle.graph.StrongComponent;
 public interface StrongComponentRenderer {
     /** Renderes the specified {@link StrongComponent}. */
     public String render(StrongComponent component);
-} // interface
+}

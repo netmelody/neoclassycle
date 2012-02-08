@@ -94,4 +94,4 @@ public class AtomicVertex extends Vertex {
     public void setLow(final int low) {
         _low = low;
     }
-} // class
+}

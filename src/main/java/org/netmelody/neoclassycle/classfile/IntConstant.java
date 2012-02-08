@@ -48,4 +48,4 @@ public final class IntConstant extends Constant {
     public String toString() {
         return "CONSTANT_Integer: " + _value;
     }
-} // class
+}

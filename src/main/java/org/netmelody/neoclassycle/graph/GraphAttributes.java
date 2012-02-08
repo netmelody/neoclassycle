@@ -85,4 +85,4 @@ public interface GraphAttributes extends Attributes {
      * fragment size is equal to the best fragment size.
      */
     public Vertex[] getBestFragmenters();
-} // interface
+}

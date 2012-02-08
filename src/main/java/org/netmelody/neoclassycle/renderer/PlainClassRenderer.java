@@ -62,4 +62,4 @@ public final class PlainClassRenderer implements AtomicVertexRenderer {
         }
         throw new IllegalArgumentException("Missing class attributes in vertex " + vertex);
     }
-} // class
+}

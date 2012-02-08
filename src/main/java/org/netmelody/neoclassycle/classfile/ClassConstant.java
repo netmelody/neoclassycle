@@ -74,4 +74,4 @@ public final class ClassConstant extends Constant {
     public String toString() {
         return "CONSTANT_Class: " + getName();
     }
-} // class
+}

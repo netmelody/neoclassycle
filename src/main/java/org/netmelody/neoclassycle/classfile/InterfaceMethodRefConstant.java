@@ -39,4 +39,4 @@ public final class InterfaceMethodRefConstant extends RefConstant {
     public String toString() {
         return toString("CONSTANT_InterfaceMethodRef");
     }
-} // class
+}

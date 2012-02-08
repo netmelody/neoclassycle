@@ -39,4 +39,4 @@ public final class MethodRefConstant extends RefConstant {
     public String toString() {
         return toString("CONSTANT_MethodRef");
     }
-} // class
+}

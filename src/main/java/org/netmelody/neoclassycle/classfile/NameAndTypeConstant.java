@@ -74,4 +74,4 @@ public final class NameAndTypeConstant extends Constant {
     public String toString() {
         return "CONSTANT_NameAndType: " + getName() + ", " + getDescriptor();
     }
-} // class
+}

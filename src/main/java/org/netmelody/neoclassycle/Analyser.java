@@ -536,4 +536,4 @@ public final class Analyser {
             analyser.printComponents(new PrintWriter(System.out), commandLine.isCycles() ? 2 : 1);
         }
     }
-} // class
+}
