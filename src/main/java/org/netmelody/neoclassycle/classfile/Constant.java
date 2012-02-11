@@ -43,7 +43,7 @@ public abstract class Constant {
         _pool = pool;
     }
 
-    public final Constant getConstant(final int index) {
+    protected final Constant getConstant(final int index) {
         return _pool.getConstantAt(index);
     }
 }
