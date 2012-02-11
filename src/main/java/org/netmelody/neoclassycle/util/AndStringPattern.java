@@ -28,17 +28,48 @@
  */
 package org.netmelody.neoclassycle.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Logical AND Operation on a sequence of {@link StringPattern StringPatterns}.
  *
  * @author Franz-Josef Elmer
  */
-public final class AndStringPattern extends StringPatternSequence {
+public final class AndStringPattern implements StringPattern {
+
+    protected final List<StringPattern> _patterns = new ArrayList<StringPattern>();
+
     /**
      * Creates instance with specified patterns.
      */
     public AndStringPattern(final StringPattern... pattern) {
-        super(pattern);
+        _patterns.addAll(Arrays.asList(pattern));
+    }
+
+    /**
+     * Appends the specified pattern.
+     */
+    public void appendPattern(final StringPattern pattern) {
+        _patterns.add(pattern);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuffer buffer = new StringBuffer();
+        final int size = _patterns.size();
+        final boolean bracketsNeeded = size > 1;
+        if (bracketsNeeded) {
+            buffer.append('(');
+        }
+        for (int i = 0; i < size; i++) {
+            if (i != 0) {
+                buffer.append(" & ");
+            }
+            buffer.append(_patterns.get(i));
+        }
+        return new String(bracketsNeeded ? buffer.append(')') : buffer);
     }
 
     /**
@@ -55,10 +86,5 @@ public final class AndStringPattern extends StringPatternSequence {
             }
         }
         return result;
-    }
-
-    @Override
-    protected String getOperatorSymbol() {
-        return " & ";
     }
 }

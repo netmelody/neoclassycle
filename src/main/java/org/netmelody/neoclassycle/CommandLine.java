@@ -31,7 +31,6 @@ package org.netmelody.neoclassycle;
 import org.netmelody.neoclassycle.util.AndStringPattern;
 import org.netmelody.neoclassycle.util.NotStringPattern;
 import org.netmelody.neoclassycle.util.StringPattern;
-import org.netmelody.neoclassycle.util.StringPatternSequence;
 import org.netmelody.neoclassycle.util.TrueStringPattern;
 import org.netmelody.neoclassycle.util.WildCardPattern;
 
@@ -46,7 +45,7 @@ public abstract class CommandLine {
 
     private boolean _mergeInnerClasses;
     protected boolean _valid = true;
-    protected StringPatternSequence _pattern = new AndStringPattern();
+    protected AndStringPattern _pattern = new AndStringPattern();
     protected StringPattern _reflectionPattern;
     protected String[] _classFiles;
 
