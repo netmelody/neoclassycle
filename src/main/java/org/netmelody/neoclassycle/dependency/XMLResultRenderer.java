@@ -45,7 +45,7 @@ import org.netmelody.neoclassycle.util.Text;
  *
  * @author Franz-Josef Elmer
  */
-public final class XMLResultRenderer extends ResultRenderer {
+public final class XmlResultRenderer extends ResultRenderer {
     private static final String ELEMENT_DEPENDENCY_RESULT = "dependency-checking-results";
     private static final String ATTRIBUTE_STATEMENT = "statement";
 

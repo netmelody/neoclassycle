@@ -25,13 +25,13 @@ import org.netmelody.neoclassycle.util.WildCardPattern;
 
 import static org.junit.Assert.assertEquals;
 
-public final class XMLResultRendererTest {
+public final class XmlResultRendererTest {
     @Test
     public void testCyclesResultOk() {
         final CyclesResult result = new CyclesResult("test statement", false);
         assertEquals("<?xml version='1.0' encoding='UTF-8'?>\n" + "<dependency-checking-results>\n"
                 + "  <cycles statement='test statement' vertex-type='class'/>\n" + "</dependency-checking-results>\n",
-                new XMLResultRenderer().render(result));
+                new XmlResultRenderer().render(result));
     }
 
     @Test
@@ -50,7 +50,7 @@ public final class XMLResultRendererTest {
                 + "  <cycles statement='test statement' vertex-type='package'>\n" + "    <cycle name='p2 et al.'>\n"
                 + "      <class>p2</class>\n" + "      <class>p1</class>\n" + "    </cycle>\n" + "    <cycle name='p3'>\n"
                 + "      <class>p3</class>\n" + "    </cycle>\n" + "  </cycles>\n" + "</dependency-checking-results>\n",
-                new XMLResultRenderer().render(result));
+                new XmlResultRenderer().render(result));
     }
 
     @Test
@@ -75,7 +75,7 @@ public final class XMLResultRendererTest {
                 + "  <unexpected-dependencies statement='the statement'>\n" + "    <node name='a'>\n" + "      <node name='b'>\n"
                 + "        <node name='c1'/>\n" + "        <node name='c2'/>\n" + "      </node>\n" + "      <node name='c3'/>\n"
                 + "    </node>\n" + "  </unexpected-dependencies>\n" + "</dependency-checking-results>\n",
-                new XMLResultRenderer().render(result));
+                new XmlResultRenderer().render(result));
     }
 
     @Test
@@ -89,6 +89,6 @@ public final class XMLResultRendererTest {
         c1.add(c2);
         assertEquals("<?xml version=\'1.0' encoding='UTF-8'?>\n" + "<dependency-checking-results>\n" + "  <info>hello world</info>\n"
                 + "  <checking-error>Invalid set</checking-error>\n" + "  <checking-error>Unknown</checking-error>\n"
-                + "</dependency-checking-results>\n", new XMLResultRenderer().render(c1));
+                + "</dependency-checking-results>\n", new XmlResultRenderer().render(c1));
     }
 }
