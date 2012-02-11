@@ -29,7 +29,7 @@
 package org.netmelody.neoclassycle.classfile;
 
 /**
- * Class constant. Refers to an instance of {@link UTF8Constant} which holds the
+ * Class constant. Refers to an instance of {@link Utf8Constant} which holds the
  * fully qualifies class name.
  *
  * @author Franz-Josef Elmer
@@ -39,7 +39,7 @@ public final class ClassConstant extends Constant {
 
     /**
      * Creates an instance for the specified index refering an
-     * {@link UTF8Constant}.
+     * {@link Utf8Constant}.
      *
      * @param pool
      *            Pool of all {@link Constant Constants}.
@@ -60,8 +60,8 @@ public final class ClassConstant extends Constant {
     public String getName() {
         String result = null;
         final Constant c = getConstant(_nameIndex);
-        if (c instanceof UTF8Constant) {
-            result = ((UTF8Constant) c).getString().replace('/', '.');
+        if (c instanceof Utf8Constant) {
+            result = ((Utf8Constant) c).getString().replace('/', '.');
             if (result.startsWith("[")) {
                 // An array class: Extract class name
                 final int index = result.indexOf('L');

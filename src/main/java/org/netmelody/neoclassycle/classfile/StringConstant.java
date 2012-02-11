@@ -42,7 +42,7 @@ public final class StringConstant extends Constant {
      * @param pool
      *            Constant pool. Needed for resolving the reference.
      * @param stringIndex
-     *            Index of an {@link UTF8Constant}.
+     *            Index of an {@link Utf8Constant}.
      */
     public StringConstant(final ConstantPool pool, final int stringIndex) {
         super(pool);
@@ -53,8 +53,8 @@ public final class StringConstant extends Constant {
     public String getString() {
         String result = null;
         final Constant c = getConstant(_stringIndex);
-        if (c instanceof UTF8Constant) {
-            result = ((UTF8Constant) c).getString();
+        if (c instanceof Utf8Constant) {
+            result = ((Utf8Constant) c).getString();
         }
         return result;
     }

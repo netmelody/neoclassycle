@@ -83,7 +83,7 @@ public final class ConstantPool {
                 c = new NameAndTypeConstant(cp, stream.readUnsignedShort(), stream.readUnsignedShort());
                 break;
             case CONSTANT_UTF8:
-                c = new UTF8Constant(cp, stream.readUTF());
+                c = new Utf8Constant(cp, stream.readUTF());
                 break;
             }
             pool[i] = c;

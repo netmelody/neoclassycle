@@ -45,7 +45,7 @@ import org.netmelody.neoclassycle.classfile.ClassConstant;
 import org.netmelody.neoclassycle.classfile.Constant;
 import org.netmelody.neoclassycle.classfile.ConstantPool;
 import org.netmelody.neoclassycle.classfile.StringConstant;
-import org.netmelody.neoclassycle.classfile.UTF8Constant;
+import org.netmelody.neoclassycle.classfile.Utf8Constant;
 import org.netmelody.neoclassycle.graph.AtomicVertex;
 import org.netmelody.neoclassycle.util.StringPattern;
 import org.netmelody.neoclassycle.util.TrueStringPattern;
@@ -263,8 +263,8 @@ public final class Parser {
                     node.addLinkTo(cc.getName());
                 }
             }
-            else if (constant instanceof UTF8Constant) {
-                final Set<String> classNames = new ClassNameExtractor((UTF8Constant) constant).extract();
+            else if (constant instanceof Utf8Constant) {
+                final Set<String> classNames = new ClassNameExtractor((Utf8Constant) constant).extract();
                 for (final String string : classNames) {
                     final String element = string;
                     if (name.equals(element) == false) {

@@ -33,7 +33,7 @@ package org.netmelody.neoclassycle.classfile;
  *
  * @author Franz-Josef Elmer
  */
-public final class UTF8Constant extends Constant {
+public final class Utf8Constant extends Constant {
     private final String _string;
 
     /**
@@ -44,7 +44,7 @@ public final class UTF8Constant extends Constant {
      * @param string
      *            wrapped string.
      */
-    public UTF8Constant(final ConstantPool pool, final String string) {
+    public Utf8Constant(final ConstantPool pool, final String string) {
         super(pool);
         _string = string;
     }

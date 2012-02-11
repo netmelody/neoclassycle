@@ -57,8 +57,8 @@ public final class NameAndTypeConstant extends Constant {
     public String getName() {
         String result = null;
         final Constant c = getConstant(_nameIndex);
-        if (c instanceof UTF8Constant) {
-            result = ((UTF8Constant) c).getString();
+        if (c instanceof Utf8Constant) {
+            result = ((Utf8Constant) c).getString();
         }
         return result;
     }
@@ -67,8 +67,8 @@ public final class NameAndTypeConstant extends Constant {
     public String getDescriptor() {
         String result = null;
         final Constant c = getConstant(_descriptorIndex);
-        if (c instanceof UTF8Constant) {
-            result = ((UTF8Constant) c).getString();
+        if (c instanceof Utf8Constant) {
+            result = ((Utf8Constant) c).getString();
         }
         return result;
     }

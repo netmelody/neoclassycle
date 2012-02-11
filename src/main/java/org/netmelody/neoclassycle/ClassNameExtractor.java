@@ -35,7 +35,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.netmelody.neoclassycle.classfile.UTF8Constant;
+import org.netmelody.neoclassycle.classfile.Utf8Constant;
 
 final class ClassNameExtractor {
     /** Returns <tt>true</tt> if <tt>className</tt> is a valid class name. */
@@ -67,7 +67,7 @@ final class ClassNameExtractor {
     private final Set<String> _classNames = new LinkedHashSet<String>();
     private boolean _valid = true;
 
-    ClassNameExtractor(final UTF8Constant constant) {
+    ClassNameExtractor(final Utf8Constant constant) {
         _constant = constant.getString();
         _endIndex = _constant.length();
     }
