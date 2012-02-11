@@ -47,7 +47,7 @@ public final class NameAndTypeConstant extends Constant {
      * @param descriptorIndex
      *            Index of the type or method descriptor in the pool.
      */
-    public NameAndTypeConstant(final Constant[] pool, final int nameIndex, final int descriptorIndex) {
+    public NameAndTypeConstant(final ConstantPool pool, final int nameIndex, final int descriptorIndex) {
         super(pool);
         _nameIndex = nameIndex;
         _descriptorIndex = descriptorIndex;

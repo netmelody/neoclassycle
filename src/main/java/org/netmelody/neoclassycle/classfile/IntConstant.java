@@ -37,7 +37,7 @@ public final class IntConstant extends Constant {
     private final int _value;
 
     /** Creates an instance for the specified int value. */
-    public IntConstant(final Constant[] pool, final int value) {
+    public IntConstant(final ConstantPool pool, final int value) {
         super(pool);
         _value = value;
     }

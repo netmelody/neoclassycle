@@ -47,7 +47,7 @@ public abstract class RefConstant extends Constant {
      * @param nameAndTypeIndex
      *            Index of {@link NameAndTypeConstant}.
      */
-    public RefConstant(final Constant[] pool, final int classIndex, final int nameAndTypeIndex) {
+    public RefConstant(final ConstantPool pool, final int classIndex, final int nameAndTypeIndex) {
         super(pool);
         _classIndex = classIndex;
         _nameAndTypeIndex = nameAndTypeIndex;

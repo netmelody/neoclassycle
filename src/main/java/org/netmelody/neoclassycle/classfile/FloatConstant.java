@@ -37,7 +37,7 @@ public final class FloatConstant extends Constant {
     private final float _value;
 
     /** Creates an instance for the specified float value. */
-    public FloatConstant(final Constant[] pool, final float value) {
+    public FloatConstant(final ConstantPool pool, final float value) {
         super(pool);
         _value = value;
     }

@@ -34,7 +34,7 @@ package org.netmelody.neoclassycle.classfile;
  * @author Franz-Josef Elmer
  */
 public final class FieldRefConstant extends RefConstant {
-    public FieldRefConstant(final Constant[] pool, final int classIndex, final int nameAndTypeIndex) {
+    public FieldRefConstant(final ConstantPool pool, final int classIndex, final int nameAndTypeIndex) {
         super(pool, classIndex, nameAndTypeIndex);
     }
 

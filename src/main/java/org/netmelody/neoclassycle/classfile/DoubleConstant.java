@@ -37,7 +37,7 @@ public final class DoubleConstant extends Constant {
     private final double _value;
 
     /** Creates an instance for the specified double value. */
-    public DoubleConstant(final Constant[] pool, final double value) {
+    public DoubleConstant(final ConstantPool pool, final double value) {
         super(pool);
         _value = value;
     }

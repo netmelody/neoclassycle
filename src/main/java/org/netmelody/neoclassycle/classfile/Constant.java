@@ -28,8 +28,6 @@
  */
 package org.netmelody.neoclassycle.classfile;
 
-import java.io.DataInputStream;
-import java.io.IOException;
 
 /**
  * Abstract super class of all type of constants in the constant pool of a class
@@ -38,95 +36,14 @@ import java.io.IOException;
  * @author Franz-Josef Elmer
  */
 public abstract class Constant {
-    private static final int MAGIC = 0xcafebabe;
-    private static final int CONSTANT_CLASS = 7, CONSTANT_FIELDREF = 9, CONSTANT_METHODREF = 10, CONSTANT_INTERFACE_METHODREF = 11,
-            CONSTANT_STRING = 8, CONSTANT_INTEGER = 3, CONSTANT_FLOAT = 4, CONSTANT_LONG = 5, CONSTANT_DOUBLE = 6,
-            CONSTANT_NAME_AND_TYPE = 12, CONSTANT_UTF8 = 1;
 
-    /**
-     * Extracts the constant pool from the specified data stream of a class
-     * file.
-     *
-     * @param stream
-     *            Input stream of a class file starting at the first byte.
-     * @return extracted array of constants.
-     * @throws IOException
-     *             in case of reading errors or invalid class file.
-     */
-    public static Constant[] extractConstantPool(final DataInputStream stream) throws IOException {
-        Constant[] pool = null;
-        if (stream.readInt() == MAGIC) {
-            stream.readUnsignedShort();
-            stream.readUnsignedShort();
-            pool = new Constant[stream.readUnsignedShort()];
-            for (int i = 1; i < pool.length;) {
-                boolean skipIndex = false;
-                Constant c = null;
-                final int type = stream.readUnsignedByte();
-                switch (type) {
-                case CONSTANT_CLASS:
-                    c = new ClassConstant(pool, stream.readUnsignedShort());
-                    break;
-                case CONSTANT_FIELDREF:
-                    c = new FieldRefConstant(pool, stream.readUnsignedShort(), stream.readUnsignedShort());
-                    break;
-                case CONSTANT_METHODREF:
-                    c = new MethodRefConstant(pool, stream.readUnsignedShort(), stream.readUnsignedShort());
-                    break;
-                case CONSTANT_INTERFACE_METHODREF:
-                    c = new InterfaceMethodRefConstant(pool, stream.readUnsignedShort(), stream.readUnsignedShort());
-                    break;
-                case CONSTANT_STRING:
-                    c = new StringConstant(pool, stream.readUnsignedShort());
-                    break;
-                case CONSTANT_INTEGER:
-                    c = new IntConstant(pool, stream.readInt());
-                    break;
-                case CONSTANT_FLOAT:
-                    c = new FloatConstant(pool, stream.readFloat());
-                    break;
-                case CONSTANT_LONG:
-                    c = new LongConstant(pool, stream.readLong());
-                    skipIndex = true;
-                    break;
-                case CONSTANT_DOUBLE:
-                    c = new DoubleConstant(pool, stream.readDouble());
-                    skipIndex = true;
-                    break;
-                case CONSTANT_NAME_AND_TYPE:
-                    c = new NameAndTypeConstant(pool, stream.readUnsignedShort(), stream.readUnsignedShort());
-                    break;
-                case CONSTANT_UTF8:
-                    c = new UTF8Constant(pool, stream.readUTF());
-                    break;
-                }
-                pool[i] = c;
-                i += skipIndex ? 2 : 1; // double and long constants occupy two entries
-            }
-            return pool;
-        }
-        throw new IOException("Not a class file: Magic number missing.");
-    }
-
-    private final Constant[] _pool;
-
-    /**
-     * Creates an instance.
-     *
-     * @param pool
-     *            The poole which will be needed to resolve references.
-     */
-    public Constant(final Constant[] pool) {
+    private final ConstantPool _pool;
+    
+    protected Constant(final ConstantPool pool) {
         _pool = pool;
     }
 
-    /**
-     * Returns the specified constant from the pool.
-     *
-     * @param index
-     *            Index of requested constant.
-     */
-    public Constant getConstant(final int index) {
-        return _pool[index];
+    public final Constant getConstant(final int index) {
+        return _pool.getConstantAt(index);
     }
 }

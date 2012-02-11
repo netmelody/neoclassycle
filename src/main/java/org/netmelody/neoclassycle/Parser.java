@@ -43,6 +43,7 @@ import java.util.zip.ZipFile;
 
 import org.netmelody.neoclassycle.classfile.ClassConstant;
 import org.netmelody.neoclassycle.classfile.Constant;
+import org.netmelody.neoclassycle.classfile.ConstantPool;
 import org.netmelody.neoclassycle.classfile.StringConstant;
 import org.netmelody.neoclassycle.classfile.UTF8Constant;
 import org.netmelody.neoclassycle.graph.AtomicVertex;
@@ -229,9 +230,9 @@ public final class Parser {
             throws IOException {
         // Reads constant pool, accessFlags, and class name
         final DataInputStream dataStream = new DataInputStream(stream);
-        final Constant[] pool = Constant.extractConstantPool(dataStream);
+        final ConstantPool pool = ConstantPool.extractConstantPool(dataStream);
         final int accessFlags = dataStream.readUnsignedShort();
-        final String name = ((ClassConstant) pool[dataStream.readUnsignedShort()]).getName();
+        final String name = ((ClassConstant) pool.getConstantAt(dataStream.readUnsignedShort())).getName();
         ClassAttributes attributes = null;
         if ((accessFlags & ACC_INTERFACE) != 0) {
             attributes = ClassAttributes.createInterface(name, source, size);
@@ -245,10 +246,17 @@ public final class Parser {
             }
         }
 
-        // Creates a new node with unresolved references
+        return nodeFor(reflectionPattern, pool, name, attributes);
+    }
+
+    /**
+     * Creates a new node with unresolved references.
+     */
+    private static UnresolvedNode nodeFor(final StringPattern reflectionPattern, final ConstantPool pool,
+                                          final String name, ClassAttributes attributes) {
         final UnresolvedNode node = new UnresolvedNode();
         node.setAttributes(attributes);
-        for (final Constant constant : pool) {
+        for (final Constant constant : pool.getConstants()) {
             if (constant instanceof ClassConstant) {
                 final ClassConstant cc = (ClassConstant) constant;
                 if (!cc.getName().startsWith(("[")) && !cc.getName().equals(name)) {
@@ -256,7 +264,13 @@ public final class Parser {
                 }
             }
             else if (constant instanceof UTF8Constant) {
-                parseUTF8Constant((UTF8Constant) constant, node, name);
+                final Set<String> classNames = new ClassNameExtractor((UTF8Constant) constant).extract();
+                for (final String string : classNames) {
+                    final String element = string;
+                    if (name.equals(element) == false) {
+                        node.addLinkTo(element);
+                    }
+                }
             }
             else if (reflectionPattern != null && constant instanceof StringConstant) {
                 final String str = ((StringConstant) constant).getString();
@@ -267,19 +281,4 @@ public final class Parser {
         }
         return node;
     }
-
-    /**
-     * Parses an UFT8Constant and picks class names if it has the correct syntax
-     * of a field or method descirptor.
-     */
-    static void parseUTF8Constant(final UTF8Constant constant, final UnresolvedNode node, final String className) {
-        final Set<String> classNames = new ClassNameExtractor(constant).extract();
-        for (final String string : classNames) {
-            final String element = string;
-            if (className.equals(element) == false) {
-                node.addLinkTo(element);
-            }
-        }
-    }
-
 }

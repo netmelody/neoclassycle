@@ -44,7 +44,7 @@ public final class UTF8Constant extends Constant {
      * @param string
      *            wrapped string.
      */
-    public UTF8Constant(final Constant[] pool, final String string) {
+    public UTF8Constant(final ConstantPool pool, final String string) {
         super(pool);
         _string = string;
     }

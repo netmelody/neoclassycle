@@ -46,7 +46,7 @@ public final class ClassConstant extends Constant {
      * @param nameIndex
      *            Index into <tt>pool</tt>.
      */
-    public ClassConstant(final Constant[] pool, final int nameIndex) {
+    public ClassConstant(final ConstantPool pool, final int nameIndex) {
         super(pool);
         _nameIndex = nameIndex;
     }

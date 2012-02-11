@@ -44,7 +44,7 @@ public final class StringConstant extends Constant {
      * @param stringIndex
      *            Index of an {@link UTF8Constant}.
      */
-    public StringConstant(final Constant[] pool, final int stringIndex) {
+    public StringConstant(final ConstantPool pool, final int stringIndex) {
         super(pool);
         _stringIndex = stringIndex;
     }

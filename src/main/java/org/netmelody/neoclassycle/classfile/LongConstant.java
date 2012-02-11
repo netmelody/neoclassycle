@@ -37,7 +37,7 @@ public final class LongConstant extends Constant {
     private final long _value;
 
     /** Creates an instance for the specified long value. */
-    public LongConstant(final Constant[] pool, final long value) {
+    public LongConstant(final ConstantPool pool, final long value) {
         super(pool);
         _value = value;
     }

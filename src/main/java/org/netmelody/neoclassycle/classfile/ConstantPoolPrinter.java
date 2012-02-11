@@ -58,8 +58,8 @@ public final class ConstantPoolPrinter {
         DataInputStream stream = null;
         try {
             stream = new DataInputStream(new FileInputStream(fileName));
-            final Constant[] pool = Constant.extractConstantPool(stream);
-            printConstantPool(pool);
+            final ConstantPool pool = ConstantPool.extractConstantPool(stream);
+            System.out.println(pool.toString());
         }
         catch (final IOException e) {
             System.out.println(e);
@@ -72,12 +72,6 @@ public final class ConstantPoolPrinter {
                 catch (final IOException e) {
                 }
             }
-        }
-    }
-
-    private static void printConstantPool(final Constant[] pool) {
-        for (int i = 0; i < pool.length; i++) {
-            System.out.println(i + ": " + pool[i]);
         }
     }
 }
