@@ -519,14 +519,15 @@ public final class Analyser {
             System.exit(0);
         }
 
-        final Analyser analyser = new Analyser(commandLine.getClassFiles(), commandLine.getPattern(), commandLine.getReflectionPattern(),
-                commandLine.isMergeInnerClasses());
+        final Analyser analyser = new Analyser(commandLine.getClassFiles(), commandLine.getPattern(),
+                                               commandLine.getReflectionPattern(), commandLine.isMergeInnerClasses());
+        
         analyser.readAndAnalyse(commandLine.isPackagesOnly());
 
         // Create report(s)
         if (commandLine.getXmlFile() != null) {
-            analyser.printXML(commandLine.getTitle(), commandLine.isPackagesOnly(), new PrintWriter(
-                    new FileWriter(commandLine.getXmlFile())));
+            analyser.printXML(commandLine.getTitle(), commandLine.isPackagesOnly(),
+                              new PrintWriter(new FileWriter(commandLine.getXmlFile())));
         }
         if (commandLine.getCsvFile() != null) {
             analyser.printCSV(new PrintWriter(new FileWriter(commandLine.getCsvFile())));
