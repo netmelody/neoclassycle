@@ -97,7 +97,7 @@
     <target name="jar-main" depends="clean,compile-main,version">
         <jar destfile="${build.dir}/${ant.project.name}-${version.label}.jar">
             <fileset dir="${built-main.dir}"/>
-            <fileset dir="${basedir}" includes="LICENSE.txt README.html"/>
+            <fileset dir="${basedir}" includes="LICENSE.txt README.md"/>
 
             <manifest>
                 <attribute name="Main-Class" value="org.netmelody.neoclassycle.Analyser"/>
@@ -131,7 +131,7 @@
     <target name="jar-sources" depends="clean,prepare">
         <jar destfile="${build.dir}/${ant.project.name}-${version.label}-sources.jar">
             <fileset dir="src/main/java"/>
-            <fileset dir="${basedir}" includes="LICENSE.txt README.html"/>
+            <fileset dir="${basedir}" includes="LICENSE.txt README.md"/>
             <manifest>
                 <attribute name="Built-By" value="${user.name}"/>
                 <attribute name="Implementation-Vendor" value="netmelody.org"/>
@@ -182,7 +182,7 @@
         <zip destfile="${build.dir}/${ant.project.name}-${version.label}-all.zip">
             <zipfileset dir="${basedir}">
                 <include name="LICENSE.txt"/>
-                <include name="README.html"/>
+                <include name="README.md"/>
             </zipfileset>
             <zipfileset dir="${build.dir}">
                 <include name="${ant.project.name}-${version.label}.jar"/>
