@@ -248,8 +248,7 @@ public final class Analyser {
         final StrongComponent[] cycles = getCondensedClassGraph();
         final AtomicVertex[] graph = getClassGraph();
         final Map<AtomicVertex, Integer> map = getClassLayerMap();
-        writer.println("class name,type,inner class,size,used by," + "uses internal classes,uses external classes,"
-                + "layer index,cycle,source");
+        writer.println("class name,type,inner class,size,used by,uses internal classes,uses external classes,layer index,cycle,source");
         render(graph, cycles, map, new TemplateBasedClassRenderer(CSV_TEMPLATE), writer);
         writer.close();
     }
@@ -466,7 +465,7 @@ public final class Analyser {
         writer.close();
     }
 
-    private static  void render(final AtomicVertex[] graph, final StrongComponent[] cycles, final Map<AtomicVertex, Integer> layerMap, final AtomicVertexRenderer renderer, final PrintWriter writer) {
+    private static void render(final AtomicVertex[] graph, final StrongComponent[] cycles, final Map<AtomicVertex, Integer> layerMap, final AtomicVertexRenderer renderer, final PrintWriter writer) {
         final List<StrongComponent> list = getTrueCycles(cycles);
         for (final AtomicVertex vertex : graph) {
             final Integer layerIndex = layerMap.get(vertex);
@@ -474,7 +473,7 @@ public final class Analyser {
         }
     }
 
-    private static  List<StrongComponent> getTrueCycles(final StrongComponent[] cycles) {
+    private static List<StrongComponent> getTrueCycles(final StrongComponent[] cycles) {
         final List<StrongComponent> list = new ArrayList<StrongComponent>();
         if (cycles != null) {
             for (final StrongComponent cycle : cycles) {
