@@ -385,9 +385,7 @@ public final class Analyser {
      *             in case of reading problems.
      */
     public void readAndAnalyse(final boolean packagesOnly) throws IOException {
-        System.out.println("============= Classycle V" + VERSION + " =============");
-        System.out.println("========== by Franz-Josef Elmer ==========");
-        System.out.print("read class files and create class graph ... ");
+        System.out.println("============= Neoclassycle V" + VERSION + " =============");
         long duration = createClassGraph();
         System.out.println("done after " + duration + " ms: " + getClassGraph().length + " classes analysed.");
 
