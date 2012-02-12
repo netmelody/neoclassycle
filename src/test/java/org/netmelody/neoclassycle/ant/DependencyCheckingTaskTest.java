@@ -12,6 +12,7 @@ import java.util.Arrays;
 import org.apache.tools.ant.BuildException;
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -40,6 +41,15 @@ public final class DependencyCheckingTaskTest extends ClassycleTaskTestCase {
     @Test
     public void testEmbeddedDefinitions() throws Exception {
         executeTarget("testEmbeddedDefinitions");
+        checkNumberOfOutputLines(14);
+        checkLine("  <unexpected-dependencies statement='check [A] independentOf [non-A]'/>", 3);
+        checkLine("  <unexpected-dependencies statement='check [non-A] independentOf [A]'>", 4);
+    }
+
+    @Ignore("pending implementation")
+    @Test
+    public void testEmbeddedDefinitionsFromJarFile() throws Exception {
+        executeTarget("testEmbeddedDefinitionsFromJar");
         checkNumberOfOutputLines(14);
         checkLine("  <unexpected-dependencies statement='check [A] independentOf [non-A]'/>", 3);
         checkLine("  <unexpected-dependencies statement='check [non-A] independentOf [A]'>", 4);

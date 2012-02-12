@@ -17,6 +17,22 @@
     </classycleDependencyCheck>
   </target>
 
+  <target name="testEmbeddedDefinitionsFromJar" >
+    <jar destfile="${basedir}/example.jar">
+      <fileset dir="${classes.dir}"/>
+    </jar>
+    <classycleDependencyCheck resultRenderer="org.netmelody.neoclassycle.dependency.XmlResultRenderer">
+      <zipfileset src="${basedir}/example.jar">
+        <include name="example/**/*.class"/>
+      </zipfileset>
+      show allResults
+      [A] = *A*
+      [non-A] = example.* excluding [A]
+      check [A] independentOf [non-A]
+      check [non-A] independentOf [A]
+    </classycleDependencyCheck>
+  </target>
+
   <target name="testEmbeddedDefinitionsFailureOn">
     <classycleDependencyCheck failOnUnwantedDependencies="true">
       <fileset dir="${classes.dir}/example">
