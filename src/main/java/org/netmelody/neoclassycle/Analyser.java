@@ -129,7 +129,7 @@ public final class Analyser {
                 createClassGraph();
             }
             catch (final IOException e) {
-                throw new RuntimeException(e.toString());
+                throw new RuntimeException(e);
             }
         }
         return _classAnalyser.getGraph();
