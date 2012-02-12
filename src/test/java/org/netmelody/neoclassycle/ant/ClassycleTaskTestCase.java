@@ -71,28 +71,30 @@ public abstract class ClassycleTaskTestCase {
 
     }
 
-    protected void configureProject(final String resourceName) {
-        final File file = copyResource(resourceName);
+    protected void configureProject(final String antBuildFilename) {
+        final File antBuildFile = copyResource(antBuildFilename, folder.getRoot());
 
-        folder.newFolder("example/p").mkdirs();
-        copyResource("example/A.class");
-        copyResource("example/AA.class");
-        copyResource("example/B.class");
-        copyResource("example/B$M.class");
-        copyResource("example/BofA.class");
-        copyResource("example/p/A.class");
+        folder.newFolder("classes/example/p").mkdirs();
+        final File classesDir = new File(folder.getRoot(), "classes");
+        
+        copyResource("example/A.class", classesDir);
+        copyResource("example/AA.class", classesDir);
+        copyResource("example/B.class", classesDir);
+        copyResource("example/B$M.class", classesDir);
+        copyResource("example/BofA.class", classesDir);
+        copyResource("example/p/A.class", classesDir);
 
         try {
-            System.setProperty("classes.dir", folder.getRoot().getAbsolutePath());
-            antTestcase.configureProject(file.getAbsolutePath());
+            System.setProperty("classes.dir", classesDir.getAbsolutePath());
+            antTestcase.configureProject(antBuildFile.getAbsolutePath());
         }
         catch (final Exception e) {
             throw new IllegalStateException(e);
         }
     }
 
-    public File copyResource(final String resourceName) {
-        final File file = new File(folder.getRoot(), resourceName);
+    private File copyResource(final String resourceName, File dest) {
+        final File file = new File(dest, resourceName);
         final InputStream in = ClassycleTaskTestCase.class.getResourceAsStream("/" + resourceName);
         try {
             final FileOutputStream out = new FileOutputStream(file);

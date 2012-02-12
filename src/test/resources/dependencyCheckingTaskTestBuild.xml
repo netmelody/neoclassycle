@@ -18,11 +18,13 @@
   </target>
 
   <target name="testEmbeddedDefinitionsFromJar" >
-    <jar destfile="${basedir}/example.jar">
+    <mkdir dir="${basedir}/jar"/>
+    <jar destfile="${basedir}/jar/example.jar">
       <fileset dir="${classes.dir}"/>
     </jar>
+    <delete dir="${classes.dir}" failonerror="false"/>
     <classycleDependencyCheck resultRenderer="org.netmelody.neoclassycle.dependency.XmlResultRenderer">
-      <zipfileset src="${basedir}/example.jar">
+      <zipfileset src="${basedir}/jar/example.jar">
         <include name="example/**/*.class"/>
       </zipfileset>
       show allResults
