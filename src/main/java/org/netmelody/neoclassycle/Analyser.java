@@ -524,7 +524,6 @@ public final class Analyser {
         
         analyser.readAndAnalyse(commandLine.isPackagesOnly());
 
-        // Create report(s)
         if (commandLine.getXmlFile() != null) {
             analyser.printXML(commandLine.getTitle(), commandLine.isPackagesOnly(),
                               new PrintWriter(new FileWriter(commandLine.getXmlFile())));
