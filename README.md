@@ -10,9 +10,9 @@ Neoclassycle's Analyser analyses the static class and package dependencies. It i
 
 Neoclassycle's Dependency Checker searches for unwanted class dependencies described in a dependency definition file. Dependency checking helps to monitor whether certain architectural constrains (e.g. in a layered architecture) are fulfilled or not.
 
-neoclassycle.jar     All compiled Neoclassycle classes.
-reportXMLtoHTML.xsl  XSL transformation for XML reports
-images/              Images needed by the report
+    neoclassycle.jar     All compiled Neoclassycle classes.
+    reportXMLtoHTML.xsl  XSL transformation for XML reports
+    images/              Images needed by the report
 
 Attribution
 -----------
