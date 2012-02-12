@@ -36,6 +36,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.types.ResourceCollection;
 import org.netmelody.neoclassycle.util.AndStringPattern;
 import org.netmelody.neoclassycle.util.NotStringPattern;
 import org.netmelody.neoclassycle.util.StringPattern;
@@ -52,7 +53,7 @@ public abstract class ClassycleTask extends Task {
     private StringPattern _includingClasses = new TrueStringPattern();
     private StringPattern _excludingClasses = new TrueStringPattern();
     private StringPattern _reflectionPattern;
-    private final LinkedList<FileSet> _fileSets = new LinkedList<FileSet>();
+    private final LinkedList<ResourceCollection> _resources = new LinkedList<ResourceCollection>();
     protected File _reportFile;
 
     public void setMergeInnerClasses(final boolean mergeInnerClasses) {
@@ -76,15 +77,15 @@ public abstract class ClassycleTask extends Task {
         }
     }
 
-    public void addConfiguredFileset(final FileSet set) {
-        _fileSets.add(set);
+    public void add(ResourceCollection rc) {
+        _resources.add(rc);
     }
 
     @Override
     public void execute() throws BuildException {
         super.execute();
 
-        if (_fileSets.size() == 0) {
+        if (_resources.size() == 0) {
             throw new BuildException("at least one file set is required");
         }
     }
@@ -92,7 +93,11 @@ public abstract class ClassycleTask extends Task {
     protected String[] getClassFileNames() {
         final ArrayList<String> fileNames = new ArrayList<String>();
         final String fileSeparator = System.getProperty("file.separator");
-        for (final FileSet set : _fileSets) {
+        for (final ResourceCollection resourceCollection : _resources) {
+            if (!(resourceCollection instanceof FileSet)) {
+                throw new BuildException("resource collection unsupported " + resourceCollection);
+            }
+            final FileSet set = (FileSet)resourceCollection;
             final DirectoryScanner scanner = set.getDirectoryScanner(getProject());
             final String path = scanner.getBasedir().getAbsolutePath();
             final String[] localFiles = scanner.getIncludedFiles();
