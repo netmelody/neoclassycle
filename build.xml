@@ -183,6 +183,8 @@
             <zipfileset dir="${basedir}">
                 <include name="LICENSE.txt"/>
                 <include name="README.md"/>
+                <include name="reportXMLtoHTML.xsl"/>
+                <include name="images/*"/>
             </zipfileset>
             <zipfileset dir="${build.dir}">
                 <include name="${ant.project.name}-${version.label}.jar"/>
