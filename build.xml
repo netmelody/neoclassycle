@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <project name="neoclassycle" default="jar" basedir=".">
-    <property name="target.version" value="2.0.0"/>
+    <property name="target.version" value="2.0.1"/>
 
     <property name="build.dir"      value="build"/>
     <property name="lib.dir"        value="vendor/lib"/>
